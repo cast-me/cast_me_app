@@ -1,0 +1,40 @@
+extension MapUtils<K, V> on Map<K, V> {
+  V getOrElse(K key, V defaultValue) {
+    if (containsKey(key)) {
+      return this[key]!;
+    } else {
+      this[key] = defaultValue;
+      return defaultValue;
+    }
+  }
+
+  Iterable<T> mapDown<T>(T Function(K key, V value) f) {
+    return entries.map((e) => f(e.key, e.value));
+  }
+}
+
+extension NotShittyList<T> on List<T> {
+  T get(int index, {required T orElse}) =>
+      index < length ? this[index] : orElse;
+}
+
+extension NotShittIterable<T> on Iterable<T> {
+  Iterable<T>? get emptyToNull => isEmpty ? null : this;
+
+  Iterable<T> separated(T separator) {
+    if (isEmpty) {
+      return [];
+    }
+    final List<T> ret = [];
+    final Iterator<T> iter = iterator;
+    for (int i = 0; i < 2*length - 1; i++) {
+      if (i % 2 == 0) {
+        iter.moveNext();
+        ret.add(iter.current);
+      } else {
+        ret.add(separator);
+      }
+    }
+    return ret;
+  }
+}
