@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         textTheme: const TextTheme(),
         colorScheme: ColorScheme(
           brightness: Brightness.light,
-          primary: Colors.black,
+          primary: Colors.orange,
           onPrimary: Colors.white,
           secondary: Colors.white,
           onSecondary: Colors.grey.shade700,

@@ -1,5 +1,4 @@
 import 'package:cast_me_app/mock_data.dart';
-import 'package:cast_me_app/models/cast.dart';
 import 'package:cast_me_app/models/trend.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
@@ -12,42 +11,8 @@ class TrendingView extends StatelessWidget {
   final List<Trend> trends = [
     jan6Committee,
     bipartisanGunDeal,
-    const Trend(
-      trendText: 'CastMeSpotifyBuyout',
-      size: '900k',
-      casts: [
-        Cast(
-          author: 'Elon Musk',
-          title: 'Why I\'m submitting a counteroffer for CastMe',
-          duration: Duration(seconds: 126),
-          image: 'musk.png',
-        ),
-        Cast(
-          author: 'Luigi Panzeri',
-          title: 'The 2.5b buyout is definitely too low given CastMe\'s '
-              'immense growth potential',
-          duration: Duration(seconds: 205),
-          image: 'luigi.jpg',
-        ),
-      ],
-    ),
-    const Trend(
-      trendText: 'Ukraine',
-      size: '8.2m',
-      casts: [
-        Cast(
-          author: 'Elon Musk',
-          title: 'Why I\'m submitting a counteroffer for CastMe',
-          duration: Duration(seconds: 186),
-        ),
-        Cast(
-          author: 'Luigi Panzeri',
-          title: 'The 2.5b buyout is definitely too low given CastMe\'s '
-              'immense growth potential',
-          duration: Duration(seconds: 210),
-        ),
-      ],
-    ),
+    castMeBuyout,
+    ukraine,
   ];
 
   @override

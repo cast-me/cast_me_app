@@ -1,4 +1,3 @@
-import 'package:cast_me_app/mock_data.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/now_playing_view.dart';
 import 'package:cast_me_app/widgets/trending_view.dart';
@@ -26,7 +25,7 @@ class ListenPage extends StatelessWidget {
             ),
             const AdaptiveMaterial(
               adaptiveColor: AdaptiveColor.surface,
-              child: NowPlayingView(cast: ezraLoneliness),
+              child: NowPlayingView(),
             ),
           ],
         ),
