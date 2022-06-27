@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.cast_me_app">
+    package="com.cast.me.app">
    <application
         android:label="cast_me_app"
         android:name="${applicationName}"

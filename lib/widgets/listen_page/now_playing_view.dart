@@ -13,19 +13,22 @@ class NowPlayingView extends StatefulWidget {
 }
 
 class _NowPlayingViewState extends State<NowPlayingView> {
-  Duration progressDuration = const Duration(seconds: 100);
+  Duration? progressDuration = const Duration(seconds: 100);
 
-  final NowPlayingModel model = CastMeModel.instance.nowPlayingModel;
+  final ListenModel model = CastMeModel.instance.listenModel;
 
   double get progress =>
-      progressDuration.inMilliseconds /
-      model.currentCast.value.duration.inMilliseconds;
+      progressDuration!.inMilliseconds /
+      model.currentCast.value!.duration.inMilliseconds;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Cast>(
+    return ValueListenableBuilder<Cast?>(
         valueListenable: model.currentCast,
         builder: (context, cast, _) {
+          if (cast == null) {
+            return Container();
+          }
           return Column(
             children: [
               Row(

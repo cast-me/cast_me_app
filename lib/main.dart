@@ -1,5 +1,7 @@
-import 'package:cast_me_app/pages/listen_page.dart';
-import 'package:cast_me_app/util/custom_icons.dart';
+import 'package:cast_me_app/models/cast_me_model.dart';
+import 'package:cast_me_app/models/cast_me_tab.dart';
+import 'package:cast_me_app/pages/listen_page_view.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,8 +20,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: const TextTheme(),
         colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          primary: Colors.orange,
+          brightness: Brightness.dark,
+          primary: Colors.black,
           onPrimary: Colors.white,
           secondary: Colors.white,
           onSecondary: Colors.grey.shade700,
@@ -41,31 +43,36 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        items: tabs,
-        selectedIconTheme: const IconThemeData(size: 36),
-      ),
-      body: const ListenPage(),
-    );
+    return ValueListenableBuilder<CastMeTab>(
+        valueListenable: CastMeModel.instance.currentTab,
+        builder: (context, currentTab, _) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: CastMeTabs.tabToIndex(currentTab),
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              items: CastMeTabs.tabs.values.toList(),
+              selectedIconTheme: const IconThemeData(size: 36),
+              onTap: (tabIndex) {
+                CastMeModel.instance
+                    .onTabChanged(CastMeTabs.indexToTab(tabIndex));
+              },
+            ),
+            body: Builder(
+              builder: (BuildContext context) {
+                switch (currentTab) {
+                  case CastMeTab.listen:
+                    return const ListenPageView();
+                  case CastMeTab.post:
+                    return Container(color: Colors.orange);
+                  case CastMeTab.profile:
+                    return Container(color: Colors.pink);
+                }
+              },
+            ),
+          );
+        });
   }
 }
-
-final List<BottomNavigationBarItem> tabs = [
-  const BottomNavigationBarItem(
-    icon: Icon(Icons.play_arrow),
-    label: 'listen',
-  ),
-  const BottomNavigationBarItem(
-    icon: Icon(CustomIcons.cast_me),
-    label: 'post',
-  ),
-  const BottomNavigationBarItem(
-    icon: Icon(Icons.person),
-    label: 'profile',
-  ),
-];

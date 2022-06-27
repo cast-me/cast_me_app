@@ -21,5 +21,5 @@ class CustomIcons{
   static const _kFontFam = 'CastMe';
   static const String? _kFontPkg = null;
 
-  static const IconData cast_me = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData castMe = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

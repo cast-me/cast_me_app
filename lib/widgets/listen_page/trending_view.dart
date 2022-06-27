@@ -17,8 +17,8 @@ class TrendingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      padding: const EdgeInsets.all(8),
       children: [
         ...trends.map((trend) {
           return Column(

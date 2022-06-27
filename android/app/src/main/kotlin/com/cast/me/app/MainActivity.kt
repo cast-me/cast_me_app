@@ -1,4 +1,4 @@
-package com.example.cast_me_app
+package com.cast.me.app
 
 import io.flutter.embedding.android.FlutterActivity
 

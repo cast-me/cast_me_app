@@ -13,6 +13,7 @@ dependencies:
   path: ^1.8.0
   color_thief_flutter: ^1.0.2
   palette_generator: ^0.3.3+1
+  firebase_core: ^1.18.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import 'package:cast_me_app/models/cast.dart';
 import 'package:cast_me_app/models/cast_me_model.dart';
-import 'package:cast_me_app/widgets/now_playing_view.dart';
+import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 import 'package:flutter/material.dart';
 
 class CastPreview extends StatelessWidget {
@@ -16,10 +16,10 @@ class CastPreview extends StatelessWidget {
     final bool isInNowPlaying = context.findAncestorWidgetOfExactType<NowPlayingView>() != null;
     return InkWell(
       onTap: () {
-        CastMeModel.instance.nowPlayingModel.onCastChanged(cast);
+        CastMeModel.instance.listenModel.onCastChanged(cast);
       },
-      child: ValueListenableBuilder<Cast>(
-          valueListenable: CastMeModel.instance.nowPlayingModel.currentCast,
+      child: ValueListenableBuilder<Cast?>(
+          valueListenable: CastMeModel.instance.listenModel.currentCast,
           builder: (context, nowPlaying, _) {
             return ClipRRect(
               borderRadius: BorderRadius.circular(4),
