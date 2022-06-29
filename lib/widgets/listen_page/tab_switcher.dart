@@ -1,6 +1,7 @@
-import 'package:cast_me_app/models/cast_me_model.dart';
+import 'package:cast_me_app/bloc/cast_me_bloc.dart';
 import 'package:cast_me_app/widgets/listen_page/following_view.dart';
 import 'package:cast_me_app/widgets/listen_page/trending_view.dart';
+
 import 'package:flutter/material.dart';
 
 class ListenTabView extends StatelessWidget {
@@ -9,7 +10,7 @@ class ListenTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageView(
-      controller: ListenModel.instance.listenPageController,
+      controller: ListenBloc.instance.listenPageController,
       children: [
         const FollowingView(),
         TrendingView(),

@@ -1,4 +1,4 @@
-import 'package:cast_me_app/models/cast_me_model.dart';
+import 'package:cast_me_app/bloc/cast_me_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/text_utils.dart';
 
@@ -16,10 +16,10 @@ class ListenTabSelector extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            ListenModel.instance.onListenPageChanged(ListenPage.following);
+            ListenBloc.instance.onListenPageChanged(ListenPage.following);
           },
           child: ValueListenableBuilder<double>(
-              valueListenable: ListenModel.instance.currentListenPage,
+              valueListenable: ListenBloc.instance.currentListenPage,
               builder: (context, page, _) {
                 return Text(
                   'Following',
@@ -35,10 +35,10 @@ class ListenTabSelector extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            ListenModel.instance.onListenPageChanged(ListenPage.trending);
+            ListenBloc.instance.onListenPageChanged(ListenPage.trending);
           },
           child: ValueListenableBuilder<double>(
-              valueListenable: ListenModel.instance.currentListenPage,
+              valueListenable: ListenBloc.instance.currentListenPage,
               builder: (context, page, _) {
                 return Text(
                   'Trending',

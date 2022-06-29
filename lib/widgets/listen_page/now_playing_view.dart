@@ -1,5 +1,5 @@
-import 'package:cast_me_app/models/cast.dart';
-import 'package:cast_me_app/models/cast_me_model.dart';
+import 'package:cast_me_app/bloc/cast_me_bloc.dart';
+import 'package:cast_me_app/bloc/models/cast.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/cast_view.dart';
 
@@ -15,7 +15,7 @@ class NowPlayingView extends StatefulWidget {
 class _NowPlayingViewState extends State<NowPlayingView> {
   Duration? progressDuration = const Duration(seconds: 100);
 
-  final ListenModel model = CastMeModel.instance.listenModel;
+  final ListenBloc model = CastMeBloc.instance.listenModel;
 
   double get progress =>
       progressDuration!.inMilliseconds /

@@ -1,6 +1,7 @@
-import 'package:cast_me_app/models/cast.dart';
-import 'package:cast_me_app/models/cast_me_model.dart';
+import 'package:cast_me_app/bloc/cast_me_bloc.dart';
+import 'package:cast_me_app/bloc/models/cast.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
+
 import 'package:flutter/material.dart';
 
 class CastPreview extends StatelessWidget {
@@ -13,13 +14,14 @@ class CastPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isInNowPlaying = context.findAncestorWidgetOfExactType<NowPlayingView>() != null;
+    final bool isInNowPlaying =
+        context.findAncestorWidgetOfExactType<NowPlayingView>() != null;
     return InkWell(
       onTap: () {
-        CastMeModel.instance.listenModel.onCastChanged(cast);
+        CastMeBloc.instance.listenModel.onCastChanged(cast);
       },
       child: ValueListenableBuilder<Cast?>(
-          valueListenable: CastMeModel.instance.listenModel.currentCast,
+          valueListenable: CastMeBloc.instance.listenModel.currentCast,
           builder: (context, nowPlaying, _) {
             return ClipRRect(
               borderRadius: BorderRadius.circular(4),
@@ -37,8 +39,8 @@ class CastPreview extends StatelessWidget {
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
-                          image:
-                              DecorationImage(image: AssetImage(cast.imagePath)),
+                          image: DecorationImage(
+                              image: AssetImage(cast.imagePath)),
                         ),
                         child: !isInNowPlaying && nowPlaying == cast
                             ? Container(

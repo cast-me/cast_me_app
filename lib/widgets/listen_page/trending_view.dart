@@ -1,5 +1,5 @@
+import 'package:cast_me_app/bloc/models/trend.dart';
 import 'package:cast_me_app/mock_data.dart';
-import 'package:cast_me_app/models/trend.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/cast_view.dart';

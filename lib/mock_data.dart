@@ -1,5 +1,5 @@
-import 'package:cast_me_app/models/cast.dart';
-import 'package:cast_me_app/models/trend.dart';
+import 'package:cast_me_app/bloc/models/cast.dart';
+import 'package:cast_me_app/bloc/models/trend.dart';
 import 'package:flutter/material.dart';
 
 /// Mock casts.

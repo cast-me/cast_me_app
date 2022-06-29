@@ -1,14 +1,23 @@
-import 'package:cast_me_app/models/cast.dart';
-import 'package:cast_me_app/models/cast_me_tab.dart';
+import 'package:cast_me_app/bloc/models/cast.dart';
+import 'package:cast_me_app/bloc/models/cast_me_tab.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class CastMeModel {
-  CastMeModel._();
+/// Contains the top level state for the CastMe App.
+///
+/// "BLoC" stands for "business logic component". This and other classes named
+/// BLoC provide read-only app state to UI elements and expose
+/// `on<state_variable>Changed` callbacks to change state in response to user
+/// interactions (eg a button press).
+///
+/// All BLoC classes are singletons with private constructors. They are accessed
+/// via `.instance`.
+class CastMeBloc {
+  CastMeBloc._();
 
-  static final instance = CastMeModel._();
+  static final instance = CastMeBloc._();
 
   final ValueNotifier<CastMeTab> _currentTab = ValueNotifier(CastMeTab.listen);
 
@@ -18,13 +27,14 @@ class CastMeModel {
     _currentTab.value = newTab;
   }
 
-  final ListenModel listenModel = ListenModel._();
+  final ListenBloc listenModel = ListenBloc._();
 }
 
-class ListenModel {
-  ListenModel._();
+/// Contains the state for the `ListenPage`.
+class ListenBloc {
+  ListenBloc._();
 
-  static final instance = CastMeModel.instance.listenModel;
+  static final instance = CastMeBloc.instance.listenModel;
 
   final ValueNotifier<Cast?> _currentCast = ValueNotifier(null);
 

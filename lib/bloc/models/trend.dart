@@ -1,4 +1,4 @@
-import 'package:cast_me_app/models/cast.dart';
+import 'package:cast_me_app/bloc/models/cast.dart';
 
 class Trend {
   const Trend({
