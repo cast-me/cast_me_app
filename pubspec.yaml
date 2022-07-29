@@ -11,7 +11,15 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   path: ^1.8.0
+  protobuf: ^2.1.0
   firebase_core: ^1.18.0
+  just_audio: ^0.9.27
+  audio_session: ^0.1.9
+  rxdart: ^0.27.4
+  cloud_firestore: ^3.4.0
+  async_list_view: ^1.0.1
+  firebase_storage: ^10.3.4
+  firebase_image: ^1.1.1
 
 dev_dependencies:
   flutter_test:

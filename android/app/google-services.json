@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1081216337666-lkj962g2t8t194b4caja6d8t6b4kptk7.apps.googleusercontent.com",
+              "client_id": "1081216337666-ftkdt8al786paioul8gnsmnfpsf3l5i9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.castMeApp"
+                "bundle_id": "com.cast.me.app"
               }
             }
           ]

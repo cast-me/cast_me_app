@@ -1,9 +1,13 @@
-import 'package:cast_me_app/widgets/CastMeView.dart';
+import 'package:cast_me_app/firebase_options.dart';
+import 'package:cast_me_app/widgets/cast_me_view.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 
-void main() {
-  // The entry point to a Flutter app.
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const CastMeApp());
 }
 

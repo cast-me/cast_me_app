@@ -1,6 +1,7 @@
-import 'package:cast_me_app/bloc/cast_me_bloc.dart';
-import 'package:cast_me_app/bloc/models/cast.dart';
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
+import 'package:firebase_image/firebase_image.dart';
 
 import 'package:flutter/material.dart';
 
@@ -17,9 +18,13 @@ class CastPreview extends StatelessWidget {
     final bool isInNowPlaying =
         context.findAncestorWidgetOfExactType<NowPlayingView>() != null;
     return InkWell(
-      onTap: () {
-        CastMeBloc.instance.listenModel.onCastChanged(cast);
-      },
+      // Only enable the inkwell if this isn't already the currently playing
+      // cast.
+      onTap: isInNowPlaying
+          ? null
+          : () {
+              CastMeBloc.instance.listenModel.onCastChanged(cast);
+            },
       child: ValueListenableBuilder<Cast?>(
           valueListenable: CastMeBloc.instance.listenModel.currentCast,
           builder: (context, nowPlaying, _) {
@@ -40,12 +45,12 @@ class CastPreview extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage(cast.imagePath)),
+                            image: FirebaseImage(cast.imageUriBase),
+                          ),
                         ),
                         child: !isInNowPlaying && nowPlaying == cast
                             ? Container(
-                                color: (cast.accentColor ?? Colors.black)
-                                    .withAlpha(120),
+                                color: (cast.accentColor).withAlpha(120),
                                 child: const Icon(Icons.bar_chart, size: 30),
                               )
                             : null,

@@ -1,5 +1,5 @@
-import 'package:cast_me_app/bloc/cast_me_bloc.dart';
-import 'package:cast_me_app/bloc/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/pages/listen_page_view.dart';
 
 import 'package:flutter/material.dart';
