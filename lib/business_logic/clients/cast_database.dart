@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cast_me_app/business_logic/models/cast.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,10 +14,14 @@ class CastDatabase {
   Stream<Cast> getCasts() async* {
     DocumentSnapshot? lastDoc;
     while (true) {
-      final List<DocumentSnapshot> docs = (await _db
+      Query query = _db
           .collection(castsCollection)
-          .limit(20)
-          .startAt([lastDoc]).get()).docs;
+          .orderBy(FieldPath.documentId)
+          .limit(20);
+      if (lastDoc != null) {
+        query = query.startAfterDocument(lastDoc);
+      }
+      final List<DocumentSnapshot> docs = (await query.get()).docs;
       if (docs.isEmpty) {
         return;
       }
@@ -28,7 +34,7 @@ class CastDatabase {
 }
 
 Cast docToCast(DocumentSnapshot doc) {
-  return Cast.fromJson(doc.data().toString());
+  return Cast.create()..mergeFromProto3Json(doc.data() as Map<String, dynamic>);
 }
 
 const castsCollection = 'casts';

@@ -43,7 +43,7 @@ Cast nateGunDeal = CastUtils.mock(
   title: 'Americans say they want universal background checks, '
       'but the polling is complicated',
   duration: const Duration(seconds: 126),
-  image: Uri.parse('gs://cast-me-app.appspot.com/user_profile_pictures/ezra.jpg'),
+  image: Uri.parse('gs://cast-me-app.appspot.com/user_profile_pictures/nate_silver.png'),
   accentColor: const Color.fromRGBO(186, 162, 158, 1),
 );
 
