@@ -13,6 +13,8 @@ class ListenBloc {
 
   final ValueNotifier<Cast?> _currentCast = ValueNotifier(null);
 
+  final ValueNotifier<bool> _nowPlayingIsExpanded = ValueNotifier(false);
+
   final ValueListenablePageController listenPageController =
       ValueListenablePageController();
 
@@ -21,6 +23,8 @@ class ListenBloc {
   ValueListenable<Cast?> get currentCast => _currentCast;
 
   ValueListenable<double> get currentListenPage => listenPageController;
+
+  ValueListenable<bool> get nowPlayingIsExpanded => _nowPlayingIsExpanded;
 
   void onCastChanged(Cast newCast) {
     _currentCast.value = newCast;
@@ -33,6 +37,10 @@ class ListenBloc {
       duration: const Duration(milliseconds: 200),
       curve: Curves.linear,
     );
+  }
+
+  void onNowPlayingExpansionToggled() {
+    _nowPlayingIsExpanded.value = !_nowPlayingIsExpanded.value;
   }
 }
 

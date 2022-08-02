@@ -42,6 +42,8 @@ class CastAudioPlayer {
     await _player.pause();
   }
 
+  Stream<Duration> get positionStream => _player.positionStream;
+
   /// Collects the data useful for displaying in a seek bar, using a handy
   /// feature of rx_dart to combine the 3 streams of interest into one.
   Stream<PositionData> get positionDataStream =>

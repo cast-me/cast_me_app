@@ -7,21 +7,24 @@ import 'package:cast_me_app/widgets/cast_view.dart';
 
 import 'package:flutter/material.dart';
 
-class NowPlayingView extends StatefulWidget {
+class NowPlayingView extends StatelessWidget {
   const NowPlayingView({Key? key}) : super(key: key);
 
   @override
-  State<NowPlayingView> createState() => _NowPlayingViewState();
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+        valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
+        builder: (context, isExpanded, _) {
+          return GestureDetector(
+            onTap: ListenBloc.instance.onNowPlayingExpansionToggled,
+            child: isExpanded ? const _FullView() : _CollapsedView(),
+          );
+        });
+  }
 }
 
-class _NowPlayingViewState extends State<NowPlayingView> {
-  Duration? progressDuration = const Duration(seconds: 100);
-
-  final ListenBloc model = CastMeBloc.instance.listenModel;
-
-  double get progress =>
-      progressDuration!.inMilliseconds /
-      model.currentCast.value!.duration.inMilliseconds;
+class _CollapsedView extends StatelessWidget {
+  final ListenBloc model = CastMeBloc.instance.listenBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -38,45 +41,146 @@ class _NowPlayingViewState extends State<NowPlayingView> {
                 Expanded(
                   child: CastPreview(cast: cast),
                 ),
-                IconButton(
-                  onPressed: () {
-                    if (model.player.playerState.playing) {
-                      model.player.pause();
-                    } else {
-                      model.player.play(cast);
-                    }
-                  },
-                  icon: StreamBuilder<bool>(
-                      stream: model.player.playingStream,
-                      builder: (context, playingSnap) {
-                        return Icon(
-                          playingSnap.data ?? false
-                              ? Icons.pause
-                              : Icons.play_arrow,
-                        );
-                      }),
-                  color: AdaptiveMaterial.onColorOf(context),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.skip_next),
-                  color: AdaptiveMaterial.onColorOf(context),
-                ),
+                _PlayButton(),
+                _ForwardTen(),
               ],
             ),
-            StreamBuilder<PositionData>(
-                stream: ListenBloc.instance.player.positionDataStream,
-                builder: (context, positionSnap) {
-                  return LinearProgressIndicator(
-                    minHeight: 1,
-                    value: progress,
-                    color: cast.accentColor,
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                  );
-                }),
+            const _NonInteractiveSeekBar(),
           ],
         );
       },
+    );
+  }
+}
+
+class _NonInteractiveSeekBar extends StatelessWidget {
+  const _NonInteractiveSeekBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<PositionData>(
+      stream: ListenBloc.instance.player.positionDataStream,
+      builder: (context, positionSnap) {
+        return LinearProgressIndicator(
+          minHeight: 1,
+          value: positionSnap.data?.progress,
+          color: ListenBloc.instance.currentCast.value!.accentColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
+        );
+      },
+    );
+  }
+}
+
+class _FullView extends StatelessWidget {
+  const _FullView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: ValueListenableBuilder<Cast?>(
+          valueListenable: ListenBloc.instance.currentCast,
+          builder: (context, cast, _) {
+            return Column(
+              children: [
+                CastView(cast: cast!),
+                _FullAudioControls(cast: cast),
+              ],
+            );
+          }),
+    );
+  }
+}
+
+class _FullAudioControls extends StatelessWidget {
+  const _FullAudioControls({
+    Key? key,
+    required this.cast,
+  }) : super(key: key);
+
+  final Cast cast;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Spacer(),
+        const _BackTen(),
+        const _PlayButton(isCircle: true),
+        const _ForwardTen(),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.one_x_mobiledata),
+              onPressed: () {},
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PlayButton extends StatelessWidget {
+  const _PlayButton({Key? key, this.isCircle = false}) : super(key: key);
+
+  final bool isCircle;
+
+  IconData get playIcon => isCircle ? Icons.play_circle : Icons.play_arrow;
+
+  IconData get pauseIcon => isCircle ? Icons.pause_circle : Icons.pause;
+
+  @override
+  Widget build(BuildContext context) {
+    final ListenBloc bloc = ListenBloc.instance;
+    return IconButton(
+      onPressed: () {
+        if (bloc.player.playerState.playing) {
+          bloc.player.pause();
+        } else {
+          bloc.player.play(bloc.currentCast.value!);
+        }
+      },
+      iconSize: isCircle ? IconTheme.of(context).size! + 36 : null,
+      icon: StreamBuilder<bool>(
+        stream: bloc.player.playingStream,
+        builder: (context, playingSnap) {
+          return Icon(
+            playingSnap.data ?? false ? pauseIcon : playIcon,
+          );
+        },
+      ),
+      color: AdaptiveMaterial.onColorOf(context),
+    );
+  }
+}
+
+class _ForwardTen extends StatelessWidget {
+  const _ForwardTen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {},
+      icon: const Icon(Icons.forward_10),
+      color: AdaptiveMaterial.onColorOf(context),
+    );
+  }
+}
+
+class _BackTen extends StatelessWidget {
+  const _BackTen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {},
+      icon: const Icon(Icons.replay_10),
+      color: AdaptiveMaterial.onColorOf(context),
     );
   }
 }

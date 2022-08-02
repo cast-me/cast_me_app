@@ -1,6 +1,8 @@
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/pages/listen_page_view.dart';
+import 'package:cast_me_app/widgets/cast_me_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
 
@@ -12,21 +14,20 @@ class CastMeView extends StatelessWidget {
     return ValueListenableBuilder<CastMeTab>(
         valueListenable: CastMeBloc.instance.currentTab,
         builder: (context, currentTab, _) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.background,
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: CastMeTabs.tabToIndex(currentTab),
-              selectedItemColor: Colors.white,
-              unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              items: CastMeTabs.tabs.values.toList(),
-              selectedIconTheme: const IconThemeData(size: 36),
-              onTap: (tabIndex) {
-                CastMeBloc.instance
-                    .onTabChanged(CastMeTabs.indexToTab(tabIndex));
-              },
-            ),
-            body: Builder(
+          return ValueListenableBuilder<bool>(
+            valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
+            builder: (context, isExpanded, child) {
+              return Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                bottomNavigationBar: isExpanded
+                    ? null
+                    : CastMeNavigationBar(
+                        currentIndex: CastMeTabs.tabToIndex(currentTab),
+                      ),
+                body: child,
+              );
+            },
+            child: Builder(
               builder: (BuildContext context) {
                 switch (currentTab) {
                   case CastMeTab.listen:

@@ -25,5 +25,5 @@ class CastMeBloc {
     _currentTab.value = newTab;
   }
 
-  final ListenBloc listenModel = ListenBloc.instance;
+  final ListenBloc listenBloc = ListenBloc.instance;
 }

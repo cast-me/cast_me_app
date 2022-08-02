@@ -20,6 +20,8 @@ dependencies:
   async_list_view: ^1.0.1
   firebase_storage: ^10.3.4
   firebase_image: ^1.1.1
+  firebase_auth: ^3.6.2
+  flutter_login: ^4.0.0
 
 dev_dependencies:
   flutter_test:

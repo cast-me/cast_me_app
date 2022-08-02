@@ -15,6 +15,7 @@ class FollowingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AsyncListView<Cast>(
+      padding: const EdgeInsets.all(8),
       stream: CastDatabase.instance.getCasts().handleError((error) {
         if (kDebugMode) {
           print(error);
