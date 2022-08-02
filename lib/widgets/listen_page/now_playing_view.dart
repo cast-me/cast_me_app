@@ -4,6 +4,8 @@ import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/cast_view.dart';
+import 'package:cast_me_app/widgets/listen_page/track_list_view.dart';
+import 'package:cast_me_app/widgets/seek_bar.dart';
 
 import 'package:flutter/material.dart';
 
@@ -13,13 +15,14 @@ class NowPlayingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-        valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
-        builder: (context, isExpanded, _) {
-          return GestureDetector(
-            onTap: ListenBloc.instance.onNowPlayingExpansionToggled,
-            child: isExpanded ? const _FullView() : _CollapsedView(),
-          );
-        });
+      valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
+      builder: (context, isExpanded, _) {
+        return GestureDetector(
+          onTap: ListenBloc.instance.onNowPlayingExpansionToggled,
+          child: isExpanded ? const _FullView() : _CollapsedView(),
+        );
+      },
+    );
   }
 }
 
@@ -39,10 +42,13 @@ class _CollapsedView extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: CastPreview(cast: cast),
+                  child: CastPreview(
+                    cast: cast,
+                    fullyInteractive: false,
+                  ),
                 ),
-                _PlayButton(),
-                _ForwardTen(),
+                const _PlayButton(),
+                const _ForwardTen(),
               ],
             ),
             const _NonInteractiveSeekBar(),
@@ -59,7 +65,7 @@ class _NonInteractiveSeekBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<PositionData>(
-      stream: ListenBloc.instance.player.positionDataStream,
+      stream: CastAudioPlayer.instance.positionDataStream,
       builder: (context, positionSnap) {
         return LinearProgressIndicator(
           minHeight: 1,
@@ -82,12 +88,27 @@ class _FullView extends StatelessWidget {
       child: ValueListenableBuilder<Cast?>(
           valueListenable: ListenBloc.instance.currentCast,
           builder: (context, cast, _) {
-            return Column(
-              children: [
-                CastView(cast: cast!),
-                _FullAudioControls(cast: cast),
-              ],
-            );
+            return ValueListenableBuilder<bool>(
+                valueListenable: ListenBloc.instance.trackListIsDisplayed,
+                builder: (context, displayTrackList, _) {
+                  return Column(
+                    children: [
+                      if (!displayTrackList)
+                        Column(
+                          children: [
+                            CastView(cast: cast!),
+                            const SeekBar(),
+                          ],
+                        ),
+                      if (displayTrackList)
+                        const SizedBox(
+                          height: 200,
+                          child: TrackListView(),
+                        ),
+                      _FullAudioControls(cast: cast!),
+                    ],
+                  );
+                });
           }),
     );
   }
@@ -107,7 +128,12 @@ class _FullAudioControls extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Spacer(),
+        const Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: _TrackListButton(),
+          ),
+        ),
         const _BackTen(),
         const _PlayButton(isCircle: true),
         const _ForwardTen(),
@@ -125,6 +151,20 @@ class _FullAudioControls extends StatelessWidget {
   }
 }
 
+class _TrackListButton extends StatelessWidget {
+  const _TrackListButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.playlist_play),
+      onPressed: () {
+        ListenBloc.instance.onDisplayTrackListToggled();
+      },
+    );
+  }
+}
+
 class _PlayButton extends StatelessWidget {
   const _PlayButton({Key? key, this.isCircle = false}) : super(key: key);
 
@@ -136,18 +176,17 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ListenBloc bloc = ListenBloc.instance;
     return IconButton(
       onPressed: () {
-        if (bloc.player.playerState.playing) {
-          bloc.player.pause();
+        if (CastAudioPlayer.instance.playerState.playing) {
+          CastAudioPlayer.instance.pause();
         } else {
-          bloc.player.play(bloc.currentCast.value!);
+          CastAudioPlayer.instance.unPause();
         }
       },
       iconSize: isCircle ? IconTheme.of(context).size! + 36 : null,
       icon: StreamBuilder<bool>(
-        stream: bloc.player.playingStream,
+        stream: CastAudioPlayer.instance.playingStream,
         builder: (context, playingSnap) {
           return Icon(
             playingSnap.data ?? false ? pauseIcon : playIcon,
@@ -165,7 +204,9 @@ class _ForwardTen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        CastAudioPlayer.instance.skipForward();
+      },
       icon: const Icon(Icons.forward_10),
       color: AdaptiveMaterial.onColorOf(context),
     );
@@ -178,7 +219,9 @@ class _BackTen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        CastAudioPlayer.instance.skipBackward();
+      },
       icon: const Icon(Icons.replay_10),
       color: AdaptiveMaterial.onColorOf(context),
     );

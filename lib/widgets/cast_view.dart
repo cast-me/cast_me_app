@@ -2,7 +2,6 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
-import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 import 'package:firebase_image/firebase_image.dart';
 
 import 'package:flutter/material.dart';
@@ -11,33 +10,39 @@ class CastPreview extends StatelessWidget {
   const CastPreview({
     Key? key,
     required this.cast,
+    this.padding,
+    this.fullyInteractive = true,
   }) : super(key: key);
 
   final Cast cast;
 
+  final EdgeInsets? padding;
+
+  /// Whether or not to make this an inkwell and display a shading if it's the
+  /// currently playing cast.
+  final bool fullyInteractive;
+
   @override
   Widget build(BuildContext context) {
-    final bool isInNowPlaying =
-        context.findAncestorWidgetOfExactType<NowPlayingView>() != null;
     return CastProvider(
       cast: cast,
-      child: InkWell(
-        // Only enable the inkwell if this isn't already the currently playing
-        // cast.
-        onTap: isInNowPlaying
-            ? null
-            : () {
-                CastMeBloc.instance.listenBloc.onCastChanged(cast);
-              },
-        child: ValueListenableBuilder<Cast?>(
-          valueListenable: ListenBloc.instance.currentCast,
-          builder: (context, nowPlaying, _) {
-            return ClipRRect(
+      child: ValueListenableBuilder<Cast?>(
+        valueListenable: ListenBloc.instance.currentCast,
+        builder: (context, nowPlaying, _) {
+          return InkWell(
+            // Only enable the inkwell if this isn't already the currently playing
+            // cast.
+            onTap: fullyInteractive && cast != nowPlaying
+                ? () {
+                    CastMeBloc.instance.listenBloc.onCastChanged(cast);
+                  }
+                : null,
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Container(
-                padding: const EdgeInsets.all(8.0),
-                color: !isInNowPlaying && nowPlaying == cast
-                    ? Theme.of(context).colorScheme.surface
+                padding: padding ?? const EdgeInsets.all(8.0),
+                color: fullyInteractive && nowPlaying == cast
+                    ? Colors.white.withAlpha(80)
                     : null,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -52,7 +57,7 @@ class CastPreview extends StatelessWidget {
                             image: FirebaseImage(cast.imageUriBase),
                           ),
                         ),
-                        child: !isInNowPlaying && nowPlaying == cast
+                        child: fullyInteractive && nowPlaying == cast
                             ? Container(
                                 color: (cast.accentColor).withAlpha(120),
                                 child: const Icon(Icons.bar_chart, size: 30),
@@ -84,9 +89,9 @@ class CastPreview extends StatelessWidget {
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

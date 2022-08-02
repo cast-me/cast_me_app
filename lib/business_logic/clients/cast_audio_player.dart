@@ -1,23 +1,47 @@
 import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/stream_utils.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CastAudioPlayer {
-  CastAudioPlayer._();
+  CastAudioPlayer._() {
+    positionDataStream.listen(
+      (data) async {
+        if (data.position == data.duration && _player.hasNext) {
+          await _player.pause();
+        }
+      },
+    );
+  }
 
   static final CastAudioPlayer instance = CastAudioPlayer._();
 
   final AudioPlayer _player = AudioPlayer();
 
-  final ConcatenatingAudioSource _sourceQueue = ConcatenatingAudioSource(
-    useLazyPreparation: true,
-    children: [],
-  );
-  final List<Cast> _castQueue = [];
+  // Add content to this queue.
+  ConcatenatingAudioSource? _sourceQueue;
 
-  // Don't allow direct editing of the queue.
-  List<Cast> get queue => _castQueue.toList(growable: false);
+  // Listen for currently playing content from this queue.
+  late final ValueListenable<List<IndexedAudioSource>> queue =
+      _player.sequenceStream.toListenable().map((lst) => lst ?? []);
+
+  late final ValueListenable<Cast?> currentCast =
+      Rx.combineLatest2<int?, List<IndexedAudioSource>?, Cast?>(
+    _player.currentIndexStream,
+    _player.sequenceStream,
+    (index, sequence) {
+      if (index == null || sequence == null) {
+        return null;
+      }
+      return sequence[index].cast;
+    },
+  ).toListenable();
+
+  late final ValueListenable<int?> currentIndex =
+      _player.currentIndexStream.toListenable();
 
   PlayerState get playerState => _player.playerState;
 
@@ -27,19 +51,35 @@ class CastAudioPlayer {
 
   /// Delete the queue and play [cast].
   Future<void> play(Cast cast) async {
-    if (_castQueue.isNotEmpty && cast == _castQueue.first) {
-      return _player.play();
-    }
-    await _sourceQueue.clear();
-    await _sourceQueue.add(AudioSource.uri(cast.audioUri));
-    _castQueue.clear();
-    _castQueue.add(cast);
-    await _player.setAudioSource(_sourceQueue);
+    _sourceQueue = ConcatenatingAudioSource(
+      useLazyPreparation: true,
+      children: [
+        AudioSource.uri(
+          cast.audioUri,
+          tag: cast,
+        ),
+      ],
+    );
+    _player.setAudioSource(_sourceQueue!);
     await _player.play();
   }
 
+  Future<void> unPause() async {}
+
   Future<void> pause() async {
     await _player.pause();
+  }
+
+  Future<void> seekTo(Duration duration) async {
+    await _player.seek(duration);
+  }
+
+  Future<void> skipForward() async {
+    await seekTo(_player.position + const Duration(seconds: 10));
+  }
+
+  Future<void> skipBackward() async {
+    await seekTo(_player.position - const Duration(seconds: 10));
   }
 
   Stream<Duration> get positionStream => _player.positionStream;
@@ -77,4 +117,9 @@ class PositionData {
   String toString() {
     return '{position: $position, bufferedPosition: $bufferedPosition, duration: $duration}';
   }
+}
+
+extension CastAudioSource on IndexedAudioSource {
+  // Required that the metadata always be set to a cast.
+  Cast get cast => tag;
 }

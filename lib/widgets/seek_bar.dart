@@ -1,117 +1,103 @@
 import 'dart:math';
 
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/widgets/cast_view.dart';
+
 import 'package:flutter/material.dart';
 
 class SeekBar extends StatefulWidget {
-  final Duration duration;
-  final Duration position;
-  final Duration bufferedPosition;
-  final ValueChanged<Duration>? onChanged;
-  final ValueChanged<Duration>? onChangeEnd;
-  final Color activeColor;
-  final Color inactiveColor;
-
   const SeekBar({
     Key? key,
-    required this.duration,
-    required this.position,
-    required this.bufferedPosition,
-    required this.activeColor,
-    required this.inactiveColor,
-    this.onChanged,
-    this.onChangeEnd,
   }) : super(key: key);
 
   @override
-  SeekBarState createState() => SeekBarState();
+  State<SeekBar> createState() => _SeekBarState();
 }
 
-class SeekBarState extends State<SeekBar> {
+class _SeekBarState extends State<SeekBar> {
+  final CastAudioPlayer player = CastAudioPlayer.instance;
   double? _dragValue;
-  late SliderThemeData _sliderThemeData;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _sliderThemeData = SliderTheme.of(context).copyWith(
-      trackHeight: 2.0,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SliderTheme(
-          data: _sliderThemeData.copyWith(
-            thumbShape: HiddenThumbComponentShape(),
-            activeTrackColor: Colors.blue.shade100,
-            inactiveTrackColor: Colors.grey.shade300,
-          ),
-          child: ExcludeSemantics(
-            child: Slider(
-              min: 0.0,
-              max: widget.duration.inMilliseconds.toDouble(),
-              value: min(widget.bufferedPosition.inMilliseconds.toDouble(),
-                  widget.duration.inMilliseconds.toDouble()),
-              onChanged: (value) {
-                setState(() {
-                  _dragValue = value;
-                });
-                if (widget.onChanged != null) {
-                  widget.onChanged!(Duration(milliseconds: value.round()));
-                }
-              },
-              onChangeEnd: (value) {
-                if (widget.onChangeEnd != null) {
-                  widget.onChangeEnd!(Duration(milliseconds: value.round()));
-                }
-                _dragValue = null;
-              },
-            ),
-          ),
+    return SliderTheme(
+      data: SliderThemeData(
+        trackHeight: 2,
+        trackShape: CastMeTrackShape(),
+        thumbShape: const RoundSliderThumbShape(
+          enabledThumbRadius: 4,
         ),
-        SliderTheme(
-          data: _sliderThemeData.copyWith(
-            inactiveTrackColor: Colors.transparent,
-          ),
-          child: Slider(
-            min: 0.0,
-            max: widget.duration.inMilliseconds.toDouble(),
-            value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),
-                widget.duration.inMilliseconds.toDouble()),
-            onChanged: (value) {
-              setState(() {
-                _dragValue = value;
-              });
-              if (widget.onChanged != null) {
-                widget.onChanged!(Duration(milliseconds: value.round()));
-              }
-            },
-            onChangeEnd: (value) {
-              if (widget.onChangeEnd != null) {
-                widget.onChangeEnd!(Duration(milliseconds: value.round()));
-              }
-              _dragValue = null;
-            },
-          ),
-        ),
-        Positioned(
-          right: 16.0,
-          bottom: 0.0,
-          child: Text(
-              RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                  .firstMatch("$_remaining")
-                  ?.group(1) ??
-                  '$_remaining',
-              style: Theme.of(context).textTheme.caption),
-        ),
-      ],
+      ),
+      child: StreamBuilder<PositionData>(
+          stream: player.positionDataStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            final Cast cast = ListenBloc.instance.currentCast.value!;
+            final PositionData data = snapshot.data!;
+            return Stack(
+              children: [
+                // This is a mock slider to show the buffered position.
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    thumbShape: HiddenThumbComponentShape(),
+                    activeTrackColor: Color.lerp(
+                      cast.accentColor,
+                      Colors.black,
+                      .6,
+                    ),
+                    inactiveTrackColor: Colors.black,
+                  ),
+                  child: ExcludeSemantics(
+                    child: Slider(
+                      min: 0.0,
+                      max: data.duration!.inMilliseconds.toDouble(),
+                      value: min(
+                        data.bufferedPosition.inMilliseconds.toDouble(),
+                        data.duration!.inMilliseconds.toDouble(),
+                      ),
+                      onChanged: (double value) {},
+                    ),
+                  ),
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: cast.accentColor,
+                    inactiveTrackColor: Colors.transparent,
+                    thumbColor: cast.accentColor,
+                  ),
+                  child: Slider(
+                    min: 0.0,
+                    max: data.duration!.inMilliseconds.toDouble(),
+                    value: min(
+                        _dragValue ?? data.position.inMilliseconds.toDouble(),
+                        data.duration!.inMilliseconds.toDouble()),
+                    onChanged: (value) {
+                      setState(() {
+                        _dragValue = value;
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      player.seekTo(Duration(milliseconds: value.round()));
+                      _dragValue = null;
+                    },
+                  ),
+                ),
+                Positioned(
+                  right: 16.0,
+                  bottom: 0.0,
+                  child: Text(
+                      (data.duration! - data.position).toFormattedString(),
+                      style: Theme.of(context).textTheme.caption),
+                ),
+              ],
+            );
+          }),
     );
   }
-
-  Duration get _remaining => widget.duration - widget.position;
 }
 
 class HiddenThumbComponentShape extends SliderComponentShape {
@@ -120,59 +106,46 @@ class HiddenThumbComponentShape extends SliderComponentShape {
 
   @override
   void paint(
-      PaintingContext context,
-      Offset center, {
-        required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow,
-      }) {}
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {}
 }
 
-void showSliderDialog({
-  required BuildContext context,
-  required String title,
-  required int divisions,
-  required double min,
-  required double max,
-  String valueSuffix = '',
-  // TODO: Replace these two by ValueStream.
-  required double value,
-  required Stream<double> stream,
-  required ValueChanged<double> onChanged,
-}) {
-  showDialog<void>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title, textAlign: TextAlign.center),
-      content: StreamBuilder<double>(
-        stream: stream,
-        builder: (context, snapshot) => SizedBox(
-          height: 100.0,
-          child: Column(
-            children: [
-              Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
-                  style: const TextStyle(
-                      fontFamily: 'Fixed',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0)),
-              Slider(
-                divisions: divisions,
-                min: min,
-                max: max,
-                value: snapshot.data ?? value,
-                onChanged: onChanged,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
+class CastMeTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    double additionalActiveTrackHeight = 2,
+  }) {
+    super.paint(
+      context,
+      offset,
+      parentBox: parentBox,
+      sliderTheme: sliderTheme,
+      enableAnimation: enableAnimation,
+      textDirection: textDirection,
+      thumbCenter: thumbCenter,
+      isDiscrete: isDiscrete,
+      isEnabled: isEnabled,
+      additionalActiveTrackHeight: 0,
+    );
+  }
 }

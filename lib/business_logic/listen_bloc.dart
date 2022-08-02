@@ -11,24 +11,24 @@ class ListenBloc {
 
   static final instance = ListenBloc._();
 
-  final ValueNotifier<Cast?> _currentCast = ValueNotifier(null);
+  ValueListenable<Cast?> get currentCast =>
+      CastAudioPlayer.instance.currentCast;
 
   final ValueNotifier<bool> _nowPlayingIsExpanded = ValueNotifier(false);
+
+  ValueListenable<bool> get nowPlayingIsExpanded => _nowPlayingIsExpanded;
+
+  final ValueNotifier<bool> _trackListIsDisplayed = ValueNotifier(false);
+
+  ValueListenable<bool> get trackListIsDisplayed => _trackListIsDisplayed;
 
   final ValueListenablePageController listenPageController =
       ValueListenablePageController();
 
-  final CastAudioPlayer player = CastAudioPlayer.instance;
-
-  ValueListenable<Cast?> get currentCast => _currentCast;
-
   ValueListenable<double> get currentListenPage => listenPageController;
 
-  ValueListenable<bool> get nowPlayingIsExpanded => _nowPlayingIsExpanded;
-
   void onCastChanged(Cast newCast) {
-    _currentCast.value = newCast;
-    player.play(newCast);
+    CastAudioPlayer.instance.play(newCast);
   }
 
   void onListenPageChanged(ListenPage newPage) {
@@ -41,6 +41,10 @@ class ListenBloc {
 
   void onNowPlayingExpansionToggled() {
     _nowPlayingIsExpanded.value = !_nowPlayingIsExpanded.value;
+  }
+
+  void onDisplayTrackListToggled() {
+    _trackListIsDisplayed.value = !_trackListIsDisplayed.value;
   }
 }
 

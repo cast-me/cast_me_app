@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class ValueListenablePageController extends PageController
     implements ValueListenable<double> {
-
   double _pageValue = 0;
 
   @override
@@ -26,4 +25,18 @@ class ValueListenablePageController extends PageController
 
   @override
   double get value => _pageValue;
+}
+
+extension ValueListenableExtension<T> on ValueListenable<T> {
+  ValueListenable<R> map<R>(
+    R Function(T value) mapper,
+  ) {
+    final ValueNotifier<R> proxyNotifier = ValueNotifier(mapper(value));
+    void onValueChanged() {
+      proxyNotifier.value = mapper(value);
+    }
+
+    addListener(onValueChanged);
+    return proxyNotifier;
+  }
 }
