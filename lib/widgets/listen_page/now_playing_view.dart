@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -170,15 +168,6 @@ class _PlaybackSpeedButtonState extends State<_PlaybackSpeedButton> {
   ];
 
   DragStartDetails? dragStartDetails;
-
-  double _nearestValidSpeed(double roughSpeed) {
-    return _speeds.reduce((currBest, speed) {
-      if ((speed - roughSpeed).abs() < (currBest - roughSpeed).abs()) {
-        return speed;
-      }
-      return currBest;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
