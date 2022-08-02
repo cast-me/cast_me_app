@@ -43,6 +43,9 @@ class CastAudioPlayer {
   late final ValueListenable<int?> currentIndex =
       _player.currentIndexStream.toListenable();
 
+  late final ValueListenable<double> currentSpeed =
+      _player.speedStream.toListenable().map((value) => value ?? 1);
+
   PlayerState get playerState => _player.playerState;
 
   Stream<PlayerState> get playerStateStream => _player.playerStateStream;
@@ -51,6 +54,9 @@ class CastAudioPlayer {
 
   /// Delete the queue and play [cast].
   Future<void> play(Cast cast) async {
+    if (cast == currentCast.value) {
+      return;
+    }
     _sourceQueue = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: [
@@ -64,10 +70,13 @@ class CastAudioPlayer {
     await _player.play();
   }
 
-  Future<void> unPause() async {}
 
   Future<void> pause() async {
     await _player.pause();
+  }
+
+  Future<void> unPause() async {
+    await _player.play();
   }
 
   Future<void> seekTo(Duration duration) async {
@@ -80,6 +89,13 @@ class CastAudioPlayer {
 
   Future<void> skipBackward() async {
     await seekTo(_player.position - const Duration(seconds: 10));
+  }
+
+  Future<void> setSpeed(double newSpeed) async {
+    if (newSpeed == _player.speed) {
+      return;
+    }
+    await _player.setSpeed(newSpeed);
   }
 
   Stream<Duration> get positionStream => _player.positionStream;

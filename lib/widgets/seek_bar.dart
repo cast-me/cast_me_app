@@ -29,6 +29,7 @@ class _SeekBarState extends State<SeekBar> {
         thumbShape: const RoundSliderThumbShape(
           enabledThumbRadius: 4,
         ),
+
       ),
       child: StreamBuilder<PositionData>(
           stream: player.positionDataStream,

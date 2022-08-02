@@ -14,7 +14,7 @@ class TrackListView extends StatelessWidget {
         valueListenable: CastAudioPlayer.instance.queue,
         builder: (context, queue, _) {
           return ListView(
-            padding: EdgeInsets.zero,
+            padding: const EdgeInsets.all(24.0),
             children: queue
                 .map(
                   (source) => CastPreview(

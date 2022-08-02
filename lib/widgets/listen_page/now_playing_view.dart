@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -83,34 +85,37 @@ class _FullView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: ValueListenableBuilder<Cast?>(
-          valueListenable: ListenBloc.instance.currentCast,
-          builder: (context, cast, _) {
-            return ValueListenableBuilder<bool>(
-                valueListenable: ListenBloc.instance.trackListIsDisplayed,
-                builder: (context, displayTrackList, _) {
-                  return Column(
-                    children: [
-                      if (!displayTrackList)
-                        Column(
+    return ValueListenableBuilder<Cast?>(
+        valueListenable: ListenBloc.instance.currentCast,
+        builder: (context, cast, _) {
+          return ValueListenableBuilder<bool>(
+              valueListenable: ListenBloc.instance.trackListIsDisplayed,
+              builder: (context, displayTrackList, _) {
+                return Column(
+                  children: [
+                    if (!displayTrackList)
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
                           children: [
                             CastView(cast: cast!),
                             const SeekBar(),
                           ],
                         ),
-                      if (displayTrackList)
-                        const SizedBox(
-                          height: 200,
-                          child: TrackListView(),
-                        ),
-                      _FullAudioControls(cast: cast!),
-                    ],
-                  );
-                });
-          }),
-    );
+                      ),
+                    if (displayTrackList)
+                      const SizedBox(
+                        height: 200,
+                        child: TrackListView(),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: _FullAudioControls(cast: cast!),
+                    ),
+                  ],
+                );
+              });
+        });
   }
 }
 
@@ -127,26 +132,75 @@ class _FullAudioControls extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Expanded(
+      children: const [
+        Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
             child: _TrackListButton(),
           ),
         ),
-        const _BackTen(),
-        const _PlayButton(isCircle: true),
-        const _ForwardTen(),
+        _BackTen(),
+        _PlayButton(isCircle: true),
+        _ForwardTen(),
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
-              icon: const Icon(Icons.one_x_mobiledata),
-              onPressed: () {},
-            ),
+            child: _PlaybackSpeedButton(),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _PlaybackSpeedButton extends StatefulWidget {
+  const _PlaybackSpeedButton({Key? key}) : super(key: key);
+
+  @override
+  State<_PlaybackSpeedButton> createState() => _PlaybackSpeedButtonState();
+}
+
+class _PlaybackSpeedButtonState extends State<_PlaybackSpeedButton> {
+  static const _speeds = [
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+  ];
+
+  DragStartDetails? dragStartDetails;
+
+  double _nearestValidSpeed(double roughSpeed) {
+    return _speeds.reduce((currBest, speed) {
+      if ((speed - roughSpeed).abs() < (currBest - roughSpeed).abs()) {
+        return speed;
+      }
+      return currBest;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<double>(
+      valueListenable: CastAudioPlayer.instance.currentSpeed,
+      builder: (context, speed, _) {
+        return DropdownButton<double>(
+          value: speed,
+          icon: Container(),
+          underline: Container(),
+          items: _speeds.map(
+            (speed) {
+              return DropdownMenuItem<double>(
+                value: speed,
+                child: Text('${speed}x'),
+                onTap: () => CastAudioPlayer.instance.setSpeed(speed),
+              );
+            },
+          ).toList(),
+          onChanged: (index) {},
+        );
+      },
     );
   }
 }
