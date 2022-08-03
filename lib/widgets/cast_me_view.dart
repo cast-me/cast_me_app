@@ -2,6 +2,7 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/pages/listen_page_view.dart';
+import 'package:cast_me_app/pages/profile_page_view.dart';
 import 'package:cast_me_app/widgets/cast_me_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class CastMeView extends StatelessWidget {
                   case CastMeTab.post:
                     return Container(color: Colors.orange);
                   case CastMeTab.profile:
-                    return Container(color: Colors.pink);
+                    return const ProfilePageView();
                 }
               },
             ),

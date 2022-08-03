@@ -1,5 +1,6 @@
 import 'package:cast_me_app/firebase_options.dart';
 import 'package:cast_me_app/widgets/cast_me_view.dart';
+import 'package:cast_me_app/widgets/profile_page/auth_gate.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -36,7 +37,7 @@ class CastMeApp extends StatelessWidget {
           onError: Colors.red.shade900,
         ),
       ),
-      home: const CastMeView(),
+      home: const AuthGate(child: CastMeView()),
     );
   }
 }

@@ -1,0 +1,12 @@
+// Run `protoc --dart_out=. lib/business_logic/models/protobufs/*.proto` to compile.
+
+syntax = "proto3";
+
+package cast_me_app;
+
+message CastMeUserBase {
+    string uid = 1;
+    string user_name = 2;
+    string display_name = 3;
+    string profile_picture_uri = 4;
+}
