@@ -23,7 +23,6 @@ class AuthGate extends StatelessWidget {
         if (!snapshot.hasData) {
           return const SignInScreen(
             providerConfigs: [
-              GoogleProviderConfiguration(clientId: _googleClientId),
               EmailProviderConfiguration(),
             ],
           );
@@ -40,7 +39,6 @@ class AuthGate extends StatelessWidget {
             return child;
           },
         );
-        return child;
       },
     );
   }

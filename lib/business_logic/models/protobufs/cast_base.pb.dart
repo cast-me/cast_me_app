@@ -11,18 +11,20 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class CastBase extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CastBase', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'cast_me_app'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'author')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
-    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUriBase')
-    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUriBase')
-    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorUid')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorDisplayName')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUriBase')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUriBase')
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
     ..hasRequiredFields = false
   ;
 
   CastBase._() : super();
   factory CastBase({
-    $core.String? author,
+    $core.String? authorUid,
+    $core.String? authorDisplayName,
     $core.String? title,
     $core.int? durationMs,
     $core.String? audioUriBase,
@@ -30,8 +32,11 @@ class CastBase extends $pb.GeneratedMessage {
     $core.String? accentColorBase,
   }) {
     final _result = create();
-    if (author != null) {
-      _result.author = author;
+    if (authorUid != null) {
+      _result.authorUid = authorUid;
+    }
+    if (authorDisplayName != null) {
+      _result.authorDisplayName = authorDisplayName;
     }
     if (title != null) {
       _result.title = title;
@@ -72,57 +77,66 @@ class CastBase extends $pb.GeneratedMessage {
   static CastBase? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get author => $_getSZ(0);
+  $core.String get authorUid => $_getSZ(0);
   @$pb.TagNumber(1)
-  set author($core.String v) { $_setString(0, v); }
+  set authorUid($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasAuthor() => $_has(0);
+  $core.bool hasAuthorUid() => $_has(0);
   @$pb.TagNumber(1)
-  void clearAuthor() => clearField(1);
+  void clearAuthorUid() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get title => $_getSZ(1);
+  $core.String get authorDisplayName => $_getSZ(1);
   @$pb.TagNumber(2)
-  set title($core.String v) { $_setString(1, v); }
+  set authorDisplayName($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasTitle() => $_has(1);
+  $core.bool hasAuthorDisplayName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearTitle() => clearField(2);
+  void clearAuthorDisplayName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.int get durationMs => $_getIZ(2);
+  $core.String get title => $_getSZ(2);
   @$pb.TagNumber(3)
-  set durationMs($core.int v) { $_setUnsignedInt32(2, v); }
+  set title($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasDurationMs() => $_has(2);
+  $core.bool hasTitle() => $_has(2);
   @$pb.TagNumber(3)
-  void clearDurationMs() => clearField(3);
+  void clearTitle() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get audioUriBase => $_getSZ(3);
+  $core.int get durationMs => $_getIZ(3);
   @$pb.TagNumber(4)
-  set audioUriBase($core.String v) { $_setString(3, v); }
+  set durationMs($core.int v) { $_setUnsignedInt32(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasAudioUriBase() => $_has(3);
+  $core.bool hasDurationMs() => $_has(3);
   @$pb.TagNumber(4)
-  void clearAudioUriBase() => clearField(4);
+  void clearDurationMs() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get imageUriBase => $_getSZ(4);
+  $core.String get audioUriBase => $_getSZ(4);
   @$pb.TagNumber(5)
-  set imageUriBase($core.String v) { $_setString(4, v); }
+  set audioUriBase($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasImageUriBase() => $_has(4);
+  $core.bool hasAudioUriBase() => $_has(4);
   @$pb.TagNumber(5)
-  void clearImageUriBase() => clearField(5);
+  void clearAudioUriBase() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.String get accentColorBase => $_getSZ(5);
+  $core.String get imageUriBase => $_getSZ(5);
   @$pb.TagNumber(6)
-  set accentColorBase($core.String v) { $_setString(5, v); }
+  set imageUriBase($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasAccentColorBase() => $_has(5);
+  $core.bool hasImageUriBase() => $_has(5);
   @$pb.TagNumber(6)
-  void clearAccentColorBase() => clearField(6);
+  void clearImageUriBase() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get accentColorBase => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set accentColorBase($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasAccentColorBase() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearAccentColorBase() => clearField(7);
 }
 

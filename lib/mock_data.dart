@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 /// Mock casts.
 Cast ezraLoneliness = CastUtils.mock(
-  author: 'Ezra Klein',
+  authorDisplayName: 'Ezra Klein',
   duration: const Duration(seconds: 295),
   title: 'Combating the loneliness epidemic',
   image:
@@ -14,7 +14,7 @@ Cast ezraLoneliness = CastUtils.mock(
 );
 
 Cast codyJan6 = CastUtils.mock(
-  author: 'Cody Johnston',
+  authorDisplayName: 'Cody Johnston',
   title: 'The crime president is put on trial. For crimes.',
   duration: const Duration(seconds: 356),
   image:
@@ -23,7 +23,7 @@ Cast codyJan6 = CastUtils.mock(
 );
 
 Cast wittesJan6 = CastUtils.mock(
-  author: 'Benjamin Wittes',
+  authorDisplayName: 'Benjamin Wittes',
   title: 'Donald Trump, Jan 6th and Section 3 of the 14th Amendment',
   duration: const Duration(seconds: 256),
   image: Uri.parse('gs://cast-me-app.appspot.com/user_profile_pictures/wittes.png'),
@@ -31,7 +31,7 @@ Cast wittesJan6 = CastUtils.mock(
 );
 
 Cast ezraGunDeal = CastUtils.mock(
-  author: 'Ezra Klein',
+  authorDisplayName: 'Ezra Klein',
   title: 'Democrats are finally breaking the stalemate on gun control',
   duration: const Duration(seconds: 175),
   image: Uri.parse('gs://cast-me-app.appspot.com/user_profile_pictures/ezra.jpg'),
@@ -39,7 +39,7 @@ Cast ezraGunDeal = CastUtils.mock(
 );
 
 Cast nateGunDeal = CastUtils.mock(
-  author: 'Nate Silver',
+  authorDisplayName: 'Nate Silver',
   title: 'Americans say they want universal background checks, '
       'but the polling is complicated',
   duration: const Duration(seconds: 126),
@@ -48,7 +48,7 @@ Cast nateGunDeal = CastUtils.mock(
 );
 
 Cast muskCastMe = CastUtils.mock(
-  author: 'Elon Musk',
+  authorDisplayName: 'Elon Musk',
   title: 'Why I\'m submitting a counteroffer for CastMe',
   duration: const Duration(seconds: 126),
   image: Uri.parse('gs://cast-me-app.appspot.com/user_profile_pictures/musk.png'),
@@ -56,7 +56,7 @@ Cast muskCastMe = CastUtils.mock(
 );
 
 Cast panzeriCastMe = CastUtils.mock(
-  author: 'Luigi Panzeri',
+  authorDisplayName: 'Luigi Panzeri',
   title: 'The 2.5b buyout is definitely too low given CastMe\'s '
       'immense growth potential',
   duration: const Duration(seconds: 205),
@@ -65,7 +65,7 @@ Cast panzeriCastMe = CastUtils.mock(
 );
 
 Cast ukraineAdam = CastUtils.mock(
-  author: 'adamsomething',
+  authorDisplayName: 'adamsomething',
   title: 'Russian propoganda billboards in occupied Luhansk are a glimpse into '
       'the Russian alternate universe',
   duration: const Duration(seconds: 312),

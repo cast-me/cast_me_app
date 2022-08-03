@@ -24,6 +24,8 @@ dependencies:
   flutter_login: ^4.0.0
   flutterfire_ui: ^0.4.3+4
   image_picker: ^0.8.5+3
+  file_picker: ^5.0.1
+  palette_generator: ^0.3.3+1
 
 dev_dependencies:
   flutter_test:

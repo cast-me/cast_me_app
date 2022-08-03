@@ -5,10 +5,11 @@ syntax = "proto3";
 package cast_me_app;
 
 message CastBase {
-    string author = 1;
-    string title = 2;
-    uint32 duration_ms = 3;
-    string audio_uri_base = 4;
-    string image_uri_base = 5;
-    string accent_color_base = 6;
+    string author_uid = 1;
+    string author_display_name = 2;
+    string title = 3;
+    uint32 duration_ms = 4;
+    string audio_uri_base = 5;
+    string image_uri_base = 6;
+    string accent_color_base = 7;
 }

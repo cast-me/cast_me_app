@@ -147,7 +147,7 @@ class _AuthorLine extends StatelessWidget {
     return DefaultTextStyle(
       style: TextStyle(color: Colors.grey.shade400),
       child: Text(
-        '${cast.author} - ${cast.duration.toFormattedString()}',
+        '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
       ),
     );
   }

@@ -1,23 +1,19 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_user_base.pb.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
+
 import 'package:rxdart/rxdart.dart';
 
 class UserManager {
   UserManager._();
-
-  static const String _usersString = 'users';
-
-  static const String _profilePictureString = 'user_profile_pictures';
-
-  static const String _gsPrefix = 'gs://cast-me-app.appspot.com';
 
   static final UserManager instance = UserManager._();
 
@@ -27,7 +23,7 @@ class UserManager {
       return Stream.value(null);
     }
     return FirebaseFirestore.instance
-        .collection(_usersString)
+        .collection(usersString)
         .doc(authUser.uid)
         .snapshots()
         .map((doc) {
@@ -45,22 +41,18 @@ class UserManager {
 
   Future<void> setDisplayName(String displayName) async {
     await FirebaseFirestore.instance
-        .collection(_usersString)
+        .collection(usersString)
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set((currentUser.value!..displayName = displayName).toProto3Json()
             as Map<String, dynamic>);
   }
 
-  Future<String?> setUserPhoto(File file) async {
-    final TaskSnapshot task = await FirebaseStorage.instance
-        .ref('/$_profilePictureString/${file.uri.pathSegments.last}')
-        .putFile(file);
-    FirebaseFirestore.instance
-        .collection(_usersString)
-        .doc(currentUser.value!.uid)
-        .set((currentUser.value!
-              ..profilePictureUri = join(_gsPrefix, task.ref.fullPath))
-            .toProto3Json() as Map<String, dynamic>);
+  Future<void> setUserPhoto(File file) async {
+    final TaskSnapshot task =
+        await usersReference.child(file.uri.pathSegments.last).putFile(file);
+    await usersCollection.doc(currentUser.value!.uid).set(
+        (currentUser.value!..profilePictureUri = task.ref.gsUri).toProto3Json()
+            as Map<String, dynamic>);
   }
 }
 

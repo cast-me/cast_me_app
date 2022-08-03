@@ -12,14 +12,15 @@ import 'dart:typed_data' as $typed_data;
 const CastBase$json = const {
   '1': 'CastBase',
   '2': const [
-    const {'1': 'author', '3': 1, '4': 1, '5': 9, '10': 'author'},
-    const {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
-    const {'1': 'duration_ms', '3': 3, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_uri_base', '3': 4, '4': 1, '5': 9, '10': 'audioUriBase'},
-    const {'1': 'image_uri_base', '3': 5, '4': 1, '5': 9, '10': 'imageUriBase'},
-    const {'1': 'accent_color_base', '3': 6, '4': 1, '5': 9, '10': 'accentColorBase'},
+    const {'1': 'author_uid', '3': 1, '4': 1, '5': 9, '10': 'authorUid'},
+    const {'1': 'author_display_name', '3': 2, '4': 1, '5': 9, '10': 'authorDisplayName'},
+    const {'1': 'title', '3': 3, '4': 1, '5': 9, '10': 'title'},
+    const {'1': 'duration_ms', '3': 4, '4': 1, '5': 13, '10': 'durationMs'},
+    const {'1': 'audio_uri_base', '3': 5, '4': 1, '5': 9, '10': 'audioUriBase'},
+    const {'1': 'image_uri_base', '3': 6, '4': 1, '5': 9, '10': 'imageUriBase'},
+    const {'1': 'accent_color_base', '3': 7, '4': 1, '5': 9, '10': 'accentColorBase'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIWCgZhdXRob3IYASABKAlSBmF1dGhvchIUCgV0aXRsZRgCIAEoCVIFdGl0bGUSHwoLZHVyYXRpb25fbXMYAyABKA1SCmR1cmF0aW9uTXMSJAoOYXVkaW9fdXJpX2Jhc2UYBCABKAlSDGF1ZGlvVXJpQmFzZRIkCg5pbWFnZV91cmlfYmFzZRgFIAEoCVIMaW1hZ2VVcmlCYXNlEioKEWFjY2VudF9jb2xvcl9iYXNlGAYgASgJUg9hY2NlbnRDb2xvckJhc2U=');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIdCgphdXRob3JfdWlkGAEgASgJUglhdXRob3JVaWQSLgoTYXV0aG9yX2Rpc3BsYXlfbmFtZRgCIAEoCVIRYXV0aG9yRGlzcGxheU5hbWUSFAoFdGl0bGUYAyABKAlSBXRpdGxlEh8KC2R1cmF0aW9uX21zGAQgASgNUgpkdXJhdGlvbk1zEiQKDmF1ZGlvX3VyaV9iYXNlGAUgASgJUgxhdWRpb1VyaUJhc2USJAoOaW1hZ2VfdXJpX2Jhc2UYBiABKAlSDGltYWdlVXJpQmFzZRIqChFhY2NlbnRfY29sb3JfYmFzZRgHIAEoCVIPYWNjZW50Q29sb3JCYXNl');
