@@ -2,6 +2,7 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
+import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:firebase_image/firebase_image.dart';
 
 import 'package:flutter/material.dart';
@@ -72,10 +73,10 @@ class CastPreview extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            AdaptiveText(
                               cast.title,
                               style: const TextStyle(color: Colors.white),
-                              maxLines: 2,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             DefaultTextStyle(

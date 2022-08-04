@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CastAudioPlayer {
   CastAudioPlayer._() {
@@ -16,9 +17,18 @@ class CastAudioPlayer {
         }
       },
     );
+    SharedPreferences.getInstance().then((pref) {
+      double? speed = pref.getDouble(_playbackSpeedKey);
+      if (speed == null) {
+        return;
+      }
+      setSpeed(speed);
+    });
   }
 
   static final CastAudioPlayer instance = CastAudioPlayer._();
+
+  static const _playbackSpeedKey = 'playback_speed';
 
   final AudioPlayer _player = AudioPlayer();
 
@@ -98,6 +108,9 @@ class CastAudioPlayer {
     if (newSpeed == _player.speed) {
       return;
     }
+    SharedPreferences.getInstance().then((pref) {
+      pref.setDouble(_playbackSpeedKey, newSpeed);
+    });
     await _player.setSpeed(newSpeed);
   }
 

@@ -20,45 +20,47 @@ class _PostPageViewState extends State<PostPageView> {
   Widget build(BuildContext context) {
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
-      child: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          const Text('Upload Cast'),
-          ElevatedButton(
-            child: ValueListenableBuilder<File?>(
-                valueListenable: currentFile,
-                builder: (context, file, _) {
-                  if (file == null) {
-                    return const Text('select audio');
-                  }
-                  return const Text('Replace selected audio');
-                }),
-            onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                dialogTitle: 'Select audio',
-                type: FileType.audio,
-              );
-              if (result != null) {
-                currentFile.value = File(result.files.single.path!);
-              }
-            },
-          ),
-          TextField(
-            controller: textController,
-            decoration: const InputDecoration(
-              hintText: 'cast title',
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            const Text('Upload Cast'),
+            ElevatedButton(
+              child: ValueListenableBuilder<File?>(
+                  valueListenable: currentFile,
+                  builder: (context, file, _) {
+                    if (file == null) {
+                      return const Text('select audio');
+                    }
+                    return const Text('Replace selected audio');
+                  }),
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  dialogTitle: 'Select audio',
+                  type: FileType.audio,
+                );
+                if (result != null) {
+                  currentFile.value = File(result.files.single.path!);
+                }
+              },
             ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await CastDatabase.instance.createCast(
-                title: textController.text,
-                file: currentFile.value!,
-              );
-            },
-            child: const Text('Submit'),
-          ),
-        ],
+            TextField(
+              controller: textController,
+              decoration: const InputDecoration(
+                hintText: 'cast title',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await CastDatabase.instance.createCast(
+                  title: textController.text,
+                  file: currentFile.value!,
+                );
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        ),
       ),
     );
   }

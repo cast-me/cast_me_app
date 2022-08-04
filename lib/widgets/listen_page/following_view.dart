@@ -9,27 +9,56 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 
-class FollowingView extends StatelessWidget {
+class FollowingView extends StatefulWidget {
   const FollowingView({Key? key}) : super(key: key);
 
   @override
+  State<FollowingView> createState() => _FollowingViewState();
+}
+
+class _FollowingViewState extends State<FollowingView> {
+  Stream<Cast> castStream =
+      CastDatabase.instance.getCasts().handleError((error) {
+    if (kDebugMode) {
+      print(error);
+    }
+  });
+
+  @override
   Widget build(BuildContext context) {
-    return AsyncListView<Cast>(
-      padding: const EdgeInsets.all(8),
-      stream: CastDatabase.instance.getCasts().handleError((error) {
+    return RefreshIndicator(
+      color: Colors.white,
+      onRefresh: () async {
+        _getStream();
+        setState(() {});
+      },
+      child: AsyncListView<Cast>(
+        padding: const EdgeInsets.all(8),
+        stream: CastDatabase.instance.getCasts().handleError((error) {
+          if (kDebugMode) {
+            print(error);
+          }
+        }),
+        itemBuilder: (
+          context,
+          snapshot,
+          index,
+        ) {
+          if (!snapshot.hasData) {
+            return const AdaptiveText("loading...");
+          }
+          return CastPreview(cast: snapshot.data![index]);
+        },
+      ),
+    );
+  }
+
+  Stream<Cast> _getStream() {
+    return CastDatabase.instance.getCasts().handleError(
+      (error) {
         if (kDebugMode) {
           print(error);
         }
-      }),
-      itemBuilder: (
-        context,
-        snapshot,
-        index,
-      ) {
-        if (!snapshot.hasData) {
-          return const AdaptiveText("loading...");
-        }
-        return CastPreview(cast: snapshot.data![index]);
       },
     );
   }
