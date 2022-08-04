@@ -12,4 +12,6 @@ message CastBase {
     string audio_uri_base = 5;
     string image_uri_base = 6;
     string accent_color_base = 7;
+    double views = 8;
+    repeated string keywords = 9;
 }
