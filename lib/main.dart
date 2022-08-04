@@ -38,7 +38,7 @@ class CastMeApp extends StatelessWidget {
           onError: Colors.red.shade900,
         ),
       ),
-      home: const CastMeAuthGate(child: CastMeView()),
+      home: const AuthGate(child: CastMeView()),
     );
   }
 }

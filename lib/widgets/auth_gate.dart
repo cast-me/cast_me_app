@@ -6,8 +6,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 
-class CastMeAuthGate extends StatelessWidget {
-  const CastMeAuthGate({
+class AuthGate extends StatelessWidget {
+  const AuthGate({
     Key? key,
     required this.child,
   }) : super(key: key);
@@ -20,7 +20,6 @@ class CastMeAuthGate extends StatelessWidget {
     return StreamBuilder<ConnectivityResult>(
         stream: Connectivity().onConnectivityChanged,
         builder: (context, connectivityResult) {
-          print(connectivityResult.data);
           if (connectivityResult.data == ConnectivityResult.none) {
             return const AdaptiveMaterial(
               adaptiveColor: AdaptiveColor.surface,

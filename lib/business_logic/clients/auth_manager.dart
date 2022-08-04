@@ -30,7 +30,9 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   CastMeSignInState? get signInState => _signInState;
 
-  bool get isLoading => _castMeUser == null;
+  bool _isLoading = true;
+
+  bool get isLoading => _isLoading;
 
   bool get isFullySignedIn => _signInState == CastMeSignInState.signedIn;
 
@@ -57,7 +59,12 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   void _init() {
     registerSubscription(
-      FirebaseAuth.instance.authStateChanges().flatMap((authUser) {
+      FirebaseAuth.instance
+          .authStateChanges()
+          .handleError((error) => print(error))
+          .flatMap((authUser) {
+        // Update is loading after the first auth event.
+        _isLoading = false;
         if (authUser == null) {
           return Stream.value(null);
         }
