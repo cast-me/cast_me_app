@@ -30,7 +30,15 @@ class ValueListenablePageController extends PageController
   double get value => _pageValue;
 }
 
-extension ValueListenableExtension<T> on ValueListenable<T> {
+extension ValueNotifierUtils<T> on ValueNotifier<T> {
+  StreamSubscription<T> updateFromStream(Stream<T> stream) {
+    return stream.listen((event) {
+      value = event;
+    });
+  }
+}
+
+extension ValueListenableUtils<T> on ValueListenable<T> {
   ValueListenable<R> map<R>(
     R Function(T value) mapper,
   ) {

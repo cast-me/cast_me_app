@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:cast_me_app/business_logic/clients/user_manager.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 
 import 'package:flutter/material.dart';
 
@@ -21,24 +20,20 @@ class _CompleteProfileFormViewState extends State<CompleteProfileFormView> {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.surface,
-      child: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          const _DisplayNamePicker(),
-          _ProfilePicturePicker(selectedPhoto: selectedPhoto),
-          ElevatedButton(
-            onPressed: selectedPhoto.value != null ? () {
-              setState(() {
-                isSubmitting = UserManager.instance
-                    .setUserPhoto(File(selectedPhoto.value!.path));
-              });
-            } : null,
-            child: const Text('submit'),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const _DisplayNamePicker(),
+        _ProfilePicturePicker(selectedPhoto: selectedPhoto),
+        ElevatedButton(
+          onPressed: selectedPhoto.value != null ? () {
+            setState(() {
+              isSubmitting = AuthManager.instance
+                  .setUserPhoto(File(selectedPhoto.value!.path));
+            });
+          } : null,
+          child: const Text('submit'),
+        ),
+      ],
     );
   }
 }
@@ -97,7 +92,7 @@ class _DisplayNamePickerState extends State<_DisplayNamePicker> {
           errorMessage = 'Display name must be less than 50 characters.';
           return;
         }
-        isWriting = UserManager.instance
+        isWriting = AuthManager.instance
             .setDisplayName(displayName)
             .then((value) => null)
             .onError((error, stackTrace) {

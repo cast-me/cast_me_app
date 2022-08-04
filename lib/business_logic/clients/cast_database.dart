@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
-import 'package:cast_me_app/business_logic/clients/user_manager.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 
@@ -43,7 +43,7 @@ class CastDatabase {
   }) async {
     final TaskSnapshot castUpload =
         await castsReference.child(file.uri.pathSegments.last).putFile(file);
-    final CastMeUser user = UserManager.instance.currentUser.value!;
+    final CastMeUser user = AuthManager.instance.castMeUser!;
     final Uint8List imageBytes = (await FirebaseStorage.instance
         .refFromURL(user.profilePictureUri)
         .getData())!;

@@ -1,3 +1,3 @@
 extension StringUtils on String {
-  String? get zeroToNull => isEmpty ? null : this;
+  String? get emptyToNull => isEmpty ? null : this;
 }

@@ -27,7 +27,7 @@ extension CastUtils on CastBase {
   Uri get imageUri => Uri.parse(imageUriBase);
 
   Uri get audioUri => Uri.parse(
-        audioUriBase.zeroToNull ??
+        audioUriBase.emptyToNull ??
             'https://www.americanrhetoric.com/mp3clips/politicalspeeches/jfkinaugural2.mp3',
       );
 
