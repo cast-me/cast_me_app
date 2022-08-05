@@ -8,7 +8,8 @@ class CastMeTabs {
 
   static CastMeTab indexToTab(int tabIndex) => tabs.keys.elementAt(tabIndex);
 
-  static int tabToIndex(CastMeTab tabIndex) => tabs.keys.toList().indexOf(tabIndex);
+  static int tabToIndex(CastMeTab tabIndex) =>
+      tabs.keys.toList().indexOf(tabIndex);
 
   static LinkedHashMap<CastMeTab, BottomNavigationBarItem> tabs =
       LinkedHashMap.fromEntries([

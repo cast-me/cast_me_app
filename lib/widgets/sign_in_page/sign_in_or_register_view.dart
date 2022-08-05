@@ -1,5 +1,8 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
+
 import 'package:flutter/material.dart';
 
 class SignInOrRegisterForm extends StatefulWidget {
@@ -21,9 +24,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   ValueNotifier<bool> currentIsValid = ValueNotifier(false);
 
   bool get isRegistering =>
-      authManager.signInState == CastMeSignInState.registering;
-
-  final AuthManager authManager = AuthManager.instance;
+      AuthManager.instance.signInState == CastMeSignInState.registering;
 
   void validate() {
     if (emailController.text.isEmpty) {
@@ -46,7 +47,6 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   @override
   void initState() {
     super.initState();
-    AuthManager.instance.addListener(validate);
     emailController.addListener(validate);
     passwordController.addListener(validate);
     confirmPasswordController.addListener(validate);
@@ -54,7 +54,6 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
 
   @override
   void dispose() {
-    AuthManager.instance.removeListener(validate);
     emailController.removeListener(validate);
     passwordController.removeListener(validate);
     confirmPasswordController.removeListener(validate);
@@ -63,71 +62,83 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: emailController,
-          decoration: const InputDecoration(
-            labelText: 'email',
+    return AuthFlowBuilder(builder: (context, authManager, _) {
+      return Column(
+        children: [
+          Text(
+            isRegistering ? 'Create account' : 'Sign In',
+            style: Theme.of(context).textTheme.headline3,
           ),
-        ),
-        TextField(
-          controller: passwordController,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: const InputDecoration(
-            labelText: 'password',
-          ),
-        ),
-        if (isRegistering)
           TextField(
-            controller: confirmPasswordController,
+            controller: emailController,
+            decoration: const InputDecoration(
+              labelText: 'email',
+            ),
+          ),
+          TextField(
+            controller: passwordController,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
             decoration: const InputDecoration(
-              labelText: 'confirm password',
+              labelText: 'password',
             ),
           ),
-        ValueListenableBuilder<bool>(
-            valueListenable: currentIsValid,
-            builder: (context, isValid, _) {
-              return ElevatedButton(
-                onPressed: isValid
-                    ? () async {
-                        if (isRegistering) {
-                          await authManager.createUser(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                          return;
-                        }
-                      }
-                    : null,
-                child: isRegistering
-                    ? const Text('Create account')
-                    : const Text('Sign in'),
-              );
-            }),
-        _RegisterSwitcher(isRegistering: isRegistering),
-        if (authManager.authError != null)
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Auth failed with the following error:',
-                textAlign: TextAlign.center,
+          if (isRegistering)
+            TextField(
+              controller: confirmPasswordController,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              decoration: const InputDecoration(
+                labelText: 'confirm password',
               ),
-              Text(
-                'asdfasdf',
-                style: TextStyle(color: Theme.of(context).errorColor),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-      ],
-    );
+            ),
+          ValueListenableBuilder<bool>(
+              valueListenable: currentIsValid,
+              builder: (context, isValid, _) {
+                return AuthSubmitButtonWrapper(
+                  child: ElevatedButton(
+                    onPressed: isValid
+                        ? () async {
+                            if (isRegistering) {
+                              await authManager.createUser(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                              return;
+                            }
+                            await authManager.signIn(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                          }
+                        : null,
+                    child: isRegistering
+                        ? const Text('Create account')
+                        : const Text('Sign in'),
+                  ),
+                );
+              }),
+          _RegisterSwitcher(isRegistering: isRegistering),
+          if (authManager.authError != null)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Auth failed with the following error:',
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  authManager.authError.toString(),
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+        ],
+      );
+    });
   }
 }
 
@@ -166,7 +177,7 @@ class _RegisterSwitcher extends StatelessWidget {
             AuthManager.instance.toggleAccountRegistrationFlow();
           },
           child: const Text(
-            'create one!',
+            'Create one!',
             style: TextStyle(
               color: Colors.white,
               decoration: TextDecoration.underline,

@@ -1,7 +1,7 @@
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/cast_view.dart';
 import 'package:cast_me_app/widgets/listen_page/track_list_view.dart';
@@ -93,7 +93,7 @@ class _FullView extends StatelessWidget {
                   children: [
                     if (!displayTrackList)
                       Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(24),
                         child: Column(
                           children: [
                             CastView(cast: cast!),
@@ -107,7 +107,7 @@ class _FullView extends StatelessWidget {
                         child: TrackListView(),
                       ),
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.all(24),
                       child: _FullAudioControls(cast: cast!),
                     ),
                   ],

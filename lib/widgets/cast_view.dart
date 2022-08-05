@@ -31,8 +31,8 @@ class CastPreview extends StatelessWidget {
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
           return InkWell(
-            // Only enable the inkwell if this isn't already the currently playing
-            // cast.
+            // Only enable the inkwell if this isn't already the currently
+            // playing cast.
             onTap: fullyInteractive && cast != nowPlaying
                 ? () {
                     CastMeBloc.instance.listenBloc.onCastChanged(cast);
@@ -41,7 +41,7 @@ class CastPreview extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Container(
-                padding: padding ?? const EdgeInsets.all(8.0),
+                padding: padding ?? const EdgeInsets.all(8),
                 color: fullyInteractive && nowPlaying == cast
                     ? Colors.white.withAlpha(80)
                     : null,

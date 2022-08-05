@@ -54,7 +54,7 @@ class _SeekBarState extends State<SeekBar> {
                   ),
                   child: ExcludeSemantics(
                     child: Slider(
-                      min: 0.0,
+                      min: 0,
                       max: data.duration!.inMilliseconds.toDouble(),
                       value: min(
                         data.bufferedPosition.inMilliseconds.toDouble(),
@@ -71,7 +71,7 @@ class _SeekBarState extends State<SeekBar> {
                     thumbColor: cast.accentColor,
                   ),
                   child: Slider(
-                    min: 0.0,
+                    min: 0,
                     max: data.duration!.inMilliseconds.toDouble(),
                     value: min(
                         _dragValue ?? data.position.inMilliseconds.toDouble(),
@@ -88,8 +88,8 @@ class _SeekBarState extends State<SeekBar> {
                   ),
                 ),
                 Positioned(
-                  right: 16.0,
-                  bottom: 0.0,
+                  right: 16,
+                  bottom: 0,
                   child: Text(
                       (data.duration! - data.position).toFormattedString(),
                       style: Theme.of(context).textTheme.caption),

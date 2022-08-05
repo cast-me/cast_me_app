@@ -35,7 +35,8 @@ class _PostPageViewState extends State<PostPageView> {
                     return const Text('Replace selected audio');
                   }),
               onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                final FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(
                   dialogTitle: 'Select audio',
                   type: FileType.audio,
                 );

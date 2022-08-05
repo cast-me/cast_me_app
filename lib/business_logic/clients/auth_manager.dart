@@ -35,6 +35,12 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   bool get isLoading => _isLoading;
 
+  bool _isSubmitting = false;
+
+  // Whether or not we're submitting info and waiting for an async callback.
+  // Submit buttons in sign up flow should be disabled while this is true.
+  bool get isSubmitting => _isSubmitting;
+
   bool get isFullySignedIn => _signInState == CastMeSignInState.signedIn;
 
   Exception? _authError;
@@ -88,6 +94,18 @@ class AuthManager extends ChangeNotifier with Disposable {
         .checkAuthResult();
   }
 
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+        .checkAuthResult();
+  }
+
   CastMeUser _docToCastMeUser(DocumentSnapshot doc) {
     return CastMeUserBase.create()
       ..mergeFromProto3Json(doc.data() as Map<String, dynamic>);
@@ -97,7 +115,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     registerSubscription(
       FirebaseAuth.instance
           .authStateChanges()
-          .handleError((error) => print(error))
+          .handleError((Object? error) => print(error))
           .flatMap((authUser) {
         // Update is loading after the first auth event.
         _isLoading = false;
@@ -137,6 +155,11 @@ class AuthManager extends ChangeNotifier with Disposable {
       _signInState = CastMeSignInState.signedIn;
     }
   }
+
+  // Exposed so that `AuthFutureUtil` can call it.
+  void _notifyListeners() {
+    notifyListeners();
+  }
 }
 
 enum CastMeSignInState {
@@ -157,18 +180,26 @@ extension CastMeUserUtils on CastMeUserBase {
 
 extension AuthFutureUtil<T> on Future<T> {
   Future<T> checkAuthResult() {
+    final AuthManager authManager = AuthManager.instance;
+    authManager._isSubmitting = true;
+    // We need to let listeners know that we're now submitting.
+    authManager._notifyListeners();
     return then(
       (value) {
         // Action was successful, clear last error.
-        AuthManager.instance._authError = null;
+        authManager._authError = null;
+        authManager._isSubmitting = false;
         return value;
       },
-      onError: (error, stackTrace) {
+      onError: (Exception error, StackTrace stackTrace) {
         log(
           'Auth action failed.',
           error: error,
           stackTrace: stackTrace,
         );
+        authManager._isSubmitting = false;
+        authManager._authError = error;
+        authManager._notifyListeners();
         throw error;
       },
     );

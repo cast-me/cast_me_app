@@ -176,11 +176,9 @@ class AdaptiveText extends StatelessWidget {
     this.maxLines,
     this.semanticsLabel,
     this.textWidthBasis,
-  })  : textSpan = null,
-        super(key: key);
+  }) : super(key: key);
 
   final String? data;
-  final InlineSpan? textSpan;
   final TextStyle? style;
   final StrutStyle? strutStyle;
   final TextAlign? textAlign;

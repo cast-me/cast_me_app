@@ -18,7 +18,7 @@ class FollowingView extends StatefulWidget {
 
 class _FollowingViewState extends State<FollowingView> {
   Stream<Cast> castStream =
-      CastDatabase.instance.getCasts().handleError((error) {
+      CastDatabase.instance.getCasts().handleError((Object error) {
     if (kDebugMode) {
       print(error);
     }
@@ -34,7 +34,7 @@ class _FollowingViewState extends State<FollowingView> {
       },
       child: AsyncListView<Cast>(
         padding: const EdgeInsets.all(8),
-        stream: CastDatabase.instance.getCasts().handleError((error) {
+        stream: CastDatabase.instance.getCasts().handleError((Object error) {
           if (kDebugMode) {
             print(error);
           }
@@ -45,7 +45,7 @@ class _FollowingViewState extends State<FollowingView> {
           index,
         ) {
           if (!snapshot.hasData) {
-            return const AdaptiveText("loading...");
+            return const AdaptiveText('loading...');
           }
           return CastPreview(cast: snapshot.data![index]);
         },
@@ -55,7 +55,7 @@ class _FollowingViewState extends State<FollowingView> {
 
   Stream<Cast> _getStream() {
     return CastDatabase.instance.getCasts().handleError(
-      (error) {
+      (Object error) {
         if (kDebugMode) {
           print(error);
         }

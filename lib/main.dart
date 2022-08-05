@@ -1,7 +1,7 @@
 import 'package:cast_me_app/firebase_options.dart';
 
-import 'package:cast_me_app/widgets/cast_me_view.dart';
 import 'package:cast_me_app/widgets/auth_gate.dart';
+import 'package:cast_me_app/widgets/cast_me_view.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 

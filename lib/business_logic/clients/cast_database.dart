@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 
@@ -31,7 +31,7 @@ class CastDatabase {
         return;
       }
       lastDoc = docs.last;
-      for (DocumentSnapshot doc in docs) {
+      for (final DocumentSnapshot doc in docs) {
         yield docToCast(doc);
       }
     }

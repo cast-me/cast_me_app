@@ -27,13 +27,21 @@ dependencies:
   file_picker: ^5.0.1
   palette_generator: ^0.3.3+1
   shared_preferences: ^2.0.15
-  flutter_launcher_icons: ^0.9.3
   connectivity_plus: ^2.3.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.3
   flutter_lints: ^2.0.0
+
+# To rebuild run: flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/icons/cast_me_icon_android.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/icons/cast_me_icon_foreground.png"
 
 flutter:
   uses-material-design: true

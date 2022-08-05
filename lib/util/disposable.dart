@@ -14,7 +14,7 @@ abstract class Disposable {
   }
 
   Future<void> dispose() async {
-    for (var disposeFunction in _disposeFunctions) {
+    for (final disposeFunction in _disposeFunctions) {
       await disposeFunction();
     }
   }

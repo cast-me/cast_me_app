@@ -14,7 +14,7 @@ class SignInPageView extends StatelessWidget {
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: AnimatedBuilder(
             animation: AuthManager.instance,
             builder: (context, _) {

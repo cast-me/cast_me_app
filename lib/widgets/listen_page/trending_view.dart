@@ -41,6 +41,7 @@ class TrendingView extends StatelessWidget {
                   color: Colors.white.withAlpha(150),
                 ),
               ),
+              // ignore: unnecessary_cast
               ...(trend.casts.map((cast) {
                 return CastPreview(cast: cast);
               }) as Iterable<Widget>)

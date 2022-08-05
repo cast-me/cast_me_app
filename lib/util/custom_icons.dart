@@ -11,15 +11,19 @@
 ///      fonts:
 ///       - asset: fonts/CastMe.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
-class CustomIcons{
+class CustomIcons {
   CustomIcons._();
 
   static const _kFontFam = 'CastMe';
   static const String? _kFontPkg = null;
 
-  static const IconData castMe = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData castMe = IconData(
+    0xe801,
+    fontFamily: _kFontFam,
+    fontPackage: _kFontPkg,
+  );
 }

@@ -18,7 +18,7 @@ class CastAudioPlayer {
       },
     );
     SharedPreferences.getInstance().then((pref) {
-      double? speed = pref.getDouble(_playbackSpeedKey);
+      final double? speed = pref.getDouble(_playbackSpeedKey);
       if (speed == null) {
         return;
       }
@@ -80,7 +80,7 @@ class CastAudioPlayer {
         ),
       ],
     );
-    _player.setAudioSource(_sourceQueue!);
+    await _player.setAudioSource(_sourceQueue!);
     await _player.play();
   }
 
@@ -108,7 +108,7 @@ class CastAudioPlayer {
     if (newSpeed == _player.speed) {
       return;
     }
-    SharedPreferences.getInstance().then((pref) {
+    await SharedPreferences.getInstance().then((pref) {
       pref.setDouble(_playbackSpeedKey, newSpeed);
     });
     await _player.setSpeed(newSpeed);
@@ -147,11 +147,12 @@ class PositionData {
 
   @override
   String toString() {
-    return '{position: $position, bufferedPosition: $bufferedPosition, duration: $duration}';
+    return '{position: $position, bufferedPosition: $bufferedPosition, '
+        'duration: $duration}';
   }
 }
 
 extension CastAudioSource on IndexedAudioSource {
   // Required that the metadata always be set to a cast.
-  Cast get cast => tag;
+  Cast get cast => tag as Cast;
 }
