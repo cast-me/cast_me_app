@@ -2,17 +2,13 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
-import 'package:cast_me_app/business_logic/models/protobufs/cast_me_user_base.pb.dart';
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/disposable.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:rxdart/rxdart.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier with Disposable {
@@ -22,9 +18,9 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   static final AuthManager instance = AuthManager._();
 
-  CastMeUser? _castMeUser;
+  CastMeProfile? _castMeProfile;
 
-  CastMeUser? get castMeUser => _castMeUser;
+  CastMeProfile? get castMeProfile => _castMeProfile;
 
   // Should not be accessed before verifying that the user manager has loaded.
   CastMeSignInState? _signInState = CastMeSignInState.signingIn;
@@ -65,11 +61,8 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String email,
     required String password,
   }) async {
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        )
+    await Supabase.instance.client.auth
+        .signUp(email, password)
         .checkAuthResult();
   }
 
@@ -77,85 +70,70 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String displayName,
     required File profilePicture,
   }) async {
-    await _setDisplayName(displayName)
-        .then((_) => _setUserPhoto(profilePicture))
+    await castMeProfiles
+        .upsert(_castMeProfile!..displayName = displayName)
+        .execute()
         .checkAuthResult();
-  }
-
-  Future<void> _setDisplayName(String displayName) async {
-    await FirebaseFirestore.instance
-        .collection(usersString)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set((_castMeUser!..displayName = displayName).toProto3Json()
-            as Map<String, dynamic>);
-  }
-
-  Future<void> _setUserPhoto(File file) async {
-    final TaskSnapshot task = await usersReference
-        .child(file.uri.pathSegments.last)
-        .putFile(file)
-        .checkAuthResult();
-    await usersCollection.doc(_castMeUser!.uid).set(
-        (_castMeUser!..profilePictureUri = task.ref.gsUri).toProto3Json()
-            as Map<String, dynamic>);
   }
 
   Future<void> signIn({
     required String email,
     required String password,
   }) async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
+    await Supabase.instance.client.auth
+        .signIn(
           email: email,
           password: password,
         )
         .checkAuthResult();
   }
 
-  CastMeUser _docToCastMeUser(DocumentSnapshot doc) {
-    return CastMeUserBase.create()
+  CastMeProfile _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
+    if (doc.hasError) {
+      throw Exception(doc.error);
+    }
+    return CastMeProfile.create()
       ..mergeFromProto3Json(doc.data() as Map<String, dynamic>);
   }
 
   void _init() {
     registerSubscription(
-      FirebaseAuth.instance
-          .authStateChanges()
+      SupabaseAuth.instance.onAuthChange
           .handleError((Object? error) => print(error))
-          .flatMap((authUser) {
-        // Update is loading after the first auth event.
-        _isLoading = false;
-        if (authUser == null) {
-          return Stream.value(null);
-        }
-        return FirebaseFirestore.instance
-            .collection(usersString)
-            .doc(authUser.uid)
-            .snapshots()
-            .map((doc) {
-          if (doc.data() == null) {
-            return CastMeUserBase(uid: authUser.uid);
-          }
-          return _docToCastMeUser(doc);
-        });
-      }).listen(_onUserChanged),
+          .listen(
+        (AuthChangeEvent authEvent) {
+          _onUserChanged();
+        },
+      ),
     );
   }
 
-  void _onUserChanged(CastMeUser? newUser) {
-    _castMeUser = newUser;
+  Future<void> _onUserChanged() async {
+    final User? user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      _castMeProfile = null;
+    } else {
+      _castMeProfile = _docToCastMeProfile(
+        await Supabase.instance.client
+            .from('profiles')
+            .select()
+            .eq('id', user.id)
+            .single()
+            .execute(),
+      );
+    }
     _setSignInState();
     notifyListeners();
   }
 
   void _setSignInState() {
-    if (_castMeUser == null) {
+    if (_castMeProfile == null) {
       if (_signInState == CastMeSignInState.registering) {
         // Do nothing if we're already registering.
         return;
       }
       _signInState = CastMeSignInState.signingIn;
-    } else if (!_castMeUser!.isComplete) {
+    } else if (!_castMeProfile!.isComplete) {
       _signInState = CastMeSignInState.completingProfile;
     } else {
       _signInState = CastMeSignInState.signedIn;
@@ -177,11 +155,11 @@ enum CastMeSignInState {
 
 extension SignInExtention on CastMeSignInState {}
 
-extension CastMeUserUtils on CastMeUserBase {
+extension CastMeUserUtils on CastMeProfileBase {
   bool get isComplete => displayName.isNotEmpty && profilePictureUri.isNotEmpty;
 
   // The auth-specific user data.
-  User get authUser => FirebaseAuth.instance.currentUser!;
+  User get authUser => Supabase.instance.client.auth.currentUser!;
 }
 
 extension AuthFutureUtil<T> on Future<T> {
@@ -215,4 +193,4 @@ extension AuthFutureUtil<T> on Future<T> {
   }
 }
 
-typedef CastMeUser = CastMeUserBase;
+typedef CastMeProfile = CastMeProfileBase;

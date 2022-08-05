@@ -43,14 +43,14 @@ class CastDatabase {
   }) async {
     final TaskSnapshot castUpload =
         await castsReference.child(file.uri.pathSegments.last).putFile(file);
-    final CastMeUser user = AuthManager.instance.castMeUser!;
+    final CastMeProfile user = AuthManager.instance.castMeProfile!;
     final Uint8List imageBytes = (await FirebaseStorage.instance
         .refFromURL(user.profilePictureUri)
         .getData())!;
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
     final Cast cast = Cast(
-      authorUid: user.uid,
+      authorId: user.id,
       authorDisplayName: user.displayName,
       title: title,
       durationMs: 60000,

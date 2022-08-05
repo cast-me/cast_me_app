@@ -15,7 +15,7 @@ extension CastUtils on CastBase {
     required Color accentColor,
   }) {
     return Cast(
-      authorUid: authorDisplayName.hashCode.toString(),
+      authorId: authorDisplayName.hashCode.toString(),
       authorDisplayName: authorDisplayName,
       durationMs: duration.inMilliseconds,
       title: title,

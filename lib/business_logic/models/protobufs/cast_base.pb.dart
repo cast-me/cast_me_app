@@ -11,29 +11,31 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class CastBase extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CastBase', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'cast_me_app'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorUid')
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorDisplayName')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
     ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUriBase')
     ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUriBase')
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
+    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
   CastBase._() : super();
   factory CastBase({
-    $core.String? authorUid,
+    $core.String? authorId,
     $core.String? authorDisplayName,
     $core.String? title,
     $core.int? durationMs,
     $core.String? audioUriBase,
     $core.String? imageUriBase,
     $core.String? accentColorBase,
+    $core.int? viewCount,
   }) {
     final _result = create();
-    if (authorUid != null) {
-      _result.authorUid = authorUid;
+    if (authorId != null) {
+      _result.authorId = authorId;
     }
     if (authorDisplayName != null) {
       _result.authorDisplayName = authorDisplayName;
@@ -52,6 +54,9 @@ class CastBase extends $pb.GeneratedMessage {
     }
     if (accentColorBase != null) {
       _result.accentColorBase = accentColorBase;
+    }
+    if (viewCount != null) {
+      _result.viewCount = viewCount;
     }
     return _result;
   }
@@ -77,13 +82,13 @@ class CastBase extends $pb.GeneratedMessage {
   static CastBase? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get authorUid => $_getSZ(0);
+  $core.String get authorId => $_getSZ(0);
   @$pb.TagNumber(1)
-  set authorUid($core.String v) { $_setString(0, v); }
+  set authorId($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasAuthorUid() => $_has(0);
+  $core.bool hasAuthorId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearAuthorUid() => clearField(1);
+  void clearAuthorId() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get authorDisplayName => $_getSZ(1);
@@ -138,5 +143,14 @@ class CastBase extends $pb.GeneratedMessage {
   $core.bool hasAccentColorBase() => $_has(6);
   @$pb.TagNumber(7)
   void clearAccentColorBase() => clearField(7);
+
+  @$pb.TagNumber(10)
+  $core.int get viewCount => $_getIZ(7);
+  @$pb.TagNumber(10)
+  set viewCount($core.int v) { $_setUnsignedInt32(7, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasViewCount() => $_has(7);
+  @$pb.TagNumber(10)
+  void clearViewCount() => clearField(10);
 }
 
