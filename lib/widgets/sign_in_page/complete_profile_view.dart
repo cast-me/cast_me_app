@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-class CompleteProfileFormView extends StatefulWidget {
-  const CompleteProfileFormView({Key? key}) : super(key: key);
+class CompleteProfileView extends StatefulWidget {
+  const CompleteProfileView({Key? key}) : super(key: key);
 
   @override
-  State<CompleteProfileFormView> createState() =>
-      _CompleteProfileFormViewState();
+  State<CompleteProfileView> createState() =>
+      _CompleteProfileViewState();
 }
 
-class _CompleteProfileFormViewState extends State<CompleteProfileFormView> {
+class _CompleteProfileViewState extends State<CompleteProfileView> {
   ValueNotifier<XFile?> selectedPhoto = ValueNotifier(null);
-  Future<void> isSubmitting = Future.value();
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +23,17 @@ class _CompleteProfileFormViewState extends State<CompleteProfileFormView> {
       children: [
         const _DisplayNamePicker(),
         _ProfilePicturePicker(selectedPhoto: selectedPhoto),
-        ElevatedButton(
-          onPressed: selectedPhoto.value != null ? () {
-            setState(() {
-              isSubmitting = AuthManager.instance
-                  .setUserPhoto(File(selectedPhoto.value!.path));
-            });
-          } : null,
-          child: const Text('submit'),
+        AnimatedBuilder(
+          animation: AuthManager.instance,
+          builder: (context, _) {
+            return ElevatedButton(
+              onPressed: selectedPhoto.value != null ? () {
+                AuthManager.instance
+                      .setUserPhoto(File(selectedPhoto.value!.path));
+              } : null,
+              child: const Text('submit'),
+            );
+          }
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
@@ -26,9 +27,9 @@ class AuthManager extends ChangeNotifier with Disposable {
   CastMeUser? get castMeUser => _castMeUser;
 
   // Should not be accessed before verifying that the user manager has loaded.
-  late CastMeSignInState _signInState;
+  CastMeSignInState? _signInState = CastMeSignInState.signingIn;
 
-  CastMeSignInState? get signInState => _signInState;
+  CastMeSignInState get signInState => _signInState!;
 
   bool _isLoading = true;
 
@@ -36,20 +37,55 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   bool get isFullySignedIn => _signInState == CastMeSignInState.signedIn;
 
+  Exception? _authError;
+
+  Exception? get authError => _authError;
+
+  void toggleAccountRegistrationFlow() {
+    if (signInState == CastMeSignInState.registering) {
+      _signInState = CastMeSignInState.signingIn;
+    } else if (signInState == CastMeSignInState.signingIn) {
+      _signInState = CastMeSignInState.registering;
+    } else {
+      throw Exception(
+        'Cannot toggle between sign in and registering from state:'
+        ' $_signInState',
+      );
+    }
+    notifyListeners();
+  }
+
+  Future<void> createUser({
+    required String email,
+    required String password,
+  }) async {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+        .checkAuthResult();
+  }
+
   Future<void> setDisplayName(String displayName) async {
     await FirebaseFirestore.instance
         .collection(usersString)
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set((_castMeUser!..displayName = displayName).toProto3Json()
-            as Map<String, dynamic>);
+            as Map<String, dynamic>)
+        .checkAuthResult();
   }
 
   Future<void> setUserPhoto(File file) async {
-    final TaskSnapshot task =
-        await usersReference.child(file.uri.pathSegments.last).putFile(file);
-    await usersCollection.doc(_castMeUser!.uid).set(
-        (_castMeUser!..profilePictureUri = task.ref.gsUri).toProto3Json()
-            as Map<String, dynamic>);
+    final TaskSnapshot task = await usersReference
+        .child(file.uri.pathSegments.last)
+        .putFile(file)
+        .checkAuthResult();
+    await usersCollection
+        .doc(_castMeUser!.uid)
+        .set((_castMeUser!..profilePictureUri = task.ref.gsUri).toProto3Json()
+            as Map<String, dynamic>)
+        .checkAuthResult();
   }
 
   CastMeUser _docToCastMeUser(DocumentSnapshot doc) {
@@ -90,7 +126,11 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   void _setSignInState() {
     if (_castMeUser == null) {
-      _signInState = CastMeSignInState.signedOut;
+      if (_signInState == CastMeSignInState.registering) {
+        // Do nothing if we're already registering.
+        return;
+      }
+      _signInState = CastMeSignInState.signingIn;
     } else if (!_castMeUser!.isComplete) {
       _signInState = CastMeSignInState.completingProfile;
     } else {
@@ -100,16 +140,39 @@ class AuthManager extends ChangeNotifier with Disposable {
 }
 
 enum CastMeSignInState {
-  signedOut,
+  signingIn,
+  registering,
   completingProfile,
   signedIn,
 }
+
+extension SignInExtention on CastMeSignInState {}
 
 extension CastMeUserUtils on CastMeUserBase {
   bool get isComplete => displayName.isNotEmpty && profilePictureUri.isNotEmpty;
 
   // The auth-specific user data.
   User get authUser => FirebaseAuth.instance.currentUser!;
+}
+
+extension AuthFutureUtil<T> on Future<T> {
+  Future<T> checkAuthResult() {
+    return then(
+      (value) {
+        // Action was successful, clear last error.
+        AuthManager.instance._authError = null;
+        return value;
+      },
+      onError: (error, stackTrace) {
+        log(
+          'Auth action failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        throw error;
+      },
+    );
+  }
 }
 
 typedef CastMeUser = CastMeUserBase;

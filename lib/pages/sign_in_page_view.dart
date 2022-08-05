@@ -1,77 +1,39 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/sign_in_page/complete_profile_form_view.dart';
-import 'package:flutter/material.dart';
+import 'package:cast_me_app/widgets/sign_in_page/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/sign_in_page/sign_in_or_register_view.dart';
 
-import 'package:flutterfire_ui/auth.dart';
+import 'package:flutter/material.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final CastMeSignInState? signInState = AuthManager.instance.signInState;
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          // Builder is only here to give us a function scope for the switch.
-          child: Builder(
-            builder: (context) {
+          child: AnimatedBuilder(
+            animation: AuthManager.instance,
+            builder: (context, _) {
+              final CastMeSignInState signInState =
+                  AuthManager.instance.signInState;
               switch (signInState) {
-                case CastMeSignInState.signedOut:
-                  return CustomEmailSignInForm();
+                case CastMeSignInState.signingIn:
+                case CastMeSignInState.registering:
+                  return const SignInOrRegisterForm();
                 case CastMeSignInState.completingProfile:
-                  return const CompleteProfileFormView();
-                case null:
-                  throw Exception(
-                      '`null` sign in state should not be reachable.');
+                  return const CompleteProfileView();
                 case CastMeSignInState.signedIn:
                   throw Exception('`SignedIn` sign in state should not be '
-                      'reachable.');
+                      'reachable from the sign in flow widget.');
               }
             },
           ),
         ),
       ),
-    );
-  }
-}
-
-class CustomEmailSignInForm extends StatelessWidget {
-  CustomEmailSignInForm({Key? key}) : super(key: key);
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return AuthFlowBuilder<EmailFlowController>(
-      builder: (context, state, controller, _) {
-        switch (state.runtimeType) {
-          case AuthFailed:
-          case AwaitingEmailAndPassword:
-          case SigningIn:
-            return Column(
-              children: [
-                TextField(controller: emailController),
-                TextField(controller: passwordController),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.setEmailAndPassword(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                  },
-                  child: const Text('Sign in'),
-                ),
-              ],
-            );
-          default:
-            return const Center(child: CircularProgressIndicator());
-        }
-      },
     );
   }
 }
