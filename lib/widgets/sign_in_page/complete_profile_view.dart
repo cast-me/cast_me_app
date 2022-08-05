@@ -15,28 +15,42 @@ class CompleteProfileView extends StatefulWidget {
 }
 
 class _CompleteProfileViewState extends State<CompleteProfileView> {
-  ValueNotifier<XFile?> selectedPhoto = ValueNotifier(null);
+  final TextEditingController displayNameController = TextEditingController();
+  final ValueNotifier<XFile?> selectedPhoto = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const _DisplayNamePicker(),
-        _ProfilePicturePicker(selectedPhoto: selectedPhoto),
-        AuthFlowBuilder(builder: (context, authManager, _) {
-          return AuthSubmitButtonWrapper(
-            child: ElevatedButton(
-              onPressed: selectedPhoto.value != null
-                  ? () {
-                      authManager.setUserPhoto(File(selectedPhoto.value!.path));
-                    }
-                  : null,
-              child: const Text('Submit'),
+    return AuthFlowBuilder(builder: (context, authManager, _) {
+      return Column(
+        children: [
+          Text(
+            'Complete your profile',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          _DisplayNamePicker(controller: displayNameController),
+          _ProfilePicturePicker(selectedPhoto: selectedPhoto),
+          AuthSubmitButtonWrapper(
+            child: ValueListenableBuilder<XFile?>(
+              valueListenable: selectedPhoto,
+              builder: (context, photo, _) {
+                return ElevatedButton(
+                  onPressed: selectedPhoto.value != null
+                      ? () async {
+                          await authManager.completeUserProfile(
+                            displayName: displayNameController.text,
+                            profilePicture: File(selectedPhoto.value!.path),
+                          );
+                        }
+                      : null,
+                  child: const Text('Submit'),
+                );
+              }
             ),
-          );
-        }),
-      ],
-    );
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -50,27 +64,56 @@ class _ProfilePicturePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        selectedPhoto.value =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-      },
-      child: ValueListenableBuilder<XFile?>(
-          valueListenable: selectedPhoto,
-          builder: (context, photo, _) {
-            if (photo == null) {
-              return const Text('Select profile picture');
-            }
-            return Image.file(
-              File(photo.path),
-            );
-          }),
-    );
+    return ValueListenableBuilder<XFile?>(
+        valueListenable: selectedPhoto,
+        builder: (context, photo, _) {
+          return Column(
+            children: [
+              if (photo != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: Image.file(
+                        File(photo.path),
+                      ),
+                    ),
+                  ),
+                ),
+              ElevatedButton(
+                onPressed: () async {
+                  selectedPhoto.value = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.image),
+                    const SizedBox(width: 6),
+                    Text(
+                      photo == null
+                          ? 'Select profile picture'
+                          : 'Replace profile picture',
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
 
 class _DisplayNamePicker extends StatefulWidget {
-  const _DisplayNamePicker({Key? key}) : super(key: key);
+  const _DisplayNamePicker({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final TextEditingController controller;
 
   @override
   State<_DisplayNamePicker> createState() => _DisplayNamePickerState();
@@ -83,6 +126,7 @@ class _DisplayNamePickerState extends State<_DisplayNamePicker> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       onChanged: (displayName) {
         hasChanged = true;
         if (displayName.length < 4) {

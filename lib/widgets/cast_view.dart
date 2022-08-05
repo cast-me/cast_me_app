@@ -112,6 +112,8 @@ class CastView extends StatelessWidget {
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
             child: Image(
+              loadingBuilder: (context, _, __) =>
+                  const CircularProgressIndicator(color: Colors.white),
               image: FirebaseImage(cast.imageUriBase),
             ),
           ),

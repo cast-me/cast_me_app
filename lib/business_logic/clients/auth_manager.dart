@@ -43,9 +43,9 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   bool get isFullySignedIn => _signInState == CastMeSignInState.signedIn;
 
-  Exception? _authError;
+  Object? _authError;
 
-  Exception? get authError => _authError;
+  Object? get authError => _authError;
 
   void toggleAccountRegistrationFlow() {
     if (signInState == CastMeSignInState.registering) {
@@ -73,25 +73,31 @@ class AuthManager extends ChangeNotifier with Disposable {
         .checkAuthResult();
   }
 
-  Future<void> setDisplayName(String displayName) async {
+  Future<void> completeUserProfile({
+    required String displayName,
+    required File profilePicture,
+  }) async {
+    await _setDisplayName(displayName)
+        .then((_) => _setUserPhoto(profilePicture))
+        .checkAuthResult();
+  }
+
+  Future<void> _setDisplayName(String displayName) async {
     await FirebaseFirestore.instance
         .collection(usersString)
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set((_castMeUser!..displayName = displayName).toProto3Json()
-            as Map<String, dynamic>)
-        .checkAuthResult();
+            as Map<String, dynamic>);
   }
 
-  Future<void> setUserPhoto(File file) async {
+  Future<void> _setUserPhoto(File file) async {
     final TaskSnapshot task = await usersReference
         .child(file.uri.pathSegments.last)
         .putFile(file)
         .checkAuthResult();
-    await usersCollection
-        .doc(_castMeUser!.uid)
-        .set((_castMeUser!..profilePictureUri = task.ref.gsUri).toProto3Json()
-            as Map<String, dynamic>)
-        .checkAuthResult();
+    await usersCollection.doc(_castMeUser!.uid).set(
+        (_castMeUser!..profilePictureUri = task.ref.gsUri).toProto3Json()
+            as Map<String, dynamic>);
   }
 
   Future<void> signIn({
@@ -182,16 +188,14 @@ extension AuthFutureUtil<T> on Future<T> {
   Future<T> checkAuthResult() {
     final AuthManager authManager = AuthManager.instance;
     authManager._isSubmitting = true;
-    // We need to let listeners know that we're now submitting.
-    authManager._notifyListeners();
-    return then(
+    final Future<T> result = then(
       (value) {
         // Action was successful, clear last error.
         authManager._authError = null;
         authManager._isSubmitting = false;
         return value;
       },
-      onError: (Exception error, StackTrace stackTrace) {
+      onError: (Object error, StackTrace stackTrace) {
         log(
           'Auth action failed.',
           error: error,
@@ -203,6 +207,11 @@ extension AuthFutureUtil<T> on Future<T> {
         throw error;
       },
     );
+    // We need to let listeners know that we're now submitting.
+    // We put this after calling then to ensure that even if it throws, then is
+    // still executed.
+    authManager._notifyListeners();
+    return result;
   }
 }
 

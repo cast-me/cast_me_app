@@ -66,7 +66,8 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
       return Column(
         children: [
           Text(
-            isRegistering ? 'Create account' : 'Sign In',
+            isRegistering ? 'Create account' : 'Sign in',
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline3,
           ),
           TextField(
@@ -83,6 +84,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
             decoration: const InputDecoration(
               labelText: 'password',
             ),
+            cursorColor: Colors.white,
           ),
           if (isRegistering)
             TextField(
