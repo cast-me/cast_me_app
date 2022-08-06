@@ -69,7 +69,7 @@ class CastAudioPlayer {
       return;
     }
     final String downloadUrl = await FirebaseStorage.instance
-        .refFromURL(cast.audioUriBase)
+        .refFromURL(cast.audioUrl)
         .getDownloadURL();
     _sourceQueue = ConcatenatingAudioSource(
       useLazyPreparation: true,

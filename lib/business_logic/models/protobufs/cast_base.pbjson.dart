@@ -16,12 +16,12 @@ const CastBase$json = const {
     const {'1': 'author_display_name', '3': 2, '4': 1, '5': 9, '10': 'authorDisplayName'},
     const {'1': 'title', '3': 3, '4': 1, '5': 9, '10': 'title'},
     const {'1': 'duration_ms', '3': 4, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_uri_base', '3': 5, '4': 1, '5': 9, '10': 'audioUriBase'},
-    const {'1': 'image_uri_base', '3': 6, '4': 1, '5': 9, '10': 'imageUriBase'},
+    const {'1': 'audio_url', '3': 5, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'image_url', '3': 6, '4': 1, '5': 9, '10': 'imageUrl'},
     const {'1': 'accent_color_base', '3': 7, '4': 1, '5': 9, '10': 'accentColorBase'},
     const {'1': 'view_count', '3': 10, '4': 1, '5': 13, '10': 'viewCount'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIbCglhdXRob3JfaWQYASABKAlSCGF1dGhvcklkEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYAiABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhQKBXRpdGxlGAMgASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgEIAEoDVIKZHVyYXRpb25NcxIkCg5hdWRpb191cmlfYmFzZRgFIAEoCVIMYXVkaW9VcmlCYXNlEiQKDmltYWdlX3VyaV9iYXNlGAYgASgJUgxpbWFnZVVyaUJhc2USKgoRYWNjZW50X2NvbG9yX2Jhc2UYByABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAogASgNUgl2aWV3Q291bnQ=');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIbCglhdXRob3JfaWQYASABKAlSCGF1dGhvcklkEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYAiABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhQKBXRpdGxlGAMgASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgEIAEoDVIKZHVyYXRpb25NcxIbCglhdWRpb191cmwYBSABKAlSCGF1ZGlvVXJsEhsKCWltYWdlX3VybBgGIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYByABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAogASgNUgl2aWV3Q291bnQ=');

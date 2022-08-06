@@ -8,5 +8,5 @@ message CastMeProfileBase {
     string id = 1;
     string username = 2;
     string display_name = 3;
-    string profile_picture_uri = 4;
+    string profile_picture_url = 4;
 }

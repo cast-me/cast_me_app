@@ -19,15 +19,15 @@ extension CastUtils on CastBase {
       authorDisplayName: authorDisplayName,
       durationMs: duration.inMilliseconds,
       title: title,
-      imageUriBase: image.toString(),
+      imageUrl: image.toString(),
       accentColorBase: accentColor.serialize,
     );
   }
 
-  Uri get imageUri => Uri.parse(imageUriBase);
+  Uri get imageUri => Uri.parse(imageUrl);
 
   Uri get audioUri => Uri.parse(
-        audioUriBase.emptyToNull ??
+        audioUrl.emptyToNull ??
             'https://www.americanrhetoric.com/mp3clips/politicalspeeches/jfkinaugural2.mp3',
       );
 

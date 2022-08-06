@@ -45,7 +45,7 @@ class CastDatabase {
         await castsReference.child(file.uri.pathSegments.last).putFile(file);
     final CastMeProfile user = AuthManager.instance.castMeProfile!;
     final Uint8List imageBytes = (await FirebaseStorage.instance
-        .refFromURL(user.profilePictureUri)
+        .refFromURL(user.profilePictureUrl)
         .getData())!;
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
@@ -54,8 +54,8 @@ class CastDatabase {
       authorDisplayName: user.displayName,
       title: title,
       durationMs: 60000,
-      audioUriBase: castUpload.ref.gsUri,
-      imageUriBase: user.profilePictureUri,
+      audioUrl: castUpload.ref.gsUrl,
+      imageUrl: user.profilePictureUrl,
       accentColorBase: paletteGenerator.vibrantColor!.color.serialize,
     );
     await castsCollection.add(cast.toProto3Json());

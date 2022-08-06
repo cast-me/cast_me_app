@@ -14,7 +14,7 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'username')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'displayName')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'profilePictureUri')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'profilePictureUrl')
     ..hasRequiredFields = false
   ;
 
@@ -23,7 +23,7 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     $core.String? id,
     $core.String? username,
     $core.String? displayName,
-    $core.String? profilePictureUri,
+    $core.String? profilePictureUrl,
   }) {
     final _result = create();
     if (id != null) {
@@ -35,8 +35,8 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     if (displayName != null) {
       _result.displayName = displayName;
     }
-    if (profilePictureUri != null) {
-      _result.profilePictureUri = profilePictureUri;
+    if (profilePictureUrl != null) {
+      _result.profilePictureUrl = profilePictureUrl;
     }
     return _result;
   }
@@ -89,12 +89,12 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
   void clearDisplayName() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get profilePictureUri => $_getSZ(3);
+  $core.String get profilePictureUrl => $_getSZ(3);
   @$pb.TagNumber(4)
-  set profilePictureUri($core.String v) { $_setString(3, v); }
+  set profilePictureUrl($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasProfilePictureUri() => $_has(3);
+  $core.bool hasProfilePictureUrl() => $_has(3);
   @$pb.TagNumber(4)
-  void clearProfilePictureUri() => clearField(4);
+  void clearProfilePictureUrl() => clearField(4);
 }
 

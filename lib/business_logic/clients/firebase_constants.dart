@@ -24,5 +24,5 @@ final Reference profilePicturesReference =
     FirebaseStorage.instance.ref(profilePictureString);
 
 extension RefUtils on Reference {
-  String get gsUri => join(gsPrefix, fullPath);
+  String get gsUrl => join(gsPrefix, fullPath);
 }

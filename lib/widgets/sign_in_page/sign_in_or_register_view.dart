@@ -71,7 +71,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
             AuthSubmitButtonWrapper(
               child: TextButton(
                 onPressed: () async {
-                  await AuthManager.instance.signIn(
+                  await AuthManager.instance.checkEmailIsVerified(
                     email: emailController.text,
                     password: passwordController.text,
                   );

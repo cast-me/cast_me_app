@@ -76,24 +76,42 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String email,
     required String password,
   }) async {
-    await Supabase.instance.client.auth
-        .signIn(
-          email: email,
-          password: password,
-        )
-        .errorToException();
-    _signInState = SignInState.completingProfile;
+    await _authActionWrapper(() async {
+      await Supabase.instance.client.auth
+          .signIn(
+            email: email,
+            password: password,
+          )
+          .errorToException();
+      _signInState = SignInState.completingProfile;
+    });
   }
 
   Future<void> completeUserProfile({
+    required String username,
     required String displayName,
     required File profilePicture,
   }) async {
     await _authActionWrapper(
       () async {
-        final CastMeProfile completedProfile = _castMeProfile!
-          ..displayName = displayName
-          ..profilePictureUri = 'asdf';
+        final String fileExt = profilePicture.path.split('.').last;
+        // Anonymize the file name so as not to leak user data.
+        final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+        await Supabase.instance.client.storage
+            .from(profilePicturesBucketName)
+            .uploadBinary(fileName, await profilePicture.readAsBytes())
+            .errorToException();
+        final String profilePictureUrl = Supabase.instance.client.storage
+            .from(profilePicturesBucketName)
+            .getPublicUrl(fileName)
+            .errorToException()
+            .data as String;
+        final CastMeProfile completedProfile = CastMeProfile(
+          id: Supabase.instance.client.auth.currentUser!.id,
+          username: username,
+          displayName: displayName,
+          profilePictureUrl: profilePictureUrl,
+        );
         await castMeProfiles
             .upsert(completedProfile.toSQLJson())
             .execute()
@@ -126,17 +144,15 @@ class AuthManager extends ChangeNotifier with Disposable {
     );
   }
 
-  CastMeProfile _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
+  CastMeProfile? _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
     if (doc.hasError) {
       throw Exception(doc.error);
     }
-    final CastMeProfile profile = CastMeProfile(
-      id: Supabase.instance.client.auth.currentUser!.id,
-    );
     if (doc.count == 0) {
-      return profile;
+      return null;
     }
-    return profile..mergeFromProto3Json(doc.data as Map<String, dynamic>);
+    return CastMeProfile()
+      ..mergeFromProto3Json(doc.data as Map<String, dynamic>);
   }
 
   Future<void> _init() async {
@@ -151,7 +167,7 @@ class AuthManager extends ChangeNotifier with Disposable {
       _signInState = SignInState.signingIn;
     } else {
       _castMeProfile = await _fetchProfile();
-      if (user.emailConfirmedAt != null) {
+      if (user.emailConfirmedAt == null) {
         _signInState = SignInState.verifyingEmail;
       } else if (_castMeProfile == null) {
         _signInState = SignInState.completingProfile;
@@ -191,7 +207,7 @@ enum SignInState {
 extension SignInExtention on SignInState {}
 
 extension CastMeUserUtils on CastMeProfileBase {
-  bool get isComplete => displayName.isNotEmpty && profilePictureUri.isNotEmpty;
+  bool get isComplete => displayName.isNotEmpty && profilePictureUrl.isNotEmpty;
 
   // The auth-specific user data.
   User get authUser => Supabase.instance.client.auth.currentUser!;
@@ -205,6 +221,7 @@ extension CastMeUserUtils on CastMeProfileBase {
 Future<void> _authActionWrapper(AsyncCallback authAction) async {
   final AuthManager authManager = AuthManager.instance;
   authManager._isProcessing = true;
+  authManager._notifyListeners();
   await authAction().then(
     (value) async {
       // Action was successful, clear last error.

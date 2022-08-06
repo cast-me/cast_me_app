@@ -16,6 +16,7 @@ class CompleteProfileView extends StatefulWidget {
 }
 
 class _CompleteProfileViewState extends State<CompleteProfileView> {
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
   final ValueNotifier<XFile?> selectedPhoto = ValueNotifier(null);
 
@@ -29,6 +30,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline3,
           ),
+          _UsernamePicker(controller: usernameController),
           _DisplayNamePicker(controller: displayNameController),
           _ProfilePicturePicker(selectedPhoto: selectedPhoto),
           AuthSubmitButtonWrapper(
@@ -39,6 +41,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   onPressed: selectedPhoto.value != null
                       ? () async {
                           await authManager.completeUserProfile(
+                            username: usernameController.text,
                             displayName: displayNameController.text,
                             profilePicture: File(selectedPhoto.value!.path),
                           );
@@ -146,6 +149,49 @@ class _DisplayNamePickerState extends State<_DisplayNamePicker> {
       },
       decoration: InputDecoration(
         labelText: 'display name',
+        errorText: errorMessage,
+      ),
+    );
+  }
+}
+
+class _UsernamePicker extends StatefulWidget {
+  const _UsernamePicker({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+
+  @override
+  State<_UsernamePicker> createState() => _UsernamePickerState();
+}
+
+class _UsernamePickerState extends State<_UsernamePicker> {
+  String? errorMessage;
+  bool hasChanged = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: widget.controller,
+      onChanged: (displayName) {
+        hasChanged = true;
+        if (displayName.length < 4) {
+          errorMessage = 'Display name must be at least 4 characters.';
+          setState(() {});
+          return;
+        }
+        if (displayName.length > 50) {
+          errorMessage = 'Display name must be less than 50 characters.';
+          setState(() {});
+          return;
+        }
+        setState(() {});
+        errorMessage = null;
+      },
+      decoration: InputDecoration(
+        labelText: 'username',
         errorText: errorMessage,
       ),
     );

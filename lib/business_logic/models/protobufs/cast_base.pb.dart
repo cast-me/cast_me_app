@@ -15,8 +15,8 @@ class CastBase extends $pb.GeneratedMessage {
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorDisplayName')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
     ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
-    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUriBase')
-    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUriBase')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUrl')
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
     ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
@@ -28,8 +28,8 @@ class CastBase extends $pb.GeneratedMessage {
     $core.String? authorDisplayName,
     $core.String? title,
     $core.int? durationMs,
-    $core.String? audioUriBase,
-    $core.String? imageUriBase,
+    $core.String? audioUrl,
+    $core.String? imageUrl,
     $core.String? accentColorBase,
     $core.int? viewCount,
   }) {
@@ -46,11 +46,11 @@ class CastBase extends $pb.GeneratedMessage {
     if (durationMs != null) {
       _result.durationMs = durationMs;
     }
-    if (audioUriBase != null) {
-      _result.audioUriBase = audioUriBase;
+    if (audioUrl != null) {
+      _result.audioUrl = audioUrl;
     }
-    if (imageUriBase != null) {
-      _result.imageUriBase = imageUriBase;
+    if (imageUrl != null) {
+      _result.imageUrl = imageUrl;
     }
     if (accentColorBase != null) {
       _result.accentColorBase = accentColorBase;
@@ -118,22 +118,22 @@ class CastBase extends $pb.GeneratedMessage {
   void clearDurationMs() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get audioUriBase => $_getSZ(4);
+  $core.String get audioUrl => $_getSZ(4);
   @$pb.TagNumber(5)
-  set audioUriBase($core.String v) { $_setString(4, v); }
+  set audioUrl($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasAudioUriBase() => $_has(4);
+  $core.bool hasAudioUrl() => $_has(4);
   @$pb.TagNumber(5)
-  void clearAudioUriBase() => clearField(5);
+  void clearAudioUrl() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.String get imageUriBase => $_getSZ(5);
+  $core.String get imageUrl => $_getSZ(5);
   @$pb.TagNumber(6)
-  set imageUriBase($core.String v) { $_setString(5, v); }
+  set imageUrl($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasImageUriBase() => $_has(5);
+  $core.bool hasImageUrl() => $_has(5);
   @$pb.TagNumber(6)
-  void clearImageUriBase() => clearField(6);
+  void clearImageUrl() => clearField(6);
 
   @$pb.TagNumber(7)
   $core.String get accentColorBase => $_getSZ(6);

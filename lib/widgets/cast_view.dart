@@ -55,7 +55,7 @@ class CastPreview extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: FirebaseImage(cast.imageUriBase),
+                            image: FirebaseImage(cast.imageUrl),
                           ),
                         ),
                         child: fullyInteractive && nowPlaying == cast
@@ -114,7 +114,7 @@ class CastView extends StatelessWidget {
             child: Image(
               loadingBuilder: (context, _, __) =>
                   const CircularProgressIndicator(color: Colors.white),
-              image: FirebaseImage(cast.imageUriBase),
+              image: FirebaseImage(cast.imageUrl),
             ),
           ),
           const SizedBox(height: 8),
