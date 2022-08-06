@@ -18,15 +18,16 @@ class SignInPageView extends StatelessWidget {
           child: AnimatedBuilder(
             animation: AuthManager.instance,
             builder: (context, _) {
-              final CastMeSignInState signInState =
+              final SignInState signInState =
                   AuthManager.instance.signInState;
               switch (signInState) {
-                case CastMeSignInState.signingIn:
-                case CastMeSignInState.registering:
+                case SignInState.signingIn:
+                case SignInState.registering:
+                case SignInState.verifyingEmail:
                   return const SignInOrRegisterForm();
-                case CastMeSignInState.completingProfile:
+                case SignInState.completingProfile:
                   return const CompleteProfileView();
-                case CastMeSignInState.signedIn:
+                case SignInState.signedIn:
                   throw Exception('`SignedIn` sign in state should not be '
                       'reachable from the sign in flow widget.');
               }

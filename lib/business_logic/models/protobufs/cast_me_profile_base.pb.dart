@@ -12,7 +12,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 class CastMeProfileBase extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CastMeProfileBase', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'cast_me_app'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'userName')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'username')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'displayName')
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'profilePictureUri')
     ..hasRequiredFields = false
@@ -21,7 +21,7 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
   CastMeProfileBase._() : super();
   factory CastMeProfileBase({
     $core.String? id,
-    $core.String? userName,
+    $core.String? username,
     $core.String? displayName,
     $core.String? profilePictureUri,
   }) {
@@ -29,8 +29,8 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     if (id != null) {
       _result.id = id;
     }
-    if (userName != null) {
-      _result.userName = userName;
+    if (username != null) {
+      _result.username = username;
     }
     if (displayName != null) {
       _result.displayName = displayName;
@@ -71,13 +71,13 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
   void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get userName => $_getSZ(1);
+  $core.String get username => $_getSZ(1);
   @$pb.TagNumber(2)
-  set userName($core.String v) { $_setString(1, v); }
+  set username($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasUserName() => $_has(1);
+  $core.bool hasUsername() => $_has(1);
   @$pb.TagNumber(2)
-  void clearUserName() => clearField(2);
+  void clearUsername() => clearField(2);
 
   @$pb.TagNumber(3)
   $core.String get displayName => $_getSZ(2);

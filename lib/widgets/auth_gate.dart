@@ -35,7 +35,7 @@ class AuthGate extends StatelessWidget {
           return AnimatedBuilder(
             animation: authManager,
             builder: (context, child) {
-              if (authManager.isLoading) {
+              if (!authManager.isInitialized) {
                 return const AdaptiveMaterial(
                   adaptiveColor: AdaptiveColor.background,
                   child: Center(

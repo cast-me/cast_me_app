@@ -6,7 +6,7 @@ package cast_me_app;
 
 message CastMeProfileBase {
     string id = 1;
-    string user_name = 2;
+    string username = 2;
     string display_name = 3;
     string profile_picture_uri = 4;
 }

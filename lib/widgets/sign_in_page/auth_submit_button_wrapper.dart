@@ -14,7 +14,7 @@ class AuthSubmitButtonWrapper extends StatelessWidget {
     return AnimatedBuilder(
       animation: AuthManager.instance,
       builder: (context, child) {
-        if (AuthManager.instance.isSubmitting) {
+        if (AuthManager.instance.isProcessing) {
           return Container(
             height: 50,
             width: 50,

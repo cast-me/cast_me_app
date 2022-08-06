@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
@@ -24,7 +25,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   ValueNotifier<bool> currentIsValid = ValueNotifier(false);
 
   bool get isRegistering =>
-      AuthManager.instance.signInState == CastMeSignInState.registering;
+      AuthManager.instance.signInState == SignInState.registering;
 
   void validate() {
     if (emailController.text.isEmpty) {
@@ -63,6 +64,31 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   @override
   Widget build(BuildContext context) {
     return AuthFlowBuilder(builder: (context, authManager, _) {
+      if (authManager.signInState == SignInState.verifyingEmail) {
+        return Column(
+          children: [
+            const Text('Check your email to verify your account!'),
+            AuthSubmitButtonWrapper(
+              child: TextButton(
+                onPressed: () async {
+                  await AuthManager.instance.signIn(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                },
+                child: const Text(
+                  'Tap here to refresh after you\'ve verified your email',
+                  style: TextStyle(
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+            const AuthErrorView(),
+          ],
+        );
+      }
       return Column(
         children: [
           Text(
@@ -123,21 +149,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
                 );
               }),
           _RegisterSwitcher(isRegistering: isRegistering),
-          if (authManager.authError != null)
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Auth failed with the following error:',
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  authManager.authError.toString(),
-                  style: TextStyle(color: Theme.of(context).errorColor),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+          const AuthErrorView(),
         ],
       );
     });
@@ -155,7 +167,7 @@ class _RegisterSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isRegistering =
-        AuthManager.instance.signInState == CastMeSignInState.registering;
+        AuthManager.instance.signInState == SignInState.registering;
     if (isRegistering) {
       return TextButton(
         onPressed: () {

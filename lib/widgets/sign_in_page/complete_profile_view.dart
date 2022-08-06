@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
@@ -48,6 +49,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
               }
             ),
           ),
+          const AuthErrorView(),
         ],
       );
     });

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/disposable.dart';
+import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -23,31 +24,31 @@ class AuthManager extends ChangeNotifier with Disposable {
   CastMeProfile? get castMeProfile => _castMeProfile;
 
   // Should not be accessed before verifying that the user manager has loaded.
-  CastMeSignInState? _signInState = CastMeSignInState.signingIn;
+  SignInState? _signInState = SignInState.signingIn;
 
-  CastMeSignInState get signInState => _signInState!;
+  SignInState get signInState => _signInState!;
 
-  bool _isLoading = true;
+  bool _isInitialized = false;
 
-  bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
 
-  bool _isSubmitting = false;
+  bool _isProcessing = false;
 
-  // Whether or not we're submitting info and waiting for an async callback.
+  // Whether or not we're processing info and waiting for an async callback.
   // Submit buttons in sign up flow should be disabled while this is true.
-  bool get isSubmitting => _isSubmitting;
+  bool get isProcessing => _isProcessing;
 
-  bool get isFullySignedIn => _signInState == CastMeSignInState.signedIn;
+  bool get isFullySignedIn => _signInState == SignInState.signedIn;
 
   Object? _authError;
 
   Object? get authError => _authError;
 
   void toggleAccountRegistrationFlow() {
-    if (signInState == CastMeSignInState.registering) {
-      _signInState = CastMeSignInState.signingIn;
-    } else if (signInState == CastMeSignInState.signingIn) {
-      _signInState = CastMeSignInState.registering;
+    if (signInState == SignInState.registering) {
+      _signInState = SignInState.signingIn;
+    } else if (signInState == SignInState.signingIn) {
+      _signInState = SignInState.registering;
     } else {
       throw Exception(
         'Cannot toggle between sign in and registering from state:'
@@ -61,22 +62,17 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String email,
     required String password,
   }) async {
-    await Supabase.instance.client.auth
-        .signUp(email, password)
-        .checkAuthResult();
+    await _authActionWrapper(
+      () async {
+        await Supabase.instance.client.auth
+            .signUp(email, password)
+            .errorToException();
+        _signInState = SignInState.verifyingEmail;
+      },
+    );
   }
 
-  Future<void> completeUserProfile({
-    required String displayName,
-    required File profilePicture,
-  }) async {
-    await castMeProfiles
-        .upsert(_castMeProfile!..displayName = displayName)
-        .execute()
-        .checkAuthResult();
-  }
-
-  Future<void> signIn({
+  Future<void> checkEmailIsVerified({
     required String email,
     required String password,
   }) async {
@@ -85,59 +81,97 @@ class AuthManager extends ChangeNotifier with Disposable {
           email: email,
           password: password,
         )
-        .checkAuthResult();
+        .errorToException();
+    _signInState = SignInState.completingProfile;
+  }
+
+  Future<void> completeUserProfile({
+    required String displayName,
+    required File profilePicture,
+  }) async {
+    await _authActionWrapper(
+      () async {
+        final CastMeProfile completedProfile = _castMeProfile!
+          ..displayName = displayName
+          ..profilePictureUri = 'asdf';
+        await castMeProfiles
+            .upsert(completedProfile.toSQLJson())
+            .execute()
+            .errorToException();
+        _castMeProfile = completedProfile;
+        _signInState = SignInState.signedIn;
+      },
+    );
+  }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    await _authActionWrapper(
+      () async {
+        await Supabase.instance.client.auth
+            .signIn(
+              email: email,
+              password: password,
+            )
+            .errorToException();
+        _castMeProfile = await _fetchProfile();
+        if (_castMeProfile == null) {
+          _signInState = SignInState.completingProfile;
+        } else {
+          _signInState = SignInState.signedIn;
+        }
+      },
+    );
   }
 
   CastMeProfile _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
     if (doc.hasError) {
       throw Exception(doc.error);
     }
-    return CastMeProfile.create()
-      ..mergeFromProto3Json(doc.data() as Map<String, dynamic>);
-  }
-
-  void _init() {
-    registerSubscription(
-      SupabaseAuth.instance.onAuthChange
-          .handleError((Object? error) => print(error))
-          .listen(
-        (AuthChangeEvent authEvent) {
-          _onUserChanged();
-        },
-      ),
+    final CastMeProfile profile = CastMeProfile(
+      id: Supabase.instance.client.auth.currentUser!.id,
     );
+    if (doc.count == 0) {
+      return profile;
+    }
+    return profile..mergeFromProto3Json(doc.data as Map<String, dynamic>);
   }
 
-  Future<void> _onUserChanged() async {
+  Future<void> _init() async {
+    Supabase.instance.client.auth.onAuthStateChange((event, session) {
+      print('----------------------------');
+      print(event);
+      print(session);
+    });
     final User? user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
       _castMeProfile = null;
+      _signInState = SignInState.signingIn;
     } else {
-      _castMeProfile = _docToCastMeProfile(
-        await Supabase.instance.client
-            .from('profiles')
-            .select()
-            .eq('id', user.id)
-            .single()
-            .execute(),
-      );
+      _castMeProfile = await _fetchProfile();
+      if (user.emailConfirmedAt != null) {
+        _signInState = SignInState.verifyingEmail;
+      } else if (_castMeProfile == null) {
+        _signInState = SignInState.completingProfile;
+      } else {
+        _signInState = SignInState.signedIn;
+      }
     }
-    _setSignInState();
+    _isInitialized = true;
     notifyListeners();
   }
 
-  void _setSignInState() {
-    if (_castMeProfile == null) {
-      if (_signInState == CastMeSignInState.registering) {
-        // Do nothing if we're already registering.
-        return;
-      }
-      _signInState = CastMeSignInState.signingIn;
-    } else if (!_castMeProfile!.isComplete) {
-      _signInState = CastMeSignInState.completingProfile;
-    } else {
-      _signInState = CastMeSignInState.signedIn;
-    }
+  Future<CastMeProfile?> _fetchProfile() async {
+    return _docToCastMeProfile(
+      await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', Supabase.instance.client.auth.currentUser!.id)
+          .maybeSingle()
+          .execute(),
+    );
   }
 
   // Exposed so that `AuthFutureUtil` can call it.
@@ -146,51 +180,50 @@ class AuthManager extends ChangeNotifier with Disposable {
   }
 }
 
-enum CastMeSignInState {
+enum SignInState {
   signingIn,
   registering,
+  verifyingEmail,
   completingProfile,
   signedIn,
 }
 
-extension SignInExtention on CastMeSignInState {}
+extension SignInExtention on SignInState {}
 
 extension CastMeUserUtils on CastMeProfileBase {
   bool get isComplete => displayName.isNotEmpty && profilePictureUri.isNotEmpty;
 
   // The auth-specific user data.
   User get authUser => Supabase.instance.client.auth.currentUser!;
+
+  Map<String, dynamic> toSQLJson() {
+    return (toProto3Json() as Map<String, dynamic>).toSnakeCase();
+  }
 }
 
-extension AuthFutureUtil<T> on Future<T> {
-  Future<T> checkAuthResult() {
-    final AuthManager authManager = AuthManager.instance;
-    authManager._isSubmitting = true;
-    final Future<T> result = then(
-      (value) {
-        // Action was successful, clear last error.
-        authManager._authError = null;
-        authManager._isSubmitting = false;
-        return value;
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        log(
-          'Auth action failed.',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        authManager._isSubmitting = false;
-        authManager._authError = error;
-        authManager._notifyListeners();
-        throw error;
-      },
-    );
-    // We need to let listeners know that we're now submitting.
-    // We put this after calling then to ensure that even if it throws, then is
-    // still executed.
+// Wrap around any auth action to update Auth Manager state on error or success.
+Future<void> _authActionWrapper(AsyncCallback authAction) async {
+  final AuthManager authManager = AuthManager.instance;
+  authManager._isProcessing = true;
+  await authAction().then(
+    (value) async {
+      // Action was successful, clear last error.
+      authManager._authError = null;
+      return value;
+    },
+    onError: (Object error, StackTrace stackTrace) {
+      log(
+        'Auth action failed.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      authManager._authError = error;
+      throw error;
+    },
+  ).whenComplete(() {
+    authManager._isProcessing = false;
     authManager._notifyListeners();
-    return result;
-  }
+  });
 }
 
 typedef CastMeProfile = CastMeProfileBase;
