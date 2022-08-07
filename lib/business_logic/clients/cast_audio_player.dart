@@ -71,7 +71,7 @@ class CastAudioPlayer {
       useLazyPreparation: true,
       children: [
         AudioSource.uri(
-          Uri.parse(cast.audioUrl),
+          cast.audioUri,
           tag: cast,
         ),
       ],

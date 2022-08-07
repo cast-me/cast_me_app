@@ -160,11 +160,6 @@ class AuthManager extends ChangeNotifier with Disposable {
   }
 
   Future<void> _init() async {
-    supabase.auth.onAuthStateChange((event, session) {
-      print('----------------------------');
-      print(event);
-      print(session);
-    });
     final User? user = supabase.auth.currentUser;
     if (user == null) {
       _castMeProfile = null;

@@ -102,25 +102,14 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
               labelText: 'email',
             ),
           ),
-          TextField(
+          PasswordField(
             controller: passwordController,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: const InputDecoration(
-              labelText: 'password',
-            ),
-            cursorColor: Colors.white,
+            labelText: 'password',
           ),
           if (isRegistering)
-            TextField(
+            PasswordField(
               controller: confirmPasswordController,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                labelText: 'confirm password',
-              ),
+              labelText: 'confirm password',
             ),
           ValueListenableBuilder<bool>(
               valueListenable: currentIsValid,
@@ -199,6 +188,46 @@ class _RegisterSwitcher extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  const PasswordField({
+    Key? key,
+    required this.controller,
+    required this.labelText,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+  final String labelText;
+
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: widget.controller,
+      obscureText: obscureText,
+      enableSuggestions: false,
+      autocorrect: false,
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        suffixIcon: GestureDetector(
+          child: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+          onTap: () {
+            setState(() {
+              obscureText = !obscureText;
+            });
+          },
+        ),
+      ),
     );
   }
 }

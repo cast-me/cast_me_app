@@ -7,7 +7,7 @@ package cast_me_app;
 message CastBase {
     // Server specified.
     string id = 1;
-    string timestamp_base = 2;
+    string created_at_string = 2;
 
     // Fetched on read via a `join`
     string author_username = 3;

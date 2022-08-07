@@ -24,6 +24,8 @@ dependencies:
   connectivity_plus: ^2.3.6
   supabase_flutter: ^0.3.3
   basic_utils: ^4.5.2
+  ffmpeg_kit_flutter: ^4.5.1
+  crypto: ^3.0.2
 
 dev_dependencies:
   flutter_test:
