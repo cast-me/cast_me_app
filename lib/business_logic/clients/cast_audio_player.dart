@@ -1,7 +1,6 @@
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:just_audio/just_audio.dart';
@@ -68,14 +67,11 @@ class CastAudioPlayer {
     if (cast == currentCast.value) {
       return;
     }
-    final String downloadUrl = await FirebaseStorage.instance
-        .refFromURL(cast.audioUrl)
-        .getDownloadURL();
     _sourceQueue = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: [
         AudioSource.uri(
-          Uri.parse(downloadUrl),
+          Uri.parse(cast.audioUrl),
           tag: cast,
         ),
       ],

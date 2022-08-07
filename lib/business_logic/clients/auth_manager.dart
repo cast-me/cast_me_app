@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
+import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/disposable.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -64,9 +68,7 @@ class AuthManager extends ChangeNotifier with Disposable {
   }) async {
     await _authActionWrapper(
       () async {
-        await Supabase.instance.client.auth
-            .signUp(email, password)
-            .errorToException();
+        await supabase.auth.signUp(email, password).errorToException();
         _signInState = SignInState.verifyingEmail;
       },
     );
@@ -77,7 +79,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String password,
   }) async {
     await _authActionWrapper(() async {
-      await Supabase.instance.client.auth
+      await supabase.auth
           .signIn(
             email: email,
             password: password,
@@ -95,24 +97,26 @@ class AuthManager extends ChangeNotifier with Disposable {
     await _authActionWrapper(
       () async {
         final String fileExt = profilePicture.path.split('.').last;
-        // Anonymize the file name so as not to leak user data.
+        // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
-        await Supabase.instance.client.storage
-            .from(profilePicturesBucketName)
-            .uploadBinary(fileName, await profilePicture.readAsBytes())
+        final Uint8List imageBytes = await profilePicture.readAsBytes();
+        await profilePicturesBucket
+            .uploadBinary(fileName, imageBytes)
             .errorToException();
-        final String profilePictureUrl = Supabase.instance.client.storage
-            .from(profilePicturesBucketName)
+        final String profilePictureUrl = profilePicturesBucket
             .getPublicUrl(fileName)
             .errorToException()
             .data as String;
+        final PaletteGenerator paletteGenerator =
+            await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
         final CastMeProfile completedProfile = CastMeProfile(
-          id: Supabase.instance.client.auth.currentUser!.id,
+          id: supabase.auth.currentUser!.id,
           username: username,
           displayName: displayName,
           profilePictureUrl: profilePictureUrl,
+          accentColorBase: paletteGenerator.vibrantColor!.color.serialize,
         );
-        await castMeProfiles
+        await profilesQuery
             .upsert(completedProfile.toSQLJson())
             .execute()
             .errorToException();
@@ -128,7 +132,7 @@ class AuthManager extends ChangeNotifier with Disposable {
   }) async {
     await _authActionWrapper(
       () async {
-        await Supabase.instance.client.auth
+        await supabase.auth
             .signIn(
               email: email,
               password: password,
@@ -156,12 +160,12 @@ class AuthManager extends ChangeNotifier with Disposable {
   }
 
   Future<void> _init() async {
-    Supabase.instance.client.auth.onAuthStateChange((event, session) {
+    supabase.auth.onAuthStateChange((event, session) {
       print('----------------------------');
       print(event);
       print(session);
     });
-    final User? user = Supabase.instance.client.auth.currentUser;
+    final User? user = supabase.auth.currentUser;
     if (user == null) {
       _castMeProfile = null;
       _signInState = SignInState.signingIn;
@@ -181,10 +185,10 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   Future<CastMeProfile?> _fetchProfile() async {
     return _docToCastMeProfile(
-      await Supabase.instance.client
+      await supabase
           .from('profiles')
           .select()
-          .eq('id', Supabase.instance.client.auth.currentUser!.id)
+          .eq('id', supabase.auth.currentUser!.id)
           .maybeSingle()
           .execute(),
     );
@@ -210,7 +214,7 @@ extension CastMeUserUtils on CastMeProfileBase {
   bool get isComplete => displayName.isNotEmpty && profilePictureUrl.isNotEmpty;
 
   // The auth-specific user data.
-  User get authUser => Supabase.instance.client.auth.currentUser!;
+  User get authUser => supabase.auth.currentUser!;
 
   Map<String, dynamic> toSQLJson() {
     return (toProto3Json() as Map<String, dynamic>).toSnakeCase();

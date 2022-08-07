@@ -1,9 +1,18 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-const String profilePicturesBucketName = 'profile_pictures';
+final SupabaseClient supabase = Supabase.instance.client;
 
-SupabaseQueryBuilder get castMeProfiles =>
-    Supabase.instance.client.from('profiles');
+final profilePicturesBucket = supabase.storage.from('profile_pictures');
+
+final castAudioFileBucket = supabase.storage.from('cast-audio-files');
+
+const String createdAtString = 'created_at';
+
+SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
+
+SupabaseQueryBuilder get castsWriteQuery => supabase.from('casts');
+
+SupabaseQueryBuilder get castsReadQuery => supabase.from('casts_view');
 
 extension GotrueFutureUtil on Future<GotrueResponse> {
   Future<GotrueResponse> errorToException() {
@@ -16,8 +25,8 @@ extension GotrueFutureUtil on Future<GotrueResponse> {
   }
 }
 
-extension PostgresFutureUtil on Future<PostgrestResponse> {
-  Future<PostgrestResponse> errorToException() {
+extension PostgresFutureUtil<T> on Future<PostgrestResponse<T>> {
+  Future<PostgrestResponse<T>> errorToException() {
     return then((value) {
       if (value.hasError) {
         throw value.error!.message;
@@ -27,8 +36,8 @@ extension PostgresFutureUtil on Future<PostgrestResponse> {
   }
 }
 
-extension StorageFutureUtil on Future<StorageResponse> {
-  Future<StorageResponse> errorToException() {
+extension StorageFutureUtil<T> on Future<StorageResponse<T>> {
+  Future<StorageResponse<T>> errorToException() {
     return then((value) {
       if (value.hasError) {
         throw value.error!.message;
@@ -38,8 +47,8 @@ extension StorageFutureUtil on Future<StorageResponse> {
   }
 }
 
-extension StorageResponseUtil on StorageResponse {
-  StorageResponse errorToException() {
+extension StorageResponseUtil<T> on StorageResponse<T> {
+  StorageResponse<T> errorToException() {
     if (hasError) {
       throw error!.message;
     }

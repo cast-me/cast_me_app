@@ -3,7 +3,6 @@ import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:firebase_image/firebase_image.dart';
 
 import 'package:flutter/material.dart';
 
@@ -55,7 +54,7 @@ class CastPreview extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: FirebaseImage(cast.imageUrl),
+                            image: NetworkImage(cast.imageUrl),
                           ),
                         ),
                         child: fullyInteractive && nowPlaying == cast
@@ -114,7 +113,7 @@ class CastView extends StatelessWidget {
             child: Image(
               loadingBuilder: (context, _, __) =>
                   const CircularProgressIndicator(color: Colors.white),
-              image: FirebaseImage(cast.imageUrl),
+              image: NetworkImage(cast.imageUrl),
             ),
           ),
           const SizedBox(height: 8),

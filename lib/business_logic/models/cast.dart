@@ -31,7 +31,8 @@ extension CastUtils on CastBase {
             'https://www.americanrhetoric.com/mp3clips/politicalspeeches/jfkinaugural2.mp3',
       );
 
-  Color get accentColor => ColorUtils.deserialize(accentColorBase);
+  Color get accentColor =>
+      ColorUtils.deserialize(accentColorBase.emptyToNull ?? 'FFFFFFFF');
 
   Duration get duration => Duration(milliseconds: durationMs);
 }

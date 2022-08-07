@@ -15,6 +15,7 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'username')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'displayName')
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'profilePictureUrl')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
     ..hasRequiredFields = false
   ;
 
@@ -24,6 +25,7 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     $core.String? username,
     $core.String? displayName,
     $core.String? profilePictureUrl,
+    $core.String? accentColorBase,
   }) {
     final _result = create();
     if (id != null) {
@@ -37,6 +39,9 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
     }
     if (profilePictureUrl != null) {
       _result.profilePictureUrl = profilePictureUrl;
+    }
+    if (accentColorBase != null) {
+      _result.accentColorBase = accentColorBase;
     }
     return _result;
   }
@@ -96,5 +101,14 @@ class CastMeProfileBase extends $pb.GeneratedMessage {
   $core.bool hasProfilePictureUrl() => $_has(3);
   @$pb.TagNumber(4)
   void clearProfilePictureUrl() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get accentColorBase => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set accentColorBase($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasAccentColorBase() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearAccentColorBase() => clearField(5);
 }
 

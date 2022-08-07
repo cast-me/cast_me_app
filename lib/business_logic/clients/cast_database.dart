@@ -1,39 +1,30 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/firebase_constants.dart';
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:cast_me_app/util/color_utils.dart';
+import 'package:cast_me_app/util/string_utils.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:palette_generator/palette_generator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CastDatabase {
   CastDatabase._();
 
   static final CastDatabase instance = CastDatabase._();
 
-  static final _db = FirebaseFirestore.instance;
-
+  // TODO(caseycrogers): paginate this.
   Stream<Cast> getCasts() async* {
-    DocumentSnapshot? lastDoc;
-    while (true) {
-      Query query =
-          _db.collection(castsString).orderBy(FieldPath.documentId).limit(20);
-      if (lastDoc != null) {
-        query = query.startAfterDocument(lastDoc);
-      }
-      final List<DocumentSnapshot> docs = (await query.get()).docs;
-      if (docs.isEmpty) {
-        return;
-      }
-      lastDoc = docs.last;
-      for (final DocumentSnapshot doc in docs) {
-        yield docToCast(doc);
-      }
+    final PostgrestResponse<List<Cast>> response = await castsReadQuery
+        .select()
+        .withConverter((dynamic data) {
+          print(data);
+          return (data as Iterable<dynamic>)
+              .map(_rowToCast)
+              .toList();
+        })
+        .execute()
+        .errorToException();
+    for (final Cast cast in response.data ?? <Cast>[]) {
+      yield cast;
     }
   }
 
@@ -41,27 +32,28 @@ class CastDatabase {
     required String title,
     required File file,
   }) async {
-    final TaskSnapshot castUpload =
-        await castsReference.child(file.uri.pathSegments.last).putFile(file);
-    final CastMeProfile user = AuthManager.instance.castMeProfile!;
-    final Uint8List imageBytes = (await FirebaseStorage.instance
-        .refFromURL(user.profilePictureUrl)
-        .getData())!;
-    final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
+    final String fileExt = file.path.split('.').last;
+    // Anonymize the file name so we don't get naming conflicts.
+    final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+    await castAudioFileBucket.upload(fileName, file).errorToException();
+    final String audioFileUrl = castAudioFileBucket
+        .getPublicUrl(fileName)
+        .errorToException()
+        .data as String;
     final Cast cast = Cast(
-      authorId: user.id,
-      authorDisplayName: user.displayName,
+      authorId: supabase.auth.currentUser!.id,
       title: title,
       durationMs: 60000,
-      audioUrl: castUpload.ref.gsUrl,
-      imageUrl: user.profilePictureUrl,
-      accentColorBase: paletteGenerator.vibrantColor!.color.serialize,
+      audioUrl: audioFileUrl,
     );
-    await castsCollection.add(cast.toProto3Json());
+    await castsWriteQuery.insert(_castToRow(cast)).execute().errorToException();
   }
 }
 
-Cast docToCast(DocumentSnapshot doc) {
-  return Cast.create()..mergeFromProto3Json(doc.data() as Map<String, dynamic>);
+Cast _rowToCast(dynamic row) {
+  return Cast.create()..mergeFromProto3Json(row as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _castToRow(Cast cast) {
+  return (cast.toProto3Json() as Map<String, dynamic>).toSnakeCase();
 }

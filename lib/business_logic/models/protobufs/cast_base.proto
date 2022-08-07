@@ -1,16 +1,24 @@
-// Run `protoc --dart_out=. lib/business_logic/models/protobufs/*.proto` to compile.
+// protoc --dart_out=. lib/business_logic/models/protobufs/*.proto
 
 syntax = "proto3";
 
 package cast_me_app;
 
 message CastBase {
-    string author_id = 1;
-    string author_display_name = 2;
-    string title = 3;
-    uint32 duration_ms = 4;
-    string audio_url = 5;
-    string image_url = 6;
-    string accent_color_base = 7;
-    uint32 view_count = 10;
+    // Server specified.
+    string id = 1;
+    string timestamp_base = 2;
+
+    // Fetched on read via a `join`
+    string author_username = 3;
+    string author_display_name = 4;
+    string image_url = 5;
+    string accent_color_base = 6;
+    uint32 view_count = 7;
+
+    // Client Specified.
+    string author_id = 8;
+    string title = 9;
+    uint32 duration_ms = 10;
+    string audio_url = 11;
 }

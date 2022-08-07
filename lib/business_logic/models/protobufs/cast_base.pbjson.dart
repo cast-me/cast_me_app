@@ -12,16 +12,19 @@ import 'dart:typed_data' as $typed_data;
 const CastBase$json = const {
   '1': 'CastBase',
   '2': const [
-    const {'1': 'author_id', '3': 1, '4': 1, '5': 9, '10': 'authorId'},
-    const {'1': 'author_display_name', '3': 2, '4': 1, '5': 9, '10': 'authorDisplayName'},
-    const {'1': 'title', '3': 3, '4': 1, '5': 9, '10': 'title'},
-    const {'1': 'duration_ms', '3': 4, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_url', '3': 5, '4': 1, '5': 9, '10': 'audioUrl'},
-    const {'1': 'image_url', '3': 6, '4': 1, '5': 9, '10': 'imageUrl'},
-    const {'1': 'accent_color_base', '3': 7, '4': 1, '5': 9, '10': 'accentColorBase'},
-    const {'1': 'view_count', '3': 10, '4': 1, '5': 13, '10': 'viewCount'},
+    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'timestamp_base', '3': 2, '4': 1, '5': 9, '10': 'timestampBase'},
+    const {'1': 'author_id', '3': 3, '4': 1, '5': 9, '10': 'authorId'},
+    const {'1': 'author_display_name', '3': 4, '4': 1, '5': 9, '10': 'authorDisplayName'},
+    const {'1': 'author_username', '3': 5, '4': 1, '5': 9, '10': 'authorUsername'},
+    const {'1': 'title', '3': 6, '4': 1, '5': 9, '10': 'title'},
+    const {'1': 'duration_ms', '3': 7, '4': 1, '5': 13, '10': 'durationMs'},
+    const {'1': 'audio_url', '3': 8, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'image_url', '3': 9, '4': 1, '5': 9, '10': 'imageUrl'},
+    const {'1': 'accent_color_base', '3': 10, '4': 1, '5': 9, '10': 'accentColorBase'},
+    const {'1': 'view_count', '3': 11, '4': 1, '5': 13, '10': 'viewCount'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIbCglhdXRob3JfaWQYASABKAlSCGF1dGhvcklkEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYAiABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhQKBXRpdGxlGAMgASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgEIAEoDVIKZHVyYXRpb25NcxIbCglhdWRpb191cmwYBSABKAlSCGF1ZGlvVXJsEhsKCWltYWdlX3VybBgGIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYByABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAogASgNUgl2aWV3Q291bnQ=');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSJQoOdGltZXN0YW1wX2Jhc2UYAiABKAlSDXRpbWVzdGFtcEJhc2USGwoJYXV0aG9yX2lkGAMgASgJUghhdXRob3JJZBIuChNhdXRob3JfZGlzcGxheV9uYW1lGAQgASgJUhFhdXRob3JEaXNwbGF5TmFtZRInCg9hdXRob3JfdXNlcm5hbWUYBSABKAlSDmF1dGhvclVzZXJuYW1lEhQKBXRpdGxlGAYgASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgHIAEoDVIKZHVyYXRpb25NcxIbCglhdWRpb191cmwYCCABKAlSCGF1ZGlvVXJsEhsKCWltYWdlX3VybBgJIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYCiABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAsgASgNUgl2aWV3Q291bnQ=');
