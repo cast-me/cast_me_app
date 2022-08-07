@@ -23,9 +23,9 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   static final AuthManager instance = AuthManager._();
 
-  CastMeProfile? _castMeProfile;
+  Profile? _profile;
 
-  CastMeProfile? get castMeProfile => _castMeProfile;
+  Profile? get profile => _profile;
 
   // Should not be accessed before verifying that the user manager has loaded.
   SignInState? _signInState = SignInState.signingIn;
@@ -109,7 +109,7 @@ class AuthManager extends ChangeNotifier with Disposable {
             .data as String;
         final PaletteGenerator paletteGenerator =
             await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
-        final CastMeProfile completedProfile = CastMeProfile(
+        final Profile completedProfile = Profile(
           id: supabase.auth.currentUser!.id,
           username: username,
           displayName: displayName,
@@ -120,7 +120,7 @@ class AuthManager extends ChangeNotifier with Disposable {
             .upsert(completedProfile.toSQLJson())
             .execute()
             .errorToException();
-        _castMeProfile = completedProfile;
+        _profile = completedProfile;
         _signInState = SignInState.signedIn;
       },
     );
@@ -138,8 +138,8 @@ class AuthManager extends ChangeNotifier with Disposable {
               password: password,
             )
             .errorToException();
-        _castMeProfile = await _fetchProfile();
-        if (_castMeProfile == null) {
+        _profile = await _fetchProfile();
+        if (_profile == null) {
           _signInState = SignInState.completingProfile;
         } else {
           _signInState = SignInState.signedIn;
@@ -148,27 +148,37 @@ class AuthManager extends ChangeNotifier with Disposable {
     );
   }
 
-  CastMeProfile? _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
+  Future<void> signOut() async {
+    await _authActionWrapper(
+      () async {
+        await supabase.auth.signOut().errorToException();
+        _profile = null;
+        _signInState = SignInState.signingIn;
+        notifyListeners();
+      },
+    );
+  }
+
+  Profile? _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
     if (doc.hasError) {
       throw Exception(doc.error);
     }
     if (doc.count == 0) {
       return null;
     }
-    return CastMeProfile()
-      ..mergeFromProto3Json(doc.data as Map<String, dynamic>);
+    return Profile()..mergeFromProto3Json(doc.data as Map<String, dynamic>);
   }
 
   Future<void> _init() async {
     final User? user = supabase.auth.currentUser;
     if (user == null) {
-      _castMeProfile = null;
+      _profile = null;
       _signInState = SignInState.signingIn;
     } else {
-      _castMeProfile = await _fetchProfile();
+      _profile = await _fetchProfile();
       if (user.emailConfirmedAt == null) {
         _signInState = SignInState.verifyingEmail;
-      } else if (_castMeProfile == null) {
+      } else if (_profile == null) {
         _signInState = SignInState.completingProfile;
       } else {
         _signInState = SignInState.signedIn;
@@ -178,7 +188,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     notifyListeners();
   }
 
-  Future<CastMeProfile?> _fetchProfile() async {
+  Future<Profile?> _fetchProfile() async {
     return _docToCastMeProfile(
       await supabase
           .from('profiles')
@@ -242,4 +252,4 @@ Future<void> _authActionWrapper(AsyncCallback authAction) async {
   });
 }
 
-typedef CastMeProfile = CastMeProfileBase;
+typedef Profile = CastMeProfileBase;
