@@ -4,7 +4,7 @@ import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/pages/listen_page_view.dart';
 import 'package:cast_me_app/pages/post_page_view.dart';
 import 'package:cast_me_app/pages/profile_page_view.dart';
-import 'package:cast_me_app/widgets/cast_me_navigation_bar.dart';
+import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
 

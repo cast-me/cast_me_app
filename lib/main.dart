@@ -1,8 +1,8 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/firebase_options.dart';
 
-import 'package:cast_me_app/widgets/auth_gate.dart';
-import 'package:cast_me_app/widgets/cast_me_view.dart';
+import 'package:cast_me_app/widgets/common/auth_gate.dart';
+import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -19,9 +19,6 @@ void main() async {
         // ignore: lines_longer_than_80_chars
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZ21keXdhcm1uem9hdGJ1ZXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk3MjQwODIsImV4cCI6MTk3NTMwMDA4Mn0.oclwgOig1Vz8rDDdmf5Is3-ln2ijvfPdkYvUyIA2ZKU',
   );
-  final dynamic result =
-      await Supabase.instance.client.from('profiles').select();
-  print(result);
   await AuthManager.instance.initialize();
   runApp(const CastMeApp());
 }

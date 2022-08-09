@@ -50,3 +50,13 @@ extension ValueListenableUtils<T> on ValueListenable<T> {
     return proxyNotifier;
   }
 }
+
+extension ListenableUtils on Listenable {
+  ValueListenable<T> select<T>(T Function() selector) {
+    final ValueNotifier<T> proxyListenable = ValueNotifier(selector());
+    addListener(() {
+      proxyListenable.value = selector();
+    });
+    return proxyListenable;
+  }
+}

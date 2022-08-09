@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +30,14 @@ class _PostPageViewState extends State<PostPageView> {
             const Text('Upload Cast'),
             ElevatedButton(
               child: ValueListenableBuilder<File?>(
-                  valueListenable: currentFile,
-                  builder: (context, file, _) {
-                    if (file == null) {
-                      return const Text('select audio');
-                    }
-                    return const Text('Replace selected audio');
-                  }),
+                valueListenable: currentFile,
+                builder: (context, file, _) {
+                  if (file == null) {
+                    return const Text('select audio');
+                  }
+                  return const Text('Replace selected audio');
+                },
+              ),
               onPressed: () async {
                 final FilePickerResult? result =
                     await FilePicker.platform.pickFiles(
@@ -53,20 +55,22 @@ class _PostPageViewState extends State<PostPageView> {
                 hintText: 'cast title',
               ),
             ),
-            ElevatedButton(
+            AsyncSubmitButton(
+              child: const Text('Submit'),
               onPressed: () async {
                 await CastDatabase.instance.createCast(
                   title: textController.text,
                   file: currentFile.value!,
                 );
               },
-              child: const Text('Submit'),
             ),
             const AdaptiveText('Your casts'),
             SizedBox(
               height: 300,
               child: CastListView(
-                filterProfiles: [AuthManager.instance.profile],
+                filterProfile: AuthManager.instance.profile,
+                fullyInteractive: false,
+                padding: EdgeInsets.zero,
               ),
             ),
           ],

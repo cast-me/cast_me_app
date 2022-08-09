@@ -4,7 +4,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/cast_view.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,39 +12,44 @@ import 'package:flutter/material.dart';
 class CastListView extends StatefulWidget {
   const CastListView({
     Key? key,
-    this.filterProfiles,
+    this.filterProfile,
+    this.padding,
+    this.fullyInteractive = true,
   }) : super(key: key);
 
-  /// If non-null, fetch only casts authored by these users.
-  final List<Profile>? filterProfiles;
+  /// If non-null, fetch only casts authored by the specified user.
+  final Profile? filterProfile;
+
+  final bool fullyInteractive;
+  final EdgeInsets? padding;
 
   @override
-  State<CastListView> createState() => _CastListViewState();
+  State<CastListView> createState() => CastListViewState();
+
+  static CastListViewState of(BuildContext context) {
+    return context.findAncestorStateOfType<CastListViewState>()!;
+  }
 }
 
-class _CastListViewState extends State<CastListView> {
-  Stream<Cast> castStream =
-      CastDatabase.instance.getCasts().handleError((Object error) {
-    if (kDebugMode) {
-      print(error);
-    }
-  });
+class CastListViewState extends State<CastListView> {
+  late Stream<Cast> _castStream = _getStream();
+
+  void refresh() {
+    setState(() {
+      _castStream = _getStream();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       color: Colors.white,
       onRefresh: () async {
-        _getStream();
-        setState(() {});
+        refresh();
       },
       child: AsyncListView<Cast>(
-        padding: const EdgeInsets.all(8),
-        stream: CastDatabase.instance.getCasts().handleError((Object error) {
-          if (kDebugMode) {
-            print(error);
-          }
-        }),
+        padding: widget.padding,
+        stream: _castStream,
         itemBuilder: (
           context,
           snapshot,
@@ -53,7 +58,10 @@ class _CastListViewState extends State<CastListView> {
           if (!snapshot.hasData) {
             return const AdaptiveText('loading...');
           }
-          return CastPreview(cast: snapshot.data![index]);
+          return CastPreview(
+            cast: snapshot.data![index],
+            fullyInteractive: widget.fullyInteractive,
+          );
         },
       ),
     );
@@ -61,6 +69,11 @@ class _CastListViewState extends State<CastListView> {
 
   Stream<Cast> _getStream() {
     return CastDatabase.instance
-        .getCasts(filterProfiles: widget.filterProfiles);
+        .getCasts(filterProfile: widget.filterProfile)
+        .handleError((Object error) {
+      if (kDebugMode) {
+        print(error);
+      }
+    });
   }
 }

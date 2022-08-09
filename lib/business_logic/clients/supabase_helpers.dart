@@ -11,6 +11,8 @@ const String createdAtCol = 'created_at';
 
 const String authorIdCol = 'id';
 
+const String castIdCol = 'id';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
 SupabaseQueryBuilder get castsWriteQuery => supabase.from('casts');
@@ -27,34 +29,3 @@ extension GotrueFutureUtil on Future<GotrueResponse> {
     });
   }
 }
-
-//extension PostgresFutureUtil<T> on Future<PostgrestResponse<T>> {
-//  Future<PostgrestResponse<T>> errorToException() {
-//    return then((value) {
-//      if (value.hasError) {
-//        throw value.error!.message;
-//      }
-//      return value;
-//    });
-//  }
-//}
-//
-//extension StorageFutureUtil<T> on Future<StorageResponse<T>> {
-//  Future<StorageResponse<T>> errorToException() {
-//    return then((value) {
-//      if (value.hasError) {
-//        throw value.error!.message;
-//      }
-//      return value;
-//    });
-//  }
-//}
-//
-//extension StorageResponseUtil<T> on StorageResponse<T> {
-//  StorageResponse<T> errorToException() {
-//    if (hasError) {
-//      throw error!.message;
-//    }
-//    return this;
-//  }
-//}

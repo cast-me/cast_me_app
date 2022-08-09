@@ -1,8 +1,11 @@
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/casts_list_view.dart';
+import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 
 import 'package:flutter/material.dart';
 
@@ -12,6 +15,7 @@ class CastPreview extends StatelessWidget {
     required this.cast,
     this.padding,
     this.fullyInteractive = true,
+    this.showMenu = true,
   }) : super(key: key);
 
   final Cast cast;
@@ -21,6 +25,8 @@ class CastPreview extends StatelessWidget {
   /// Whether or not to make this an inkwell and display a shading if it's the
   /// currently playing cast.
   final bool fullyInteractive;
+
+  final bool showMenu;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +92,31 @@ class CastPreview extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (showMenu)
+                      // We ned the builder so that we can get access to the
+                      // cast list view.
+                      Builder(builder: (context) {
+                        final CastListViewState castListView =
+                            CastListView.of(context);
+                        return DropDownWidget(
+                          builder: (context, hideMenu) {
+                            return Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () async {
+                                    hideMenu();
+                                    await CastDatabase.instance
+                                        .deleteCast(cast: cast);
+                                    castListView.refresh();
+                                  },
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
+                            );
+                          },
+                          child: const Icon(Icons.more_vert),
+                        );
+                      }),
                   ],
                 ),
               ),

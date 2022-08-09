@@ -3,9 +3,9 @@ import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/cast_view.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/listen_page/track_list_view.dart';
-import 'package:cast_me_app/widgets/seek_bar.dart';
+import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 
 import 'package:flutter/material.dart';
 
@@ -45,6 +45,7 @@ class _CollapsedView extends StatelessWidget {
                   child: CastPreview(
                     cast: cast,
                     fullyInteractive: false,
+                    showMenu: false,
                   ),
                 ),
                 const _PlayButton(),

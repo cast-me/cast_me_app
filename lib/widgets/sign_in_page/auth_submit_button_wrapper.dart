@@ -1,4 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:flutter/material.dart';
 
 class AuthSubmitButtonWrapper extends StatelessWidget {
@@ -11,23 +13,11 @@ class AuthSubmitButtonWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: AuthManager.instance,
-      builder: (context, child) {
-        if (AuthManager.instance.isProcessing) {
-          return Container(
-            height: 50,
-            width: 50,
-            padding: const EdgeInsets.all(4),
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(
-              color: Colors.white,
-            ),
-          );
-        }
-        return child!;
-      },
+    return AsyncSubmitWrapper(
       child: child,
+      currentIsSubmitting: AuthManager.instance.select(() {
+        return AuthManager.instance.isProcessing;
+      }),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:cast_me_app/widgets/cast_view.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 import 'package:flutter/material.dart';
 

@@ -15,14 +15,11 @@ class CastDatabase {
   static final CastDatabase instance = CastDatabase._();
 
   // TODO(caseycrogers): paginate this.
-  Stream<Cast> getCasts({List<Profile>? filterProfiles}) async* {
+  Stream<Cast> getCasts({Profile? filterProfile}) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
-    if (filterProfiles != null) {
+    if (filterProfile != null) {
       // Get only casts authored by the given profiles.
-      queryBuilder = queryBuilder.containedBy(
-        authorIdCol,
-        filterProfiles.map((profile) => profile.id),
-      );
+      queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
     }
     final List<Cast>? casts = await queryBuilder.withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
@@ -41,7 +38,12 @@ class CastDatabase {
     // Hash the file name so we don't get naming conflicts.
     final String fileName =
         '${await sha1.bind(file.openRead()).first}.$fileExt';
-    await castAudioFileBucket.upload(fileName, file);
+
+    await castAudioFileBucket.upload(
+      fileName,
+      file,
+      fileOptions: const FileOptions(upsert: true),
+    );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
     final Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
@@ -51,6 +53,24 @@ class CastDatabase {
       audioUrl: audioFileUrl,
     );
     await castsWriteQuery.insert(_castToRow(cast));
+  }
+
+  Future<void> deleteCast({
+    required Cast cast,
+  }) async {
+    print(await castsWriteQuery.select().eq(castIdCol, cast.id).maybeSingle());
+    final List<dynamic> rowResult =
+        await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
+    assert(
+      rowResult.isNotEmpty,
+      'Could not find a cast with id \'${cast.id}\'',
+    );
+    final List<FileObject> storageResult =
+        await castAudioFileBucket.remove([cast.audioPath]);
+    //assert(
+    //  storageResult.isNotEmpty,
+    //  'Could not find a cast audio file at path \'${cast.audioPath}\'.',
+    //);
   }
 }
 
