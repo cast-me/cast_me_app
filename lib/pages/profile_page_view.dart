@@ -8,7 +8,7 @@ class ProfilePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Profile profile = AuthManager.instance.profile!;
+    final Profile profile = AuthManager.instance.profile;
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(

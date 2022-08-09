@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/string_utils.dart';
@@ -14,15 +15,19 @@ class CastDatabase {
   static final CastDatabase instance = CastDatabase._();
 
   // TODO(caseycrogers): paginate this.
-  Stream<Cast> getCasts() async* {
-    final PostgrestResponse<List<Cast>> response = await castsReadQuery
-        .select()
-        .withConverter((dynamic data) {
-          return (data as Iterable<dynamic>).map(_rowToCast).toList();
-        })
-        .execute()
-        .errorToException();
-    for (final Cast cast in response.data ?? <Cast>[]) {
+  Stream<Cast> getCasts({List<Profile>? filterProfiles}) async* {
+    PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
+    if (filterProfiles != null) {
+      // Get only casts authored by the given profiles.
+      queryBuilder = queryBuilder.containedBy(
+        authorIdCol,
+        filterProfiles.map((profile) => profile.id),
+      );
+    }
+    final List<Cast>? casts = await queryBuilder.withConverter((dynamic data) {
+      return (data as Iterable<dynamic>).map(_rowToCast).toList();
+    });
+    for (final Cast cast in casts ?? <Cast>[]) {
       yield cast;
     }
   }
@@ -36,11 +41,8 @@ class CastDatabase {
     // Hash the file name so we don't get naming conflicts.
     final String fileName =
         '${await sha1.bind(file.openRead()).first}.$fileExt';
-    await castAudioFileBucket.upload(fileName, file).errorToException();
-    final String audioFileUrl = castAudioFileBucket
-        .getPublicUrl(fileName)
-        .errorToException()
-        .data as String;
+    await castAudioFileBucket.upload(fileName, file);
+    final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
     final Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
@@ -48,7 +50,7 @@ class CastDatabase {
       durationMs: durationMs,
       audioUrl: audioFileUrl,
     );
-    await castsWriteQuery.insert(_castToRow(cast)).execute().errorToException();
+    await castsWriteQuery.insert(_castToRow(cast));
   }
 }
 

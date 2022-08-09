@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -59,6 +61,13 @@ class _PostPageViewState extends State<PostPageView> {
                 );
               },
               child: const Text('Submit'),
+            ),
+            const AdaptiveText('Your casts'),
+            SizedBox(
+              height: 300,
+              child: CastListView(
+                filterProfiles: [AuthManager.instance.profile],
+              ),
             ),
           ],
         ),

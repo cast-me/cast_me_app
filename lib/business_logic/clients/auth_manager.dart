@@ -17,15 +17,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier with Disposable {
-  AuthManager._() {
-    _init();
-  }
+  AuthManager._();
 
   static final AuthManager instance = AuthManager._();
 
   Profile? _profile;
 
-  Profile? get profile => _profile;
+  Profile get profile => _profile!;
 
   // Should not be accessed before verifying that the user manager has loaded.
   SignInState? _signInState = SignInState.signingIn;
@@ -100,13 +98,9 @@ class AuthManager extends ChangeNotifier with Disposable {
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
-        await profilePicturesBucket
-            .uploadBinary(fileName, imageBytes)
-            .errorToException();
-        final String profilePictureUrl = profilePicturesBucket
-            .getPublicUrl(fileName)
-            .errorToException()
-            .data as String;
+        await profilePicturesBucket.uploadBinary(fileName, imageBytes);
+        final String profilePictureUrl =
+            profilePicturesBucket.getPublicUrl(fileName);
         final PaletteGenerator paletteGenerator =
             await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
         final Profile completedProfile = Profile(
@@ -116,10 +110,7 @@ class AuthManager extends ChangeNotifier with Disposable {
           profilePictureUrl: profilePictureUrl,
           accentColorBase: paletteGenerator.vibrantColor!.color.serialize,
         );
-        await profilesQuery
-            .upsert(completedProfile.toSQLJson())
-            .execute()
-            .errorToException();
+        await profilesQuery.upsert(completedProfile.toSQLJson());
         _profile = completedProfile;
         _signInState = SignInState.signedIn;
       },
@@ -159,17 +150,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     );
   }
 
-  Profile? _docToCastMeProfile(PostgrestResponse<dynamic> doc) {
-    if (doc.hasError) {
-      throw Exception(doc.error);
-    }
-    if (doc.count == 0) {
-      return null;
-    }
-    return Profile()..mergeFromProto3Json(doc.data as Map<String, dynamic>);
-  }
-
-  Future<void> _init() async {
+  Future<void> initialize() async {
     final User? user = supabase.auth.currentUser;
     if (user == null) {
       _profile = null;
@@ -188,15 +169,17 @@ class AuthManager extends ChangeNotifier with Disposable {
     notifyListeners();
   }
 
+  Profile _rowToCastMeProfile(dynamic row) {
+    return Profile()..mergeFromProto3Json(row as Map<String, dynamic>);
+  }
+
   Future<Profile?> _fetchProfile() async {
-    return _docToCastMeProfile(
-      await supabase
-          .from('profiles')
-          .select()
-          .eq('id', supabase.auth.currentUser!.id)
-          .maybeSingle()
-          .execute(),
-    );
+    return await supabase
+        .from('profiles')
+        .select()
+        .eq('id', supabase.auth.currentUser!.id)
+        .maybeSingle()
+        .withConverter(_rowToCastMeProfile);
   }
 
   // Exposed so that `AuthFutureUtil` can call it.
