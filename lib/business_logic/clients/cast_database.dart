@@ -21,11 +21,14 @@ class CastDatabase {
       // Get only casts authored by the given profiles.
       queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
     }
-    final List<Cast>? casts =
-        await queryBuilder.order(createdAtCol).withConverter((dynamic data) {
+    final List<Cast>? casts = await queryBuilder
+        .order(hasViewedCol, ascending: true)
+        .order(createdAtCol)
+        .withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
     });
     for (final Cast cast in casts ?? <Cast>[]) {
+      print(cast.hasViewed);
       yield cast;
     }
   }
@@ -59,7 +62,6 @@ class CastDatabase {
   Future<void> deleteCast({
     required Cast cast,
   }) async {
-    print(await castsWriteQuery.select().eq(castIdCol, cast.id).maybeSingle());
     final List<dynamic> rowResult =
         await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
     assert(
@@ -72,6 +74,13 @@ class CastDatabase {
       storageResult.isNotEmpty,
       'Could not find a cast audio file at path \'${cast.audioPath}\'.',
     );
+  }
+
+  Future<void> setViewed({required Cast cast}) async {
+    await viewsQuery.insert({
+      'cast_id': cast.id,
+      'user_id': supabase.auth.currentUser!.id,
+    });
   }
 }
 

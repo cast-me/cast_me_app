@@ -18,10 +18,11 @@ class CastBase extends $pb.GeneratedMessage {
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUrl')
     ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
     ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
-    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
-    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
-    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
-    ..aOS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
+    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hasViewed')
+    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
+    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
+    ..a<$core.int>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
+    ..aOS(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
     ..hasRequiredFields = false
   ;
 
@@ -34,6 +35,7 @@ class CastBase extends $pb.GeneratedMessage {
     $core.String? imageUrl,
     $core.String? accentColorBase,
     $core.int? viewCount,
+    $core.bool? hasViewed,
     $core.String? authorId,
     $core.String? title,
     $core.int? durationMs,
@@ -60,6 +62,9 @@ class CastBase extends $pb.GeneratedMessage {
     }
     if (viewCount != null) {
       _result.viewCount = viewCount;
+    }
+    if (hasViewed != null) {
+      _result.hasViewed = hasViewed;
     }
     if (authorId != null) {
       _result.authorId = authorId;
@@ -160,39 +165,48 @@ class CastBase extends $pb.GeneratedMessage {
   void clearViewCount() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.String get authorId => $_getSZ(7);
+  $core.bool get hasViewed => $_getBF(7);
   @$pb.TagNumber(8)
-  set authorId($core.String v) { $_setString(7, v); }
+  set hasViewed($core.bool v) { $_setBool(7, v); }
   @$pb.TagNumber(8)
-  $core.bool hasAuthorId() => $_has(7);
+  $core.bool hasHasViewed() => $_has(7);
   @$pb.TagNumber(8)
-  void clearAuthorId() => clearField(8);
+  void clearHasViewed() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.String get title => $_getSZ(8);
+  $core.String get authorId => $_getSZ(8);
   @$pb.TagNumber(9)
-  set title($core.String v) { $_setString(8, v); }
+  set authorId($core.String v) { $_setString(8, v); }
   @$pb.TagNumber(9)
-  $core.bool hasTitle() => $_has(8);
+  $core.bool hasAuthorId() => $_has(8);
   @$pb.TagNumber(9)
-  void clearTitle() => clearField(9);
+  void clearAuthorId() => clearField(9);
 
   @$pb.TagNumber(10)
-  $core.int get durationMs => $_getIZ(9);
+  $core.String get title => $_getSZ(9);
   @$pb.TagNumber(10)
-  set durationMs($core.int v) { $_setUnsignedInt32(9, v); }
+  set title($core.String v) { $_setString(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasDurationMs() => $_has(9);
+  $core.bool hasTitle() => $_has(9);
   @$pb.TagNumber(10)
-  void clearDurationMs() => clearField(10);
+  void clearTitle() => clearField(10);
 
   @$pb.TagNumber(11)
-  $core.String get audioUrl => $_getSZ(10);
+  $core.int get durationMs => $_getIZ(10);
   @$pb.TagNumber(11)
-  set audioUrl($core.String v) { $_setString(10, v); }
+  set durationMs($core.int v) { $_setUnsignedInt32(10, v); }
   @$pb.TagNumber(11)
-  $core.bool hasAudioUrl() => $_has(10);
+  $core.bool hasDurationMs() => $_has(10);
   @$pb.TagNumber(11)
-  void clearAudioUrl() => clearField(11);
+  void clearDurationMs() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get audioUrl => $_getSZ(11);
+  @$pb.TagNumber(12)
+  set audioUrl($core.String v) { $_setString(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasAudioUrl() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearAudioUrl() => clearField(12);
 }
 

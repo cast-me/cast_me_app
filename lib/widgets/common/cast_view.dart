@@ -16,6 +16,7 @@ class CastPreview extends StatelessWidget {
     this.padding,
     this.fullyInteractive = true,
     this.showMenu = true,
+    this.showHowOld = true,
   }) : super(key: key);
 
   final Cast cast;
@@ -28,6 +29,8 @@ class CastPreview extends StatelessWidget {
 
   final bool showMenu;
 
+  final bool showHowOld;
+
   @override
   Widget build(BuildContext context) {
     return CastProvider(
@@ -35,65 +38,69 @@ class CastPreview extends StatelessWidget {
       child: ValueListenableBuilder<Cast?>(
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
-          return InkWell(
-            // Only enable the inkwell if this isn't already the currently
-            // playing cast.
-            onTap: fullyInteractive && cast != nowPlaying
-                ? () {
-                    CastMeBloc.instance.listenBloc.onCastChanged(cast);
-                  }
-                : null,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Container(
-                padding: padding ?? const EdgeInsets.all(8),
-                color: fullyInteractive && nowPlaying == cast
-                    ? Colors.white.withAlpha(80)
-                    : null,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(cast.imageUrl),
+          return Opacity(
+            opacity: cast.hasViewed && cast != nowPlaying ? .4 : 1,
+            child: InkWell(
+              // Only enable the inkwell if this isn't already the currently
+              // playing cast.
+              onTap: fullyInteractive && cast != nowPlaying
+                  ? () {
+                      CastMeBloc.instance.listenBloc.onCastChanged(cast);
+                    }
+                  : null,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Container(
+                  padding: padding ?? const EdgeInsets.all(8),
+                  color: fullyInteractive && nowPlaying == cast
+                      ? Colors.white.withAlpha(80)
+                      : null,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(cast.imageUrl),
+                            ),
+                          ),
+                          child: fullyInteractive && nowPlaying == cast
+                              ? Container(
+                                  color: (cast.accentColor).withAlpha(120),
+                                  child: const Icon(Icons.bar_chart, size: 30),
+                                )
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AdaptiveText(
+                                cast.title,
+                                style: const TextStyle(color: Colors.white),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              DefaultTextStyle(
+                                style: TextStyle(color: Colors.grey.shade400),
+                                child: _AuthorLine(showHowOld: showHowOld),
+                              ),
+                              const _ListenCount(),
+                            ],
                           ),
                         ),
-                        child: fullyInteractive && nowPlaying == cast
-                            ? Container(
-                                color: (cast.accentColor).withAlpha(120),
-                                child: const Icon(Icons.bar_chart, size: 30),
-                              )
-                            : null,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AdaptiveText(
-                              cast.title,
-                              style: const TextStyle(color: Colors.white),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            DefaultTextStyle(
-                              style: TextStyle(color: Colors.grey.shade400),
-                              child: const _AuthorLine(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (showMenu) const _CastMenu(),
-                  ],
+                      if (showMenu) const _CastMenu(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -130,7 +137,7 @@ class CastView extends StatelessWidget {
           ),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
-            child: const _AuthorLine(),
+            child: const _AuthorLine(showHowOld: false),
           ),
         ],
       ),
@@ -179,8 +186,26 @@ extension FormattedDuration on Duration {
   }
 }
 
+class _ListenCount extends StatelessWidget {
+  const _ListenCount({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Cast cast = CastProvider.of(context);
+    return Text(
+      '${cast.viewCount} listen${cast.viewCount == 1 ? '' : 's'}',
+      style: TextStyle(color: Colors.grey.shade400),
+    );
+  }
+}
+
 class _AuthorLine extends StatelessWidget {
-  const _AuthorLine({Key? key}) : super(key: key);
+  const _AuthorLine({
+    Key? key,
+    required this.showHowOld,
+  }) : super(key: key);
+
+  final bool showHowOld;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +218,7 @@ class _AuthorLine extends StatelessWidget {
             '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
           ),
           const Spacer(),
-          Text(_oldString(cast.createdAt)),
+          if (showHowOld) Text(_oldString(cast.createdAt)),
         ],
       ),
     );

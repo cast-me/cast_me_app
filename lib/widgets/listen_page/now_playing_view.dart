@@ -46,6 +46,7 @@ class _CollapsedView extends StatelessWidget {
                     cast: cast,
                     fullyInteractive: false,
                     showMenu: false,
+                    showHowOld: false,
                   ),
                 ),
                 const _PlayButton(),

@@ -9,16 +9,17 @@ message CastBase {
     string id = 1;
     string created_at_string = 2;
 
-    // Fetched on read via a `join`
+    // Fetched on read via a join.
     string author_username = 3;
     string author_display_name = 4;
     string image_url = 5;
     string accent_color_base = 6;
     uint32 view_count = 7;
+    bool has_viewed = 8;
 
     // Client Specified.
-    string author_id = 8;
-    string title = 9;
-    uint32 duration_ms = 10;
-    string audio_url = 11;
+    string author_id = 9;
+    string title = 10;
+    uint32 duration_ms = 11;
+    string audio_url = 12;
 }

@@ -1,3 +1,4 @@
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
@@ -9,9 +10,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CastAudioPlayer {
   CastAudioPlayer._() {
+    bool hasLoggedView = false;
+    Cast? lastCast;
     positionDataStream.listen(
       (data) async {
-        if (data.position == data.duration && _player.hasNext) {
+        if (currentCast.value != lastCast) {
+          hasLoggedView = false;
+          lastCast = currentCast.value;
+        }
+        // When we first hit 80%, log a view.
+        if ((data.progress ?? 0) > .8 && !hasLoggedView) {
+          hasLoggedView = true;
+          await CastDatabase.instance.setViewed(cast: currentCast.value!);
+        }
+        if (data.position == data.duration && !_player.hasNext) {
           await _player.pause();
         }
       },
