@@ -96,18 +96,15 @@ class _FullView extends StatelessWidget {
                     if (!displayTrackList)
                       Padding(
                         padding: const EdgeInsets.all(24),
-                        child: Column(
-                          children: [
-                            CastView(cast: cast!),
-                            const SeekBar(),
-                          ],
-                        ),
+                        child: CastView(cast: cast!),
                       ),
                     if (displayTrackList)
+                      // TODO(caseycrogers): make this not sloppy garbage.
                       const SizedBox(
-                        height: 200,
+                        height: 500,
                         child: TrackListView(),
                       ),
+                    const SeekBar(),
                     Padding(
                       padding: const EdgeInsets.all(24),
                       child: _FullAudioControls(cast: cast!),

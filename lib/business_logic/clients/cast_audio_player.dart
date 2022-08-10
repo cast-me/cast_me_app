@@ -79,7 +79,7 @@ class CastAudioPlayer {
     if (cast == currentCast.value) {
       return;
     }
-    _sourceQueue = ConcatenatingAudioSource(
+    final ConcatenatingAudioSource queue = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: [
         AudioSource.uri(
@@ -88,8 +88,30 @@ class CastAudioPlayer {
         ),
       ],
     );
+    CastDatabase.instance.getPlayQueue(seedCast: cast).listen((cast) {
+      // Use a locally scoped variable so that we don't accidentally add to a
+      // later queue.
+      queue.add(
+        AudioSource.uri(
+          cast.audioUri,
+          tag: cast,
+        ),
+      );
+    });
+    _sourceQueue = queue;
     await _player.setAudioSource(_sourceQueue!);
     await _player.play();
+  }
+
+  Future<void> seekToCast(Cast cast) async {
+    await _player.seek(
+      Duration.zero,
+      index: _sourceQueue!.children.indexWhere(
+        (uriSource) {
+          return (uriSource as UriAudioSource).cast.id == cast.id;
+        },
+      ),
+    );
   }
 
   Future<void> pause() async {

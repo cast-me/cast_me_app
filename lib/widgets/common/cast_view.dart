@@ -17,6 +17,7 @@ class CastPreview extends StatelessWidget {
     this.fullyInteractive = true,
     this.showMenu = true,
     this.showHowOld = true,
+    this.isInTrackList = false,
   }) : super(key: key);
 
   final Cast cast;
@@ -30,6 +31,8 @@ class CastPreview extends StatelessWidget {
   final bool showMenu;
 
   final bool showHowOld;
+
+  final bool isInTrackList;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,11 @@ class CastPreview extends StatelessWidget {
               // playing cast.
               onTap: fullyInteractive && cast != nowPlaying
                   ? () {
-                      CastMeBloc.instance.listenBloc.onCastChanged(cast);
+                      if (isInTrackList) {
+                        return ListenBloc.instance
+                            .onCastInTrackListSelected(cast);
+                      }
+                      ListenBloc.instance.onCastChanged(cast);
                     }
                   : null,
               child: ClipRRect(
@@ -91,9 +98,19 @@ class CastPreview extends StatelessWidget {
                               ),
                               DefaultTextStyle(
                                 style: TextStyle(color: Colors.grey.shade400),
-                                child: _AuthorLine(showHowOld: showHowOld),
+                                child: const _AuthorLine(),
                               ),
-                              const _ListenCount(),
+                              Row(
+                                children: [
+                                  if (showHowOld)
+                                    Text(
+                                      '${_oldString(cast.createdAt)} - ',
+                                      style: TextStyle(
+                                          color: Colors.grey.shade400),
+                                    ),
+                                  const _ListenCount(),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -137,7 +154,7 @@ class CastView extends StatelessWidget {
           ),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
-            child: const _AuthorLine(showHowOld: false),
+            child: const _AuthorLine(),
           ),
         ],
       ),
@@ -152,7 +169,7 @@ class _CastMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // Fetch these here because we don't have a valid `context` from an
     // onPressed callback.
-    final CastListViewState castListView = CastListView.of(context);
+    final CastListViewState? castListView = CastListView.of(context);
     final Cast cast = CastProvider.of(context);
     return DropDownWidget(
       builder: (context, hideMenu) {
@@ -162,7 +179,7 @@ class _CastMenu extends StatelessWidget {
               onPressed: () async {
                 hideMenu();
                 await CastDatabase.instance.deleteCast(cast: cast);
-                castListView.refresh();
+                castListView?.refresh();
               },
               child: Row(
                 children: const [
@@ -202,10 +219,7 @@ class _ListenCount extends StatelessWidget {
 class _AuthorLine extends StatelessWidget {
   const _AuthorLine({
     Key? key,
-    required this.showHowOld,
   }) : super(key: key);
-
-  final bool showHowOld;
 
   @override
   Widget build(BuildContext context) {
@@ -218,26 +232,25 @@ class _AuthorLine extends StatelessWidget {
             '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
           ),
           const Spacer(),
-          if (showHowOld) Text(_oldString(cast.createdAt)),
         ],
       ),
     );
   }
+}
 
-  String _oldString(DateTime createdAt) {
-    final Duration howOld = DateTime.now().difference(createdAt);
-    if (howOld.inDays > 31) {
-      return '${createdAt.month}/${createdAt.day}';
-    }
-    if (howOld.inHours > 24) {
-      return '${howOld.inDays}d';
-    }
-    if (howOld.inMinutes > 60) {
-      return '${howOld.inHours}h';
-    }
-    if (howOld.inSeconds > 60) {
-      return '${howOld.inMinutes}m';
-    }
-    return 'just now';
+String _oldString(DateTime createdAt) {
+  final Duration howOld = DateTime.now().difference(createdAt);
+  if (howOld.inDays > 31) {
+    return '${createdAt.month}/${createdAt.day}';
   }
+  if (howOld.inHours > 24) {
+    return '${howOld.inDays}d';
+  }
+  if (howOld.inMinutes > 60) {
+    return '${howOld.inHours}h';
+  }
+  if (howOld.inSeconds > 60) {
+    return '${howOld.inMinutes}m';
+  }
+  return 'just now';
 }

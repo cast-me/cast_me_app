@@ -26,8 +26,8 @@ class CastListView extends StatefulWidget {
   @override
   State<CastListView> createState() => CastListViewState();
 
-  static CastListViewState of(BuildContext context) {
-    return context.findAncestorStateOfType<CastListViewState>()!;
+  static CastListViewState? of(BuildContext context) {
+    return context.findAncestorStateOfType<CastListViewState>();
   }
 }
 
@@ -63,6 +63,13 @@ class CastListViewState extends State<CastListView> {
             fullyInteractive: widget.fullyInteractive,
           );
         },
+        loadingWidget: const Center(
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: CircularProgressIndicator(),
+          ),
+        ),
         noResultsWidgetBuilder: (context) {
           return const Center(
             child: Text(

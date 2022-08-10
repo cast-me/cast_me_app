@@ -31,6 +31,10 @@ class ListenBloc {
     CastAudioPlayer.instance.play(newCast);
   }
 
+  void onCastInTrackListSelected(Cast newCast) {
+    CastAudioPlayer.instance.seekToCast(newCast);
+  }
+
   void onListenPageChanged(ListenPage newPage) {
     listenPageController.animateToPage(
       ListenPage.values.indexOf(newPage),
@@ -41,6 +45,8 @@ class ListenBloc {
 
   void onNowPlayingExpansionToggled() {
     _nowPlayingIsExpanded.value = !_nowPlayingIsExpanded.value;
+    // Collapse the track list on close.
+    _trackListIsDisplayed.value = false;
   }
 
   void onDisplayTrackListToggled() {
