@@ -14,14 +14,9 @@ class NowPlayingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
-      builder: (context, isExpanded, _) {
-        return GestureDetector(
-          onTap: ListenBloc.instance.onNowPlayingExpansionToggled,
-          child: isExpanded ? const _FullView() : _CollapsedView(),
-        );
-      },
+    return GestureDetector(
+      onTap: ListenBloc.instance.onNowPlayingExpansionToggled,
+      child: _CollapsedView(),
     );
   }
 }
@@ -80,8 +75,8 @@ class _NonInteractiveSeekBar extends StatelessWidget {
   }
 }
 
-class _FullView extends StatelessWidget {
-  const _FullView({Key? key}) : super(key: key);
+class NowPlayingFullView extends StatelessWidget {
+  const NowPlayingFullView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,18 +90,26 @@ class _FullView extends StatelessWidget {
                   children: [
                     if (!displayTrackList)
                       Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.only(
+                          top: 24,
+                          right: 24,
+                          left: 24,
+                        ),
                         child: CastView(cast: cast!),
                       ),
                     if (displayTrackList)
-                      // TODO(caseycrogers): make this not sloppy garbage.
+                      // TODO(caseycrogers): make this take up the whole page.
                       const SizedBox(
                         height: 500,
                         child: TrackListView(),
                       ),
                     const SeekBar(),
                     Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.only(
+                        bottom: 24,
+                        right: 24,
+                        left: 24,
+                      ),
                       child: _FullAudioControls(cast: cast!),
                     ),
                   ],

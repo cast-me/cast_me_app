@@ -226,13 +226,8 @@ class _AuthorLine extends StatelessWidget {
     final Cast cast = CastProvider.of(context);
     return DefaultTextStyle(
       style: TextStyle(color: Colors.grey.shade400),
-      child: Row(
-        children: [
-          Text(
-            '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
-          ),
-          const Spacer(),
-        ],
+      child: Text(
+        '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
       ),
     );
   }
