@@ -21,7 +21,8 @@ class CastDatabase {
       // Get only casts authored by the given profiles.
       queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
     }
-    final List<Cast>? casts = await queryBuilder.withConverter((dynamic data) {
+    final List<Cast>? casts =
+        await queryBuilder.order(createdAtCol).withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
     });
     for (final Cast cast in casts ?? <Cast>[]) {

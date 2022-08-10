@@ -20,7 +20,7 @@ class _PostPageViewState extends State<PostPageView> {
   final TextEditingController textController = TextEditingController();
 
   // Used to externally force the cast list to rebuild with a new stream.
-  ValueNotifier<Key> listKey = ValueNotifier(UniqueKey());
+  Key listKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +64,12 @@ class _PostPageViewState extends State<PostPageView> {
                               title: textController.text,
                               file: file!,
                             );
-                            // Force rebuild of the cast list.
-                            listKey.value = UniqueKey();
+                            setState(() {
+                              // Force rebuild of the cast list.
+                              listKey = UniqueKey();
+                              file = null;
+                              textController.clear();
+                            });
                           }
                         : null,
                   );
@@ -73,17 +77,13 @@ class _PostPageViewState extends State<PostPageView> {
             const AdaptiveText('Your casts'),
             SizedBox(
               height: 300,
-              child: ValueListenableBuilder<Key>(
-                  valueListenable: listKey,
-                  builder: (context, key, _) {
-                    return CastListView(
-                      // Use this to force rebuilding with a new stream.
-                      key: key,
-                      filterProfile: AuthManager.instance.profile,
-                      fullyInteractive: false,
-                      padding: EdgeInsets.zero,
-                    );
-                  }),
+              child: CastListView(
+                // Use this to force rebuilding with a new stream.
+                key: listKey,
+                filterProfile: AuthManager.instance.profile,
+                fullyInteractive: false,
+                padding: EdgeInsets.zero,
+              ),
             ),
           ],
         ),

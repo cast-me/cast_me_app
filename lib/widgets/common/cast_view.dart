@@ -92,31 +92,7 @@ class CastPreview extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (showMenu)
-                      // We ned the builder so that we can get access to the
-                      // cast list view.
-                      Builder(builder: (context) {
-                        final CastListViewState castListView =
-                            CastListView.of(context);
-                        return DropDownWidget(
-                          builder: (context, hideMenu) {
-                            return Column(
-                              children: [
-                                IconButton(
-                                  onPressed: () async {
-                                    hideMenu();
-                                    await CastDatabase.instance
-                                        .deleteCast(cast: cast);
-                                    castListView.refresh();
-                                  },
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            );
-                          },
-                          child: const Icon(Icons.more_vert),
-                        );
-                      }),
+                    if (showMenu) const _CastMenu(),
                   ],
                 ),
               ),
@@ -162,6 +138,40 @@ class CastView extends StatelessWidget {
   }
 }
 
+class _CastMenu extends StatelessWidget {
+  const _CastMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Fetch these here because we don't have a valid `context` from an
+    // onPressed callback.
+    final CastListViewState castListView = CastListView.of(context);
+    final Cast cast = CastProvider.of(context);
+    return DropDownWidget(
+      builder: (context, hideMenu) {
+        return Column(
+          children: [
+            TextButton(
+              onPressed: () async {
+                hideMenu();
+                await CastDatabase.instance.deleteCast(cast: cast);
+                castListView.refresh();
+              },
+              child: Row(
+                children: const [
+                  Text('delete cast'),
+                  Icon(Icons.delete),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+      child: const Icon(Icons.more_vert),
+    );
+  }
+}
+
 extension FormattedDuration on Duration {
   String toFormattedString() {
     return '${inMinutes.toString()}:'
@@ -177,9 +187,32 @@ class _AuthorLine extends StatelessWidget {
     final Cast cast = CastProvider.of(context);
     return DefaultTextStyle(
       style: TextStyle(color: Colors.grey.shade400),
-      child: Text(
-        '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
+      child: Row(
+        children: [
+          Text(
+            '${cast.authorDisplayName} - ${cast.duration.toFormattedString()}',
+          ),
+          const Spacer(),
+          Text(_oldString(cast.createdAt)),
+        ],
       ),
     );
+  }
+
+  String _oldString(DateTime createdAt) {
+    final Duration howOld = DateTime.now().difference(createdAt);
+    if (howOld.inDays > 31) {
+      return '${createdAt.month}/${createdAt.day}';
+    }
+    if (howOld.inHours > 24) {
+      return '${howOld.inDays}d';
+    }
+    if (howOld.inMinutes > 60) {
+      return '${howOld.inHours}h';
+    }
+    if (howOld.inSeconds > 60) {
+      return '${howOld.inMinutes}m';
+    }
+    return 'just now';
   }
 }
