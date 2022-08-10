@@ -63,6 +63,14 @@ class CastListViewState extends State<CastListView> {
             fullyInteractive: widget.fullyInteractive,
           );
         },
+        noResultsWidgetBuilder: (context) {
+          return const Center(
+            child: Text(
+              'Could not find any casts',
+              textAlign: TextAlign.center,
+            ),
+          );
+        },
       ),
     );
   }

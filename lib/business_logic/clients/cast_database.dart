@@ -67,10 +67,10 @@ class CastDatabase {
     );
     final List<FileObject> storageResult =
         await castAudioFileBucket.remove([cast.audioPath]);
-    //assert(
-    //  storageResult.isNotEmpty,
-    //  'Could not find a cast audio file at path \'${cast.audioPath}\'.',
-    //);
+    assert(
+      storageResult.isNotEmpty,
+      'Could not find a cast audio file at path \'${cast.audioPath}\'.',
+    );
   }
 }
 

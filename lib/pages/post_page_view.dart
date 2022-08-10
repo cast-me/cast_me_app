@@ -16,8 +16,11 @@ class PostPageView extends StatefulWidget {
 }
 
 class _PostPageViewState extends State<PostPageView> {
-  final ValueNotifier<File?> currentFile = ValueNotifier(null);
+  File? file;
   final TextEditingController textController = TextEditingController();
+
+  // Used to externally force the cast list to rebuild with a new stream.
+  ValueNotifier<Key> listKey = ValueNotifier(UniqueKey());
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +32,6 @@ class _PostPageViewState extends State<PostPageView> {
           children: [
             const Text('Upload Cast'),
             ElevatedButton(
-              child: ValueListenableBuilder<File?>(
-                valueListenable: currentFile,
-                builder: (context, file, _) {
-                  if (file == null) {
-                    return const Text('select audio');
-                  }
-                  return const Text('Replace selected audio');
-                },
-              ),
               onPressed: () async {
                 final FilePickerResult? result =
                     await FilePicker.platform.pickFiles(
@@ -45,33 +39,51 @@ class _PostPageViewState extends State<PostPageView> {
                   type: FileType.audio,
                 );
                 if (result != null) {
-                  currentFile.value = File(result.files.single.path!);
+                  setState(() {
+                    file = File(result.files.single.path!);
+                  });
                 }
               },
+              child: const Text('Select audio'),
             ),
+            if (file != null) Text(file!.uri.pathSegments.last),
             TextField(
               controller: textController,
               decoration: const InputDecoration(
-                hintText: 'cast title',
+                labelText: 'Cast title',
               ),
             ),
-            AsyncSubmitButton(
-              child: const Text('Submit'),
-              onPressed: () async {
-                await CastDatabase.instance.createCast(
-                  title: textController.text,
-                  file: currentFile.value!,
-                );
-              },
-            ),
+            AnimatedBuilder(
+                animation: textController,
+                builder: (context, child) {
+                  return AsyncSubmitButton(
+                    child: const Text('Submit'),
+                    onPressed: file != null && textController.text.isNotEmpty
+                        ? () async {
+                            await CastDatabase.instance.createCast(
+                              title: textController.text,
+                              file: file!,
+                            );
+                            // Force rebuild of the cast list.
+                            listKey.value = UniqueKey();
+                          }
+                        : null,
+                  );
+                }),
             const AdaptiveText('Your casts'),
             SizedBox(
               height: 300,
-              child: CastListView(
-                filterProfile: AuthManager.instance.profile,
-                fullyInteractive: false,
-                padding: EdgeInsets.zero,
-              ),
+              child: ValueListenableBuilder<Key>(
+                  valueListenable: listKey,
+                  builder: (context, key, _) {
+                    return CastListView(
+                      // Use this to force rebuilding with a new stream.
+                      key: key,
+                      filterProfile: AuthManager.instance.profile,
+                      fullyInteractive: false,
+                      padding: EdgeInsets.zero,
+                    );
+                  }),
             ),
           ],
         ),
