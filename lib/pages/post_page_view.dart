@@ -49,9 +49,8 @@ class _PostPageViewState extends State<PostPageView> {
             if (file != null) Text(file!.uri.pathSegments.last),
             TextField(
               controller: textController,
-              decoration: const InputDecoration(
-                labelText: 'Cast title',
-              ),
+              cursorColor: Colors.white,
+              decoration: const InputDecoration(labelText: 'Cast title'),
             ),
             AnimatedBuilder(
                 animation: textController,

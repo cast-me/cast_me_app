@@ -67,7 +67,7 @@ class CastListViewState extends State<CastListView> {
           child: SizedBox(
             width: 40,
             height: 40,
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: Colors.white),
           ),
         ),
         noResultsWidgetBuilder: (context) {
