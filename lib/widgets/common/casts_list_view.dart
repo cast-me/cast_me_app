@@ -13,12 +13,16 @@ class CastListView extends StatefulWidget {
   const CastListView({
     Key? key,
     this.filterProfile,
+    this.filterOutProfile,
     this.padding,
     this.fullyInteractive = true,
   }) : super(key: key);
 
   /// If non-null, fetch only casts authored by the specified user.
   final Profile? filterProfile;
+
+  /// If non-null, exclude casts by the specified user.
+  final Profile? filterOutProfile;
 
   final bool fullyInteractive;
   final EdgeInsets? padding;
@@ -84,7 +88,9 @@ class CastListViewState extends State<CastListView> {
 
   Stream<Cast> _getStream() {
     return CastDatabase.instance
-        .getCasts(filterProfile: widget.filterProfile)
+        .getCasts(
+            filterProfile: widget.filterProfile,
+            filterOutProfile: widget.filterOutProfile)
         .handleError((Object error) {
       if (kDebugMode) {
         print(error);

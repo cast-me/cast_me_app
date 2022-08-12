@@ -17,6 +17,7 @@ class TrendingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const Center(child: Text('Coming Soon!'));
     return ListView(
       padding: const EdgeInsets.all(8),
       children: [

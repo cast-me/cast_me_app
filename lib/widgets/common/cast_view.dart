@@ -1,4 +1,4 @@
-import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -42,7 +42,11 @@ class CastPreview extends StatelessWidget {
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
           return Opacity(
-            opacity: cast.hasViewed && cast != nowPlaying ? .4 : 1,
+            opacity: cast.authorId != AuthManager.instance.profile.id &&
+                    cast.hasViewed &&
+                    cast != nowPlaying
+                ? .4
+                : 1,
             child: InkWell(
               // Only enable the inkwell if this isn't already the currently
               // playing cast.

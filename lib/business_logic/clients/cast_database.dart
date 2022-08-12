@@ -17,12 +17,16 @@ class CastDatabase {
   // TODO(caseycrogers): paginate this.
   Stream<Cast> getCasts({
     Profile? filterProfile,
+    Profile? filterOutProfile,
     bool skipViewed = false,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
       // Get only casts authored by the given profiles.
       queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
+    }
+    if (filterOutProfile != null) {
+      queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
     }
     if (skipViewed) {
       queryBuilder = queryBuilder.eq(hasViewedCol, false);
@@ -39,7 +43,10 @@ class CastDatabase {
   }
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {
-    return getCasts(skipViewed: true).where((cast) => cast.id != seedCast.id);
+    return getCasts(
+      skipViewed: true,
+      filterOutProfile: AuthManager.instance.profile,
+    ).where((cast) => cast.id != seedCast.id);
   }
 
   Future<void> createCast({
