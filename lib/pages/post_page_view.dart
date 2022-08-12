@@ -27,65 +27,68 @@ class _PostPageViewState extends State<PostPageView> {
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
-        child: ListView(
+        child: Padding(
           padding: const EdgeInsets.all(24),
-          children: [
-            const Text('Upload Cast'),
-            ElevatedButton(
-              onPressed: () async {
-                final FilePickerResult? result =
-                    await FilePicker.platform.pickFiles(
-                  dialogTitle: 'Select audio',
-                  type: FileType.audio,
-                );
-                if (result != null) {
-                  setState(() {
-                    file = File(result.files.single.path!);
-                  });
-                }
-              },
-              child: const Text('Select audio'),
-            ),
-            Text(
-              file != null ? file!.uri.pathSegments.last : '',
-            ),
-            TextField(
-              controller: textController,
-              decoration: const InputDecoration(labelText: 'Cast title'),
-            ),
-            AnimatedBuilder(
-                animation: textController,
-                builder: (context, child) {
-                  return AsyncSubmitButton(
-                    child: const Text('Submit'),
-                    onPressed: file != null && textController.text.isNotEmpty
-                        ? () async {
-                            await CastDatabase.instance.createCast(
-                              title: textController.text,
-                              file: file!,
-                            );
-                            setState(() {
-                              // Force rebuild of the cast list.
-                              listKey = UniqueKey();
-                              file = null;
-                              textController.clear();
-                            });
-                          }
-                        : null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text('Upload Cast'),
+              ElevatedButton(
+                onPressed: () async {
+                  final FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    dialogTitle: 'Select audio',
+                    type: FileType.audio,
                   );
-                }),
-            const AdaptiveText('Your casts'),
-            SizedBox(
-              height: 300,
-              child: CastListView(
-                // Use this to force rebuilding with a new stream.
-                key: listKey,
-                filterProfile: AuthManager.instance.profile,
-                fullyInteractive: false,
-                padding: EdgeInsets.zero,
+                  if (result != null) {
+                    setState(() {
+                      file = File(result.files.single.path!);
+                    });
+                  }
+                },
+                child: const Text('Select audio'),
               ),
-            ),
-          ],
+              Text(
+                file != null ? file!.uri.pathSegments.last : '',
+              ),
+              TextField(
+                controller: textController,
+                decoration: const InputDecoration(labelText: 'Cast title'),
+              ),
+              AnimatedBuilder(
+                  animation: textController,
+                  builder: (context, child) {
+                    return AsyncSubmitButton(
+                      child: const Text('Submit'),
+                      onPressed: file != null && textController.text.isNotEmpty
+                          ? () async {
+                              await CastDatabase.instance.createCast(
+                                title: textController.text,
+                                file: file!,
+                              );
+                              setState(() {
+                                // Force rebuild of the cast list.
+                                listKey = UniqueKey();
+                                file = null;
+                                textController.clear();
+                              });
+                            }
+                          : null,
+                    );
+                  }),
+              const AdaptiveText('Your casts'),
+              const SizedBox(height: 4),
+              Expanded(
+                child: CastListView(
+                  // Use this to force rebuilding with a new stream.
+                  key: listKey,
+                  filterProfile: AuthManager.instance.profile,
+                  fullyInteractive: false,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -18,11 +18,10 @@ void main() async {
   );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      systemStatusBarContrastEnforced: true,
+      statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
     ),
   );
   await SystemChrome.setEnabledSystemUIMode(
