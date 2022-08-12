@@ -52,7 +52,7 @@ class CastPreview extends StatelessWidget {
                         return ListenBloc.instance
                             .onCastInTrackListSelected(cast);
                       }
-                      ListenBloc.instance.onCastChanged(cast);
+                      ListenBloc.instance.onCastSelected(cast);
                     }
                   : null,
               child: ClipRRect(

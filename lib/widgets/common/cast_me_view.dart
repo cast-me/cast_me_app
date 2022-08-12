@@ -20,7 +20,11 @@ class CastMeView extends StatelessWidget {
           valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
           builder: (context, isExpanded, child) {
             return Scaffold(
-              backgroundColor: Theme.of(context).colorScheme.background,
+              // Used to avoid the faint grey line between the navigation bar
+              // and the body when both are the same color.
+              backgroundColor: currentTab == CastMeTab.listen
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.surface,
               bottomNavigationBar: isExpanded
                   ? null
                   : CastMeNavigationBar(

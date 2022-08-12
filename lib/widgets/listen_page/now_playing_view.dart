@@ -45,7 +45,7 @@ class _CollapsedView extends StatelessWidget {
                   ),
                 ),
                 const _PlayButton(),
-                const _ForwardTen(),
+                const _SkipCast(),
               ],
             ),
             const _NonInteractiveSeekBar(),
@@ -81,41 +81,42 @@ class NowPlayingFullView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Cast?>(
-        valueListenable: ListenBloc.instance.currentCast,
-        builder: (context, cast, _) {
-          return ValueListenableBuilder<bool>(
-              valueListenable: ListenBloc.instance.trackListIsDisplayed,
-              builder: (context, displayTrackList, _) {
-                return Column(
-                  children: [
-                    if (!displayTrackList)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 24,
-                          right: 24,
-                          left: 24,
-                        ),
-                        child: CastView(cast: cast!),
-                      ),
-                    if (displayTrackList)
-                      // TODO(caseycrogers): make this take up the whole page.
-                      const SizedBox(
-                        height: 500,
-                        child: TrackListView(),
-                      ),
-                    const SeekBar(),
+      valueListenable: ListenBloc.instance.currentCast,
+      builder: (context, cast, _) {
+        return ValueListenableBuilder<bool>(
+            valueListenable: ListenBloc.instance.trackListIsDisplayed,
+            builder: (context, displayTrackList, _) {
+              return Column(
+                children: [
+                  if (!displayTrackList)
                     Padding(
                       padding: const EdgeInsets.only(
-                        bottom: 24,
+                        top: 24,
                         right: 24,
                         left: 24,
                       ),
-                      child: _FullAudioControls(cast: cast!),
+                      child: CastView(cast: cast!),
                     ),
-                  ],
-                );
-              });
-        });
+                  if (displayTrackList)
+                    // TODO(caseycrogers): make this take up the whole page.
+                    const SizedBox(
+                      height: 500,
+                      child: TrackListView(),
+                    ),
+                  const SeekBar(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 24,
+                      right: 24,
+                      left: 24,
+                    ),
+                    child: _FullAudioControls(cast: cast!),
+                  ),
+                ],
+              );
+            });
+      },
+    );
   }
 }
 
@@ -243,14 +244,29 @@ class _PlayButton extends StatelessWidget {
   }
 }
 
+class _SkipCast extends StatelessWidget {
+  const _SkipCast({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        await CastAudioPlayer.instance.skip();
+      },
+      icon: const Icon(Icons.skip_next),
+      color: AdaptiveMaterial.onColorOf(context),
+    );
+  }
+}
+
 class _ForwardTen extends StatelessWidget {
   const _ForwardTen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        CastAudioPlayer.instance.skipForward();
+      onPressed: () async {
+        await CastAudioPlayer.instance.skipForward();
       },
       icon: const Icon(Icons.forward_10),
       color: AdaptiveMaterial.onColorOf(context),
@@ -264,8 +280,8 @@ class _BackTen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        CastAudioPlayer.instance.skipBackward();
+      onPressed: () async {
+        await CastAudioPlayer.instance.skipBackward();
       },
       icon: const Icon(Icons.replay_10),
       color: AdaptiveMaterial.onColorOf(context),

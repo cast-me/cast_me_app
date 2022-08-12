@@ -2,6 +2,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ProfilePageView extends StatelessWidget {
   const ProfilePageView({Key? key}) : super(key: key);
@@ -12,33 +13,75 @@ class ProfilePageView extends StatelessWidget {
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(24),
+        child: Column(
           children: [
-            Container(
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(profile.profilePictureUrl),
-                ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(24),
+                children: [
+                  Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(profile.profilePictureUrl),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Center(child: Text('@${profile.username}')),
+                  Center(child: Text(profile.displayName)),
+                  const SizedBox(height: 4),
+                  AuthSubmitButtonWrapper(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await AuthManager.instance.signOut();
+                      },
+                      child: const Text('Sign out'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Center(child: Text('@${profile.username}')),
-            Center(child: Text(profile.displayName)),
-            AuthSubmitButtonWrapper(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await AuthManager.instance.signOut();
-                },
-                child: const Text('Sign out'),
-              ),
-            ),
+            const _AppInfo(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AppInfo extends StatefulWidget {
+  const _AppInfo({Key? key}) : super(key: key);
+
+  @override
+  State<_AppInfo> createState() => _AppInfoState();
+}
+
+class _AppInfoState extends State<_AppInfo> {
+  final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: packageInfo,
+      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        final PackageInfo info = snapshot.data!;
+        return DefaultTextStyle(
+          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${info.appName}'),
+              Text('v${info.version}+${info.buildNumber}'),
+            ],
+          ),
+        );
+      },
     );
   }
 }

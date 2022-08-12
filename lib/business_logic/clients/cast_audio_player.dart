@@ -103,6 +103,20 @@ class CastAudioPlayer {
     await _player.play();
   }
 
+  Future<void> skip() async {
+    final Cast cast = currentCast.value!;
+    if (!_player.hasNext) {
+      // Seek to the end of this cast.
+      await _player.seek(await _player.durationFuture);
+    } else {
+      await _player.seekToNext();
+    }
+    await CastDatabase.instance.setSkipped(
+      cast: cast,
+      skippedReason: SkippedReason.nextButton,
+    );
+  }
+
   Future<void> seekToCast(Cast cast) async {
     await _player.seek(
       Duration.zero,

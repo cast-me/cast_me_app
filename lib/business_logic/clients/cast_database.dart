@@ -91,6 +91,21 @@ class CastDatabase {
       'user_id': supabase.auth.currentUser!.id,
     });
   }
+
+  Future<void> setSkipped({
+    required Cast cast,
+    required SkippedReason skippedReason,
+  }) async {
+    await viewsQuery.insert({
+      'cast_id': cast.id,
+      'user_id': supabase.auth.currentUser!.id,
+      'skipped_reason': skippedReason.toString().split('.').last,
+    });
+  }
+}
+
+enum SkippedReason {
+  nextButton,
 }
 
 Cast _rowToCast(dynamic row) {
