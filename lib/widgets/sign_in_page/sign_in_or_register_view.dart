@@ -216,7 +216,6 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: obscureText,
       enableSuggestions: false,
       autocorrect: false,
-      cursorColor: Colors.white,
       decoration: InputDecoration(
         labelText: widget.labelText,
         suffixIcon: GestureDetector(

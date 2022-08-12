@@ -40,9 +40,13 @@ class CastMeApp extends StatelessWidget {
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white60),
           ),
+          iconColor: Colors.white,
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
+        ),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.white,
         ),
         colorScheme: ColorScheme(
           brightness: Brightness.dark,

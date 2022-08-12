@@ -673,7 +673,7 @@ packages:
     source: hosted
     version: "1.10.0"
   storage_client:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: storage_client
       url: "https://pub.dartlang.org"

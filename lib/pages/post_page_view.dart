@@ -46,10 +46,11 @@ class _PostPageViewState extends State<PostPageView> {
               },
               child: const Text('Select audio'),
             ),
-            if (file != null) Text(file!.uri.pathSegments.last),
+            Text(
+              file != null ? file!.uri.pathSegments.last : '',
+            ),
             TextField(
               controller: textController,
-              cursorColor: Colors.white,
               decoration: const InputDecoration(labelText: 'Cast title'),
             ),
             AnimatedBuilder(

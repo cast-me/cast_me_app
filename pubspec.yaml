@@ -2,7 +2,7 @@ name: cast_me_app
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.17.1 <3.0.0"
@@ -23,7 +23,6 @@ dependencies:
   shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.6
   supabase_flutter: ^1.0.0-dev.3
-  storage_client: ^1.0.0-dev.3
   basic_utils: ^4.5.2
   ffmpeg_kit_flutter: ^4.5.1
   crypto: ^3.0.2

@@ -65,7 +65,6 @@ class AsyncSubmitWrapper extends StatelessWidget {
             ),
           );
         }
-        return child;
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,8 +77,9 @@ class AsyncSubmitWrapper extends StatelessWidget {
                   if (errorMessage != null) {
                     return Text(
                       errorMessage,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     );
                   }
                   return const SizedBox(height: 0);

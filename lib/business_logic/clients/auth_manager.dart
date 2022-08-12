@@ -54,7 +54,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     } else {
       throw Exception(
         'Cannot toggle between sign in and registering from state:'
-        ' $_signInState',
+            ' $_signInState',
       );
     }
     notifyListeners();
@@ -65,8 +65,17 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String password,
   }) async {
     await _authActionWrapper(
-      () async {
-        await supabase.auth.signUp(email, password).errorToException();
+          () async {
+        try {
+          await supabase.auth.signUp(email, password).errorToException();
+        } on GoTrueException catch(e) {
+          // Hack to catch an erroneous error.
+          // TODO(caseycrogers): remove this catch once the issue is resolved:
+          // https://github.com/supabase-community/supabase-flutter/issues/182
+          if (e.statusCode != null) {
+            rethrow;
+          }
+        }
         _signInState = SignInState.verifyingEmail;
       },
     );
@@ -79,9 +88,9 @@ class AuthManager extends ChangeNotifier with Disposable {
     await _authActionWrapper(() async {
       await supabase.auth
           .signIn(
-            email: email,
-            password: password,
-          )
+        email: email,
+        password: password,
+      )
           .errorToException();
       _signInState = SignInState.completingProfile;
     });
@@ -93,16 +102,18 @@ class AuthManager extends ChangeNotifier with Disposable {
     required File profilePicture,
   }) async {
     await _authActionWrapper(
-      () async {
-        final String fileExt = profilePicture.path.split('.').last;
+          () async {
+        final String fileExt = profilePicture.path
+            .split('.')
+            .last;
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
         await profilePicturesBucket.uploadBinary(fileName, imageBytes);
         final String profilePictureUrl =
-            profilePicturesBucket.getPublicUrl(fileName);
+        profilePicturesBucket.getPublicUrl(fileName);
         final PaletteGenerator paletteGenerator =
-            await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
+        await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
         final Profile completedProfile = Profile(
           id: supabase.auth.currentUser!.id,
           username: username,
@@ -122,12 +133,12 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String password,
   }) async {
     await _authActionWrapper(
-      () async {
+          () async {
         await supabase.auth
             .signIn(
-              email: email,
-              password: password,
-            )
+          email: email,
+          password: password,
+        )
             .errorToException();
         _profile = await _fetchProfile();
         if (_profile == null) {
@@ -141,7 +152,7 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   Future<void> signOut() async {
     await _authActionWrapper(
-      () async {
+          () async {
         await supabase.auth.signOut().errorToException();
         _profile = null;
         _signInState = SignInState.signingIn;
@@ -169,8 +180,13 @@ class AuthManager extends ChangeNotifier with Disposable {
     notifyListeners();
   }
 
-  Profile _rowToCastMeProfile(dynamic row) {
-    return Profile()..mergeFromProto3Json(row as Map<String, dynamic>);
+  Profile? _rowToCastMeProfile(dynamic rows) {
+    final List<dynamic> rowList = rows as List<dynamic>;
+    if (rows.isEmpty) {
+      return null;
+    }
+    return Profile()
+      ..mergeFromProto3Json(rows.single as Map<String, dynamic>);
   }
 
   Future<Profile?> _fetchProfile() async {
@@ -178,8 +194,7 @@ class AuthManager extends ChangeNotifier with Disposable {
         .from('profiles')
         .select()
         .eq('id', supabase.auth.currentUser!.id)
-        .maybeSingle()
-        .withConverter(_rowToCastMeProfile);
+        .withConverter<Profile?>(_rowToCastMeProfile);
   }
 
   // Exposed so that `AuthFutureUtil` can call it.
@@ -215,7 +230,7 @@ Future<void> _authActionWrapper(AsyncCallback authAction) async {
   authManager._isProcessing = true;
   authManager._notifyListeners();
   await authAction().then(
-    (value) async {
+        (value) async {
       // Action was successful, clear last error.
       authManager._authError = null;
       return value;

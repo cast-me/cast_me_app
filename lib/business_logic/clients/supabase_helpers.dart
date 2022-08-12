@@ -26,7 +26,7 @@ SupabaseQueryBuilder get viewsQuery => supabase.from('views');
 extension GotrueFutureUtil on Future<GotrueResponse> {
   Future<GotrueResponse> errorToException() {
     return then((GotrueResponse value) {
-      if (value.statusCode != 200) {
+      if (value.statusCode != null && value.statusCode! ~/ 100 != 2) {
         throw 'Auth failed with error code: ${value.statusCode!}';
       }
       return value;
