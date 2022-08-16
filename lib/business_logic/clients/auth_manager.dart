@@ -54,7 +54,7 @@ class AuthManager extends ChangeNotifier with Disposable {
     } else {
       throw Exception(
         'Cannot toggle between sign in and registering from state:'
-            ' $_signInState',
+        ' $_signInState',
       );
     }
     notifyListeners();
@@ -65,10 +65,11 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String password,
   }) async {
     await _authActionWrapper(
-          () async {
+      'createUser',
+      () async {
         try {
           await supabase.auth.signUp(email, password).errorToException();
-        } on GoTrueException catch(e) {
+        } on GoTrueException catch (e) {
           // Hack to catch an erroneous error.
           // TODO(caseycrogers): remove this catch once the issue is resolved:
           // https://github.com/supabase-community/supabase-flutter/issues/182
@@ -85,15 +86,18 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String email,
     required String password,
   }) async {
-    await _authActionWrapper(() async {
-      await supabase.auth
-          .signIn(
-        email: email,
-        password: password,
-      )
-          .errorToException();
-      _signInState = SignInState.completingProfile;
-    });
+    await _authActionWrapper(
+      'checkEmailIsVerified',
+      () async {
+        await supabase.auth
+            .signIn(
+              email: email,
+              password: password,
+            )
+            .errorToException();
+        _signInState = SignInState.completingProfile;
+      },
+    );
   }
 
   Future<void> completeUserProfile({
@@ -102,24 +106,27 @@ class AuthManager extends ChangeNotifier with Disposable {
     required File profilePicture,
   }) async {
     await _authActionWrapper(
-          () async {
-        final String fileExt = profilePicture.path
-            .split('.')
-            .last;
+      'completeUserProfile',
+      () async {
+        assert(
+          supabase.auth.currentUser != null,
+          'You are not properly logged in, please report this error.',
+        );
+        final String fileExt = profilePicture.path.split('.').last;
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
         await profilePicturesBucket.uploadBinary(fileName, imageBytes);
         final String profilePictureUrl =
-        profilePicturesBucket.getPublicUrl(fileName);
+            profilePicturesBucket.getPublicUrl(fileName);
         final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
+            await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
         final Profile completedProfile = Profile(
           id: supabase.auth.currentUser!.id,
           username: username,
           displayName: displayName,
           profilePictureUrl: profilePictureUrl,
-          accentColorBase: paletteGenerator.vibrantColor!.color.serialize,
+          accentColorBase: paletteGenerator.vibrantColor?.color.serialize,
         );
         await profilesQuery.upsert(completedProfile.toSQLJson());
         _profile = completedProfile;
@@ -133,12 +140,13 @@ class AuthManager extends ChangeNotifier with Disposable {
     required String password,
   }) async {
     await _authActionWrapper(
-          () async {
+      'signIn',
+      () async {
         await supabase.auth
             .signIn(
-          email: email,
-          password: password,
-        )
+              email: email,
+              password: password,
+            )
             .errorToException();
         _profile = await _fetchProfile();
         if (_profile == null) {
@@ -152,7 +160,8 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   Future<void> signOut() async {
     await _authActionWrapper(
-          () async {
+      'signOut',
+      () async {
         await supabase.auth.signOut().errorToException();
         _profile = null;
         _signInState = SignInState.signingIn;
@@ -182,11 +191,11 @@ class AuthManager extends ChangeNotifier with Disposable {
 
   Profile? _rowToCastMeProfile(dynamic rows) {
     final List<dynamic> rowList = rows as List<dynamic>;
-    if (rows.isEmpty) {
+    if (rowList.isEmpty) {
       return null;
     }
     return Profile()
-      ..mergeFromProto3Json(rows.single as Map<String, dynamic>);
+      ..mergeFromProto3Json(rowList.single as Map<String, dynamic>);
   }
 
   Future<Profile?> _fetchProfile() async {
@@ -225,12 +234,15 @@ extension CastMeUserUtils on CastMeProfileBase {
 }
 
 // Wrap around any auth action to update Auth Manager state on error or success.
-Future<void> _authActionWrapper(AsyncCallback authAction) async {
+Future<void> _authActionWrapper(
+  String action,
+  AsyncCallback authAction,
+) async {
   final AuthManager authManager = AuthManager.instance;
   authManager._isProcessing = true;
   authManager._notifyListeners();
   await authAction().then(
-        (value) async {
+    (value) async {
       // Action was successful, clear last error.
       authManager._authError = null;
       return value;

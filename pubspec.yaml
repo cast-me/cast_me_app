@@ -33,11 +33,13 @@ dev_dependencies:
   flutter_launcher_icons: ^0.9.3
   flutter_lints: ^2.0.0
 
-# To rebuild run: flutter pub run flutter_launcher_icons:main
+# flutter pub run flutter_launcher_icons:main
 flutter_icons:
+  ios: true
   android: true
-  ios: false
-  image_path: "assets/icons/cast_me_icon_android.png"
+  remove_alpha_ios: true
+  image_path_android: "assets/icons/cast_me_icon_android.png"
+  image_path_ios: "assets/icons/cast_me_icon_ios.png"
   adaptive_icon_background: "#000000"
   adaptive_icon_foreground: "assets/icons/cast_me_icon_foreground.png"
 

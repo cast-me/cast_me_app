@@ -11,39 +11,39 @@ class ListenPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ValueListenableBuilder<bool>(
-        valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
-        builder: (context, isExpanded, child) {
-          return Stack(
-            children: [
-              child!,
-              if (isExpanded)
-                Column(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        child: Container(
-                          color: Colors.black38,
-                          height: double.infinity,
-                          width: double.infinity,
-                        ),
-                        onTap: () {
-                          ListenBloc.instance.onNowPlayingExpansionToggled();
-                        },
+    return ValueListenableBuilder<bool>(
+      valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
+      builder: (context, isExpanded, child) {
+        return Stack(
+          children: [
+            child!,
+            if (isExpanded)
+              Column(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      child: Container(
+                        color: Colors.black38,
+                        height: double.infinity,
+                        width: double.infinity,
                       ),
+                      onTap: () {
+                        ListenBloc.instance.onNowPlayingExpansionToggled();
+                      },
                     ),
-                    const AdaptiveMaterial(
-                      adaptiveColor: AdaptiveColor.surface,
-                      child: NowPlayingFullView(),
-                    ),
-                  ],
-                ),
-            ],
-          );
-        },
-        child: AdaptiveMaterial(
-          adaptiveColor: AdaptiveColor.background,
+                  ),
+                  const AdaptiveMaterial(
+                    adaptiveColor: AdaptiveColor.surface,
+                    child: SafeArea(child: NowPlayingFullView()),
+                  ),
+                ],
+              ),
+          ],
+        );
+      },
+      child: AdaptiveMaterial(
+        adaptiveColor: AdaptiveColor.background,
+        child: SafeArea(
           child: Column(
             children: const [
               ListenTabSelector(),
