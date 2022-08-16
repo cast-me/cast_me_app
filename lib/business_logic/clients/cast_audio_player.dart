@@ -118,6 +118,20 @@ class CastAudioPlayer {
     );
   }
 
+  Future<void> previous() async {
+    final Cast cast = currentCast.value!;
+    if (!_player.hasPrevious || _player.position.inMilliseconds > 2000) {
+      // Seek to the beginning of this cast.
+      await _player.seek(Duration.zero);
+    } else {
+      await _player.seekToPrevious();
+    }
+    await CastDatabase.instance.setSkipped(
+      cast: cast,
+      skippedReason: SkippedReason.nextButton,
+    );
+  }
+
   Future<void> seekToCast(Cast cast) async {
     await _player.seek(
       Duration.zero,

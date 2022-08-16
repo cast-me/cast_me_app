@@ -140,9 +140,9 @@ class _FullAudioControls extends StatelessWidget {
             child: _TrackListButton(),
           ),
         ),
-        _BackTen(),
+        _PreviousCast(),
         _PlayButton(isCircle: true),
-        _ForwardTen(),
+        _SkipCast(),
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
@@ -239,6 +239,21 @@ class _PlayButton extends StatelessWidget {
           );
         },
       ),
+      color: AdaptiveMaterial.onColorOf(context),
+    );
+  }
+}
+
+class _PreviousCast extends StatelessWidget {
+  const _PreviousCast({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        await CastAudioPlayer.instance.previous();
+      },
+      icon: const Icon(Icons.skip_previous),
       color: AdaptiveMaterial.onColorOf(context),
     );
   }

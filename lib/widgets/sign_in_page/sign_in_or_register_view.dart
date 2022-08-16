@@ -67,7 +67,12 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
       if (authManager.signInState == SignInState.verifyingEmail) {
         return Column(
           children: [
-            const Text('Check your email to verify your account!'),
+            const Text(
+              'Check your email to verify your account!\n'
+              'Please note that the verification link in your email will '
+              'appear broken, but it is in fact working, coming back here '
+              'after you\'ve clicked it.',
+            ),
             AuthSubmitButtonWrapper(
               child: TextButton(
                 onPressed: () async {

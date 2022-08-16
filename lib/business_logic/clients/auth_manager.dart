@@ -8,7 +8,6 @@ import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/disposable.dart';
 import 'package:cast_me_app/util/string_utils.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:flutter/foundation.dart';

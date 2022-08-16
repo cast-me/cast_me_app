@@ -17,12 +17,7 @@ class TrendingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: const Center(child: Text('Coming Soon!')),
-      onTap: () {
-        throw Exception('asdfasdf');
-      },
-    );
+    return const Center(child: Text('Coming Soon!'));
     return ListView(
       padding: const EdgeInsets.all(8),
       children: [
