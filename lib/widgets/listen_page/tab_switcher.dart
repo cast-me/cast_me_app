@@ -1,5 +1,5 @@
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/widgets/listen_page/following_view.dart';
+import 'package:cast_me_app/widgets/listen_page/for_you_view.dart';
 import 'package:cast_me_app/widgets/listen_page/trending_view.dart';
 
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class ListenTabView extends StatelessWidget {
     return PageView(
       controller: ListenBloc.instance.listenPageController,
       children: [
-        const FollowingView(),
+        const ForYouView(),
         TrendingView(),
       ],
     );

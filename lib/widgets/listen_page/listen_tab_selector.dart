@@ -41,7 +41,7 @@ class ListenTabSelector extends StatelessWidget {
               valueListenable: ListenBloc.instance.currentListenPage,
               builder: (context, page, _) {
                 return Text(
-                  'Trending',
+                  'For You',
                   style: page > .5
                       ? Theme.of(context)
                           .textTheme
