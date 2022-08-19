@@ -10,8 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 
-import 'package:url_launcher/url_launcher_string.dart';
-
 class PostPageView extends StatefulWidget {
   const PostPageView({Key? key}) : super(key: key);
 
@@ -37,34 +35,47 @@ class _PostPageViewState extends State<PostPageView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text('Upload Cast\n'
-                  'Currently, ONLY `.mp3` files are supported. More file types '
-                  'and the ability to record and edit clips in-app will be '
-                  'added.\n'
+                  'Currently, ONLY `.mp3` and `.m4a` files are supported. More '
+                  'file types and the ability to record and edit clips in-app '
+                  'will be added.\n'
+                  '\n'
                   'Recommended external recording app:'),
               if (Platform.isIOS)
-                TextButton(
-                  onPressed: () {
-                    LaunchReview.launch(
-                      iOSAppId: 'id408709785',
-                      writeReview: false,
-                    );
-                  },
-                  child: const AdaptiveText(
-                    'Garage Band',
-                    style: TextStyle(decoration: TextDecoration.underline),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    onTap: () {
+                      LaunchReview.launch(
+                        iOSAppId: '1069512134',
+                        writeReview: false,
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: AdaptiveText(
+                        'Voice Memos',
+                        style: TextStyle(decoration: TextDecoration.underline),
+                      ),
+                    ),
                   ),
                 ),
               if (Platform.isAndroid)
-                TextButton(
-                  onPressed: () {
-                    LaunchReview.launch(
-                      androidAppId: 'com.zaza.beatbox',
-                      writeReview: false,
-                    );
-                  },
-                  child: const AdaptiveText(
-                    'Pro Audio Editor',
-                    style: TextStyle(decoration: TextDecoration.underline),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    onTap: () {
+                      LaunchReview.launch(
+                        androidAppId: 'com.zaza.beatbox',
+                        writeReview: false,
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: AdaptiveText(
+                        'Pro Audio Editor',
+                        style: TextStyle(decoration: TextDecoration.underline),
+                      ),
+                    ),
                   ),
                 ),
               ElevatedButton(
@@ -73,7 +84,7 @@ class _PostPageViewState extends State<PostPageView> {
                       await FilePicker.platform.pickFiles(
                     dialogTitle: 'Select audio',
                     type: FileType.custom,
-                    allowedExtensions: ['mp3'],
+                    allowedExtensions: ['mp3', 'm4a'],
                   );
                   if (result != null) {
                     setState(() {

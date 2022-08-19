@@ -76,6 +76,7 @@ class CastPreview extends StatelessWidget {
                           width: 50,
                           decoration: BoxDecoration(
                             image: DecorationImage(
+                              fit: BoxFit.cover,
                               image: NetworkImage(cast.imageUrl),
                             ),
                           ),
@@ -146,6 +147,7 @@ class CastView extends StatelessWidget {
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
             child: Image(
+              fit: BoxFit.cover,
               image: NetworkImage(cast.imageUrl),
             ),
           ),

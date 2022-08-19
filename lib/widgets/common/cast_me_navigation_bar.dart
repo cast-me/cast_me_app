@@ -29,6 +29,7 @@ class CastMeNavigationBar extends StatelessWidget {
           onTap: (tabIndex) {
             CastMeBloc.instance.onTabChanged(CastMeTabs.indexToTab(tabIndex));
           },
+          elevation: 0,
         );
       },
     );
