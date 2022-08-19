@@ -29,6 +29,7 @@ dependencies:
   firebase_crashlytics: ^2.8.7
   firebase_core: ^1.20.1
   audio_service: ^0.18.7
+  launch_review: ^3.0.1
 
 dev_dependencies:
   flutter_test:

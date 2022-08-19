@@ -7,12 +7,14 @@ class DropDownWidget extends StatefulWidget {
     required this.child,
     this.padding,
     this.selectedColor,
+    this.adaptiveBackgroundColor,
   });
 
   final Widget Function(BuildContext, VoidCallback) builder;
   final Widget child;
   final EdgeInsets? padding;
   final Color? selectedColor;
+  final AdaptiveColor? adaptiveBackgroundColor;
 
   @override
   _DropDownWidgetState createState() => _DropDownWidgetState();
@@ -57,7 +59,8 @@ class _DropDownWidgetState extends State<DropDownWidget> {
                     ? null
                     : width - upperLeft.dx - 2 * renderBox.size.width / 3,
                 child: AdaptiveMaterial(
-                  adaptiveColor: AdaptiveColor.surface,
+                  adaptiveColor:
+                      widget.adaptiveBackgroundColor ?? AdaptiveColor.surface,
                   child: Padding(
                     padding: widget.padding ?? const EdgeInsets.all(2),
                     child: widget.builder(

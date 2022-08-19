@@ -6,7 +6,11 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
+import 'package:launch_review/launch_review.dart';
+
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PostPageView extends StatefulWidget {
   const PostPageView({Key? key}) : super(key: key);
@@ -32,13 +36,44 @@ class _PostPageViewState extends State<PostPageView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Upload Cast'),
+              const Text('Upload Cast\n'
+                  'Currently, ONLY `.mp3` files are supported. More file types '
+                  'and the ability to record and edit clips in-app will be '
+                  'added.\n'
+                  'Recommended external recording app:'),
+              if (Platform.isIOS)
+                TextButton(
+                  onPressed: () {
+                    LaunchReview.launch(
+                      iOSAppId: 'id408709785',
+                      writeReview: false,
+                    );
+                  },
+                  child: const AdaptiveText(
+                    'Garage Band',
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                ),
+              if (Platform.isAndroid)
+                TextButton(
+                  onPressed: () {
+                    LaunchReview.launch(
+                      androidAppId: 'com.zaza.beatbox',
+                      writeReview: false,
+                    );
+                  },
+                  child: const AdaptiveText(
+                    'Pro Audio Editor',
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                ),
               ElevatedButton(
                 onPressed: () async {
                   final FilePickerResult? result =
                       await FilePicker.platform.pickFiles(
                     dialogTitle: 'Select audio',
-                    type: FileType.audio,
+                    type: FileType.custom,
+                    allowedExtensions: ['mp3'],
                   );
                   if (result != null) {
                     setState(() {

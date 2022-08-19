@@ -187,14 +187,15 @@ class _CastMenu extends StatelessWidget {
               },
               child: Row(
                 children: const [
-                  Text('delete cast'),
-                  Icon(Icons.delete),
+                  AdaptiveText('delete cast'),
+                  AdaptiveIcon(Icons.delete),
                 ],
               ),
             ),
           ],
         );
       },
+      adaptiveBackgroundColor: AdaptiveColor.background,
       child: const Icon(Icons.more_vert),
     );
   }

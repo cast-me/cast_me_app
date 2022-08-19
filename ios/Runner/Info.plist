@@ -34,6 +34,10 @@
 	<string>Your microphone is used to record Casts.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Your photo library is used so that you can select an image to upload as a profile picture.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>audio</string>
+    </array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
