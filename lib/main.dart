@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/clients/background_audio_handler.dart';
 import 'package:cast_me_app/firebase_options.dart';
 
 import 'package:cast_me_app/widgets/common/auth_gate.dart';
@@ -40,6 +42,14 @@ void main() async {
         overlays: [SystemUiOverlay.top],
       );
       await AuthManager.instance.initialize();
+
+      //await AudioService.init(
+      //  builder: () => BackgroundAudioHandler.instance,
+      //  config: const AudioServiceConfig(
+      //    androidNotificationChannelId: 'com.cast.me.app',
+      //    androidNotificationChannelName: 'Cast playback',
+      //  ),
+      //);
       runApp(const CastMeApp());
     },
     (error, stack) {

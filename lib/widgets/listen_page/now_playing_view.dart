@@ -281,7 +281,7 @@ class _ForwardTen extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () async {
-        await CastAudioPlayer.instance.skipForward();
+        await CastAudioPlayer.instance.skipToNext();
       },
       icon: const Icon(Icons.forward_10),
       color: AdaptiveMaterial.onColorOf(context),
