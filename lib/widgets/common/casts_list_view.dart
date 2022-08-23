@@ -25,6 +25,7 @@ class CastListView extends StatefulWidget {
   final Profile? filterOutProfile;
 
   final bool fullyInteractive;
+
   final EdgeInsets? padding;
 
   @override

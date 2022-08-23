@@ -57,9 +57,13 @@ class CastDatabase {
     // TODO(caseycrogers): consider moving this to a server function.
     final int durationMs = await _getFileDuration(file.path);
     final String fileExt = file.path.split('.').last;
-    // Hash the file name so we don't get naming conflicts.
-    final String fileName =
-        '${await sha1.bind(file.openRead()).first}.$fileExt';
+    // Hash the file name so we don't get naming conflicts. Since we're using a
+    // hash, redundant uploads won't increase storage usage. We're prefixing
+    // with the username so that when a user deletes a cast we can safely delete
+    // the storage object-we're preventing another user from uploading the same
+    // file under the exact same name.
+    final String fileName = '${AuthManager.instance.profile.username}'
+        '_${await sha1.bind(file.openRead()).first}.$fileExt';
 
     await castAudioFileBucket.upload(
       fileName,
