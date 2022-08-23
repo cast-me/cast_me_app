@@ -2,8 +2,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-final profilePicturesBucket =
-    supabase.storage.from('profile_pictures');
+const bool isStaging = true;
+
+final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
 final castAudioFileBucket = supabase.storage.from('cast-audio-files');
 
@@ -17,9 +18,11 @@ const String castIdCol = 'id';
 
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
-SupabaseQueryBuilder get castsWriteQuery => supabase.from('casts');
+SupabaseQueryBuilder get castsWriteQuery =>
+    supabase.from(isStaging ? 'staging_casts' : 'casts');
 
-SupabaseQueryBuilder get castsReadQuery => supabase.from('casts_view');
+SupabaseQueryBuilder get castsReadQuery =>
+    supabase.from(isStaging ? 'staging_casts_view' : 'casts_view');
 
 SupabaseQueryBuilder get viewsQuery => supabase.from('views');
 
