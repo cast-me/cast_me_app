@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +28,7 @@ class AsyncSubmitButton extends StatelessWidget {
                   },
                 ).onError((error, stackTrace) {
                   currentErrorMessage.value = error.toString();
+                  FirebaseCrashlytics.instance.recordError(error, stackTrace);
                 });
               }
             : null,

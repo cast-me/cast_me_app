@@ -4,6 +4,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/string_utils.dart';
+
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
 
@@ -53,6 +54,7 @@ class CastDatabase {
     required String title,
     required File file,
   }) async {
+    // TODO(caseycrogers): consider moving this to a server function.
     final int durationMs = await _getFileDuration(file.path);
     final String fileExt = file.path.split('.').last;
     // Hash the file name so we don't get naming conflicts.
@@ -68,7 +70,6 @@ class CastDatabase {
     final Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
-      // TODO(caseycrogers): consider moving this to a server function.
       durationMs: durationMs,
       audioUrl: audioFileUrl,
     );

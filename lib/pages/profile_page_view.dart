@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -13,42 +14,51 @@ class ProfilePageView extends StatelessWidget {
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(24),
-                children: [
-                  Center(
-                    child: Container(
-                      height: 150,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(profile.profilePictureUrl),
-                        ),
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(profile.profilePictureUrl),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Center(child: Text('@${profile.username}')),
-                  Center(child: Text(profile.displayName)),
-                  const SizedBox(height: 4),
-                  AuthSubmitButtonWrapper(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await AuthManager.instance.signOut();
-                      },
-                      child: const Text('Sign out'),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            const _AppInfo(),
-          ],
+              const SizedBox(height: 4),
+              Center(child: Text('@${profile.username}')),
+              Center(child: Text(profile.displayName)),
+              const SizedBox(height: 4),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: AdaptiveText(
+                  'Your Casts:',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+              Expanded(
+                child: CastListView(
+                  filterProfile: AuthManager.instance.profile,
+                  fullyInteractive: false,
+                ),
+              ),
+              AuthSubmitButtonWrapper(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await AuthManager.instance.signOut();
+                  },
+                  child: const Text('Sign out'),
+                ),
+              ),
+              const _AppInfo(),
+            ],
+          ),
         ),
       ),
     );

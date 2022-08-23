@@ -177,7 +177,7 @@ class _CastMenu extends StatelessWidget {
     // onPressed callback.
     final CastListViewState? castListView = CastListView.of(context);
     final Cast cast = CastProvider.of(context);
-    return DropDownWidget(
+    return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
           children: [

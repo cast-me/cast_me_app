@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
-import 'package:cast_me_app/util/disposable.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
@@ -17,7 +16,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
-class AuthManager extends ChangeNotifier with Disposable {
+class AuthManager extends ChangeNotifier {
   AuthManager._();
 
   static final AuthManager instance = AuthManager._();
@@ -265,3 +264,8 @@ Future<void> _authActionWrapper(
 }
 
 typedef Profile = CastMeProfileBase;
+
+extension ProfileUtils on CastMeProfileBase {
+  Color get accentColor =>
+      ColorUtils.deserialize(accentColorBase.emptyToNull ?? 'FFFFFFFF');
+}
