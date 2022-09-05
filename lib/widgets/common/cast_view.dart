@@ -177,6 +177,10 @@ class _CastMenu extends StatelessWidget {
     // onPressed callback.
     final CastListViewState? castListView = CastListView.of(context);
     final Cast cast = CastProvider.of(context);
+    if (AuthManager.instance.profile.id !=
+        cast.authorId) {
+      return Container();
+    }
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(

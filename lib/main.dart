@@ -44,13 +44,13 @@ void main() async {
       );
       await AuthManager.instance.initialize();
 
-      //await AudioService.init(
-      //  builder: () => BackgroundAudioHandler.instance,
-      //  config: const AudioServiceConfig(
-      //    androidNotificationChannelId: 'com.cast.me.app',
-      //    androidNotificationChannelName: 'Cast playback',
-      //  ),
-      //);
+      await AudioService.init(
+        builder: () => BackgroundAudioHandler.instance,
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.cast.me.app.channel.audio',
+          androidNotificationChannelName: 'Cast playback',
+        ),
+      );
       runApp(const CastMeApp());
     },
     (error, stack) {
