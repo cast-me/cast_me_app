@@ -155,11 +155,11 @@ class CastAudioPlayer {
     await _player.seek(duration);
   }
 
-  Future<void> skipToNext() async {
+  Future<void> forwardTen() async {
     await seekTo(_player.position + const Duration(seconds: 10));
   }
 
-  Future<void> skipBackward() async {
+  Future<void> backwardTen() async {
     await seekTo(_player.position - const Duration(seconds: 10));
   }
 

@@ -39,12 +39,12 @@ class BackgroundAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> skipToNext() {
-    return _player.skipToNext();
+    return _player.skip();
   }
 
   @override
   Future<void> skipToPrevious() {
-    return _player.skipBackward();
+    return _player.previous();
   }
 }
 
