@@ -72,27 +72,18 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    print(Navigator.of(context).widget.pages);
     return AuthFlowBuilder(builder: (context, authManager, _) {
       if (authManager.signInState == SignInState.verifyingEmail) {
-        // Check on every build as the email will be verified in the background.
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          AuthManager.instance.checkEmailIsVerified(
-            email: emailController.text,
-            password: passwordController.text,
-          );
-        });
         return Column(
           children: [
             const Text(
-              'Check your email to verify your account!\n'
-              'Please note that the verification link in your email will '
-              'appear broken, but it is in fact working, come back here after '
-              'you\'ve clicked it.',
+              'Check your email to verify your account!\n',
             ),
             AuthSubmitButtonWrapper(
               child: TextButton(
                 onPressed: () async {
-                  await AuthManager.instance.checkEmailIsVerified(
+                  await AuthManager.instance.signIn(
                     email: emailController.text,
                     password: passwordController.text,
                   );

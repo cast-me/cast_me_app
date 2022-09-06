@@ -17,7 +17,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier {
-  AuthManager._();
+  AuthManager._() {
+    supabase.auth.onAuthStateChange((event, session) {
+      if (_signInState == SignInState.verifyingEmail &&
+          event == AuthChangeEvent.signedIn) {
+        // Edge case to catch when the user has externally verified
+        // their email.
+        _signInState = SignInState.completingProfile;
+        notifyListeners();
+      }
+    });
+  }
 
   static final AuthManager instance = AuthManager._();
 
@@ -82,27 +92,6 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<bool> checkEmailIsVerified({
-    required String email,
-    required String password,
-  }) async {
-    bool wasSuccess = false;
-    await _authActionWrapper(
-      'checkEmailIsVerified',
-      () async {
-        await supabase.auth
-            .signIn(
-              email: email,
-              password: password,
-            )
-            .errorToException();
-        wasSuccess = true;
-        _signInState = SignInState.completingProfile;
-      },
-    );
-    return wasSuccess;
-  }
-
   Future<void> completeUserProfile({
     required String username,
     required String displayName,
@@ -145,12 +134,26 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'signIn',
       () async {
-        await supabase.auth
-            .signIn(
-              email: email,
-              password: password,
-            )
-            .errorToException();
+        bool emailNotConfirmed = false;
+        try {
+          await supabase.auth
+              .signIn(
+                email: email,
+                password: password,
+              )
+              .errorToException();
+        } catch (e) {
+          if (e is GoTrueException &&
+              e.message.contains('Email not confirmed')) {
+            emailNotConfirmed = true;
+          } else {
+            rethrow;
+          }
+        }
+        if (emailNotConfirmed) {
+          _signInState = SignInState.verifyingEmail;
+          return;
+        }
         _profile = await _fetchProfile();
         if (_profile == null) {
           _signInState = SignInState.completingProfile;
