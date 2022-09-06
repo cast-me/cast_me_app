@@ -74,13 +74,20 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   Widget build(BuildContext context) {
     return AuthFlowBuilder(builder: (context, authManager, _) {
       if (authManager.signInState == SignInState.verifyingEmail) {
+        // Check on every build as the email will be verified in the background.
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          AuthManager.instance.checkEmailIsVerified(
+            email: emailController.text,
+            password: passwordController.text,
+          );
+        });
         return Column(
           children: [
             const Text(
               'Check your email to verify your account!\n'
               'Please note that the verification link in your email will '
-              'appear broken, but it is in fact working, coming back here '
-              'after you\'ve clicked it.',
+              'appear broken, but it is in fact working, come back here after '
+              'you\'ve clicked it.',
             ),
             AuthSubmitButtonWrapper(
               child: TextButton(
@@ -186,22 +193,39 @@ class _RememberMeViewState extends State<_RememberMeView> {
           return Container();
         }
         final SharedPreferences preferences = snapshot.data!;
-        return Row(
-          children: [
-            Checkbox(
-              activeColor: Colors.black,
-              value: preferences.getBool(_rememberMeToggleKeyString) ?? false,
-              onChanged: (newValue) {
-                setState(() {
-                  preferences.setBool(_rememberMeToggleKeyString, newValue!);
-                  if (!newValue) {
-                    preferences.setString(_rememberedEmailKeyString, '');
-                  }
-                });
-              },
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                preferences.setBool(
+                  _rememberMeToggleKeyString,
+                  !(preferences.getBool(_rememberMeToggleKeyString) ?? false),
+                );
+              });
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Checkbox(
+                  activeColor: Colors.black,
+                  value:
+                      preferences.getBool(_rememberMeToggleKeyString) ?? false,
+                  onChanged: (newValue) {
+                    setState(() {
+                      preferences.setBool(
+                          _rememberMeToggleKeyString, newValue!);
+                      if (!newValue) {
+                        preferences.setString(_rememberedEmailKeyString, '');
+                      }
+                    });
+                  },
+                ),
+                const AdaptiveText('Remember me'),
+                const SizedBox(width: 8),
+              ],
             ),
-            const AdaptiveText('Remember me'),
-          ],
+          ),
         );
       },
     );
