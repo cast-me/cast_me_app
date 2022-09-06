@@ -82,10 +82,11 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<void> checkEmailIsVerified({
+  Future<bool> checkEmailIsVerified({
     required String email,
     required String password,
   }) async {
+    bool wasSuccess = false;
     await _authActionWrapper(
       'checkEmailIsVerified',
       () async {
@@ -95,9 +96,11 @@ class AuthManager extends ChangeNotifier {
               password: password,
             )
             .errorToException();
+        wasSuccess = true;
         _signInState = SignInState.completingProfile;
       },
     );
+    return wasSuccess;
   }
 
   Future<void> completeUserProfile({

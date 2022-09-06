@@ -5,6 +5,7 @@ import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInOrRegisterForm extends StatefulWidget {
   const SignInOrRegisterForm({
@@ -51,6 +52,14 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
     emailController.addListener(validate);
     passwordController.addListener(validate);
     confirmPasswordController.addListener(validate);
+
+    SharedPreferences.getInstance().then((preferences) {
+      final String? storedEmail =
+          preferences.getString(_rememberedEmailKeyString);
+      if (storedEmail != null && storedEmail.isNotEmpty) {
+        emailController.text = storedEmail;
+      }
+    });
   }
 
   @override
@@ -65,13 +74,20 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   Widget build(BuildContext context) {
     return AuthFlowBuilder(builder: (context, authManager, _) {
       if (authManager.signInState == SignInState.verifyingEmail) {
+        // Check on every build as the email will be verified in the background.
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          AuthManager.instance.checkEmailIsVerified(
+            email: emailController.text,
+            password: passwordController.text,
+          );
+        });
         return Column(
           children: [
             const Text(
               'Check your email to verify your account!\n'
               'Please note that the verification link in your email will '
-              'appear broken, but it is in fact working, coming back here '
-              'after you\'ve clicked it.',
+              'appear broken, but it is in fact working, come back here after '
+              'you\'ve clicked it.',
             ),
             AuthSubmitButtonWrapper(
               child: TextButton(
@@ -116,37 +132,103 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
               controller: confirmPasswordController,
               labelText: 'confirm password',
             ),
+          const _RememberMeView(),
           ValueListenableBuilder<bool>(
-              valueListenable: currentIsValid,
-              builder: (context, isValid, _) {
-                return AuthSubmitButtonWrapper(
-                  child: ElevatedButton(
-                    onPressed: isValid
-                        ? () async {
-                            if (isRegistering) {
-                              await authManager.createUser(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              );
-                              return;
-                            }
-                            await authManager.signIn(
+            valueListenable: currentIsValid,
+            builder: (context, isValid, _) {
+              return AuthSubmitButtonWrapper(
+                child: ElevatedButton(
+                  onPressed: isValid
+                      ? () async {
+                          if (isRegistering) {
+                            await authManager.createUser(
                               email: emailController.text,
                               password: passwordController.text,
                             );
+                            return;
                           }
-                        : null,
-                    child: isRegistering
-                        ? const Text('Create account')
-                        : const Text('Sign in'),
-                  ),
-                );
-              }),
+                          await authManager.signIn(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                          await (await SharedPreferences.getInstance())
+                              .setString(
+                            _rememberedEmailKeyString,
+                            emailController.text,
+                          );
+                        }
+                      : null,
+                  child: isRegistering
+                      ? const Text('Create account')
+                      : const Text('Sign in'),
+                ),
+              );
+            },
+          ),
           _RegisterSwitcher(isRegistering: isRegistering),
           const AuthErrorView(),
         ],
       );
     });
+  }
+}
+
+class _RememberMeView extends StatefulWidget {
+  const _RememberMeView({Key? key}) : super(key: key);
+
+  @override
+  State<_RememberMeView> createState() => _RememberMeViewState();
+}
+
+class _RememberMeViewState extends State<_RememberMeView> {
+  final Future<SharedPreferences> preferencesFuture =
+      SharedPreferences.getInstance();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<SharedPreferences>(
+      future: preferencesFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        final SharedPreferences preferences = snapshot.data!;
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                preferences.setBool(
+                  _rememberMeToggleKeyString,
+                  !(preferences.getBool(_rememberMeToggleKeyString) ?? false),
+                );
+              });
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Checkbox(
+                  activeColor: Colors.black,
+                  value:
+                      preferences.getBool(_rememberMeToggleKeyString) ?? false,
+                  onChanged: (newValue) {
+                    setState(() {
+                      preferences.setBool(
+                          _rememberMeToggleKeyString, newValue!);
+                      if (!newValue) {
+                        preferences.setString(_rememberedEmailKeyString, '');
+                      }
+                    });
+                  },
+                ),
+                const AdaptiveText('Remember me'),
+                const SizedBox(width: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -235,3 +317,6 @@ class _PasswordFieldState extends State<PasswordField> {
     );
   }
 }
+
+const _rememberMeToggleKeyString = 'remember_me';
+const _rememberedEmailKeyString = 'remembered_email';

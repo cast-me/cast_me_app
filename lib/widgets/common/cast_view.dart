@@ -145,10 +145,13 @@ class CastView extends StatelessWidget {
       child: Column(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-            child: Image(
-              fit: BoxFit.cover,
-              image: NetworkImage(cast.imageUrl),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Image(
+                fit: BoxFit.cover,
+                image: NetworkImage(cast.imageUrl),
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -177,6 +180,9 @@ class _CastMenu extends StatelessWidget {
     // onPressed callback.
     final CastListViewState? castListView = CastListView.of(context);
     final Cast cast = CastProvider.of(context);
+    if (AuthManager.instance.profile.id != cast.authorId) {
+      return Container();
+    }
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
