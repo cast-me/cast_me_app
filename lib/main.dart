@@ -35,7 +35,8 @@ void main() async {
           statusBarColor: Colors.transparent,
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarDividerColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
       );
       await SystemChrome.setEnabledSystemUIMode(
