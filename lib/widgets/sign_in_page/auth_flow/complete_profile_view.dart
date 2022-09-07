@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_flow/auth_flow_builder.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_page.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
 import 'package:flutter/material.dart';
@@ -23,37 +24,35 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
   @override
   Widget build(BuildContext context) {
     return AuthFlowBuilder(builder: (context, authManager, _) {
-      return Column(
-        children: [
-          Text(
-            'Complete your profile',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          _UsernamePicker(controller: usernameController),
-          _DisplayNamePicker(controller: displayNameController),
-          _ProfilePicturePicker(selectedPhoto: selectedPhoto),
-          AuthSubmitButtonWrapper(
-            child: ValueListenableBuilder<XFile?>(
-              valueListenable: selectedPhoto,
-              builder: (context, photo, _) {
-                return ElevatedButton(
-                  onPressed: selectedPhoto.value != null
-                      ? () async {
-                          await authManager.completeUserProfile(
-                            username: usernameController.text,
-                            displayName: displayNameController.text,
-                            profilePicture: File(selectedPhoto.value!.path),
-                          );
-                        }
-                      : null,
-                  child: const Text('Submit'),
-                );
-              }
+      return AuthPage(
+        headerText: 'Complete Profile',
+        child: Column(
+          children: [
+            _UsernamePicker(controller: usernameController),
+            _DisplayNamePicker(controller: displayNameController),
+            _ProfilePicturePicker(selectedPhoto: selectedPhoto),
+            AuthSubmitButtonWrapper(
+              child: ValueListenableBuilder<XFile?>(
+                valueListenable: selectedPhoto,
+                builder: (context, photo, _) {
+                  return ElevatedButton(
+                    onPressed: selectedPhoto.value != null
+                        ? () async {
+                            await authManager.completeUserProfile(
+                              username: usernameController.text,
+                              displayName: displayNameController.text,
+                              profilePicture: File(selectedPhoto.value!.path),
+                            );
+                          }
+                        : null,
+                    child: const Text('Submit'),
+                  );
+                }
+              ),
             ),
-          ),
-          const AuthErrorView(),
-        ],
+            const AuthErrorView(),
+          ],
+        ),
       );
     });
   }

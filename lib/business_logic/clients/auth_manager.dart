@@ -56,6 +56,12 @@ class AuthManager extends ChangeNotifier {
 
   Object? get authError => _authError;
 
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final confirmPasswordController = TextEditingController();
+
   void toggleAccountRegistrationFlow() {
     if (signInState == SignInState.registering) {
       _signInState = SignInState.signingIn;
@@ -164,14 +170,22 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<void> signOut() async {
+  void exitEmailVerification() {
+    _signInState = SignInState.registering;
+    notifyListeners();
+  }
+
+  Future<void> signOut({bool returnToRegistering = false}) async {
     await _authActionWrapper(
       'signOut',
       () async {
         await supabase.auth.signOut().errorToException();
         _profile = null;
-        _signInState = SignInState.signingIn;
-        notifyListeners();
+        if (returnToRegistering) {
+          _signInState = SignInState.registering;
+        } else {
+          _signInState = SignInState.signingIn;
+        }
       },
     );
   }
@@ -212,9 +226,34 @@ class AuthManager extends ChangeNotifier {
         .withConverter<Profile?>(_rowToCastMeProfile);
   }
 
-  // Exposed so that `AuthFutureUtil` can call it.
-  void _notifyListeners() {
+  // Wrap around any auth action to update Auth Manager state on finish.
+  Future<void> _authActionWrapper(
+    String action,
+    AsyncCallback authAction,
+  ) async {
+    final AuthManager authManager = AuthManager.instance;
+    _isProcessing = true;
     notifyListeners();
+    await authAction().then(
+      (value) async {
+        // Action was successful, clear last error.
+        _authError = null;
+        return value;
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        FirebaseCrashlytics.instance.recordError(error, stackTrace);
+        log(
+          'Auth action failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        _authError = error;
+        throw error;
+      },
+    ).whenComplete(() {
+      _isProcessing = false;
+      notifyListeners();
+    });
   }
 }
 
@@ -237,36 +276,6 @@ extension CastMeUserUtils on CastMeProfileBase {
   Map<String, dynamic> toSQLJson() {
     return (toProto3Json() as Map<String, dynamic>).toSnakeCase();
   }
-}
-
-// Wrap around any auth action to update Auth Manager state on error or success.
-Future<void> _authActionWrapper(
-  String action,
-  AsyncCallback authAction,
-) async {
-  final AuthManager authManager = AuthManager.instance;
-  authManager._isProcessing = true;
-  authManager._notifyListeners();
-  await authAction().then(
-    (value) async {
-      // Action was successful, clear last error.
-      authManager._authError = null;
-      return value;
-    },
-    onError: (Object error, StackTrace stackTrace) {
-      FirebaseCrashlytics.instance.recordError(error, stackTrace);
-      log(
-        'Auth action failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      authManager._authError = error;
-      throw error;
-    },
-  ).whenComplete(() {
-    authManager._isProcessing = false;
-    authManager._notifyListeners();
-  });
 }
 
 typedef Profile = CastMeProfileBase;
