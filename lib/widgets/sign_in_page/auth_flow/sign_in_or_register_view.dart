@@ -1,7 +1,7 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow/auth_flow_builder.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_page.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/sign_in_page/register_switcher.dart';
 import 'package:cast_me_app/widgets/sign_in_page/remember_me_view.dart';
@@ -78,7 +78,7 @@ class _SignInOrRegisterFormState extends State<SignInOrRegisterForm> {
   @override
   Widget build(BuildContext context) {
     return AuthFlowBuilder(builder: (context, authManager, _) {
-      return AuthPage(
+      return CastMePage(
         isBasePage: !widget.isRegistering,
         headerText: widget.isRegistering ? 'Register' : 'Sign in',
         child: Column(

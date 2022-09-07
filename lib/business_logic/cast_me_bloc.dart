@@ -17,13 +17,7 @@ class CastMeBloc {
 
   static final instance = CastMeBloc._();
 
-  final ValueNotifier<CastMeTab> _currentTab = ValueNotifier(CastMeTab.listen);
-
-  ValueListenable<CastMeTab> get currentTab => _currentTab;
-
-  void onTabChanged(CastMeTab newTab) {
-    _currentTab.value = newTab;
-  }
+  final ValueNotifier<CastMeTab> currentTab = ValueNotifier(CastMeTab.listen);
 
   final ListenBloc listenBloc = ListenBloc.instance;
 }

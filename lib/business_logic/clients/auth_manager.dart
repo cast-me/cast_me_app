@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
@@ -188,6 +190,9 @@ class AuthManager extends ChangeNotifier {
         }
       },
     );
+    // Also reset the current tab so that the user goes back to home if they log
+    // back in.
+    CastMeBloc.instance.currentTab.value = CastMeTab.listen;
   }
 
   Future<void> initialize() async {
@@ -231,7 +236,6 @@ class AuthManager extends ChangeNotifier {
     String action,
     AsyncCallback authAction,
   ) async {
-    final AuthManager authManager = AuthManager.instance;
     _isProcessing = true;
     notifyListeners();
     await authAction().then(

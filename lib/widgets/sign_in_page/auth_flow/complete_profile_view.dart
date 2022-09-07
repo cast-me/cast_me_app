@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow/auth_flow_builder.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_page.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
 import 'package:flutter/material.dart';
@@ -23,38 +23,35 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthFlowBuilder(builder: (context, authManager, _) {
-      return AuthPage(
-        headerText: 'Complete Profile',
-        child: Column(
-          children: [
-            _UsernamePicker(controller: usernameController),
-            _DisplayNamePicker(controller: displayNameController),
-            _ProfilePicturePicker(selectedPhoto: selectedPhoto),
-            AuthSubmitButtonWrapper(
-              child: ValueListenableBuilder<XFile?>(
+    return CastMePage(
+      headerText: 'Complete Profile',
+      child: Column(
+        children: [
+          _UsernamePicker(controller: usernameController),
+          _DisplayNamePicker(controller: displayNameController),
+          _ProfilePicturePicker(selectedPhoto: selectedPhoto),
+          AuthSubmitButtonWrapper(
+            child: ValueListenableBuilder<XFile?>(
                 valueListenable: selectedPhoto,
                 builder: (context, photo, _) {
                   return ElevatedButton(
                     onPressed: selectedPhoto.value != null
                         ? () async {
-                            await authManager.completeUserProfile(
-                              username: usernameController.text,
-                              displayName: displayNameController.text,
-                              profilePicture: File(selectedPhoto.value!.path),
-                            );
-                          }
+                      await AuthManager.instance.completeUserProfile(
+                        username: usernameController.text,
+                        displayName: displayNameController.text,
+                        profilePicture: File(selectedPhoto.value!.path),
+                      );
+                    }
                         : null,
                     child: const Text('Submit'),
                   );
-                }
-              ),
-            ),
-            const AuthErrorView(),
-          ],
-        ),
-      );
-    });
+                }),
+          ),
+          const AuthErrorView(),
+        ],
+      ),
+    );
   }
 }
 

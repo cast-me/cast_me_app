@@ -17,56 +17,48 @@ class SignInPageView extends StatefulWidget {
 class _SignInPageViewState extends State<SignInPageView> {
   @override
   Widget build(BuildContext context) {
-    return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.surface,
-      child: SafeArea(
-        child: ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(
-          listenable: AuthManager.instance,
-          selector: () => AuthManager.instance.signInState,
-          onPop: (poppedState, stateAfterPop) {
-            switch (poppedState) {
+    return ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(
+      listenable: AuthManager.instance,
+      selector: () => AuthManager.instance.signInState,
+      onPop: (poppedState, stateAfterPop) {
+        switch (poppedState) {
+          case SignInState.signingIn:
+            throw Exception('Should not pop from the base state.');
+          case SignInState.registering:
+            AuthManager.instance.toggleAccountRegistrationFlow();
+            break;
+          case SignInState.verifyingEmail:
+            AuthManager.instance.exitEmailVerification();
+            break;
+          case SignInState.completingProfile:
+            AuthManager.instance.signOut(returnToRegistering: true);
+            break;
+          case SignInState.signedIn:
+            throw Exception('`SignedIn` sign in state should not be '
+                'reachable from the sign in flow widget.');
+        }
+      },
+      getDepth: (signInState) => SignInState.values.indexOf(signInState),
+      builder: (context, signInState, animation, secondaryAnimation) {
+        return Builder(
+          builder: (context) {
+            switch (signInState) {
               case SignInState.signingIn:
-                throw Exception('Should not pop from the base state.');
+                return const SignInOrRegisterForm(isRegistering: false);
               case SignInState.registering:
-                AuthManager.instance.toggleAccountRegistrationFlow();
-                break;
+                return const SignInOrRegisterForm(isRegistering: true);
               case SignInState.verifyingEmail:
-                AuthManager.instance.exitEmailVerification();
-                break;
+                return const VerifyEmailView();
               case SignInState.completingProfile:
-                AuthManager.instance.signOut(returnToRegistering: true);
-                break;
+                return const CompleteProfileView();
               case SignInState.signedIn:
                 throw Exception('`SignedIn` sign in state should not be '
                     'reachable from the sign in flow widget.');
             }
           },
-          getDepth: (signInState) => SignInState.values.indexOf(signInState),
-          builder: (context, signInState, animation, secondaryAnimation) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Builder(
-                builder: (context) {
-                  switch (signInState) {
-                    case SignInState.signingIn:
-                      return const SignInOrRegisterForm(isRegistering: false);
-                    case SignInState.registering:
-                      return const SignInOrRegisterForm(isRegistering: true);
-                    case SignInState.verifyingEmail:
-                      return const VerifyEmailView();
-                    case SignInState.completingProfile:
-                      return const CompleteProfileView();
-                    case SignInState.signedIn:
-                      throw Exception('`SignedIn` sign in state should not be '
-                          'reachable from the sign in flow widget.');
-                  }
-                },
-              ),
-            );
-          },
-          transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
-        ),
-      ),
+        );
+      },
+      transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
     );
   }
 }
