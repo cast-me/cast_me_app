@@ -112,7 +112,10 @@ class AuthManager extends ChangeNotifier {
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
         );
-        final String fileExt = profilePicture.path.split('.').last;
+        // There's a bug in supabase storage where it only understands jpeg.
+        // https://github.com/supabase-community/supabase-flutter/issues/213
+        final String fileExt =
+            profilePicture.path.split('.').last.replaceAll('jpg', 'jpeg');
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();

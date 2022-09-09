@@ -24,7 +24,7 @@ SupabaseQueryBuilder get castsWriteQuery =>
 SupabaseQueryBuilder get castsReadQuery =>
     supabase.from(isStaging ? 'staging_casts_view' : 'casts_view');
 
-SupabaseQueryBuilder get viewsQuery =>
+SupabaseQueryBuilder get listensQuery =>
     supabase.from(isStaging ? 'staging_views' : 'views');
 
 extension GotrueFutureUtil on Future<GotrueResponse> {

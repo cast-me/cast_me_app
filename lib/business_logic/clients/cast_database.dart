@@ -20,6 +20,7 @@ class CastDatabase {
     Profile? filterProfile,
     Profile? filterOutProfile,
     bool skipViewed = false,
+    bool oldestFirst = false,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
@@ -34,7 +35,7 @@ class CastDatabase {
     }
     final List<Cast>? casts = await queryBuilder
         .order(hasViewedCol, ascending: true)
-        .order(createdAtCol)
+        .order(createdAtCol, ascending: oldestFirst)
         .withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
     });
@@ -47,6 +48,7 @@ class CastDatabase {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
+      oldestFirst: true,
     ).where((cast) => cast.id != seedCast.id);
   }
 
@@ -97,8 +99,8 @@ class CastDatabase {
     );
   }
 
-  Future<void> setViewed({required Cast cast}) async {
-    await viewsQuery.insert({
+  Future<void> setListened({required Cast cast}) async {
+    await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
     });
@@ -108,7 +110,7 @@ class CastDatabase {
     required Cast cast,
     required SkippedReason skippedReason,
   }) async {
-    await viewsQuery.insert({
+    await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
       'skipped_reason': skippedReason.toString().split('.').last,

@@ -11,18 +11,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CastAudioPlayer {
   CastAudioPlayer._() {
-    bool hasLoggedView = false;
+    bool hasLoggedListen = false;
     Cast? lastCast;
     positionDataStream.listen(
       (data) async {
         if (currentCast.value != lastCast) {
-          hasLoggedView = false;
+          hasLoggedListen = false;
           lastCast = currentCast.value;
         }
-        // When we first hit 80%, log a view.
-        if ((data.progress ?? 0) > .8 && !hasLoggedView) {
-          hasLoggedView = true;
-          await CastDatabase.instance.setViewed(cast: currentCast.value!);
+        // When we first hit 80%, log a listen.
+        if ((data.progress ?? 0) > .8 && !hasLoggedListen) {
+          hasLoggedListen = true;
+          await CastDatabase.instance.setListened(cast: currentCast.value!);
         }
         if (data.position == data.duration && !_player.hasNext) {
           await _player.pause();
