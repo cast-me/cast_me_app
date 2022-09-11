@@ -1,7 +1,8 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
+
 import 'package:flutter/material.dart';
 
 class VerifyEmailView extends StatelessWidget {

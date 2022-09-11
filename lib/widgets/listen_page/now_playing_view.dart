@@ -274,8 +274,8 @@ class _SkipCast extends StatelessWidget {
   }
 }
 
-class _ForwardTen extends StatelessWidget {
-  const _ForwardTen({Key? key}) : super(key: key);
+class ForwardTen extends StatelessWidget {
+  const ForwardTen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -289,8 +289,8 @@ class _ForwardTen extends StatelessWidget {
   }
 }
 
-class _BackTen extends StatelessWidget {
-  const _BackTen({Key? key}) : super(key: key);
+class BackTen extends StatelessWidget {
+  const BackTen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

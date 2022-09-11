@@ -1,5 +1,4 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow/complete_profile_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow/sign_in_or_register_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_flow/verify_email_view.dart';
