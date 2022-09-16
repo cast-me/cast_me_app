@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -9,6 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter/media_information.dart';
 import 'package:ffmpeg_kit_flutter/media_information_session.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -56,22 +55,22 @@ class CastDatabase {
 
   Future<void> createCast({
     required String title,
-    required File file,
+    required PlatformFile file,
+    required int durationMs,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
-    final int durationMs = await _getFileDuration(file.path);
-    final String fileExt = file.path.split('.').last;
+    final String fileExt = file.name.split('.').last;
     // Hash the file name so we don't get naming conflicts. Since we're using a
     // hash, redundant uploads won't increase storage usage. We're prefixing
     // with the username so that when a user deletes a cast we can safely delete
     // the storage object-we're preventing another user from uploading the same
     // file under the exact same name.
     final String fileName = '${AuthManager.instance.profile.username}'
-        '_${await sha1.bind(file.openRead()).first}.$fileExt';
+        '_${sha1.convert(file.bytes!)}.$fileExt';
 
-    await castAudioFileBucket.upload(
+    await castAudioFileBucket.uploadBinary(
       fileName,
-      file,
+      file.bytes!,
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
@@ -140,18 +139,13 @@ Map<String, dynamic> _castToRow(Cast cast) {
   return (cast.toProto3Json() as Map<String, dynamic>).toSnakeCase();
 }
 
-Future<int> _getFileDuration(String mediaPath) async {
+Future<int> getFileDuration(String mediaPath) async {
   final MediaInformationSession mediaInfoSession =
       await FFprobeKit.getMediaInformation(mediaPath);
   final MediaInformation? mediaInfo = mediaInfoSession.getMediaInformation();
-  if (mediaInfo == null) {
-    throw Exception('Could not find audio file. This is a known bug, '
-        'please reselect the audio file and tap submit again and it should '
-        'work.');
-  }
 
   // the given duration is in fractional seconds, convert to ms
   final int durationMs =
-      (double.parse(mediaInfo.getDuration()!) * 1000).round();
+      (double.parse(mediaInfo!.getDuration()!) * 1000).round();
   return durationMs;
 }

@@ -19,7 +19,8 @@ class PostPageView extends StatefulWidget {
 }
 
 class _PostPageViewState extends State<PostPageView> {
-  File? file;
+  FilePickerResult? pickerResult;
+  int? durationMs;
   final TextEditingController textController = TextEditingController();
 
   // Used to externally force the cast list to rebuild with a new strFeam.
@@ -32,8 +33,7 @@ class _PostPageViewState extends State<PostPageView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-              'Currently, ONLY `.mp3` and `.m4a` files are supported. '
+          const Text('Currently, ONLY `.mp3` and `.m4a` files are supported. '
               'More file types and the ability to record and edit clips '
               'in-app will be added.\n'
               '\n'
@@ -52,8 +52,7 @@ class _PostPageViewState extends State<PostPageView> {
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: AdaptiveText(
                     'Voice Memos',
-                    style:
-                        TextStyle(decoration: TextDecoration.underline),
+                    style: TextStyle(decoration: TextDecoration.underline),
                   ),
                 ),
               ),
@@ -72,30 +71,29 @@ class _PostPageViewState extends State<PostPageView> {
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: AdaptiveText(
                     'Pro Audio Editor',
-                    style:
-                        TextStyle(decoration: TextDecoration.underline),
+                    style: TextStyle(decoration: TextDecoration.underline),
                   ),
                 ),
               ),
             ),
           ElevatedButton(
             onPressed: () async {
-              final FilePickerResult? result =
-                  await FilePicker.platform.pickFiles(
+              pickerResult = await FilePicker.platform.pickFiles(
                 dialogTitle: 'Select audio',
                 type: FileType.custom,
                 allowedExtensions: ['mp3', 'm4a'],
+                withData: true,
               );
-              if (result != null) {
-                setState(() {
-                  file = File(result.files.single.path!);
-                });
+              if (pickerResult != null && pickerResult!.files.isNotEmpty) {
+                durationMs =
+                    await getFileDuration(pickerResult!.files.single.path!);
+                setState(() {});
               }
             },
             child: const Text('Select audio'),
           ),
           Text(
-            file != null ? file!.uri.pathSegments.last : '',
+            pickerResult != null ? pickerResult!.files.single.name : '',
           ),
           TextField(
             controller: textController,
@@ -107,16 +105,17 @@ class _PostPageViewState extends State<PostPageView> {
                 return AsyncSubmitButton(
                   child: const Text('Submit'),
                   onPressed:
-                      file != null && textController.text.isNotEmpty
+                      pickerResult != null && textController.text.isNotEmpty
                           ? () async {
                               await CastDatabase.instance.createCast(
                                 title: textController.text,
-                                file: file!,
+                                file: pickerResult!.files.single,
+                                durationMs: durationMs!,
                               );
                               setState(() {
                                 // Force rebuild of the cast list.
                                 listKey = UniqueKey();
-                                file = null;
+                                pickerResult = null;
                                 textController.clear();
                               });
                             }

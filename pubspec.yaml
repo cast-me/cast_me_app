@@ -32,6 +32,7 @@ dependencies:
   launch_review: ^3.0.1
   implicit_navigator: ^1.2.1
   intl: ^0.17.0
+  image_cropper: ^3.0.0
 
 dev_dependencies:
   flutter_test:
