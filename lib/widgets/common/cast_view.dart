@@ -8,6 +8,7 @@ import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CastPreview extends StatelessWidget {
   const CastPreview({
@@ -249,7 +250,7 @@ class _AuthorLine extends StatelessWidget {
 String _oldString(DateTime createdAt) {
   final Duration howOld = DateTime.now().difference(createdAt);
   if (howOld.inDays > 31) {
-    return '${createdAt.month}/${createdAt.day}';
+    return DateFormat('MMM d').format(createdAt);
   }
   if (howOld.inHours > 24) {
     return '${howOld.inDays}d';

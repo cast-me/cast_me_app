@@ -7,6 +7,8 @@ import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter/media_information.dart';
+import 'package:ffmpeg_kit_flutter/media_information_session.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -139,8 +141,14 @@ Map<String, dynamic> _castToRow(Cast cast) {
 }
 
 Future<int> _getFileDuration(String mediaPath) async {
-  final mediaInfoSession = await FFprobeKit.getMediaInformation(mediaPath);
-  final mediaInfo = mediaInfoSession.getMediaInformation()!;
+  final MediaInformationSession mediaInfoSession =
+      await FFprobeKit.getMediaInformation(mediaPath);
+  final MediaInformation? mediaInfo = mediaInfoSession.getMediaInformation();
+  if (mediaInfo == null) {
+    throw Exception('Could not find audio file. This is a known bug, '
+        'please reselect the audio file and tap submit again and it should '
+        'work.');
+  }
 
   // the given duration is in fractional seconds, convert to ms
   final int durationMs =
