@@ -6,9 +6,11 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
+
 import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:launch_review/launch_review.dart';
 
 class PostPageView extends StatefulWidget {
@@ -23,7 +25,7 @@ class _PostPageViewState extends State<PostPageView> {
   int? durationMs;
   final TextEditingController textController = TextEditingController();
 
-  // Used to externally force the cast list to rebuild with a new strFeam.
+  // Used to externally force the cast list to rebuild with a new stream.
   Key listKey = UniqueKey();
 
   @override

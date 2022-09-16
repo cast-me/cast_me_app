@@ -12,6 +12,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -113,12 +114,17 @@ class AuthManager extends ChangeNotifier {
         );
         // There's a bug in supabase storage where it only understands jpeg.
         // https://github.com/supabase-community/supabase-flutter/issues/213
-        final String fileExt =
-            profilePicture.path.split('.').last.replaceAll('jpg', 'jpeg');
+        final String fileExt = profilePicture.path.split('.').last;
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
-        await profilePicturesBucket.uploadBinary(fileName, imageBytes);
+        await profilePicturesBucket.uploadBinary(
+          fileName,
+          imageBytes,
+          fileOptions: FileOptions(
+            contentType: lookupMimeType(profilePicture.path),
+          ),
+        );
         final String profilePictureUrl =
             profilePicturesBucket.getPublicUrl(fileName);
         final PaletteGenerator paletteGenerator =
