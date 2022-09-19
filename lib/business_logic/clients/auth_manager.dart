@@ -8,6 +8,7 @@ import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -155,6 +156,7 @@ class AuthManager extends ChangeNotifier {
         if (_profile == null) {
           _signInState = SignInState.completingProfile;
         } else {
+          await _setRegistrationToken();
           _signInState = SignInState.signedIn;
         }
       },
@@ -212,6 +214,13 @@ class AuthManager extends ChangeNotifier {
   // Exposed so that `AuthFutureUtil` can call it.
   void _notifyListeners() {
     notifyListeners();
+  }
+
+  Future<void> _setRegistrationToken() async {
+    await fcmRegistrationTokensQuery.upsert({
+      'id': supabase.auth.currentUser!.id,
+      'registration_token': (await FirebaseMessaging.instance.getToken())!,
+    });
   }
 }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/background_audio_handler.dart';
+import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/firebase_options.dart';
 
@@ -51,6 +52,7 @@ void main() async {
           androidNotificationChannelName: 'Cast playback',
         ),
       );
+      BackgroundMessageHandler.register();
       runApp(const CastMeApp());
     },
     (error, stack) {
