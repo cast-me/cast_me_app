@@ -1,10 +1,14 @@
 import 'dart:io';
 
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/common/async_submit_button.dart';
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
+import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
 import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -18,44 +22,39 @@ class CompleteProfileView extends StatefulWidget {
 class _CompleteProfileViewState extends State<CompleteProfileView> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
-  final ValueNotifier<XFile?> selectedPhoto = ValueNotifier(null);
+  final ValueNotifier<CroppedFile?> selectedPhoto = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
-    return AuthFlowBuilder(builder: (context, authManager, _) {
-      return Column(
+    return CastMePage(
+      headerText: 'Complete Profile',
+      child: Column(
         children: [
-          Text(
-            'Complete your profile',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
-          ),
           _UsernamePicker(controller: usernameController),
           _DisplayNamePicker(controller: displayNameController),
           _ProfilePicturePicker(selectedPhoto: selectedPhoto),
           AuthSubmitButtonWrapper(
-            child: ValueListenableBuilder<XFile?>(
-              valueListenable: selectedPhoto,
-              builder: (context, photo, _) {
-                return ElevatedButton(
-                  onPressed: selectedPhoto.value != null
-                      ? () async {
-                          await authManager.completeUserProfile(
-                            username: usernameController.text,
-                            displayName: displayNameController.text,
-                            profilePicture: File(selectedPhoto.value!.path),
-                          );
-                        }
-                      : null,
-                  child: const Text('Submit'),
-                );
-              }
-            ),
+            child: ValueListenableBuilder<CroppedFile?>(
+                valueListenable: selectedPhoto,
+                builder: (context, photo, _) {
+                  return ElevatedButton(
+                    onPressed: selectedPhoto.value != null
+                        ? () async {
+                            await AuthManager.instance.completeUserProfile(
+                              username: usernameController.text,
+                              displayName: displayNameController.text,
+                              profilePicture: File(selectedPhoto.value!.path),
+                            );
+                          }
+                        : null,
+                    child: const Text('Submit'),
+                  );
+                }),
           ),
           const AuthErrorView(),
         ],
-      );
-    });
+      ),
+    );
   }
 }
 
@@ -65,11 +64,11 @@ class _ProfilePicturePicker extends StatelessWidget {
     required this.selectedPhoto,
   }) : super(key: key);
 
-  final ValueNotifier<XFile?> selectedPhoto;
+  final ValueNotifier<CroppedFile?> selectedPhoto;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<XFile?>(
+    return ValueListenableBuilder<CroppedFile?>(
         valueListenable: selectedPhoto,
         builder: (context, photo, _) {
           return Column(
@@ -77,22 +76,13 @@ class _ProfilePicturePicker extends StatelessWidget {
               if (photo != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: Image.file(
-                        File(photo.path),
-                      ),
+                  child: ProfilePictureBaseView(
+                    imageProvider: FileImage(
+                      File(selectedPhoto.value!.path),
                     ),
                   ),
                 ),
-              ElevatedButton(
-                onPressed: () async {
-                  selectedPhoto.value = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                },
+              AsyncSubmitButton(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -105,6 +95,24 @@ class _ProfilePicturePicker extends StatelessWidget {
                     ),
                   ],
                 ),
+                onPressed: () async {
+                  final XFile? file = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                  if (file == null) {
+                    return;
+                  }
+
+                  final CroppedFile? croppedImage =
+                      await ImageCropper.platform.cropImage(
+                    sourcePath: file.path,
+                    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+                    cropStyle: CropStyle.circle,
+                  );
+                  if (croppedImage == null) {
+                    return;
+                  }
+                  selectedPhoto.value = croppedImage;
+                },
               ),
             ],
           );

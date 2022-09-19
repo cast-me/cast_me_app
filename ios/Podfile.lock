@@ -49,19 +49,19 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (9.3.0):
-    - FirebaseCore (= 9.3.0)
-  - Firebase/Crashlytics (9.3.0):
+  - Firebase/CoreOnly (9.4.0):
+    - FirebaseCore (= 9.4.0)
+  - Firebase/Crashlytics (9.4.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 9.3.0)
-  - firebase_core (1.20.1):
-    - Firebase/CoreOnly (= 9.3.0)
+    - FirebaseCrashlytics (~> 9.4.0)
+  - firebase_core (1.21.0):
+    - Firebase/CoreOnly (= 9.4.0)
     - Flutter
-  - firebase_crashlytics (2.8.7):
-    - Firebase/Crashlytics (= 9.3.0)
+  - firebase_crashlytics (2.8.8):
+    - Firebase/Crashlytics (= 9.4.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (9.3.0):
+  - FirebaseCore (9.4.0):
     - FirebaseCoreDiagnostics (~> 9.0)
     - FirebaseCoreInternal (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
@@ -73,7 +73,7 @@ PODS:
     - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseCoreInternal (9.4.0):
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-  - FirebaseCrashlytics (9.3.0):
+  - FirebaseCrashlytics (9.4.0):
     - FirebaseCore (~> 9.0)
     - FirebaseInstallations (~> 9.0)
     - GoogleDataTransport (< 10.0.0, >= 9.1.4)
@@ -100,6 +100,9 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.7.0)"
   - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
+  - image_cropper (0.0.4):
+    - Flutter
+    - TOCropViewController (~> 2.6.1)
   - image_picker_ios (0.0.1):
     - Flutter
   - just_audio (0.0.1):
@@ -126,6 +129,7 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - SwiftyGif (5.4.3)
+  - TOCropViewController (2.6.1)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -139,6 +143,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
+  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - launch_review (from `.symlinks/plugins/launch_review/ios`)
@@ -167,6 +172,7 @@ SPEC REPOS:
     - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   app_links:
@@ -187,6 +193,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
+  image_cropper:
+    :path: ".symlinks/plugins/image_cropper/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   just_audio:
@@ -214,18 +222,19 @@ SPEC CHECKSUMS:
   ffmpeg-kit-ios-https: cec24d405b511e4f274980d8a9c751d384f89558
   ffmpeg_kit_flutter: e2f0bd6b75e361faeee3b34c70650d3ec6ec35d0
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
-  Firebase: ef75abb1cdbc746d5a38f4e26c422c807b189b8c
-  firebase_core: e66a443ec996cb5e364dc70b4cfc1809c32cbb2e
-  firebase_crashlytics: 95cb124fe8ba64e9cedad8816b8aee6204f8dbeb
-  FirebaseCore: c088995ece701a021a48a1348ea0174877de2a6a
+  Firebase: 7703fc4022824b6d6db1bf7bea58d13b8e17ec46
+  firebase_core: c1cdfa024dc7f3d1ba8055a2ae323dba3dce4fa1
+  firebase_crashlytics: 9d4c077beef324d54ae06bc99d3b78071b96b5ff
+  FirebaseCore: 9a2b10270a854731c4d4d8a97d0aa8380ec3458d
   FirebaseCoreDiagnostics: aaa87098082c4d4bdd1a9557b1186d18ca85ce8c
   FirebaseCoreInternal: a13302b0088fbf5f38b79b6ece49c2af7d3e05d6
-  FirebaseCrashlytics: 65a5b349e664e986e6c7486b0a9b5ed8c11d0491
+  FirebaseCrashlytics: 121ea1d37f4906c94c4c9307297af5121b98b789
   FirebaseInstallations: 61db1054e688d2bdc4e2b3f744c1b086e913b742
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  image_cropper: 60c2789d1f1a78c873235d4319ca0c34a69f2d98
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
@@ -238,8 +247,9 @@ SPEC CHECKSUMS:
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
-PODFILE CHECKSUM: 7adbc9d59f05e1b01f554ea99b6c79e97f2214a2
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
 COCOAPODS: 1.11.3

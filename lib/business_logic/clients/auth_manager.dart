@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
@@ -12,13 +13,24 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier {
-  AuthManager._();
+  AuthManager._() {
+    supabase.auth.onAuthStateChange((event, session) {
+      if (_signInState == SignInState.verifyingEmail &&
+          event == AuthChangeEvent.signedIn) {
+        // Edge case to catch when the user has externally verified
+        // their email.
+        _signInState = SignInState.completingProfile;
+        notifyListeners();
+      }
+    });
+  }
 
   static final AuthManager instance = AuthManager._();
 
@@ -46,6 +58,12 @@ class AuthManager extends ChangeNotifier {
   Object? _authError;
 
   Object? get authError => _authError;
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final confirmPasswordController = TextEditingController();
 
   void toggleAccountRegistrationFlow() {
     if (signInState == SignInState.registering) {
@@ -83,27 +101,6 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<bool> checkEmailIsVerified({
-    required String email,
-    required String password,
-  }) async {
-    bool wasSuccess = false;
-    await _authActionWrapper(
-      'checkEmailIsVerified',
-      () async {
-        await supabase.auth
-            .signIn(
-              email: email,
-              password: password,
-            )
-            .errorToException();
-        wasSuccess = true;
-        _signInState = SignInState.completingProfile;
-      },
-    );
-    return wasSuccess;
-  }
-
   Future<void> completeUserProfile({
     required String username,
     required String displayName,
@@ -116,11 +113,19 @@ class AuthManager extends ChangeNotifier {
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
         );
+        // There's a bug in supabase storage where it only understands jpeg.
+        // https://github.com/supabase-community/supabase-flutter/issues/213
         final String fileExt = profilePicture.path.split('.').last;
         // Anonymize the file name so we don't get naming conflicts.
         final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
-        await profilePicturesBucket.uploadBinary(fileName, imageBytes);
+        await profilePicturesBucket.uploadBinary(
+          fileName,
+          imageBytes,
+          fileOptions: FileOptions(
+            contentType: lookupMimeType(profilePicture.path),
+          ),
+        );
         final String profilePictureUrl =
             profilePicturesBucket.getPublicUrl(fileName);
         final PaletteGenerator paletteGenerator =
@@ -146,12 +151,26 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'signIn',
       () async {
-        await supabase.auth
-            .signIn(
-              email: email,
-              password: password,
-            )
-            .errorToException();
+        bool emailNotConfirmed = false;
+        try {
+          await supabase.auth
+              .signIn(
+                email: email,
+                password: password,
+              )
+              .errorToException();
+        } catch (e) {
+          if (e is GoTrueException &&
+              e.message.contains('Email not confirmed')) {
+            emailNotConfirmed = true;
+          } else {
+            rethrow;
+          }
+        }
+        if (emailNotConfirmed) {
+          _signInState = SignInState.verifyingEmail;
+          return;
+        }
         _profile = await _fetchProfile();
         if (_profile == null) {
           _signInState = SignInState.completingProfile;
@@ -163,16 +182,27 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<void> signOut() async {
+  void exitEmailVerification() {
+    _signInState = SignInState.registering;
+    notifyListeners();
+  }
+
+  Future<void> signOut({bool returnToRegistering = false}) async {
     await _authActionWrapper(
       'signOut',
       () async {
         await supabase.auth.signOut().errorToException();
         _profile = null;
-        _signInState = SignInState.signingIn;
-        notifyListeners();
+        if (returnToRegistering) {
+          _signInState = SignInState.registering;
+        } else {
+          _signInState = SignInState.signingIn;
+        }
       },
     );
+    // Also reset the current tab so that the user goes back to home if they log
+    // back in.
+    CastMeBloc.instance.currentTab.value = CastMeTab.listen;
   }
 
   Future<void> initialize() async {
@@ -211,9 +241,33 @@ class AuthManager extends ChangeNotifier {
         .withConverter<Profile?>(_rowToCastMeProfile);
   }
 
-  // Exposed so that `AuthFutureUtil` can call it.
-  void _notifyListeners() {
+  // Wrap around any auth action to update Auth Manager state on finish.
+  Future<void> _authActionWrapper(
+    String action,
+    AsyncCallback authAction,
+  ) async {
+    _isProcessing = true;
     notifyListeners();
+    await authAction().then(
+      (value) async {
+        // Action was successful, clear last error.
+        _authError = null;
+        return value;
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        FirebaseCrashlytics.instance.recordError(error, stackTrace);
+        log(
+          'Auth action failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        _authError = error;
+        throw error;
+      },
+    ).whenComplete(() {
+      _isProcessing = false;
+      notifyListeners();
+    });
   }
 
   Future<void> _setRegistrationToken() async {
@@ -243,36 +297,6 @@ extension CastMeUserUtils on CastMeProfileBase {
   Map<String, dynamic> toSQLJson() {
     return (toProto3Json() as Map<String, dynamic>).toSnakeCase();
   }
-}
-
-// Wrap around any auth action to update Auth Manager state on error or success.
-Future<void> _authActionWrapper(
-  String action,
-  AsyncCallback authAction,
-) async {
-  final AuthManager authManager = AuthManager.instance;
-  authManager._isProcessing = true;
-  authManager._notifyListeners();
-  await authAction().then(
-    (value) async {
-      // Action was successful, clear last error.
-      authManager._authError = null;
-      return value;
-    },
-    onError: (Object error, StackTrace stackTrace) {
-      FirebaseCrashlytics.instance.recordError(error, stackTrace);
-      log(
-        'Auth action failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      authManager._authError = error;
-      throw error;
-    },
-  ).whenComplete(() {
-    authManager._isProcessing = false;
-    authManager._notifyListeners();
-  });
 }
 
 typedef Profile = CastMeProfileBase;

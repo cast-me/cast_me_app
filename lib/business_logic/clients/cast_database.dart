@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -7,6 +5,9 @@ import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter/media_information.dart';
+import 'package:ffmpeg_kit_flutter/media_information_session.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,6 +21,7 @@ class CastDatabase {
     Profile? filterProfile,
     Profile? filterOutProfile,
     bool skipViewed = false,
+    bool oldestFirst = false,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
@@ -34,7 +36,7 @@ class CastDatabase {
     }
     final List<Cast>? casts = await queryBuilder
         .order(hasViewedCol, ascending: true)
-        .order(createdAtCol)
+        .order(createdAtCol, ascending: oldestFirst)
         .withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
     });
@@ -47,27 +49,28 @@ class CastDatabase {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
+      oldestFirst: true,
     ).where((cast) => cast.id != seedCast.id);
   }
 
   Future<void> createCast({
     required String title,
-    required File file,
+    required PlatformFile file,
+    required int durationMs,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
-    final int durationMs = await _getFileDuration(file.path);
-    final String fileExt = file.path.split('.').last;
+    final String fileExt = file.name.split('.').last;
     // Hash the file name so we don't get naming conflicts. Since we're using a
     // hash, redundant uploads won't increase storage usage. We're prefixing
     // with the username so that when a user deletes a cast we can safely delete
     // the storage object-we're preventing another user from uploading the same
     // file under the exact same name.
     final String fileName = '${AuthManager.instance.profile.username}'
-        '_${await sha1.bind(file.openRead()).first}.$fileExt';
+        '_${sha1.convert(file.bytes!)}.$fileExt';
 
-    await castAudioFileBucket.upload(
+    await castAudioFileBucket.uploadBinary(
       fileName,
-      file,
+      file.bytes!,
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
@@ -97,8 +100,8 @@ class CastDatabase {
     );
   }
 
-  Future<void> setViewed({required Cast cast}) async {
-    await viewsQuery.insert({
+  Future<void> setListened({required Cast cast}) async {
+    await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
     });
@@ -108,7 +111,7 @@ class CastDatabase {
     required Cast cast,
     required SkippedReason skippedReason,
   }) async {
-    await viewsQuery.insert({
+    await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
       'skipped_reason': skippedReason.toString().split('.').last,
@@ -136,12 +139,13 @@ Map<String, dynamic> _castToRow(Cast cast) {
   return (cast.toProto3Json() as Map<String, dynamic>).toSnakeCase();
 }
 
-Future<int> _getFileDuration(String mediaPath) async {
-  final mediaInfoSession = await FFprobeKit.getMediaInformation(mediaPath);
-  final mediaInfo = mediaInfoSession.getMediaInformation()!;
+Future<int> getFileDuration(String mediaPath) async {
+  final MediaInformationSession mediaInfoSession =
+      await FFprobeKit.getMediaInformation(mediaPath);
+  final MediaInformation? mediaInfo = mediaInfoSession.getMediaInformation();
 
   // the given duration is in fractional seconds, convert to ms
   final int durationMs =
-      (double.parse(mediaInfo.getDuration()!) * 1000).round();
+      (double.parse(mediaInfo!.getDuration()!) * 1000).round();
   return durationMs;
 }

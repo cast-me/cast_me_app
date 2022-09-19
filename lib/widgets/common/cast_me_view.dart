@@ -7,15 +7,18 @@ import 'package:cast_me_app/pages/profile_page_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
+import 'package:implicit_navigator/implicit_navigator.dart';
 
 class CastMeView extends StatelessWidget {
   const CastMeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<CastMeTab>(
-      valueListenable: CastMeBloc.instance.currentTab,
-      builder: (context, currentTab, _) {
+    return ImplicitNavigator.fromValueNotifier<CastMeTab>(
+      valueNotifier: CastMeBloc.instance.currentTab,
+      transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
+      getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
+      builder: (context, currentTab, animation, secondaryAnimation) {
         return ValueListenableBuilder<bool>(
           valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
           builder: (context, isExpanded, child) {

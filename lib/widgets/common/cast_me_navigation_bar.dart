@@ -27,7 +27,8 @@ class CastMeNavigationBar extends StatelessWidget {
           items: CastMeTabs.tabs.values.toList(),
           selectedIconTheme: const IconThemeData(size: 36),
           onTap: (tabIndex) {
-            CastMeBloc.instance.onTabChanged(CastMeTabs.indexToTab(tabIndex));
+            CastMeBloc.instance.currentTab.value =
+                CastMeTabs.indexToTab(tabIndex);
           },
           elevation: 0,
         );

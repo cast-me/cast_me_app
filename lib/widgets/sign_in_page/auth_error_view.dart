@@ -1,5 +1,5 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow_builder.dart';
+import 'package:cast_me_app/widgets/sign_in_page/auth_flow/auth_flow_builder.dart';
 
 import 'package:flutter/material.dart';
 
