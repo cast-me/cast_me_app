@@ -4,8 +4,6 @@ import 'package:cast_me_app/business_logic/post_bloc.dart';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:share_handler_platform_interface/share_handler_platform_interface.dart';
-
 /// Contains the top level state for the CastMe App.
 ///
 /// "BLoC" stands for "business logic component". This and other classes named

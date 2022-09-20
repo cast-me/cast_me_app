@@ -8,7 +8,6 @@ import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter/media_information.dart';
 import 'package:ffmpeg_kit_flutter/media_information_session.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
