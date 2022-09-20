@@ -38,6 +38,9 @@ class _PostPageViewState extends State<PostPageView> {
                     'Currently, ONLY `.mp3` and `.m4a` files are supported. '
                     'More file types and the ability to record and edit clips '
                     'in-app will be added.\n'
+                    'You can select an audio file using the button below or '
+                    'can use the share button in the app containing your audio '
+                    'file (select CastMe as the app to share to).\n'
                     '\n'
                     'Recommended external recording app:'),
                 const AudioRecorderRecommender(),
