@@ -14,7 +14,11 @@ const String hasViewedCol = 'has_viewed';
 
 const String authorIdCol = 'author_id';
 
+const String authorDisplayNameCol = 'author_display_name';
+
 const String castIdCol = 'id';
+
+const String titleCol = 'title';
 
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 

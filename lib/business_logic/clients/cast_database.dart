@@ -22,6 +22,7 @@ class CastDatabase {
     Profile? filterOutProfile,
     bool skipViewed = false,
     bool oldestFirst = false,
+    String? searchTerm,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
@@ -33,6 +34,9 @@ class CastDatabase {
     }
     if (skipViewed) {
       queryBuilder = queryBuilder.eq(hasViewedCol, false);
+    }
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      queryBuilder = queryBuilder.ilike(titleCol, '%$searchTerm%');
     }
     final List<Cast>? casts = await queryBuilder
         .order(hasViewedCol, ascending: true)
@@ -86,6 +90,8 @@ class CastDatabase {
   Future<void> deleteCast({
     required Cast cast,
   }) async {
+    final List<dynamic> res =
+        await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
     final List<dynamic> rowResult =
         await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
     assert(

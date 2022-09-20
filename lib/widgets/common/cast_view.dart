@@ -179,7 +179,8 @@ class _CastMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // Fetch these here because we don't have a valid `context` from an
     // onPressed callback.
-    final CastListViewState? castListView = CastListView.of(context);
+    final CastListController? castListViewController =
+        CastListController.of(context);
     final Cast cast = CastProvider.of(context);
     if (AuthManager.instance.profile.id != cast.authorId) {
       return Container();
@@ -192,7 +193,7 @@ class _CastMenu extends StatelessWidget {
               onPressed: () async {
                 hideMenu();
                 await CastDatabase.instance.deleteCast(cast: cast);
-                castListView?.refresh();
+                castListViewController?.refresh();
               },
               child: Row(
                 children: const [

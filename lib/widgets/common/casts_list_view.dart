@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async_list_view/async_list_view.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 
@@ -16,6 +18,7 @@ class CastListView extends StatefulWidget {
     this.filterOutProfile,
     this.padding,
     this.fullyInteractive = true,
+    this.controller,
   }) : super(key: key);
 
   /// If non-null, fetch only casts authored by the specified user.
@@ -28,21 +31,28 @@ class CastListView extends StatefulWidget {
 
   final EdgeInsets? padding;
 
-  @override
-  State<CastListView> createState() => CastListViewState();
+  final CastListController? controller;
 
-  static CastListViewState? of(BuildContext context) {
-    return context.findAncestorStateOfType<CastListViewState>();
-  }
+  @override
+  State<CastListView> createState() => _CastListViewState();
 }
 
-class CastListViewState extends State<CastListView> {
-  late Stream<Cast> _castStream = _getStream();
+class _CastListViewState extends State<CastListView> {
+  // TODO(caseycriogers): this will cause a bug if a controller is added later,
+  //   consider adding didUpdateWidget logic.
+  late CastListController controller =
+      widget.controller ?? CastListController();
 
-  void refresh() {
-    setState(() {
-      _castStream = _getStream();
-    });
+  @override
+  void initState() {
+    super.initState();
+    controller._attach(this);
+  }
+
+  @override
+  void dispose() {
+    controller._detach(this);
+    super.dispose();
   }
 
   @override
@@ -50,48 +60,119 @@ class CastListViewState extends State<CastListView> {
     return RefreshIndicator(
       color: Colors.white,
       onRefresh: () async {
-        refresh();
+        controller.refresh();
       },
-      child: AsyncListView<Cast>(
-        padding: widget.padding,
-        stream: _castStream,
-        itemBuilder: (
-          context,
-          snapshot,
-          index,
-        ) {
-          if (!snapshot.hasData) {
-            return const AdaptiveText('loading...');
-          }
-          return CastPreview(
-            cast: snapshot.data![index],
-            fullyInteractive: widget.fullyInteractive,
-          );
-        },
-        loadingWidget: const Center(
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: CircularProgressIndicator(color: Colors.white),
-          ),
-        ),
-        noResultsWidgetBuilder: (context) {
-          return const Center(
-            child: Text(
-              'Could not find any casts',
-              textAlign: TextAlign.center,
+      // Wrap in an animated builder so that the controller can force the list
+      // view to rebuild.
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) {
+          return AsyncListView<Cast>(
+            padding: widget.padding,
+            stream: controller._castStream,
+            itemBuilder: (
+              context,
+              snapshot,
+              index,
+            ) {
+              if (!snapshot.hasData) {
+                return const AdaptiveText('loading...');
+              }
+              return CastPreview(
+                cast: snapshot.data![index],
+                fullyInteractive: widget.fullyInteractive,
+              );
+            },
+            loadingWidget: const Center(
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
             ),
+            noResultsWidgetBuilder: (context) {
+              return const Center(
+                child: Text(
+                  'Could not find any casts',
+                  textAlign: TextAlign.center,
+                ),
+              );
+            },
           );
         },
       ),
     );
   }
+}
+
+class CastListController extends ChangeNotifier {
+  CastListController();
+
+  late Stream<Cast> _castStream;
+  _CastListViewState? _widgetState;
+
+  void refresh() {
+    _castStream = _getStream();
+    notifyListeners();
+  }
+
+  static CastListController? of(BuildContext context) {
+    return context.findAncestorStateOfType<_CastListViewState>()?.controller;
+  }
+
+  void _attach(_CastListViewState castListView) {
+    assert(
+      _widgetState == null,
+      'can only be attached to one list view at a time',
+    );
+    _widgetState = castListView;
+    _castStream = _getStream();
+  }
+
+  void _detach(_CastListViewState castListView) {
+    assert(_widgetState == castListView);
+    _widgetState = null;
+  }
 
   Stream<Cast> _getStream() {
+    assert(_widgetState != null, 'You must attach the controller first.');
     return CastDatabase.instance
         .getCasts(
-            filterProfile: widget.filterProfile,
-            filterOutProfile: widget.filterOutProfile)
+      filterProfile: _widgetState!.widget.filterProfile,
+      filterOutProfile: _widgetState!.widget.filterOutProfile,
+    )
+        .handleError((Object error) {
+      if (kDebugMode) {
+        print(error);
+      }
+    });
+  }
+}
+
+class SearchCastListController extends CastListController {
+  SearchCastListController() {
+    String previousText = searchTextController.text;
+    searchTextController.addListener(() {
+      if (searchTextController.text == previousText) {
+        return;
+      }
+      previousText = searchTextController.text;
+      _castStream = _getStream();
+      notifyListeners();
+    });
+  }
+
+  final TextEditingController searchTextController = TextEditingController();
+
+  @override
+  Stream<Cast> _getStream() {
+    assert(_widgetState != null, 'You must attach the controller first.');
+    return CastDatabase.instance
+        .getCasts(
+      filterProfile: _widgetState!.widget.filterProfile,
+      filterOutProfile: _widgetState!.widget.filterOutProfile,
+      searchTerm: searchTextController.text,
+    )
         .handleError((Object error) {
       if (kDebugMode) {
         print(error);

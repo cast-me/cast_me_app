@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
+import 'package:cast_me_app/widgets/poast_page/audio_recorder_recommender.dart';
+import 'package:cast_me_app/widgets/poast_page/reply_cast_selector.dart';
 
 import 'package:file_picker/file_picker.dart';
 
@@ -24,9 +27,8 @@ class _PostPageViewState extends State<PostPageView> {
   FilePickerResult? pickerResult;
   int? durationMs;
   final TextEditingController textController = TextEditingController();
-
-  // Used to externally force the cast list to rebuild with a new stream.
-  Key listKey = UniqueKey();
+  final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
+  final CastListController castListController = CastListController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,44 +42,8 @@ class _PostPageViewState extends State<PostPageView> {
               'in-app will be added.\n'
               '\n'
               'Recommended external recording app:'),
-          if (Platform.isIOS)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                onTap: () {
-                  LaunchReview.launch(
-                    iOSAppId: '1069512134',
-                    writeReview: false,
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: AdaptiveText(
-                    'Voice Memos',
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ),
-                ),
-              ),
-            ),
-          if (Platform.isAndroid)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                onTap: () {
-                  LaunchReview.launch(
-                    androidAppId: 'com.zaza.beatbox',
-                    writeReview: false,
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: AdaptiveText(
-                    'Pro Audio Editor',
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ),
-                ),
-              ),
-            ),
+          const AudioRecorderRecommender(),
+          const AdaptiveText('Cast file:'),
           ElevatedButton(
             onPressed: () async {
               pickerResult = await FilePicker.platform.pickFiles(
@@ -97,6 +63,7 @@ class _PostPageViewState extends State<PostPageView> {
           Text(
             pickerResult != null ? pickerResult!.files.single.name : '',
           ),
+          ReplyCastSelector(replyCast: replyCast),
           TextField(
             controller: textController,
             decoration: const InputDecoration(labelText: 'Cast title'),
@@ -115,8 +82,7 @@ class _PostPageViewState extends State<PostPageView> {
                                 durationMs: durationMs!,
                               );
                               setState(() {
-                                // Force rebuild of the cast list.
-                                listKey = UniqueKey();
+                                castListController.refresh();
                                 pickerResult = null;
                                 textController.clear();
                               });
@@ -128,8 +94,7 @@ class _PostPageViewState extends State<PostPageView> {
           const SizedBox(height: 4),
           Expanded(
             child: CastListView(
-              // Use this to force rebuilding with a new stream.
-              key: listKey,
+              controller: castListController,
               filterProfile: AuthManager.instance.profile,
               fullyInteractive: false,
               padding: EdgeInsets.zero,
