@@ -1,7 +1,10 @@
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/post_bloc.dart';
 
 import 'package:flutter/foundation.dart';
+
+import 'package:share_handler_platform_interface/share_handler_platform_interface.dart';
 
 /// Contains the top level state for the CastMe App.
 ///
@@ -17,7 +20,24 @@ class CastMeBloc {
 
   static final instance = CastMeBloc._();
 
-  final ValueNotifier<CastMeTab> currentTab = ValueNotifier(CastMeTab.listen);
+  final ValueNotifier<CastMeTab> _currentTab = ValueNotifier(CastMeTab.listen);
+
+  ValueListenable<CastMeTab> get currentTab => _currentTab;
 
   final ListenBloc listenBloc = ListenBloc.instance;
+
+  final PostBloc postBloc = PostBloc.instance;
+
+  void onTabIndexChanged(int newIndex) {
+    onTabChanged(CastMeTabs.indexToTab(newIndex));
+  }
+
+  void onTabChanged(CastMeTab newTab) {
+    _currentTab.value = newTab;
+  }
+
+  Future<void> onSharedFile(Iterable<String> filePaths) async {
+    await postBloc.onFilesSelected(filePaths);
+    onTabChanged(_currentTab.value = CastMeTab.post);
+  }
 }

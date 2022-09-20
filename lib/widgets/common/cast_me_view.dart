@@ -5,6 +5,7 @@ import 'package:cast_me_app/pages/listen_page_view.dart';
 import 'package:cast_me_app/pages/post_page_view.dart';
 import 'package:cast_me_app/pages/profile_page_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:implicit_navigator/implicit_navigator.dart';
@@ -14,8 +15,11 @@ class CastMeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImplicitNavigator.fromValueNotifier<CastMeTab>(
-      valueNotifier: CastMeBloc.instance.currentTab,
+    return ImplicitNavigator.selectFromListenable<ValueListenable<CastMeTab>,
+        CastMeTab>(
+      listenable: CastMeBloc.instance.currentTab,
+      selector: () => CastMeBloc.instance.currentTab.value,
+      onPop: (_, tabAfterPop) => CastMeBloc.instance.onTabChanged(tabAfterPop),
       transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
       getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
       builder: (context, currentTab, animation, secondaryAnimation) {

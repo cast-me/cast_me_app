@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/background_audio_handler.dart';
 import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
@@ -9,6 +10,7 @@ import 'package:cast_me_app/firebase_options.dart';
 
 import 'package:cast_me_app/widgets/common/auth_gate.dart';
 import 'package:cast_me_app/widgets/common/cast_me_view.dart';
+import 'package:cast_me_app/widgets/common/share_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
@@ -54,6 +56,7 @@ void main() async {
         ),
       );
       BackgroundMessageHandler.register();
+      await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
       runApp(const CastMeApp());
     },
     (error, stack) {

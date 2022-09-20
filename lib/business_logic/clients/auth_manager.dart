@@ -202,7 +202,7 @@ class AuthManager extends ChangeNotifier {
     );
     // Also reset the current tab so that the user goes back to home if they log
     // back in.
-    CastMeBloc.instance.currentTab.value = CastMeTab.listen;
+    CastMeBloc.instance.onTabChanged(CastMeTab.listen);
   }
 
   Future<void> initialize() async {
