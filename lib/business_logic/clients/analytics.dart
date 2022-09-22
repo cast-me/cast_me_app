@@ -1,12 +1,61 @@
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Analytics {
   Analytics._();
 
   static final Analytics instance = Analytics._();
 
+  // AUTH
+  // TODO(caseycrgers): some of these are logged after the auth action is
+  //  complete which is inconsistent with all other logging. Consider flipping.
+  void logSignUp({
+    required String email,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'signUp',
+      parameters: {
+        'email': email,
+      },
+    );
+  }
+
+  void logCompleteProfile({
+    required User user,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'completeProfile',
+      parameters: {
+        'user_id': user.id,
+      },
+    );
+  }
+
+  // Allow user to be null because if we sign in and haven't verified our email
+  // we won't have access to `User` yet.
+  void logSignIn({
+    required User? user,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'signIn',
+      parameters: {
+        'user_id': user?.id,
+      },
+    );
+  }
+
+  void logSignOut({
+    required User user,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'signOut',
+      parameters: {
+        'user_id': user.id,
+      },
+    );
+  }
 
   // GENERAL UI
   void logTabSelect({
@@ -18,7 +67,7 @@ class Analytics {
       parameters: {
         'fromTab': fromTab.prettyName,
         'toTab': toTab.prettyName,
-      }
+      },
     );
   }
 

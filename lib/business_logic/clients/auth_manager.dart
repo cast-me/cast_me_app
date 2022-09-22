@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
@@ -96,6 +97,7 @@ class AuthManager extends ChangeNotifier {
             rethrow;
           }
         }
+        Analytics.instance.logSignUp(email: email);
         _signInState = SignInState.verifyingEmail;
       },
     );
@@ -109,6 +111,7 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'completeUserProfile',
       () async {
+        Analytics.instance.logCompleteProfile(user: supabase.auth.currentUser!);
         assert(
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
@@ -180,6 +183,7 @@ class AuthManager extends ChangeNotifier {
         }
       },
     );
+    Analytics.instance.logSignIn(user: supabase.auth.currentUser);
   }
 
   void exitEmailVerification() {
@@ -188,6 +192,7 @@ class AuthManager extends ChangeNotifier {
   }
 
   Future<void> signOut({bool returnToRegistering = false}) async {
+    Analytics.instance.logSignOut(user: supabase.auth.currentUser!);
     await _authActionWrapper(
       'signOut',
       () async {

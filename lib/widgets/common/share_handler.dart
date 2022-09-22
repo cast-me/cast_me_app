@@ -12,6 +12,9 @@ class SharedMediaHandler {
   static Future<void> register(
       void Function(Iterable<String>) handlePaths) async {
     void _handleMedia(SharedMedia media) {
+      if (media.attachments == null) {
+        return;
+      }
       handlePaths(
         media.attachments!.map((attachment) => attachment!.path),
       );

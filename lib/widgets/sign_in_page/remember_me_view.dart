@@ -33,7 +33,7 @@ class _RememberMeViewState extends State<RememberMeView> {
                 preferences.setBool(
                   RememberMeView.toggleKeyString,
                   !(preferences.getBool(RememberMeView.toggleKeyString) ??
-                      false),
+                      true),
                 );
               });
             },
@@ -43,7 +43,7 @@ class _RememberMeViewState extends State<RememberMeView> {
                 Checkbox(
                   activeColor: Colors.black,
                   value: preferences.getBool(RememberMeView.toggleKeyString) ??
-                      false,
+                      true,
                   onChanged: (newValue) {
                     setState(() {
                       preferences.setBool(
