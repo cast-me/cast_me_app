@@ -37,4 +37,12 @@ class CastMeTabs {
   ]);
 }
 
-enum CastMeTab { listen, post, profile }
+enum CastMeTab {
+  listen,
+  post,
+  profile,
+}
+
+extension CastMeTabExtension on CastMeTab {
+  String get prettyName => name.split('.').last;
+}

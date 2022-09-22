@@ -1,3 +1,4 @@
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
@@ -80,6 +81,7 @@ class CastAudioPlayer {
     if (cast == currentCast.value) {
       return;
     }
+    Analytics.instance.logPlay(cast: cast);
     final ConcatenatingAudioSource queue = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: [
@@ -106,6 +108,7 @@ class CastAudioPlayer {
 
   Future<void> skip() async {
     final Cast cast = currentCast.value!;
+    final Duration skippedAt = _player.position;
     if (!_player.hasNext) {
       // Seek to the end of this cast.
       await _player.seek(await _player.durationFuture);
@@ -115,24 +118,27 @@ class CastAudioPlayer {
     await CastDatabase.instance.setSkipped(
       cast: cast,
       skippedReason: SkippedReason.nextButton,
+      skippedAt: skippedAt,
     );
   }
 
   Future<void> previous() async {
-    final Cast cast = currentCast.value!;
     if (!_player.hasPrevious || _player.position.inMilliseconds > 2000) {
       // Seek to the beginning of this cast.
       await _player.seek(Duration.zero);
     } else {
       await _player.seekToPrevious();
     }
-    await CastDatabase.instance.setSkipped(
-      cast: cast,
-      skippedReason: SkippedReason.nextButton,
-    );
   }
 
   Future<void> seekToCast(Cast cast) async {
+    final Cast? skippedCast = currentCast.value;
+    final Duration? skippedAt = skippedCast != null ? _player.position : null;
+    Analytics.instance.logSeek(
+      targetCast: cast,
+      skippedCast: skippedCast,
+      skippedAt: skippedAt,
+    );
     await _player.seek(
       Duration.zero,
       index: _sourceQueue!.children.indexWhere(
@@ -141,17 +147,40 @@ class CastAudioPlayer {
         },
       ),
     );
+    if (skippedCast != null) {
+      await CastDatabase.instance.setSkipped(
+        cast: cast,
+        skippedReason: SkippedReason.seekButton,
+        skippedAt: skippedAt!,
+      );
+    }
   }
 
   Future<void> pause() async {
+    Analytics.instance.logPause(
+      cast: currentCast.value,
+      pausedAt: _player.position,
+    );
     await _player.pause();
   }
 
   Future<void> unPause() async {
+    if (currentCast.value == null) {
+      return;
+    }
+    Analytics.instance.logUnpause(
+      cast: currentCast.value!,
+      unPausedAt: _player.position,
+    );
     await _player.play();
   }
 
   Future<void> seekTo(Duration duration) async {
+    Analytics.instance.logSeekTo(
+      cast: currentCast.value!,
+      seekedAt: _player.position,
+      seekedTo: duration,
+    );
     await _player.seek(duration);
   }
 
@@ -167,6 +196,11 @@ class CastAudioPlayer {
     if (newSpeed == _player.speed) {
       return;
     }
+    Analytics.instance.logSetSpeed(
+      cast: currentCast.value,
+      fromSpeed: _player.speed,
+      toSpeed: newSpeed,
+    );
     await SharedPreferences.getInstance().then((pref) {
       pref.setDouble(_playbackSpeedKey, newSpeed);
     });

@@ -1,3 +1,4 @@
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -31,6 +32,13 @@ class CastMeBloc {
   }
 
   void onTabChanged(CastMeTab newTab) {
+    if (newTab == _currentTab.value) {
+      return;
+    }
+    Analytics.instance.logTabSelect(
+      fromTab: _currentTab.value,
+      toTab: newTab,
+    );
     _currentTab.value = newTab;
   }
 

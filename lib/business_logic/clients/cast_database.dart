@@ -1,3 +1,4 @@
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -83,12 +84,19 @@ class CastDatabase {
       durationMs: castFile.durationMs,
       audioUrl: audioFileUrl,
     );
-    await castsWriteQuery.insert(_castToRow(cast));
+    final String castId = await castsWriteQuery
+        .insert(_castToRow(cast))
+        .select(castIdCol)
+        .single() as String;
+    // TODO(caseycrogers): this will only log if the create succeeds, consider
+    //   wrapping in a finally or something.
+    Analytics.instance.logCreate(castId: castId);
   }
 
   Future<void> deleteCast({
     required Cast cast,
   }) async {
+    Analytics.instance.logDelete(cast: cast);
     await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
     final List<dynamic> rowResult =
         await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
@@ -105,6 +113,7 @@ class CastDatabase {
   }
 
   Future<void> setListened({required Cast cast}) async {
+    Analytics.instance.logListen(cast: cast);
     await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
@@ -114,7 +123,9 @@ class CastDatabase {
   Future<void> setSkipped({
     required Cast cast,
     required SkippedReason skippedReason,
+    required Duration skippedAt,
   }) async {
+    Analytics.instance.logSkip(cast: cast, skippedAt: skippedAt);
     await listensQuery.insert({
       'cast_id': cast.id,
       'user_id': supabase.auth.currentUser!.id,
@@ -125,6 +136,7 @@ class CastDatabase {
 
 enum SkippedReason {
   nextButton,
+  seekButton,
 }
 
 Cast _rowToCast(dynamic row) {
