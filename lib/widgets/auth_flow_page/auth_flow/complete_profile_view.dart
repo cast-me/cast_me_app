@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';

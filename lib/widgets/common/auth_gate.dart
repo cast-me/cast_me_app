@@ -1,11 +1,13 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/pages/sign_in_page_view.dart';
+import 'package:cast_me_app/pages/auth_flow_page_view.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 
+/// This widget is used to keep users from entering the app if they don't have
+/// an internet connection or aren't logged in.
 class AuthGate extends StatelessWidget {
   const AuthGate({
     Key? key,
@@ -50,7 +52,7 @@ class AuthGate extends StatelessWidget {
                 );
               }
               if (!authManager.isFullySignedIn) {
-                return const SignInPageView();
+                return const AuthFlowPageView();
               }
               return child!;
             },

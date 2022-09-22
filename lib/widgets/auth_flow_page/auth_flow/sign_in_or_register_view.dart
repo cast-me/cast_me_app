@@ -1,10 +1,10 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_flow_builder.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/remember_me_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow/auth_flow_builder.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_submit_button_wrapper.dart';
-import 'package:cast_me_app/widgets/sign_in_page/register_switcher.dart';
-import 'package:cast_me_app/widgets/sign_in_page/remember_me_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

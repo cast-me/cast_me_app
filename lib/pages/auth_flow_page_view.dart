@@ -1,19 +1,19 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow/complete_profile_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow/sign_in_or_register_view.dart';
-import 'package:cast_me_app/widgets/sign_in_page/auth_flow/verify_email_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/sign_in_or_register_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/verify_email_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:implicit_navigator/implicit_navigator.dart';
 
-class SignInPageView extends StatefulWidget {
-  const SignInPageView({Key? key}) : super(key: key);
+class AuthFlowPageView extends StatefulWidget {
+  const AuthFlowPageView({Key? key}) : super(key: key);
 
   @override
-  State<SignInPageView> createState() => _SignInPageViewState();
+  State<AuthFlowPageView> createState() => _AuthFlowPageViewState();
 }
 
-class _SignInPageViewState extends State<SignInPageView> {
+class _AuthFlowPageViewState extends State<AuthFlowPageView> {
   @override
   Widget build(BuildContext context) {
     return ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(

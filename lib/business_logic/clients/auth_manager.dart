@@ -22,7 +22,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
+    bool hasRegisteredFCMToken = false;
     supabase.auth.onAuthStateChange((event, session) {
+      // We put this here because we need to be signed in before registering
+      // a token as we need a valid reference to the user id.
+      if (!hasRegisteredFCMToken && _signInState == AuthChangeEvent.signedIn) {
+        _setRegistrationToken();
+        hasRegisteredFCMToken = true;
+      }
       if (_signInState == SignInState.verifyingEmail &&
           event == AuthChangeEvent.signedIn) {
         // Edge case to catch when the user has externally verified
@@ -178,7 +185,6 @@ class AuthManager extends ChangeNotifier {
         if (_profile == null) {
           _signInState = SignInState.completingProfile;
         } else {
-          await _setRegistrationToken();
           _signInState = SignInState.signedIn;
         }
       },
@@ -276,10 +282,20 @@ class AuthManager extends ChangeNotifier {
   }
 
   Future<void> _setRegistrationToken() async {
-    await fcmRegistrationTokensQuery.upsert({
-      'id': supabase.auth.currentUser!.id,
-      'registration_token': (await FirebaseMessaging.instance.getToken())!,
-    });
+    Future<void> _handleToken(String newToken) async {
+      if (supabase.auth.currentUser == null) {
+        return;
+      }
+      await fcmRegistrationTokensQuery.upsert({
+        'id': supabase.auth.currentUser!.id,
+        'registration_token': (await FirebaseMessaging.instance.getToken())!,
+      });
+    }
+    FirebaseMessaging.instance.onTokenRefresh.listen(_handleToken);
+    final String? initialToken = await FirebaseMessaging.instance.getToken();
+    if (initialToken != null) {
+      await _handleToken(initialToken);
+    }
   }
 }
 
