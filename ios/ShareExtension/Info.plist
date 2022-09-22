@@ -12,9 +12,11 @@
     <dict>
         <key>NSExtensionAttributes</key>
         <dict>
-            <!-- Comment or delete the TRUEPREDICATE NSExtensionActivationRule that only works in development mode -->
-            <!-- <string>TRUEPREDICATE</string> -->
-            <!-- Add a new NSExtensionActivationRule. The rule below will allow sharing one or more file of any type, url, or text content, You can modify these rules to your liking for which types of share content, as well as how many your app can handle -->
+            <key>IntentsSupported</key>
+            <array>
+                <string>INSendMessageIntent</string>
+            </array>
+            <key>NSExtensionActivationRule</key>
             <string>SUBQUERY (
                 extensionItems,
                 $extensionItem,
