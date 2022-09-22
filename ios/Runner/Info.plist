@@ -8,6 +8,24 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Cast Me App</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>ShareHandler</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.audio</string>
+				<string>public.mp3</string>
+				<string>com.apple.m4a-audio</string>
+				<string>public.mpeg4</string>
+				<string>public.mpeg-4-audio</string>
+				<string>com.apple.protected-mpeg-4-audio</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,7 +47,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>io.supabase.castmeapp</string>
+				<string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
 	</array>
@@ -42,6 +60,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<string>No</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Your music library is accessed when you select an audio clip to upload as a cast.</string>
 	<key>NSCameraUsageDescription</key>
@@ -73,38 +93,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<!--- begin share target stuff -->
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-            </array>
-        </dict>
-    </array>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <string>No</string>
-    <key>CFBundleDocumentTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeName</key>
-            <string>ShareHandler</string>
-            <key>LSHandlerRank</key>
-            <string>Alternate</string>
-            <key>LSItemContentTypes</key>
-            <array>
-                <string>public.audio</string>
-                <string>public.mp3</string>
-                <string>com.apple.m4a-audio</string>
-                <string>public.mpeg4</string>
-                <string>public.mpeg-4-audio</string>
-                <string>com.apple.protected-mpeg-4-audio</string>
-            </array>
-        </dict>
-</array>
 </dict>
 </plist>
