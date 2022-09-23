@@ -60,10 +60,11 @@ class _PostPageViewState extends State<PostPageView> {
                       );
                     }
                   },
-                  child: const Text('Select audio'),
-                ),
-                Text(
-                  castFiles.isNotEmpty ? castFiles.first.platformFile.name : '',
+                  child: Text(
+                    castFiles.isNotEmpty
+                        ? castFiles.first.platformFile.name
+                        : 'Select audio',
+                  ),
                 ),
                 //ReplyCastSelector(replyCast: replyCast),
                 TextField(

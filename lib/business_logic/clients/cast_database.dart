@@ -84,19 +84,21 @@ class CastDatabase {
       durationMs: castFile.durationMs,
       audioUrl: audioFileUrl,
     );
-    final String castId = await castsWriteQuery
+    final Map<String, dynamic> castMap = await castsWriteQuery
         .insert(_castToRow(cast))
         .select(castIdCol)
-        .single() as String;
+        .single() as Map<String, dynamic>;
     // TODO(caseycrogers): this will only log if the create succeeds, consider
     //   wrapping in a finally or something.
-    Analytics.instance.logCreate(castId: castId);
+    Analytics.instance.logCreate(castId: castMap[castIdCol] as String);
   }
 
   Future<void> deleteCast({
     required Cast cast,
   }) async {
     Analytics.instance.logDelete(cast: cast);
+    // TODO(caseycrogers): migrate listens to a table with cascading delets so
+    //   that we don't have to issue a separate delete to it.
     await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
     final List<dynamic> rowResult =
         await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
