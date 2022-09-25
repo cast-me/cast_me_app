@@ -6,7 +6,8 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
-import 'package:cast_me_app/widgets/poast_page/audio_recorder_recommender.dart';
+import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
+import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
 import 'package:file_picker/file_picker.dart';
 
@@ -20,9 +21,11 @@ class PostPageView extends StatefulWidget {
 }
 
 class _PostPageViewState extends State<PostPageView> {
-  final TextEditingController textController = TextEditingController();
+  final ValueNotifier<String> titleText = ValueNotifier('');
   final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
   final CastListController castListController = CastListController();
+
+  Key titleFieldKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -67,26 +70,28 @@ class _PostPageViewState extends State<PostPageView> {
                   ),
                 ),
                 //ReplyCastSelector(replyCast: replyCast),
-                TextField(
-                  controller: textController,
-                  decoration: const InputDecoration(labelText: 'Cast title'),
+                TitleField(
+                  key: titleFieldKey,
+                  titleText: titleText,
                 ),
-                AnimatedBuilder(
-                    animation: textController,
-                    builder: (context, child) {
+                ValueListenableBuilder<String>(
+                    valueListenable: titleText,
+                    builder: (context, title, _) {
                       return AsyncSubmitButton(
                         child: const Text('Submit'),
-                        onPressed: castFiles.isNotEmpty &&
-                                textController.text.isNotEmpty
+                        onPressed: castFiles.isNotEmpty && title.isNotEmpty
                             ? () async {
                                 await CastDatabase.instance.createCast(
-                                  title: textController.text,
+                                  title: title,
                                   castFile: castFiles.first,
                                 );
                                 // No need to call setState as updating the
                                 // castFiles list in postBloc will do that.
                                 castListController.refresh();
-                                textController.clear();
+                                titleText.value = '';
+                                // Gross hack to force the title field to
+                                // rebuild from scratch.
+                                titleFieldKey = UniqueKey();
                                 PostBloc.instance.popFirstFile();
                               }
                             : null,

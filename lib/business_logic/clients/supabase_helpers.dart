@@ -14,6 +14,8 @@ const String hasViewedCol = 'has_viewed';
 
 const String authorIdCol = 'author_id';
 
+const String usernameCol = 'username';
+
 const String authorDisplayNameCol = 'author_display_name';
 
 const String castIdCol = 'id';

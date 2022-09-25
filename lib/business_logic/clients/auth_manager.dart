@@ -235,21 +235,32 @@ class AuthManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Profile? _rowToCastMeProfile(dynamic rows) {
-    final List<dynamic> rowList = rows as List<dynamic>;
-    if (rowList.isEmpty) {
-      return null;
-    }
-    return Profile()
-      ..mergeFromProto3Json(rowList.single as Map<String, dynamic>);
+  Future<List<Profile>> getProfiles({
+    required String startsWith,
+  }) async {
+    final result = await profilesQuery
+        .select()
+        .ilike(usernameCol, '$startsWith%')
+        .withConverter<List<Profile>>(_rowsToProfiles);
+    return result!;
+  }
+
+  List<Profile> _rowsToProfiles(dynamic rows) {
+    return (rows as List<dynamic>)
+        .map((dynamic row) => _rowToProfile(row)!)
+        .toList();
+  }
+
+  Profile? _rowToProfile(dynamic row) {
+    return Profile()..mergeFromProto3Json(row as Map<String, dynamic>);
   }
 
   Future<Profile?> _fetchProfile() async {
-    return await supabase
-        .from('profiles')
+    return await profilesQuery
         .select()
         .eq('id', supabase.auth.currentUser!.id)
-        .withConverter<Profile?>(_rowToCastMeProfile);
+        .maybeSingle()
+        .withConverter<Profile?>(_rowToProfile);
   }
 
   // Wrap around any auth action to update Auth Manager state on finish.
@@ -291,6 +302,7 @@ class AuthManager extends ChangeNotifier {
         'registration_token': (await FirebaseMessaging.instance.getToken())!,
       });
     }
+
     FirebaseMessaging.instance.onTokenRefresh.listen(_handleToken);
     final String? initialToken = await FirebaseMessaging.instance.getToken();
     if (initialToken != null) {
