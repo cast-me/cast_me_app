@@ -240,7 +240,8 @@ class AuthManager extends ChangeNotifier {
   }) async {
     final result = await profilesQuery
         .select()
-        .ilike(usernameCol, '$startsWith%')
+        .or('$usernameCol.ilike.$startsWith%,'
+            '$displayNameCol.ilike.$startsWith%')
         .withConverter<List<Profile>>(_rowsToProfiles);
     return result!;
   }
