@@ -43,7 +43,7 @@ class ProfileView extends StatelessWidget {
         ),
         Expanded(
           child: CastListView(
-            filterProfile: AuthManager.instance.profile,
+            filterProfile: profile,
             fullyInteractive: false,
           ),
         ),

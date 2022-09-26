@@ -53,7 +53,8 @@ class CastMeBloc {
       return;
     }
     if (AuthManager.instance.profile.username == newSelection) {
-      // If we're jumping to our profile instead, just go to the profile page.
+      // If we're jumping to our profile just go to the profile page instead.
+      _selectedProfile.value = null;
       onTabChanged(CastMeTab.profile);
       return;
     }
