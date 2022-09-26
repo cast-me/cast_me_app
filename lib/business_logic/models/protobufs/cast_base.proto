@@ -16,10 +16,11 @@ message CastBase {
     string accent_color_base = 6;
     uint32 view_count = 7;
     bool has_viewed = 8;
+    repeated string tagged_usernames = 9;
 
     // Client Specified.
-    string author_id = 9;
-    string title = 10;
-    uint32 duration_ms = 11;
-    string audio_url = 12;
+    string author_id = 10;
+    string title = 11;
+    uint32 duration_ms = 12;
+    string audio_url = 13;
 }

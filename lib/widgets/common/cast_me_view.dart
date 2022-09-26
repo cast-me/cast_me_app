@@ -1,10 +1,13 @@
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/pages/listen_page_view.dart';
 import 'package:cast_me_app/pages/post_page_view.dart';
 import 'package:cast_me_app/pages/profile_page_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
+import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
@@ -40,16 +43,35 @@ class CastMeView extends StatelessWidget {
               body: child,
             );
           },
-          child: Builder(
-            builder: (BuildContext context) {
-              switch (currentTab) {
-                case CastMeTab.listen:
-                  return const ListenPageView();
-                case CastMeTab.post:
-                  return const PostPageView();
-                case CastMeTab.profile:
-                  return const ProfilePageView();
+          child: ImplicitNavigator.selectFromListenable<
+              ValueListenable<SelectedProfile?>, SelectedProfile?>(
+            listenable: CastMeBloc.instance.selectedProfile,
+            selector: () => CastMeBloc.instance.selectedProfile.value,
+            onPop: (_, afterPop) =>
+                CastMeBloc.instance.onUsernameSelected(afterPop?.username),
+            builder: (context, selectedProfile, animation, secondaryAnimation) {
+              if (selectedProfile == null) {
+                switch (currentTab) {
+                  case CastMeTab.listen:
+                    return const ListenPageView();
+                  case CastMeTab.post:
+                    return const PostPageView();
+                  case CastMeTab.profile:
+                    return const ProfilePageView();
+                }
               }
+              return CastMePage(
+                headerText: selectedProfile.username,
+                child: FutureBuilder<Profile>(
+                  future: selectedProfile.profile,
+                  builder: (context, snap) {
+                    if (!snap.hasData) {
+                      return Container();
+                    }
+                    return ProfileView(profile: snap.data!);
+                  }
+                ),
+              );
             },
           ),
         );

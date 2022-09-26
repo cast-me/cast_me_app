@@ -16,6 +16,10 @@ extension MapUtils<K, V> on Map<K, V> {
 extension NotShittyList<T> on List<T> {
   T get(int index, {required T orElse}) =>
       index < length ? this[index] : orElse;
+
+  void sortBy(Comparable Function(T) toComparable) {
+    sort((a, b) => toComparable(a).compareTo(toComparable(b)));
+  }
 }
 
 extension NotShittIterable<T> on Iterable<T> {
@@ -27,7 +31,7 @@ extension NotShittIterable<T> on Iterable<T> {
     }
     final List<T> ret = [];
     final Iterator<T> iter = iterator;
-    for (int i = 0; i < 2*length - 1; i++) {
+    for (int i = 0; i < 2 * length - 1; i++) {
       if (i % 2 == 0) {
         iter.moveNext();
         ret.add(iter.current);

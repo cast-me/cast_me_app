@@ -181,7 +181,7 @@ class AuthManager extends ChangeNotifier {
           _signInState = SignInState.verifyingEmail;
           return;
         }
-        _profile = await _fetchProfile();
+        _profile = await _fetchCurrentProfile();
         if (_profile == null) {
           _signInState = SignInState.completingProfile;
         } else {
@@ -222,7 +222,7 @@ class AuthManager extends ChangeNotifier {
       _profile = null;
       _signInState = SignInState.signingIn;
     } else {
-      _profile = await _fetchProfile();
+      _profile = await _fetchCurrentProfile();
       if (user.emailConfirmedAt == null) {
         _signInState = SignInState.verifyingEmail;
       } else if (_profile == null) {
@@ -255,7 +255,15 @@ class AuthManager extends ChangeNotifier {
     return Profile()..mergeFromProto3Json(row as Map<String, dynamic>);
   }
 
-  Future<Profile?> _fetchProfile() async {
+  Future<Profile> getProfile({required String username}) async {
+    return (await profilesQuery
+        .select()
+        .eq(usernameCol, username)
+        .maybeSingle()
+        .withConverter<Profile?>(_rowToProfile))!;
+  }
+
+  Future<Profile?> _fetchCurrentProfile() async {
     return await profilesQuery
         .select()
         .eq('id', supabase.auth.currentUser!.id)

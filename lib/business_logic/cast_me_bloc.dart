@@ -1,4 +1,5 @@
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -18,6 +19,10 @@ class CastMeBloc {
   CastMeBloc._();
 
   static final instance = CastMeBloc._();
+
+  final ValueNotifier<SelectedProfile?> _selectedProfile = ValueNotifier(null);
+
+  ValueListenable<SelectedProfile?> get selectedProfile => _selectedProfile;
 
   final ValueNotifier<CastMeTab> _currentTab = ValueNotifier(CastMeTab.listen);
 
@@ -42,8 +47,30 @@ class CastMeBloc {
     _currentTab.value = newTab;
   }
 
+  void onUsernameSelected(String? newSelection) {
+    if (newSelection == null) {
+      _selectedProfile.value = null;
+      return;
+    }
+    if (AuthManager.instance.profile.username == newSelection) {
+      // If we're jumping to our profile instead, just go to the profile page.
+      onTabChanged(CastMeTab.profile);
+      return;
+    }
+    _selectedProfile.value =  SelectedProfile(username: newSelection);
+  }
+
   Future<void> onSharedFile(Iterable<String> filePaths) async {
     await postBloc.onFilesSelected(filePaths);
     onTabChanged(_currentTab.value = CastMeTab.post);
   }
+}
+
+
+class SelectedProfile {
+  SelectedProfile({required this.username})
+      : profile = AuthManager.instance.getProfile(username: username);
+
+  String username;
+  Future<Profile> profile;
 }

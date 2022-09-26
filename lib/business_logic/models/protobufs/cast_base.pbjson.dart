@@ -20,12 +20,13 @@ const CastBase$json = const {
     const {'1': 'accent_color_base', '3': 6, '4': 1, '5': 9, '10': 'accentColorBase'},
     const {'1': 'view_count', '3': 7, '4': 1, '5': 13, '10': 'viewCount'},
     const {'1': 'has_viewed', '3': 8, '4': 1, '5': 8, '10': 'hasViewed'},
-    const {'1': 'author_id', '3': 9, '4': 1, '5': 9, '10': 'authorId'},
-    const {'1': 'title', '3': 10, '4': 1, '5': 9, '10': 'title'},
-    const {'1': 'duration_ms', '3': 11, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_url', '3': 12, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'tagged_usernames', '3': 9, '4': 3, '5': 9, '10': 'taggedUsernames'},
+    const {'1': 'author_id', '3': 10, '4': 1, '5': 9, '10': 'authorId'},
+    const {'1': 'title', '3': 11, '4': 1, '5': 9, '10': 'title'},
+    const {'1': 'duration_ms', '3': 12, '4': 1, '5': 13, '10': 'durationMs'},
+    const {'1': 'audio_url', '3': 13, '4': 1, '5': 9, '10': 'audioUrl'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxInCg9hdXRob3JfdXNlcm5hbWUYAyABKAlSDmF1dGhvclVzZXJuYW1lEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYBCABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhsKCWltYWdlX3VybBgFIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYBiABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAcgASgNUgl2aWV3Q291bnQSHQoKaGFzX3ZpZXdlZBgIIAEoCFIJaGFzVmlld2VkEhsKCWF1dGhvcl9pZBgJIAEoCVIIYXV0aG9ySWQSFAoFdGl0bGUYCiABKAlSBXRpdGxlEh8KC2R1cmF0aW9uX21zGAsgASgNUgpkdXJhdGlvbk1zEhsKCWF1ZGlvX3VybBgMIAEoCVIIYXVkaW9Vcmw=');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxInCg9hdXRob3JfdXNlcm5hbWUYAyABKAlSDmF1dGhvclVzZXJuYW1lEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYBCABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhsKCWltYWdlX3VybBgFIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYBiABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAcgASgNUgl2aWV3Q291bnQSHQoKaGFzX3ZpZXdlZBgIIAEoCFIJaGFzVmlld2VkEikKEHRhZ2dlZF91c2VybmFtZXMYCSADKAlSD3RhZ2dlZFVzZXJuYW1lcxIbCglhdXRob3JfaWQYCiABKAlSCGF1dGhvcklkEhQKBXRpdGxlGAsgASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgMIAEoDVIKZHVyYXRpb25NcxIbCglhdWRpb191cmwYDSABKAlSCGF1ZGlvVXJs');

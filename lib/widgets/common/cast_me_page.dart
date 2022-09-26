@@ -5,8 +5,8 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 class CastMePage extends StatelessWidget {
   const CastMePage({
     Key? key,
-    required this.child,
     required this.headerText,
+    required this.child,
     this.isBasePage = false,
   }) : super(key: key);
 
