@@ -29,7 +29,7 @@ class CastMeView extends StatelessWidget {
         builder: (context, selectedProfile, animation, secondaryAnimation) {
           if (selectedProfile != null) {
             return CastMePage(
-              headerText: selectedProfile.username,
+              headerText: 'Profile',
               child: FutureBuilder<Profile>(
                 future: selectedProfile.profile,
                 builder: (context, snap) {

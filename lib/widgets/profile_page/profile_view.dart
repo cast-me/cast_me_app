@@ -12,6 +12,8 @@ class ProfileView extends StatelessWidget {
 
   final Profile profile;
 
+  bool get isSelf => profile.username == AuthManager.instance.profile.username;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,7 +39,7 @@ class ProfileView extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: AdaptiveText(
-            'Your Casts:',
+            'Casts:',
             style: Theme.of(context).textTheme.headline5,
           ),
         ),

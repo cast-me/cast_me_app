@@ -8,6 +8,7 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
+import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -154,12 +155,7 @@ class CastView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            cast.title,
-            style: const TextStyle(color: Colors.white),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          const _CastTitleView(),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
             child: const _AuthorLine(),
@@ -235,8 +231,11 @@ class _CastTitleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Cast cast = CastProvider.of(context);
+    // Only make it tappable if we're not in the now playing view.
+    final bool tappable =
+        context.findAncestorWidgetOfExactType<NowPlayingView>() == null;
     return Text.rich(
-      _constructSpan(cast.title, cast.taggedUsernames),
+      _constructSpan(cast.title, cast.taggedUsernames, tappable),
       style: const TextStyle(color: Colors.white),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -245,7 +244,11 @@ class _CastTitleView extends StatelessWidget {
 
   // Parse the title into a list of spans where valid usernames are underlined
   // and everything else is normal.
-  TextSpan _constructSpan(String title, List<String> taggedUsernames) {
+  TextSpan _constructSpan(
+    String title,
+    List<String> taggedUsernames,
+    bool tappable,
+  ) {
     if (taggedUsernames.isEmpty) {
       return TextSpan(text: title);
     }
@@ -267,12 +270,14 @@ class _CastTitleView extends StatelessWidget {
             TextSpan(
               text: title.substring(m.start, m.end),
               style: const TextStyle(decoration: TextDecoration.underline),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  // Add 1 to snip the `@` from the start.
-                  CastMeBloc.instance
-                      .onUsernameSelected(title.substring(m.start + 1, m.end));
-                },
+              recognizer: tappable
+                  ? (TapGestureRecognizer()
+                    ..onTap = () {
+                      // Add 1 to snip the `@` from the start.
+                      CastMeBloc.instance.onUsernameSelected(
+                          title.substring(m.start + 1, m.end));
+                    })
+                  : null,
             ),
           ];
           i = m.end;
