@@ -4,7 +4,6 @@ import 'package:cast_me_app/util/listenable_utils.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:implicit_navigator/implicit_navigator.dart';
 
 /// Contains the state for the `ListenPage`.
 class ListenBloc {

@@ -23,7 +23,7 @@ class TitleField extends StatelessWidget {
         return AuthManager.instance.getProfiles(startsWith: startsWith);
       },
       displayStringForOption: (profile) {
-        return '${profile.username} (${profile.displayName};
+        return '${profile.username} (${profile.displayName})';
       },
       fieldViewBuilder: (
         context,
