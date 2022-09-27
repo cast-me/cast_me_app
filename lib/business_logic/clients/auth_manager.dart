@@ -22,13 +22,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
-    bool hasRegisteredFCMToken = false;
+    _setAndListenForRegistrationToken();
     supabase.auth.onAuthStateChange((event, session) {
-      // We put this here because we need to be signed in before registering
-      // a token as we need a valid reference to the user id.
-      if (!hasRegisteredFCMToken && _signInState == AuthChangeEvent.signedIn) {
-        _setRegistrationToken();
-        hasRegisteredFCMToken = true;
+      // Try again in case we weren't logged in during the first attempt.
+      _setAndListenForRegistrationToken();
+      if (event == AuthChangeEvent.passwordRecovery &&
+          _signInState != SignInState.settingNewPassword) {
+        _signInState = SignInState.settingNewPassword;
+        notifyListeners();
       }
       if (_signInState == SignInState.verifyingEmail &&
           event == AuthChangeEvent.signedIn) {
@@ -42,7 +43,11 @@ class AuthManager extends ChangeNotifier {
 
   static final AuthManager instance = AuthManager._();
 
+  final SignInBloc signInBloc = SignInBloc._();
+
   Profile? _profile;
+
+  User? get user => supabase.auth.currentUser;
 
   Profile get profile => _profile!;
 
@@ -67,11 +72,13 @@ class AuthManager extends ChangeNotifier {
 
   Object? get authError => _authError;
 
-  final emailController = TextEditingController();
+  bool _hasRegisteredFcmToken = false;
 
-  final passwordController = TextEditingController();
-
-  final confirmPasswordController = TextEditingController();
+  void toggleResetPassword() {
+    assert(_signInState == SignInState.signingIn);
+    _signInState = SignInState.resettingPassword;
+    notifyListeners();
+  }
 
   void toggleAccountRegistrationFlow() {
     if (signInState == SignInState.registering) {
@@ -177,19 +184,33 @@ class AuthManager extends ChangeNotifier {
             rethrow;
           }
         }
-        if (emailNotConfirmed) {
-          _signInState = SignInState.verifyingEmail;
-          return;
-        }
-        _profile = await _fetchCurrentProfile();
-        if (_profile == null) {
-          _signInState = SignInState.completingProfile;
-        } else {
-          _signInState = SignInState.signedIn;
-        }
+        await _completeSignIn(emailNotConfirmed);
       },
     );
     Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+  }
+
+  Future<void> _completeSignIn(bool emailNotConfirmed) async {
+    if (emailNotConfirmed) {
+      _signInState = SignInState.verifyingEmail;
+      return;
+    }
+    _profile = await _fetchCurrentProfile();
+    if (_profile == null) {
+      _signInState = SignInState.completingProfile;
+    } else {
+      _signInState = SignInState.signedIn;
+    }
+  }
+
+  void exitResetPassword() {
+    signOut();
+  }
+
+  void exitSetNewPassword() {
+    signOut();
+    _signInState = SignInState.resettingPassword;
+    notifyListeners();
   }
 
   void exitEmailVerification() {
@@ -214,6 +235,25 @@ class AuthManager extends ChangeNotifier {
     // Also reset the current tab so that the user goes back to home if they log
     // back in.
     CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+  }
+
+  Future<void> setNewPassword({required String newPassword}) async {
+    Analytics.instance.logSetNewPassword(user: supabase.auth.currentUser!);
+    await _authActionWrapper('reset password', () async {
+      await supabase.auth.update(UserAttributes(password: newPassword));
+      await _completeSignIn(false);
+    });
+  }
+
+  Future<void> sendResetPasswordEmail({required String email}) async {
+    Analytics.instance.logSendResetPasswordEmail(email: email);
+    await _authActionWrapper('reset password', () async {
+      await supabase.auth.api.resetPasswordForEmail(
+        email,
+        options: const AuthOptions(
+            redirectTo: 'io.supabase.castmeapp://reset-callback/'),
+      );
+    });
   }
 
   Future<void> initialize() async {
@@ -301,7 +341,10 @@ class AuthManager extends ChangeNotifier {
     });
   }
 
-  Future<void> _setRegistrationToken() async {
+  Future<void> _setAndListenForRegistrationToken() async {
+    if (_hasRegisteredFcmToken || !isFullySignedIn) {
+      return;
+    }
     Future<void> _handleToken(String newToken) async {
       if (supabase.auth.currentUser == null) {
         return;
@@ -313,6 +356,7 @@ class AuthManager extends ChangeNotifier {
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen(_handleToken);
+    _hasRegisteredFcmToken = true;
     final String? initialToken = await FirebaseMessaging.instance.getToken();
     if (initialToken != null) {
       await _handleToken(initialToken);
@@ -323,6 +367,8 @@ class AuthManager extends ChangeNotifier {
 enum SignInState {
   signingIn,
   registering,
+  resettingPassword,
+  settingNewPassword,
   verifyingEmail,
   completingProfile,
   signedIn,
@@ -346,4 +392,14 @@ typedef Profile = CastMeProfileBase;
 extension ProfileUtils on CastMeProfileBase {
   Color get accentColor =>
       ColorUtils.deserialize(accentColorBase.emptyToNull ?? 'FFFFFFFF');
+}
+
+class SignInBloc {
+  SignInBloc._();
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final confirmPasswordController = TextEditingController();
 }

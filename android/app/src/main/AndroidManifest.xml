@@ -45,6 +45,9 @@
                 <data
                     android:host="login-callback"
                     android:scheme="io.supabase.castmeapp" />
+                <data
+                    android:host="reset-callback"
+                    android:scheme="io.supabase.castmeapp" />
             </intent-filter>
         </activity>
         <activity

@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 class RegisterSwitcher extends StatelessWidget {
   const RegisterSwitcher({
     Key? key,
-    required this.isRegistering,
   }) : super(key: key);
-
-  final bool isRegistering;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,6 @@ class RegisterSwitcher extends StatelessWidget {
     }
     return Column(
       children: [
-        const SizedBox(height: 20),
         const AdaptiveText('Don\'t have an account?'),
         TextButton(
           onPressed: () async {

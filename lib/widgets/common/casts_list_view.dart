@@ -17,7 +17,6 @@ class CastListView extends StatefulWidget {
     this.filterProfile,
     this.filterOutProfile,
     this.padding,
-    this.fullyInteractive = true,
     this.controller,
   }) : super(key: key);
 
@@ -26,8 +25,6 @@ class CastListView extends StatefulWidget {
 
   /// If non-null, exclude casts by the specified user.
   final Profile? filterOutProfile;
-
-  final bool fullyInteractive;
 
   final EdgeInsets? padding;
 
@@ -80,7 +77,6 @@ class _CastListViewState extends State<CastListView> {
               }
               return CastPreview(
                 cast: snapshot.data![index],
-                fullyInteractive: widget.fullyInteractive,
               );
             },
             loadingWidget: const Center(

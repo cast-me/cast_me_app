@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -19,6 +19,8 @@ const String usernameCol = 'username';
 const String displayNameCol = 'display_name';
 
 const String authorDisplayNameCol = 'author_display_name';
+
+const String authorUsernameCol = 'author_username';
 
 const String castIdCol = 'id';
 

@@ -1,6 +1,8 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/sign_in_or_register_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/register_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/reset_password_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/sign_in_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/verify_email_view.dart';
 
 import 'package:flutter/material.dart';
@@ -26,6 +28,12 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
           case SignInState.registering:
             AuthManager.instance.toggleAccountRegistrationFlow();
             break;
+          case SignInState.resettingPassword:
+            AuthManager.instance.exitResetPassword();
+            break;
+          case SignInState.settingNewPassword:
+            AuthManager.instance.exitSetNewPassword();
+            break;
           case SignInState.verifyingEmail:
             AuthManager.instance.exitEmailVerification();
             break;
@@ -43,9 +51,13 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
           builder: (context) {
             switch (signInState) {
               case SignInState.signingIn:
-                return const SignInOrRegisterForm(isRegistering: false);
+                return const SignInView();
               case SignInState.registering:
-                return const SignInOrRegisterForm(isRegistering: true);
+                return const RegisterFormView();
+              case SignInState.resettingPassword:
+                return const ResetPasswordView();
+              case SignInState.settingNewPassword:
+                return const SetNewPasswordView();
               case SignInState.verifyingEmail:
                 return const VerifyEmailView();
               case SignInState.completingProfile:

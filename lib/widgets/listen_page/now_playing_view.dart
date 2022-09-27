@@ -37,11 +37,14 @@ class _CollapsedView extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: CastPreview(
-                    cast: cast,
-                    fullyInteractive: false,
+                  child: CastViewTheme(
+                    isInteractive: false,
                     showMenu: false,
-                    showHowOld: false,
+                    taggedUsersAreTappable: false,
+                    child: CastPreview(
+                      cast: cast,
+                      showHowOld: false,
+                    ),
                   ),
                 ),
                 const _PlayButton(),

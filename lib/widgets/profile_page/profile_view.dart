@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,11 @@ class ProfileView extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: CastListView(
-            filterProfile: profile,
-            fullyInteractive: false,
+          child: CastViewTheme(
+            isInteractive: false,
+            child: CastListView(
+              filterProfile: profile,
+            ),
           ),
         ),
       ],

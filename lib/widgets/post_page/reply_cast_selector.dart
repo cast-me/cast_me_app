@@ -1,6 +1,6 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:flutter/material.dart';
 
@@ -20,37 +20,62 @@ class ReplyCastSelector extends StatelessWidget {
       children: [
         const AdaptiveText('Is a reply to:'),
         const SizedBox(height: 8),
-        InkWell(
-          onTap: () {
-            showDialog<void>(
-              context: context,
-              builder: (context) {
-                return _SelectCastModal(replyCast: replyCast);
-              },
-            );
-          },
-          child: Container(
-            height: 66,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: const AdaptiveMaterial(
-                adaptiveColor: AdaptiveColor.background,
-                child: Center(
-                  child: AdaptiveText(
-                    'Select a cast (optional)',
+        ValueListenableBuilder<Cast?>(
+          valueListenable: replyCast,
+          builder: (context, cast, _) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (context) {
+                          return SelectCastModal(replyCast: replyCast);
+                        },
+                      );
+                    },
+                    child: Container(
+                      height: 66,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: AdaptiveMaterial(
+                          adaptiveColor: AdaptiveColor.background,
+                          child: Center(
+                            child: cast == null
+                                ? const AdaptiveText(
+                                    'Select a cast (optional)',
+                                  )
+                                : CastViewTheme(
+                                    isInteractive: false,
+                                    taggedUsersAreTappable: false,
+                                    child: CastPreview(cast: cast),
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
+                if (cast != null)
+                  IconButton(
+                    onPressed: () {
+                      replyCast.value = null;
+                    },
+                    icon: const Icon(Icons.clear),
+                  ),
+              ],
+            );
+          },
         ),
       ],
     );
   }
 }
 
-class _SelectCastModal extends StatefulWidget {
-  const _SelectCastModal({
+class SelectCastModal extends StatefulWidget {
+  const SelectCastModal({
     Key? key,
     required this.replyCast,
   }) : super(key: key);
@@ -58,12 +83,11 @@ class _SelectCastModal extends StatefulWidget {
   final ValueNotifier<Cast?> replyCast;
 
   @override
-  State<_SelectCastModal> createState() => _SelectCastModalState();
+  State<SelectCastModal> createState() => _SelectCastModalState();
 }
 
-class _SelectCastModalState extends State<_SelectCastModal> {
-  final SearchCastListController searchController =
-      SearchCastListController();
+class _SelectCastModalState extends State<SelectCastModal> {
+  final SearchCastListController searchController = SearchCastListController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +99,15 @@ class _SelectCastModalState extends State<_SelectCastModal> {
           children: [
             _CastSearchBar(searchController: searchController),
             Expanded(
-              child: CastListView(
-                controller: searchController,
-                fullyInteractive: false,
+              child: CastViewTheme(
+                taggedUsersAreTappable: false,
+                onTap: (cast) {
+                  Navigator.of(context).pop();
+                  widget.replyCast.value = cast;
+                },
+                child: CastListView(
+                  controller: searchController,
+                ),
               ),
             ),
           ],

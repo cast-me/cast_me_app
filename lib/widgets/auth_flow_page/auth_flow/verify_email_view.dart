@@ -23,8 +23,8 @@ class VerifyEmailView extends StatelessWidget {
             child: TextButton(
               onPressed: () async {
                 await authManager.signIn(
-                  email: authManager.emailController.text,
-                  password: authManager.passwordController.text,
+                  email: authManager.signInBloc.emailController.text,
+                  password: authManager.signInBloc.passwordController.text,
                 );
               },
               child: const Text(

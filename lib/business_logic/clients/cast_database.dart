@@ -37,7 +37,9 @@ class CastDatabase {
       queryBuilder = queryBuilder.eq(hasViewedCol, false);
     }
     if (searchTerm != null && searchTerm.isNotEmpty) {
-      queryBuilder = queryBuilder.ilike(titleCol, '%$searchTerm%');
+      queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
+          '$authorUsernameCol.ilike.$searchTerm%,'
+          '$authorDisplayNameCol.ilike.$searchTerm%');
     }
     final List<Cast>? casts = await queryBuilder
         .order(hasViewedCol, ascending: true)

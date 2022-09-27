@@ -8,7 +8,6 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
-import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -19,8 +18,6 @@ class CastPreview extends StatelessWidget {
     Key? key,
     required this.cast,
     this.padding,
-    this.fullyInteractive = true,
-    this.showMenu = true,
     this.showHowOld = true,
     this.isInTrackList = false,
   }) : super(key: key);
@@ -29,18 +26,13 @@ class CastPreview extends StatelessWidget {
 
   final EdgeInsets? padding;
 
-  /// Whether or not to make this an inkwell and display a shading if it's the
-  /// currently playing cast.
-  final bool fullyInteractive;
-
-  final bool showMenu;
-
   final bool showHowOld;
 
   final bool isInTrackList;
 
   @override
   Widget build(BuildContext context) {
+    final CastViewTheme? theme = CastViewTheme.of(context);
     return CastProvider(
       cast: cast,
       child: ValueListenableBuilder<Cast?>(
@@ -53,22 +45,12 @@ class CastPreview extends StatelessWidget {
                 ? .4
                 : 1,
             child: InkWell(
-              // Only enable the inkwell if this isn't already the currently
-              // playing cast.
-              onTap: fullyInteractive && cast != nowPlaying
-                  ? () {
-                      if (isInTrackList) {
-                        return ListenBloc.instance
-                            .onCastInTrackListSelected(cast);
-                      }
-                      ListenBloc.instance.onCastSelected(cast);
-                    }
-                  : null,
+              onTap: _getOnTap(context, nowPlaying),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: Container(
                   padding: padding ?? const EdgeInsets.all(8),
-                  color: fullyInteractive && nowPlaying == cast
+                  color: _isTapToPlay(context) && nowPlaying == cast
                       ? Colors.white.withAlpha(80)
                       : null,
                   child: Row(
@@ -85,7 +67,7 @@ class CastPreview extends StatelessWidget {
                               image: NetworkImage(cast.imageUrl),
                             ),
                           ),
-                          child: fullyInteractive && nowPlaying == cast
+                          child: _isTapToPlay(context) && nowPlaying == cast
                               ? Container(
                                   color: (cast.accentColor).withAlpha(120),
                                   child: const Icon(Icons.bar_chart, size: 30),
@@ -120,7 +102,7 @@ class CastPreview extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (showMenu) const _CastMenu(),
+                      if (theme?.showMenu ?? true) const _CastMenu(),
                     ],
                   ),
                 ),
@@ -131,6 +113,35 @@ class CastPreview extends StatelessWidget {
       ),
     );
   }
+
+  void _playOnTap() {
+    if (isInTrackList) {
+      return ListenBloc.instance.onCastInTrackListSelected(cast);
+    }
+    ListenBloc.instance.onCastSelected(cast);
+  }
+
+  VoidCallback? _getOnTap(
+    BuildContext context,
+    Cast? nowPlaying,
+  ) {
+    final void Function(Cast)? themeOnTap = CastViewTheme.of(context)?.onTap;
+    if (themeOnTap != null) {
+      return () => themeOnTap(cast);
+    }
+    if (CastViewTheme.of(context)?.isInteractive == false) {
+      return null;
+    }
+    if (_isTapToPlay(context) && cast != nowPlaying) {
+      return _playOnTap;
+    }
+    return null;
+  }
+
+  // If `onTap` isn't overwritten, then this is a basic now-playing cast.
+  bool _isTapToPlay(BuildContext context) =>
+      CastViewTheme.of(context)?.isInteractive != false &&
+      CastViewTheme.of(context)?.onTap == null;
 }
 
 class CastView extends StatelessWidget {
@@ -231,9 +242,10 @@ class _CastTitleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Cast cast = CastProvider.of(context);
-    // Only make it tappable if we're not in the now playing view.
+    // TODO(caseycrogers): get rid of this sloppy garbage and replace it with a
+    //   a `CastViewTheme` inherited widget.
     final bool tappable =
-        context.findAncestorWidgetOfExactType<NowPlayingView>() == null;
+        CastViewTheme.of(context)?.taggedUsersAreTappable ?? true;
     return Text.rich(
       _constructSpan(cast.title, cast.taggedUsernames, tappable),
       style: const TextStyle(color: Colors.white),
@@ -321,4 +333,33 @@ String _oldString(DateTime createdAt) {
     return '${howOld.inMinutes}m';
   }
   return 'just now';
+}
+
+class CastViewTheme extends InheritedWidget {
+  const CastViewTheme({
+    Key? key,
+    required Widget child,
+    this.showMenu,
+    this.taggedUsersAreTappable,
+    this.isInteractive,
+    this.onTap,
+  })  : assert((isInteractive ?? true) || onTap == null),
+        super(key: key, child: child);
+
+  final bool? showMenu;
+  final bool? taggedUsersAreTappable;
+  final bool? isInteractive;
+  final void Function(Cast)? onTap;
+
+  static CastViewTheme? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<CastViewTheme>();
+  }
+
+  @override
+  bool updateShouldNotify(CastViewTheme oldWidget) {
+    return showMenu != oldWidget.showMenu ||
+        taggedUsersAreTappable != oldWidget.taggedUsersAreTappable ||
+        isInteractive != oldWidget.isInteractive ||
+        onTap != oldWidget.onTap;
+  }
 }

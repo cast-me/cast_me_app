@@ -57,6 +57,28 @@ class Analytics {
     );
   }
 
+  void logSetNewPassword({
+    required User user,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'resetPasswordEmail',
+      parameters: {
+        'user_id': user.id,
+      },
+    );
+  }
+
+  void logSendResetPasswordEmail({
+    required String email,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'resetPasswordEmail',
+      parameters: {
+        'email': email,
+      },
+    );
+  }
+
   // GENERAL UI
   void logTabSelect({
     required CastMeTab fromTab,

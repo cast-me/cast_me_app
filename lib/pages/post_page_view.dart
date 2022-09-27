@@ -5,8 +5,10 @@ import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
+import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -69,7 +71,7 @@ class _PostPageViewState extends State<PostPageView> {
                         : 'Select audio',
                   ),
                 ),
-                //ReplyCastSelector(replyCast: replyCast),
+                ReplyCastSelector(replyCast: replyCast),
                 TitleField(
                   key: titleFieldKey,
                   titleText: titleText,
@@ -100,11 +102,13 @@ class _PostPageViewState extends State<PostPageView> {
                 const AdaptiveText('Your casts'),
                 const SizedBox(height: 4),
                 Expanded(
-                  child: CastListView(
-                    controller: castListController,
-                    filterProfile: AuthManager.instance.profile,
-                    fullyInteractive: false,
-                    padding: EdgeInsets.zero,
+                  child: CastViewTheme(
+                    isInteractive: false,
+                    child: CastListView(
+                      controller: castListController,
+                      filterProfile: AuthManager.instance.profile,
+                      padding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
               ],
