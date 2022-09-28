@@ -151,7 +151,8 @@ Cast _rowToCast(dynamic row) {
       <String, dynamic>{
         'created_at_string': rowMap['created_at'].toString(),
         ...rowMap,
-      }..remove('created_at'),
+      },
+      ignoreUnknownFields: true,
     );
 }
 

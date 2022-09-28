@@ -71,7 +71,7 @@ class _PostPageViewState extends State<PostPageView> {
                         : 'Select audio',
                   ),
                 ),
-                ReplyCastSelector(replyCast: replyCast),
+                //ReplyCastSelector(replyCast: replyCast),
                 TitleField(
                   key: titleFieldKey,
                   titleText: titleText,
