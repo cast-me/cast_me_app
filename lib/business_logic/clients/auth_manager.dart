@@ -293,7 +293,11 @@ class AuthManager extends ChangeNotifier {
   }
 
   Profile? _rowToProfile(dynamic row) {
-    return Profile()..mergeFromProto3Json(row as Map<String, dynamic>);
+    return Profile()
+      ..mergeFromProto3Json(
+        row as Map<String, dynamic>,
+        ignoreUnknownFields: true,
+      );
   }
 
   Future<Profile> getProfile({required String username}) async {
