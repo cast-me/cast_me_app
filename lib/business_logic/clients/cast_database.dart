@@ -42,7 +42,8 @@ class CastDatabase {
           '$authorDisplayNameCol.ilike.$searchTerm%');
     }
     final List<Cast>? casts = await queryBuilder
-        .order(hasViewedCol, ascending: true)
+        .order(treeUpdatedAtCol, ascending: oldestFirst)
+        .order('depth', ascending: true)
         .order(createdAtCol, ascending: oldestFirst)
         .withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
@@ -150,8 +151,12 @@ Cast _rowToCast(dynamic row) {
       // TODO(caseycrogers): consider figuring out how to use timestamp.proto.
       <String, dynamic>{
         'created_at_string': rowMap['created_at'].toString(),
+        // Note that this only populates some of the values of `reply_cast`
+        // because the reply cast is generated from the base table.
+        'reply_cast': (rowMap['reply_cast_json'] as Map<String, dynamic>?),
         ...rowMap,
-      }..remove('created_at'),
+      },
+      ignoreUnknownFields: true,
     );
 }
 

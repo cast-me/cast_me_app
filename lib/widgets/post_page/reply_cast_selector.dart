@@ -1,4 +1,5 @@
 import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
@@ -7,10 +8,7 @@ import 'package:flutter/material.dart';
 class ReplyCastSelector extends StatelessWidget {
   const ReplyCastSelector({
     Key? key,
-    required this.replyCast,
   }) : super(key: key);
-
-  final ValueNotifier<Cast?> replyCast;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class ReplyCastSelector extends StatelessWidget {
         const AdaptiveText('Is a reply to:'),
         const SizedBox(height: 8),
         ValueListenableBuilder<Cast?>(
-          valueListenable: replyCast,
+          valueListenable: PostBloc.instance.replyCast,
           builder: (context, cast, _) {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,7 +30,7 @@ class ReplyCastSelector extends StatelessWidget {
                       showDialog<void>(
                         context: context,
                         builder: (context) {
-                          return SelectCastModal(replyCast: replyCast);
+                          return const SelectCastModal();
                         },
                       );
                     },
@@ -50,6 +48,8 @@ class ReplyCastSelector extends StatelessWidget {
                                 : CastViewTheme(
                                     isInteractive: false,
                                     taggedUsersAreTappable: false,
+                                    indentReplies: false,
+                                    showMenu: false,
                                     child: CastPreview(cast: cast),
                                   ),
                           ),
@@ -61,7 +61,7 @@ class ReplyCastSelector extends StatelessWidget {
                 if (cast != null)
                   IconButton(
                     onPressed: () {
-                      replyCast.value = null;
+                      PostBloc.instance.replyCast.value = null;
                     },
                     icon: const Icon(Icons.clear),
                   ),
@@ -77,10 +77,7 @@ class ReplyCastSelector extends StatelessWidget {
 class SelectCastModal extends StatefulWidget {
   const SelectCastModal({
     Key? key,
-    required this.replyCast,
   }) : super(key: key);
-
-  final ValueNotifier<Cast?> replyCast;
 
   @override
   State<SelectCastModal> createState() => _SelectCastModalState();
@@ -101,9 +98,10 @@ class _SelectCastModalState extends State<SelectCastModal> {
             Expanded(
               child: CastViewTheme(
                 taggedUsersAreTappable: false,
+                showMenu: false,
                 onTap: (cast) {
                   Navigator.of(context).pop();
-                  widget.replyCast.value = cast;
+                  PostBloc.instance.replyCast.value = cast;
                 },
                 child: CastListView(
                   controller: searchController,

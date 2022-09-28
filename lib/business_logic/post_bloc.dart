@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,6 +11,8 @@ class PostBloc {
   static final instance = PostBloc._();
 
   ValueListenable<List<CastFile>> get castFiles => _castFiles;
+
+  final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
 
   final ValueNotifier<List<CastFile>> _castFiles = ValueNotifier(List.empty());
 

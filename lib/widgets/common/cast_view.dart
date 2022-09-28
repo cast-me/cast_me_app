@@ -3,14 +3,18 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
 class CastPreview extends StatelessWidget {
@@ -44,69 +48,88 @@ class CastPreview extends StatelessWidget {
                     cast != nowPlaying
                 ? .4
                 : 1,
-            child: InkWell(
-              onTap: _getOnTap(context, nowPlaying),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Container(
-                  padding: padding ?? const EdgeInsets.all(8),
-                  color: _isTapToPlay(context) && nowPlaying == cast
-                      ? Colors.white.withAlpha(80)
-                      : null,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(cast.imageUrl),
-                            ),
-                          ),
-                          child: _isTapToPlay(context) && nowPlaying == cast
-                              ? Container(
-                                  color: (cast.accentColor).withAlpha(120),
-                                  child: const Icon(Icons.bar_chart, size: 30),
-                                )
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const _CastTitleView(),
-                              DefaultTextStyle(
-                                style: TextStyle(color: Colors.grey.shade400),
-                                child: const _AuthorLine(),
+            child: Row(
+              children: [
+                if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Container(
+                      color: Colors.white.withAlpha(120),
+                      width: 2,
+                      height: 66,
+                    ),
+                  ),
+                Expanded(
+                  child: InkWell(
+                    onTap: _getOnTap(context, nowPlaying),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
+                        padding: padding ?? const EdgeInsets.all(8),
+                        color: _isTapToPlay(context) && nowPlaying == cast
+                            ? Colors.white.withAlpha(80)
+                            : null,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(2),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(cast.imageUrl),
+                                  ),
+                                ),
+                                child: _isTapToPlay(context) &&
+                                        nowPlaying == cast
+                                    ? Container(
+                                        color:
+                                            (cast.accentColor).withAlpha(120),
+                                        child: const Icon(Icons.bar_chart,
+                                            size: 30),
+                                      )
+                                    : null,
                               ),
-                              Row(
-                                children: [
-                                  if (showHowOld)
-                                    Text(
-                                      '${_oldString(cast.createdAt)} - ',
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const _CastTitleView(),
+                                    DefaultTextStyle(
                                       style: TextStyle(
                                           color: Colors.grey.shade400),
+                                      child: const _AuthorLine(),
                                     ),
-                                  const _ListenCount(),
-                                ],
+                                    Row(
+                                      children: [
+                                        if (showHowOld)
+                                          Text(
+                                            '${_oldString(cast.createdAt)} - ',
+                                            style: TextStyle(
+                                                color: Colors.grey.shade400),
+                                          ),
+                                        const _ListenCount(),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                            if (theme?.showMenu ?? true) const _CastMenu(),
+                          ],
                         ),
                       ),
-                      if (theme?.showMenu ?? true) const _CastMenu(),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           );
         },
@@ -187,31 +210,62 @@ class _CastMenu extends StatelessWidget {
     final CastListController? castListViewController =
         CastListController.of(context);
     final Cast cast = CastProvider.of(context);
-    if (AuthManager.instance.profile.id != cast.authorId) {
-      return Container();
-    }
+    final CastViewTheme? theme = CastViewTheme.of(context);
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton(
-              onPressed: () async {
-                hideMenu();
-                await CastDatabase.instance.deleteCast(cast: cast);
-                castListViewController?.refresh();
+            _MenuButton(
+              icon: Icons.reply,
+              text: 'reply',
+              onTap: () async {
+                PostBloc.instance.replyCast.value = cast;
+                CastMeBloc.instance.onTabChanged(CastMeTab.post);
               },
-              child: Row(
-                children: const [
-                  AdaptiveText('delete cast'),
-                  AdaptiveIcon(Icons.delete),
-                ],
-              ),
             ),
+            if (!(theme?.hideDelete ?? true))
+              _MenuButton(
+                icon: Icons.delete,
+                text: 'delete cast',
+                onTap: () async {
+                  hideMenu();
+                  await CastDatabase.instance.deleteCast(cast: cast);
+                  castListViewController?.refresh();
+                },
+              ),
           ],
         );
       },
       adaptiveBackgroundColor: AdaptiveColor.background,
       child: const Icon(Icons.more_vert),
+    );
+  }
+}
+
+class _MenuButton extends StatelessWidget {
+  const _MenuButton({
+    Key? key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  }) : super(key: key);
+
+  final IconData icon;
+  final String text;
+  final AsyncCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      child: Row(
+        children: [
+          AdaptiveIcon(icon),
+          const SizedBox(width: 4),
+          AdaptiveText(text),
+        ],
+      ),
     );
   }
 }
@@ -335,6 +389,43 @@ String _oldString(DateTime createdAt) {
   return 'just now';
 }
 
+class ReplyCastView extends StatelessWidget {
+  const ReplyCastView({
+    Key? key,
+    required this.replyCast,
+  }) : super(key: key);
+
+  final Cast replyCast;
+  static const double _size = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        const Icon(Icons.keyboard_return, size: _size),
+        Container(
+          height: _size,
+          width: _size,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(replyCast.imageUrl),
+            ),
+          ),
+        ),
+        const SizedBox(width: 2),
+        Expanded(
+          child: Text(
+            replyCast.title,
+            style: const TextStyle(fontSize: _size),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class CastViewTheme extends InheritedWidget {
   const CastViewTheme({
     Key? key,
@@ -342,13 +433,17 @@ class CastViewTheme extends InheritedWidget {
     this.showMenu,
     this.taggedUsersAreTappable,
     this.isInteractive,
+    this.hideDelete,
     this.onTap,
+    this.indentReplies,
   })  : assert((isInteractive ?? true) || onTap == null),
         super(key: key, child: child);
 
   final bool? showMenu;
   final bool? taggedUsersAreTappable;
   final bool? isInteractive;
+  final bool? hideDelete;
+  final bool? indentReplies;
   final void Function(Cast)? onTap;
 
   static CastViewTheme? of(BuildContext context) {

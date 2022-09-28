@@ -39,4 +39,8 @@ extension CastUtils on CastBase {
       ColorUtils.deserialize(accentColorBase.emptyToNull ?? 'FFFFFFFF');
 
   Duration get duration => Duration(milliseconds: durationMs);
+
+  bool get isEmpty => id.isEmpty;
+
+  bool get isNotEmpty => id.isNotEmpty;
 }

@@ -1,6 +1,5 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
@@ -24,7 +23,6 @@ class PostPageView extends StatefulWidget {
 
 class _PostPageViewState extends State<PostPageView> {
   final ValueNotifier<String> titleText = ValueNotifier('');
-  final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
   final CastListController castListController = CastListController();
 
   Key titleFieldKey = UniqueKey();
@@ -71,7 +69,7 @@ class _PostPageViewState extends State<PostPageView> {
                         : 'Select audio',
                   ),
                 ),
-                ReplyCastSelector(replyCast: replyCast),
+                const ReplyCastSelector(),
                 TitleField(
                   key: titleFieldKey,
                   titleText: titleText,
@@ -104,6 +102,7 @@ class _PostPageViewState extends State<PostPageView> {
                 Expanded(
                   child: CastViewTheme(
                     isInteractive: false,
+                    hideDelete: false,
                     child: CastListView(
                       controller: castListController,
                       filterProfile: AuthManager.instance.profile,

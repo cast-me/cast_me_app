@@ -20,10 +20,11 @@ class CastBase extends $pb.GeneratedMessage {
     ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
     ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hasViewed')
     ..pPS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'taggedUsernames')
-    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
-    ..aOS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
-    ..a<$core.int>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
-    ..aOS(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
+    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'replyTo')
+    ..aOS(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
+    ..aOS(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
+    ..a<$core.int>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
+    ..aOS(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
     ..hasRequiredFields = false
   ;
 
@@ -38,6 +39,7 @@ class CastBase extends $pb.GeneratedMessage {
     $core.int? viewCount,
     $core.bool? hasViewed,
     $core.Iterable<$core.String>? taggedUsernames,
+    $core.String? replyTo,
     $core.String? authorId,
     $core.String? title,
     $core.int? durationMs,
@@ -70,6 +72,9 @@ class CastBase extends $pb.GeneratedMessage {
     }
     if (taggedUsernames != null) {
       _result.taggedUsernames.addAll(taggedUsernames);
+    }
+    if (replyTo != null) {
+      _result.replyTo = replyTo;
     }
     if (authorId != null) {
       _result.authorId = authorId;
@@ -182,39 +187,48 @@ class CastBase extends $pb.GeneratedMessage {
   $core.List<$core.String> get taggedUsernames => $_getList(8);
 
   @$pb.TagNumber(10)
-  $core.String get authorId => $_getSZ(9);
+  $core.String get replyTo => $_getSZ(9);
   @$pb.TagNumber(10)
-  set authorId($core.String v) { $_setString(9, v); }
+  set replyTo($core.String v) { $_setString(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasAuthorId() => $_has(9);
+  $core.bool hasReplyTo() => $_has(9);
   @$pb.TagNumber(10)
-  void clearAuthorId() => clearField(10);
-
-  @$pb.TagNumber(11)
-  $core.String get title => $_getSZ(10);
-  @$pb.TagNumber(11)
-  set title($core.String v) { $_setString(10, v); }
-  @$pb.TagNumber(11)
-  $core.bool hasTitle() => $_has(10);
-  @$pb.TagNumber(11)
-  void clearTitle() => clearField(11);
+  void clearReplyTo() => clearField(10);
 
   @$pb.TagNumber(12)
-  $core.int get durationMs => $_getIZ(11);
+  $core.String get authorId => $_getSZ(10);
   @$pb.TagNumber(12)
-  set durationMs($core.int v) { $_setUnsignedInt32(11, v); }
+  set authorId($core.String v) { $_setString(10, v); }
   @$pb.TagNumber(12)
-  $core.bool hasDurationMs() => $_has(11);
+  $core.bool hasAuthorId() => $_has(10);
   @$pb.TagNumber(12)
-  void clearDurationMs() => clearField(12);
+  void clearAuthorId() => clearField(12);
 
   @$pb.TagNumber(13)
-  $core.String get audioUrl => $_getSZ(12);
+  $core.String get title => $_getSZ(11);
   @$pb.TagNumber(13)
-  set audioUrl($core.String v) { $_setString(12, v); }
+  set title($core.String v) { $_setString(11, v); }
   @$pb.TagNumber(13)
-  $core.bool hasAudioUrl() => $_has(12);
+  $core.bool hasTitle() => $_has(11);
   @$pb.TagNumber(13)
-  void clearAudioUrl() => clearField(13);
+  void clearTitle() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.int get durationMs => $_getIZ(12);
+  @$pb.TagNumber(14)
+  set durationMs($core.int v) { $_setUnsignedInt32(12, v); }
+  @$pb.TagNumber(14)
+  $core.bool hasDurationMs() => $_has(12);
+  @$pb.TagNumber(14)
+  void clearDurationMs() => clearField(14);
+
+  @$pb.TagNumber(15)
+  $core.String get audioUrl => $_getSZ(13);
+  @$pb.TagNumber(15)
+  set audioUrl($core.String v) { $_setString(13, v); }
+  @$pb.TagNumber(15)
+  $core.bool hasAudioUrl() => $_has(13);
+  @$pb.TagNumber(15)
+  void clearAudioUrl() => clearField(15);
 }
 

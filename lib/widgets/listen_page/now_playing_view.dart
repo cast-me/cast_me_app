@@ -41,6 +41,7 @@ class _CollapsedView extends StatelessWidget {
                     isInteractive: false,
                     showMenu: false,
                     taggedUsersAreTappable: false,
+                    indentReplies: false,
                     child: CastPreview(
                       cast: cast,
                       showHowOld: false,

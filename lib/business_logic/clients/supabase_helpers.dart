@@ -10,6 +10,8 @@ final castAudioFileBucket = supabase.storage.from('cast-audio-files');
 
 const String createdAtCol = 'created_at';
 
+const String treeUpdatedAtCol = 'tree_updated_at';
+
 const String hasViewedCol = 'has_viewed';
 
 const String authorIdCol = 'author_id';

@@ -9,7 +9,7 @@ message CastBase {
     string id = 1;
     string created_at_string = 2;
 
-    // Fetched on read via a join.
+    // Fetched on read.
     string author_username = 3;
     string author_display_name = 4;
     string image_url = 5;
@@ -17,10 +17,11 @@ message CastBase {
     uint32 view_count = 7;
     bool has_viewed = 8;
     repeated string tagged_usernames = 9;
+    string reply_to = 10;
 
     // Client Specified.
-    string author_id = 10;
-    string title = 11;
-    uint32 duration_ms = 12;
-    string audio_url = 13;
+    string author_id = 12;
+    string title = 13;
+    uint32 duration_ms = 14;
+    string audio_url = 15;
 }
