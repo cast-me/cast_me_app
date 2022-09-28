@@ -47,8 +47,6 @@ class AuthManager extends ChangeNotifier {
 
   Profile? _profile;
 
-  User? get user => supabase.auth.currentUser;
-
   Profile get profile => _profile!;
 
   // Should not be accessed before verifying that the user manager has loaded.

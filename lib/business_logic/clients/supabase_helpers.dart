@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -16,6 +16,8 @@ const String hasViewedCol = 'has_viewed';
 
 const String authorIdCol = 'author_id';
 
+const String userIdCol = 'user_id';
+
 const String usernameCol = 'username';
 
 const String displayNameCol = 'display_name';
@@ -24,7 +26,9 @@ const String authorDisplayNameCol = 'author_display_name';
 
 const String authorUsernameCol = 'author_username';
 
-const String castIdCol = 'id';
+const String idCol = 'id';
+
+const String castIdCol = 'cast_id';
 
 const String titleCol = 'title';
 
@@ -41,6 +45,9 @@ SupabaseQueryBuilder get castsReadQuery =>
 
 SupabaseQueryBuilder get listensQuery =>
     supabase.from(isStaging ? 'staging_views' : 'views');
+
+SupabaseQueryBuilder get likesQuery =>
+    supabase.from(isStaging ? 'staging_likes' : 'likes');
 
 extension GotrueFutureUtil on Future<GotrueResponse> {
   Future<GotrueResponse> errorToException() {

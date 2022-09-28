@@ -1,0 +1,15 @@
+// Run from lib:
+// protoc --dart_out=. lib/business_logic/models/protobufs/*.proto
+
+syntax = "proto3";
+
+package cast_me_app;
+
+message LikeBase {
+    // Server values
+    string created_at_string = 1;
+    string user_id = 2;
+
+    // Fetched on read
+    string user_display_name = 3;
+}

@@ -75,34 +75,38 @@ class _PostPageViewState extends State<PostPageView> {
                   titleText: titleText,
                 ),
                 ValueListenableBuilder<String>(
-                    valueListenable: titleText,
-                    builder: (context, title, _) {
-                      return AsyncSubmitButton(
-                        child: const Text('Submit'),
-                        onPressed: castFiles.isNotEmpty && title.isNotEmpty
-                            ? () async {
-                                await CastDatabase.instance.createCast(
-                                  title: title,
-                                  castFile: castFiles.first,
-                                );
-                                // No need to call setState as updating the
-                                // castFiles list in postBloc will do that.
-                                castListController.refresh();
-                                titleText.value = '';
-                                // Gross hack to force the title field to
-                                // rebuild from scratch.
-                                titleFieldKey = UniqueKey();
-                                PostBloc.instance.popFirstFile();
-                              }
-                            : null,
-                      );
-                    }),
+                  valueListenable: titleText,
+                  builder: (context, title, _) {
+                    return AsyncSubmitButton(
+                      child: const Text('Submit'),
+                      onPressed: castFiles.isNotEmpty && title.isNotEmpty
+                          ? () async {
+                              await CastDatabase.instance.createCast(
+                                title: title,
+                                castFile: castFiles.first,
+                                replyTo: PostBloc.instance.replyCast.value,
+                              );
+                              // No need to call setState as updating the
+                              // castFiles list in postBloc will do that.
+                              castListController.refresh();
+                              titleText.value = '';
+                              // Gross hack to force the title field to
+                              // rebuild from scratch.
+                              titleFieldKey = UniqueKey();
+                              PostBloc.instance.popFirstFile();
+                              PostBloc.instance.replyCast.value = null;
+                            }
+                          : null,
+                    );
+                  },
+                ),
                 const AdaptiveText('Your casts'),
                 const SizedBox(height: 4),
                 Expanded(
                   child: CastViewTheme(
                     isInteractive: false,
                     hideDelete: false,
+                    indentReplies: false,
                     child: CastListView(
                       controller: castListController,
                       filterProfile: AuthManager.instance.profile,

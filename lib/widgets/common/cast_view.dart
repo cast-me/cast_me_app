@@ -10,6 +10,7 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
+import 'package:cast_me_app/widgets/common/likes_view.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/gestures.dart';
@@ -56,7 +57,7 @@ class CastPreview extends StatelessWidget {
                     child: Container(
                       color: Colors.white.withAlpha(120),
                       width: 2,
-                      height: 66,
+                      height: 80,
                     ),
                   ),
                 Expanded(
@@ -65,61 +66,80 @@ class CastPreview extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
-                        padding: padding ?? const EdgeInsets.all(8),
+                        padding: padding ?? const EdgeInsets.all(4),
                         color: _isTapToPlay(context) && nowPlaying == cast
                             ? Colors.white.withAlpha(80)
                             : null,
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(2),
-                              child: Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(cast.imageUrl),
-                                  ),
-                                ),
-                                child: _isTapToPlay(context) &&
-                                        nowPlaying == cast
-                                    ? Container(
-                                        color:
-                                            (cast.accentColor).withAlpha(120),
-                                        child: const Icon(Icons.bar_chart,
-                                            size: 30),
-                                      )
-                                    : null,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
                             Expanded(
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const _CastTitleView(),
-                                    DefaultTextStyle(
-                                      style: TextStyle(
-                                          color: Colors.grey.shade400),
-                                      child: const _AuthorLine(),
-                                    ),
-                                    Row(
-                                      children: [
-                                        if (showHowOld)
-                                          Text(
-                                            '${_oldString(cast.createdAt)} - ',
-                                            style: TextStyle(
-                                                color: Colors.grey.shade400),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(2),
+                                        child: Container(
+                                          height: 50,
+                                          width: 50,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image:
+                                                  NetworkImage(cast.imageUrl),
+                                            ),
                                           ),
-                                        const _ListenCount(),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                          child: _isTapToPlay(context) &&
+                                                  nowPlaying == cast
+                                              ? Container(
+                                                  color: (cast.accentColor)
+                                                      .withAlpha(120),
+                                                  child: const Icon(
+                                                      Icons.bar_chart,
+                                                      size: 30),
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const _CastTitleView(),
+                                              DefaultTextStyle(
+                                                style: TextStyle(
+                                                    color:
+                                                        Colors.grey.shade400),
+                                                child: const _AuthorLine(),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  if (showHowOld)
+                                                    Text(
+                                                      '${_oldString(cast.createdAt)} - ',
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey.shade400),
+                                                    ),
+                                                  const _ListenCount(),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (!(theme?.hideLikes ?? false))
+                                    const LikesView(),
+                                ],
                               ),
                             ),
                             if (theme?.showMenu ?? true) const _CastMenu(),
@@ -220,6 +240,7 @@ class _CastMenu extends StatelessWidget {
               icon: Icons.reply,
               text: 'reply',
               onTap: () async {
+                hideMenu();
                 PostBloc.instance.replyCast.value = cast;
                 CastMeBloc.instance.onTabChanged(CastMeTab.post);
               },
@@ -297,7 +318,7 @@ class _CastTitleView extends StatelessWidget {
   Widget build(BuildContext context) {
     final Cast cast = CastProvider.of(context);
     // TODO(caseycrogers): get rid of this sloppy garbage and replace it with a
-    //   a `CastViewTheme` inherited widget.
+    //   `CastViewTheme` inherited widget.
     final bool tappable =
         CastViewTheme.of(context)?.taggedUsersAreTappable ?? true;
     return Text.rich(
@@ -433,6 +454,7 @@ class CastViewTheme extends InheritedWidget {
     this.showMenu,
     this.taggedUsersAreTappable,
     this.isInteractive,
+    this.hideLikes,
     this.hideDelete,
     this.onTap,
     this.indentReplies,
@@ -443,6 +465,7 @@ class CastViewTheme extends InheritedWidget {
   final bool? taggedUsersAreTappable;
   final bool? isInteractive;
   final bool? hideDelete;
+  final bool? hideLikes;
   final bool? indentReplies;
   final void Function(Cast)? onTap;
 

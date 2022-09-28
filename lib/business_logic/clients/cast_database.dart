@@ -57,13 +57,13 @@ class CastDatabase {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-      oldestFirst: true,
     ).where((cast) => cast.id != seedCast.id);
   }
 
   Future<void> createCast({
     required String title,
     required CastFile castFile,
+    required Cast? replyTo,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
     final String fileExt = castFile.platformFile.name.split('.').last;
@@ -86,14 +86,15 @@ class CastDatabase {
       title: title,
       durationMs: castFile.durationMs,
       audioUrl: audioFileUrl,
+      replyTo: replyTo?.id,
     );
     final Map<String, dynamic> castMap = await castsWriteQuery
         .insert(_castToRow(cast))
-        .select(castIdCol)
+        .select(idCol)
         .single() as Map<String, dynamic>;
     // TODO(caseycrogers): this will only log if the create succeeds, consider
     //   wrapping in a finally or something.
-    Analytics.instance.logCreate(castId: castMap[castIdCol] as String);
+    Analytics.instance.logCreate(castId: castMap[idCol] as String);
   }
 
   Future<void> deleteCast({
@@ -104,7 +105,7 @@ class CastDatabase {
     //   that we don't have to issue a separate delete to it.
     await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
     final List<dynamic> rowResult =
-        await castsWriteQuery.delete().eq(castIdCol, cast.id) as List<dynamic>;
+        await castsWriteQuery.delete().eq(idCol, cast.id) as List<dynamic>;
     assert(
       rowResult.isNotEmpty,
       'Could not find a cast with id \'${cast.id}\'',
@@ -132,9 +133,25 @@ class CastDatabase {
   }) async {
     Analytics.instance.logSkip(cast: cast, skippedAt: skippedAt);
     await listensQuery.insert({
-      'cast_id': cast.id,
-      'user_id': supabase.auth.currentUser!.id,
+      idCol: cast.id,
+      userIdCol: supabase.auth.currentUser!.id,
       'skipped_reason': skippedReason.toString().split('.').last,
+    });
+  }
+
+  Future<void> setLiked({
+    required Cast cast,
+    required bool liked,
+  }) async {
+    Analytics.instance.logLiked(cast: cast, liked: liked);
+    final String userId = AuthManager.instance.profile.id;
+    if (!liked) {
+      await likesQuery.delete().eq(userIdCol, userId).eq(castIdCol, cast.id);
+      return;
+    }
+    await likesQuery.insert({
+      userIdCol: userId,
+      castIdCol: cast.id,
     });
   }
 }

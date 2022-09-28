@@ -1,3 +1,4 @@
+// Run from lib:
 // protoc --dart_out=. lib/business_logic/models/protobufs/*.proto
 
 syntax = "proto3";

@@ -1,8 +1,11 @@
+// Run from lib:
 // protoc --dart_out=. lib/business_logic/models/protobufs/*.proto
 
 syntax = "proto3";
 
 package cast_me_app;
+
+import "business_logic/models/protobufs/like_base.proto";
 
 message CastBase {
     // Server specified.
@@ -16,8 +19,9 @@ message CastBase {
     string accent_color_base = 6;
     uint32 view_count = 7;
     bool has_viewed = 8;
-    repeated string tagged_usernames = 9;
-    string reply_to = 10;
+    repeated LikeBase likes = 9;
+    repeated string tagged_usernames = 10;
+    string reply_to = 11;
 
     // Client Specified.
     string author_id = 12;

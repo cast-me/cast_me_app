@@ -214,4 +214,17 @@ class Analytics {
       },
     );
   }
+
+  void logLiked({
+    required Cast cast,
+    required bool liked,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'like',
+      parameters: {
+        'cast_id': cast.id,
+        'liked': liked.toString(),
+      },
+    );
+  }
 }

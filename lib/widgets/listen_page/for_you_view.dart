@@ -9,10 +9,9 @@ class ForYouView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CastViewTheme(
+    return const CastViewTheme(
       child: CastListView(
-        filterOutProfile: AuthManager.instance.profile,
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8),
       ),
     );
   }
