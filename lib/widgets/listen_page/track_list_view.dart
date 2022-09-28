@@ -14,17 +14,20 @@ class TrackListView extends StatelessWidget {
     return ValueListenableBuilder<List<IndexedAudioSource>>(
       valueListenable: CastAudioPlayer.instance.queue,
       builder: (context, queue, _) {
-        return ListView(
-          padding: const EdgeInsets.all(24),
-          children: queue.map<Widget>(
-            (source) {
-              return CastPreview(
-                cast: source.cast,
-                padding: EdgeInsets.zero,
-                isInTrackList: true,
-              );
-            },
-          ).separated(const SizedBox(height: 8)).toList(),
+        return CastViewTheme(
+          indentReplies: false,
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            children: queue.map<Widget>(
+              (source) {
+                return CastPreview(
+                  cast: source.cast,
+                  padding: EdgeInsets.zero,
+                  isInTrackList: true,
+                );
+              },
+            ).separated(const SizedBox(height: 8)).toList(),
+          ),
         );
       },
     );
