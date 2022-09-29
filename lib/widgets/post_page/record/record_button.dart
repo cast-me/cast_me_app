@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 class RecordButton extends StatelessWidget {
   const RecordButton({
     Key? key,
-    required this.wrap,
+    required this.recordingPath,
   }) : super(key: key);
 
-  final Wrapper wrap;
+  final ValueNotifier<String?> recordingPath;
 
   @override
   Widget build(BuildContext context) {
+    final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -31,13 +32,14 @@ class RecordButton extends StatelessWidget {
             },
           ),
           onPressed: () {
-            wrap(
+            wrapper.wrap(
               'record',
               () async {
                 if (!AudioRecorder.instance.isRecording.value) {
-                  return AudioRecorder.instance.startRecording();
+                  return AudioRecorder.instance.startRecording(name: 'asdf');
                 }
-                await AudioRecorder.instance.stopRecording();
+                recordingPath.value =
+                    await AudioRecorder.instance.stopRecording();
                 return;
               },
             );

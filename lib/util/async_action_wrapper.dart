@@ -6,11 +6,21 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-typedef Wrapper = Future<void> Function(String, AsyncCallback);
+class AsyncActionWrapper extends InheritedWidget {
+  AsyncActionWrapper({
+    Key? key,
+    required Widget child,
+  }) : super(key: key, child: child);
 
-abstract class AsyncActionWrapper {
   final ValueNotifier<AsyncActionStatus> status =
       ValueNotifier(AsyncActionStatus.empty());
+
+  static AsyncActionWrapper of(BuildContext context) {
+    final AsyncActionWrapper? result =
+        context.findAncestorWidgetOfExactType<AsyncActionWrapper>();
+    assert(result != null, 'No AsyncActionWrapper found in context');
+    return result!;
+  }
 
   Future<void> wrap(
     String label,
@@ -48,6 +58,11 @@ abstract class AsyncActionWrapper {
       error: error,
     );
   }
+
+  @override
+  bool updateShouldNotify(AsyncActionWrapper oldWidget) {
+    return false;
+  }
 }
 
 class AsyncActionStatus extends ChangeNotifier {
@@ -64,19 +79,18 @@ class AsyncActionStatus extends ChangeNotifier {
   final bool isProcessing;
 }
 
-
 class AsyncErrorView extends StatelessWidget {
   const AsyncErrorView({
     Key? key,
     this.errorPrefix,
-    required this.currentStatus,
   }) : super(key: key);
 
   final String? errorPrefix;
-  final ValueListenable<AsyncActionStatus> currentStatus;
 
   @override
   Widget build(BuildContext context) {
+    final ValueListenable<AsyncActionStatus> currentStatus =
+        AsyncActionWrapper.of(context).status;
     return ValueListenableBuilder<AsyncActionStatus>(
       valueListenable: currentStatus,
       builder: (context, status, _) {
