@@ -26,16 +26,18 @@ class _LikesViewState extends State<LikesView> {
 
   late int likeCount = _getNumberOfLikes();
 
+  static const double size = 16;
+
   @override
   Widget build(BuildContext context) {
     return _LikeView(
       icon: const Icon(
         Icons.thumb_up,
-        size: 12,
+        size: size,
       ),
       label: Text(
         likeCount.toString(),
-        style: const TextStyle(fontSize: 12),
+        style: const TextStyle(fontSize: size),
       ),
       color: userLiked ? Colors.grey : null,
       onTap: () async {

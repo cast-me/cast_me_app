@@ -90,25 +90,29 @@ class _SelectCastModalState extends State<SelectCastModal> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: AdaptiveMaterial(
-        adaptiveColor: AdaptiveColor.background,
-        child: Column(
-          children: [
-            _CastSearchBar(searchController: searchController),
-            Expanded(
-              child: CastViewTheme(
-                taggedUsersAreTappable: false,
-                showMenu: false,
-                onTap: (cast) {
-                  Navigator.of(context).pop();
-                  PostBloc.instance.replyCast.value = cast;
-                },
-                child: CastListView(
-                  controller: searchController,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: AdaptiveMaterial(
+          adaptiveColor: AdaptiveColor.surface,
+          child: Column(
+            children: [
+              _CastSearchBar(searchController: searchController),
+              Expanded(
+                child: CastViewTheme(
+                  taggedUsersAreTappable: false,
+                  showLikes: true,
+                  showMenu: false,
+                  onTap: (cast) {
+                    Navigator.of(context).pop();
+                    PostBloc.instance.replyCast.value = cast;
+                  },
+                  child: CastListView(
+                    controller: searchController,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -131,8 +135,6 @@ class _CastSearchBar extends StatelessWidget {
         controller: searchController.searchTextController,
         decoration: const InputDecoration(
           prefixIcon: Icon(Icons.search),
-          filled: true,
-          fillColor: Colors.black,
         ),
       ),
     );

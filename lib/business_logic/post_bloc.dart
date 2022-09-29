@@ -20,6 +20,10 @@ class PostBloc {
     _castFiles.value = _castFiles.value.sublist(1);
   }
 
+  void clearFiles() {
+    _castFiles.value = [];
+  }
+
   Future<void> onFilesSelected(Iterable<String> paths) async {
     _castFiles.value = await Future.wait(
       paths.map((path) async {

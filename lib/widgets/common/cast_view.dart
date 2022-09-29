@@ -57,7 +57,8 @@ class CastPreview extends StatelessWidget {
                     child: Container(
                       color: Colors.white.withAlpha(120),
                       width: 2,
-                      height: 80,
+                      // TODO(caseycrogers): make this programmatic.
+                      height: theme?.showLikes ?? false ? 58 : 84,
                     ),
                   ),
                 Expanded(
@@ -137,7 +138,7 @@ class CastPreview extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  if (!(theme?.hideLikes ?? false))
+                                  if (!(theme?.showLikes ?? false))
                                     const LikesView(),
                                 ],
                               ),
@@ -454,7 +455,7 @@ class CastViewTheme extends InheritedWidget {
     this.showMenu,
     this.taggedUsersAreTappable,
     this.isInteractive,
-    this.hideLikes,
+    this.showLikes,
     this.hideDelete,
     this.onTap,
     this.indentReplies,
@@ -465,7 +466,7 @@ class CastViewTheme extends InheritedWidget {
   final bool? taggedUsersAreTappable;
   final bool? isInteractive;
   final bool? hideDelete;
-  final bool? hideLikes;
+  final bool? showLikes;
   final bool? indentReplies;
   final void Function(Cast)? onTap;
 

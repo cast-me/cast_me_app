@@ -79,11 +79,14 @@ class _CastListViewState extends State<CastListView> {
                 cast: snapshot.data![index],
               );
             },
-            loadingWidget: const Center(
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(color: Colors.white),
+            loadingWidget: const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Center(
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
               ),
             ),
             noResultsWidgetBuilder: (context) {

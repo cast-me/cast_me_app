@@ -6,11 +6,11 @@ import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
-import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
+import 'package:cast_me_app/widgets/post_page/pick_file_view.dart';
+import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
+import 'package:cast_me_app/widgets/post_page/record_view.dart';
 import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
-
-import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
 
@@ -37,38 +37,23 @@ class _PostPageViewState extends State<PostPageView> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                    'Currently, ONLY `.mp3` and `.m4a` files are supported. '
-                    'More file types and the ability to record and edit clips '
-                    'in-app will be added.\n'
-                    'You can select an audio file using the button below or '
-                    'can use the share button in the app containing your audio '
-                    'file (select CastMe as the app to share to).\n'
-                    '\n'
-                    'Recommended external recording app:'),
-                const AudioRecorderRecommender(),
-                const AdaptiveText('Cast file:'),
-                ElevatedButton(
-                  onPressed: () async {
-                    final FilePickerResult? pickerResult =
-                        await FilePicker.platform.pickFiles(
-                      dialogTitle: 'Select audio',
-                      type: FileType.custom,
-                      allowedExtensions: ['mp3', 'm4a'],
-                      allowMultiple: true,
-                    );
-                    if (pickerResult != null && pickerResult.files.isNotEmpty) {
-                      await PostBloc.instance.onFilesSelected(
-                        pickerResult.files.map((f) => f.path!),
-                      );
-                    }
-                  },
-                  child: Text(
-                    castFiles.isNotEmpty
-                        ? castFiles.first.platformFile.name
-                        : 'Select audio',
+                Row(
+                  children: const [
+                    PostHelpTooltip(),
+                    SizedBox(width: 4),
+                    AdaptiveText('Cast audio:'),
+                  ],
+                ),
+                Container(
+                  child: Row(
+                    children: const [
+                      Expanded(child: RecordView()),
+                      SizedBox(width: 8),
+                      Expanded(child: PickFileView()),
+                    ],
                   ),
                 ),
+                _SelectedAudioView(castFiles: castFiles),
                 const ReplyCastSelector(),
                 TitleField(
                   key: titleFieldKey,
@@ -117,6 +102,35 @@ class _PostPageViewState extends State<PostPageView> {
               ],
             );
           }),
+    );
+  }
+}
+
+class _SelectedAudioView extends StatelessWidget {
+  const _SelectedAudioView({
+    Key? key,
+    required this.castFiles,
+  }) : super(key: key);
+
+  final List<CastFile> castFiles;
+
+  @override
+  Widget build(BuildContext context) {
+    if (castFiles.isEmpty) {
+      return Container();
+    }
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            PostBloc.instance.clearFiles();
+          },
+        ),
+        Expanded(
+          child: Text(castFiles.first.platformFile.name),
+        ),
+      ],
     );
   }
 }

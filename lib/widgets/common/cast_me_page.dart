@@ -6,11 +6,13 @@ class CastMePage extends StatelessWidget {
   const CastMePage({
     Key? key,
     required this.headerText,
+    this.trailingIcon,
     required this.child,
     this.isBasePage = false,
   }) : super(key: key);
 
   final String headerText;
+  final Widget? trailingIcon;
   final Widget child;
   final bool isBasePage;
 
@@ -25,16 +27,28 @@ class CastMePage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  if (!isBasePage) const ImplicitNavigatorBackButton(
-                    transitionDuration: Duration.zero,
-                  ),
+                  if (!isBasePage)
+                    const ImplicitNavigatorBackButton(
+                      transitionDuration: Duration.zero,
+                    ),
                   Text(
                     headerText,
-                    style: Theme
-                        .of(context)
+                    style: Theme.of(context)
                         .textTheme
-                        .headline3!.copyWith(color: Colors.white),
+                        .headline3!
+                        .copyWith(color: Colors.white),
                   ),
+                  if (trailingIcon != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: IconTheme(
+                        data: IconThemeData(
+                          size: Theme.of(context).textTheme.headline3!.fontSize,
+                          color: Colors.white,
+                        ),
+                        child: trailingIcon!,
+                      ),
+                    ),
                 ],
               ),
               Expanded(child: child),
