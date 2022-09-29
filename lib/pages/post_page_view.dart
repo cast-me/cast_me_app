@@ -8,7 +8,7 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/post_page/pick_file_view.dart';
 import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
-import 'package:cast_me_app/widgets/post_page/record_view.dart';
+import 'package:cast_me_app/widgets/post_page/record/record_view.dart';
 import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
@@ -55,6 +55,8 @@ class _PostPageViewState extends State<PostPageView> {
                 ),
                 _SelectedAudioView(castFiles: castFiles),
                 const ReplyCastSelector(),
+                const SizedBox(height: 8),
+                const Text('Cast title'),
                 TitleField(
                   key: titleFieldKey,
                   titleText: titleText,

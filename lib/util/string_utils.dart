@@ -8,6 +8,12 @@ extension StringUtilsExtension on String {
       yield this[i];
     }
   }
+
+  String truncate(int cutoff) {
+    return (length <= cutoff)
+        ? this
+        : '${substring(0, cutoff).trimRight()}...';
+  }
 }
 
 extension JsonString on Map<String, dynamic> {

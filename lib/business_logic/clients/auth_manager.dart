@@ -20,6 +20,8 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
+///
+/// TODO(caseycrogers): Refactor to use `AsyncActionWrapper`.
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
