@@ -10,14 +10,20 @@ import 'package:flutter/material.dart';
 class SeekBar extends StatefulWidget {
   const SeekBar({
     Key? key,
+    required this.positionDataStream,
+    required this.seekTo,
+    this.color,
   }) : super(key: key);
+
+  final Stream<PositionData> positionDataStream;
+  final Future<void> Function(Duration) seekTo;
+  final Color? color;
 
   @override
   State<SeekBar> createState() => _SeekBarState();
 }
 
 class _SeekBarState extends State<SeekBar> {
-  final CastAudioPlayer player = CastAudioPlayer.instance;
   double? _dragValue;
 
   @override
@@ -29,16 +35,16 @@ class _SeekBarState extends State<SeekBar> {
         thumbShape: const RoundSliderThumbShape(
           enabledThumbRadius: 4,
         ),
-
       ),
       child: StreamBuilder<PositionData>(
-          stream: player.positionDataStream,
+          stream: widget.positionDataStream,
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-            final Cast cast = ListenBloc.instance.currentCast.value!;
-            final PositionData data = snapshot.data!;
+            final PositionData data = snapshot.data ??
+                PositionData(
+                  Duration.zero,
+                  Duration.zero,
+                  Duration.zero,
+                );
             return Stack(
               children: [
                 // This is a mock slider to show the buffered position.
@@ -46,7 +52,7 @@ class _SeekBarState extends State<SeekBar> {
                   data: SliderTheme.of(context).copyWith(
                     thumbShape: HiddenThumbComponentShape(),
                     activeTrackColor: Color.lerp(
-                      cast.accentColor,
+                      widget.color ?? Colors.white,
                       Colors.black,
                       .6,
                     ),
@@ -66,9 +72,9 @@ class _SeekBarState extends State<SeekBar> {
                 ),
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: cast.accentColor,
+                    activeTrackColor: widget.color ?? Colors.white,
                     inactiveTrackColor: Colors.transparent,
-                    thumbColor: cast.accentColor,
+                    thumbColor: widget.color ?? Colors.white,
                   ),
                   child: Slider(
                     min: 0,
@@ -82,10 +88,17 @@ class _SeekBarState extends State<SeekBar> {
                       });
                     },
                     onChangeEnd: (value) {
-                      player.seekTo(Duration(milliseconds: value.round()));
+                      widget.seekTo(Duration(milliseconds: value.round()));
                       _dragValue = null;
                     },
                   ),
+                ),
+                Positioned(
+                  left: 16,
+                  bottom: 0,
+                  child: Text(
+                      data.position.toFormattedString(),
+                      style: Theme.of(context).textTheme.caption),
                 ),
                 Positioned(
                   right: 16,

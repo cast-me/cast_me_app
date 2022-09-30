@@ -1,14 +1,14 @@
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
+import 'package:cast_me_app/business_logic/record_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RecordButton extends StatelessWidget {
   const RecordButton({
     Key? key,
-    required this.recordingPath,
   }) : super(key: key);
-
-  final ValueNotifier<String?> recordingPath;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +36,13 @@ class RecordButton extends StatelessWidget {
               'record',
               () async {
                 if (!AudioRecorder.instance.isRecording.value) {
-                  return AudioRecorder.instance.startRecording(name: 'asdf');
+                  return AudioRecorder.instance.startRecording(name: name);
                 }
-                recordingPath.value =
+                RecordBloc.instance.recordingPath.value =
                     await AudioRecorder.instance.stopRecording();
+                await ClipAudioPlayer.instance.setPath(
+                  RecordBloc.instance.recordingPath.value!,
+                );
                 return;
               },
             );
@@ -47,5 +50,12 @@ class RecordButton extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String get name {
+    final DateFormat formatter = DateFormat('yyyy_MM_dd_ssSSS');
+    final DateTime now = DateTime.now();
+    return 'recording'
+        '_${formatter.format(now)}';
   }
 }

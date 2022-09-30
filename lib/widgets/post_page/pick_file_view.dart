@@ -25,8 +25,7 @@ class PickFileView extends StatelessWidget {
                 );
               }
             },
-            child: Text(
-                castFiles.isEmpty ? 'Select a file' : 'Replace selected audio'),
+            child: const Text('Select a file'),
           );
         });
   }

@@ -1,7 +1,12 @@
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
+import 'package:cast_me_app/business_logic/post_bloc.dart';
+import 'package:cast_me_app/business_logic/record_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/post_page/record/recording_controls.dart';
+import 'package:cast_me_app/widgets/post_page/record/recording_playback_controls.dart';
 import 'package:flutter/material.dart';
 
 class RecordView extends StatelessWidget {
@@ -35,10 +40,9 @@ class RecordAudioModal extends StatefulWidget {
 }
 
 class _RecordAudioModalState extends State<RecordAudioModal> {
-  ValueNotifier<String?> recordingPath = ValueNotifier(null);
-
   @override
   Widget build(BuildContext context) {
+    final ClipAudioPlayer player = ClipAudioPlayer.instance;
     return Padding(
       padding: const EdgeInsets.all(24),
       child: ClipRRect(
@@ -71,39 +75,28 @@ class _RecordAudioModalState extends State<RecordAudioModal> {
                     ),
                   ],
                 ),
-                RecordingControls(recordingPath: recordingPath),
-                ValueListenableBuilder<bool>(
-                    valueListenable: AudioRecorder.instance.isRecording,
-                    builder: (context, isRecording, _) {
-                      return ValueListenableBuilder<String?>(
-                        valueListenable: recordingPath,
-                        builder: (context, path, _) {
-                          if (isRecording || path == null) {
-                            return Container();
-                          }
-                          return Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.close),
-                                onPressed: () {
-                                  recordingPath.value = null;
-                                },
-                              ),
-                              Expanded(
-                                child: Text(Uri.parse(recordingPath.value!)
-                                    .pathSegments
-                                    .last),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }),
-                ElevatedButton(
-                  child: const Center(
-                    child: Text('Submit'),
-                  ),
-                  onPressed: () {},
+                const RecordingControls(),
+                SeekBar(
+                  positionDataStream: player.positionDataStream,
+                  seekTo: player.seekTo,
+                ),
+                const RecordingPlaybackControls(),
+                ValueListenableBuilder<String?>(
+                  valueListenable: RecordBloc.instance.recordingPath,
+                  builder: (context, path, _) {
+                    return ElevatedButton(
+                      child: const Center(
+                        child: Text('Submit'),
+                      ),
+                      onPressed: path == null
+                          ? null
+                          : () {
+                              PostBloc.instance.onFilesSelected([path]);
+                              RecordBloc.instance.recordingPath.value = null;
+                              Navigator.of(context).pop();
+                            },
+                    );
+                  },
                 ),
                 const AsyncErrorView(),
               ],

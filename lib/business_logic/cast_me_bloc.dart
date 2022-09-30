@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -44,6 +45,10 @@ class CastMeBloc {
       fromTab: _currentTab.value,
       toTab: newTab,
     );
+    if (newTab == CastMeTab.post) {
+      // We shouldn't play a cast while the user is posting their own cast.
+      CastAudioPlayer.instance.pause();
+    }
     _currentTab.value = newTab;
   }
 
@@ -58,7 +63,7 @@ class CastMeBloc {
       onTabChanged(CastMeTab.profile);
       return;
     }
-    _selectedProfile.value =  SelectedProfile(username: newSelection);
+    _selectedProfile.value = SelectedProfile(username: newSelection);
   }
 
   Future<void> onSharedFile(Iterable<String> filePaths) async {
@@ -66,7 +71,6 @@ class CastMeBloc {
     onTabChanged(_currentTab.value = CastMeTab.post);
   }
 }
-
 
 class SelectedProfile {
   SelectedProfile({required this.username})
