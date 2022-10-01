@@ -136,19 +136,20 @@ class _DisplayNamePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String?>(
-        valueListenable: errorMessage,
-        builder: (context, message, _) {
-          return TextField(
-            controller: form.displayNameController,
-            onChanged: (displayName) {
-              errorMessage.value = form.validateDisplayName();
-            },
-            decoration: InputDecoration(
-              labelText: 'display name',
-              errorText: message,
-            ),
-          );
-        });
+      valueListenable: errorMessage,
+      builder: (context, message, _) {
+        return TextField(
+          controller: form.displayNameController,
+          onChanged: (displayName) {
+            errorMessage.value = form.validateDisplayName();
+          },
+          decoration: InputDecoration(
+            labelText: 'display name',
+            errorText: message,
+          ),
+        );
+      },
+    );
   }
 }
 
