@@ -9,23 +9,32 @@ class CastMePage extends StatelessWidget {
     this.trailingIcon,
     required this.child,
     this.isBasePage = false,
+    this.scrollable = false,
   }) : super(key: key);
 
   final String headerText;
   final Widget? trailingIcon;
   final Widget child;
   final bool isBasePage;
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context) {
+    // We put the padding around the child and the rest of the column's content
+    // separately so that the scrollable content, if applicable, is padded
+    // internally not externally.
+    final Widget paddedChild = Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+      child: child,
+    );
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.surface,
       child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Row(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+              child: Row(
                 children: [
                   if (!isBasePage)
                     const ImplicitNavigatorBackButton(
@@ -51,9 +60,12 @@ class CastMePage extends StatelessWidget {
                     ),
                 ],
               ),
-              Expanded(child: child),
-            ],
-          ),
+            ),
+            if (scrollable)
+              Expanded(child: SingleChildScrollView(child: paddedChild))
+            else
+              Expanded(child: paddedChild),
+          ],
         ),
       ),
     );

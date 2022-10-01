@@ -58,7 +58,7 @@ class CastPreview extends StatelessWidget {
                       color: Colors.white.withAlpha(120),
                       width: 2,
                       // TODO(caseycrogers): make this programmatic.
-                      height: theme?.showLikes ?? false ? 58 : 84,
+                      height: theme?.showLikes ?? true ? 84 : 58,
                     ),
                   ),
                 Expanded(
@@ -138,7 +138,7 @@ class CastPreview extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  if (!(theme?.showLikes ?? false))
+                                  if (theme?.showLikes ?? true)
                                     const LikesView(),
                                 ],
                               ),

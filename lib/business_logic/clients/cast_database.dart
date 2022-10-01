@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:cast_me_app/business_logic/post_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:crypto/crypto.dart';
@@ -66,25 +68,25 @@ class CastDatabase {
     required Cast? replyTo,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
-    final String fileExt = castFile.platformFile.name.split('.').last;
+    final String fileExt = castFile.name.split('.').last;
     // Hash the file name so we don't get naming conflicts. Since we're using a
     // hash, redundant uploads won't increase storage usage. We're prefixing
     // with the username so that when a user deletes a cast we can safely delete
     // the storage object-we're preventing another user from uploading the same
     // file under the exact same name.
     final String fileName = '${AuthManager.instance.profile.username}'
-        '_${sha1.convert(castFile.platformFile.bytes!)}.$fileExt';
+        '_${await _getHash(castFile.file)}.$fileExt';
 
-    await castAudioFileBucket.uploadBinary(
+    await castAudioFileBucket.upload(
       fileName,
-      castFile.platformFile.bytes!,
+      castFile.file,
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
     final Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
-      durationMs: castFile.durationMs,
+      durationMs: castFile.duration.inMilliseconds,
       audioUrl: audioFileUrl,
       replyTo: replyTo?.id,
     );
@@ -190,4 +192,8 @@ Future<int> getFileDuration(String mediaPath) async {
   final int durationMs =
       (double.parse(mediaInfo!.getDuration()!) * 1000).round();
   return durationMs;
+}
+
+Future<String> _getHash(File file) async {
+  return file.openRead().transform(sha256).first.toString().substring(0, 10);
 }

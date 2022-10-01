@@ -60,3 +60,22 @@ extension ListenableUtils on Listenable {
     return proxyListenable;
   }
 }
+
+class HistoryValueNotifier<T> extends ValueNotifier<T> {
+  HistoryValueNotifier(T value) : super(value);
+
+  final List<T> _history = [];
+
+  @override
+  set value(T newValue) {
+    _history.add(value);
+    super.value = newValue;
+  }
+
+  bool get canUndo => _history.isNotEmpty;
+
+  void undo() {
+    assert(_history.isNotEmpty);
+    value = _history.removeLast();
+  }
+}

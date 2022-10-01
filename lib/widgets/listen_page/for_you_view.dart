@@ -1,4 +1,3 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 

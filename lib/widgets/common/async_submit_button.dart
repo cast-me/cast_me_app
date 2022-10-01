@@ -2,6 +2,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated('Is being replaced by async_action_wrapper.dart')
 class AsyncSubmitButton extends StatelessWidget {
   AsyncSubmitButton({
     Key? key,
@@ -16,7 +17,7 @@ class AsyncSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AsyncSubmitWrapper(
+    return AsyncSubmitView(
       child: ElevatedButton(
         child: child,
         onPressed: onPressed != null
@@ -39,8 +40,8 @@ class AsyncSubmitButton extends StatelessWidget {
   }
 }
 
-class AsyncSubmitWrapper extends StatelessWidget {
-  const AsyncSubmitWrapper({
+class AsyncSubmitView extends StatelessWidget {
+  const AsyncSubmitView({
     Key? key,
     required this.child,
     required this.currentIsSubmitting,
@@ -80,7 +81,10 @@ class AsyncSubmitWrapper extends StatelessWidget {
                     return Text(
                       errorMessage,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .error,
                       ),
                     );
                   }

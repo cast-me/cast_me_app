@@ -1,14 +1,16 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
+import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
-import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/post_page/pick_file_view.dart';
 import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
-import 'package:cast_me_app/widgets/post_page/record/record_view.dart';
+import 'package:cast_me_app/widgets/post_page/record/file_playback_controls.dart';
+import 'package:cast_me_app/widgets/post_page/record/record_button.dart';
+import 'package:cast_me_app/widgets/post_page/record/recording_bar.dart';
 import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
@@ -29,11 +31,13 @@ class _PostPageViewState extends State<PostPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return CastMePage(
-      headerText: 'Post',
-      child: ValueListenableBuilder<List<CastFile>>(
-          valueListenable: PostBloc.instance.castFiles,
-          builder: (context, castFiles, _) {
+    return AsyncActionWrapper(
+      child: CastMePage(
+        headerText: 'Post',
+        scrollable: true,
+        child: ValueListenableBuilder<CastFile?>(
+          valueListenable: PostBloc.instance.castFile,
+          builder: (context, castFile, _) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -46,64 +50,65 @@ class _PostPageViewState extends State<PostPageView> {
                 ),
                 Container(
                   child: Row(
-                    children: const [
-                      Expanded(child: RecordView()),
-                      SizedBox(width: 8),
-                      Expanded(child: PickFileView()),
+                    children: [
+                      const Expanded(child: RecordButton()),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: AudioRecorder.instance.isRecording,
+                          builder: (context, isRecording, child) {
+                            if (!isRecording) {
+                              return child!;
+                            }
+                            return const RecordingBar();
+                          },
+                          child: const PickFileView(),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                _SelectedAudioView(castFiles: castFiles),
+                _SelectedAudioView(castFile: castFile),
+                const FileAudioPlayerControls(),
+                const AsyncErrorView(),
                 const ReplyCastSelector(),
                 const SizedBox(height: 8),
                 const Text('Cast title'),
-                TitleField(
-                  key: titleFieldKey,
-                  titleText: titleText,
-                ),
+                TitleField(key: titleFieldKey, titleText: titleText),
                 ValueListenableBuilder<String>(
                   valueListenable: titleText,
                   builder: (context, title, _) {
+                    final ScaffoldMessengerState messenger =
+                        ScaffoldMessenger.of(context);
                     return AsyncSubmitButton(
                       child: const Text('Submit'),
-                      onPressed: castFiles.isNotEmpty && title.isNotEmpty
+                      onPressed: castFile != null && title.isNotEmpty
                           ? () async {
-                              await CastDatabase.instance.createCast(
+                              await PostBloc.instance.submitFile(
                                 title: title,
-                                castFile: castFiles.first,
-                                replyTo: PostBloc.instance.replyCast.value,
+                                castFile: castFile,
                               );
-                              // No need to call setState as updating the
-                              // castFiles list in postBloc will do that.
-                              castListController.refresh();
-                              titleText.value = '';
-                              // Gross hack to force the title field to
-                              // rebuild from scratch.
-                              titleFieldKey = UniqueKey();
-                              PostBloc.instance.popFirstFile();
-                              PostBloc.instance.replyCast.value = null;
+                              setState(() {
+                                titleText.value = '';
+                                // Gross hack to force the title field to
+                                // rebuild from scratch.
+                                titleFieldKey = UniqueKey();
+                              });
+                              messenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Cast posted!'),
+                                ),
+                              );
                             }
                           : null,
                     );
                   },
                 ),
-                const AdaptiveText('Your casts'),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: CastViewTheme(
-                    isInteractive: false,
-                    hideDelete: false,
-                    indentReplies: false,
-                    child: CastListView(
-                      controller: castListController,
-                      filterProfile: AuthManager.instance.profile,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
               ],
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 }
@@ -111,14 +116,14 @@ class _PostPageViewState extends State<PostPageView> {
 class _SelectedAudioView extends StatelessWidget {
   const _SelectedAudioView({
     Key? key,
-    required this.castFiles,
+    required this.castFile,
   }) : super(key: key);
 
-  final List<CastFile> castFiles;
+  final CastFile? castFile;
 
   @override
   Widget build(BuildContext context) {
-    if (castFiles.isEmpty) {
+    if (castFile == null) {
       return Container();
     }
     return Row(
@@ -130,7 +135,7 @@ class _SelectedAudioView extends StatelessWidget {
           },
         ),
         Expanded(
-          child: Text(castFiles.first.platformFile.name),
+          child: Text(castFile!.name),
         ),
       ],
     );

@@ -35,6 +35,7 @@ class AudioRecorder {
         'your settings.');
   }
 
+  /// Finishes recording and returns the path to the recorded file.
   Future<String> stopRecording() async {
     assert(_isRecording.value);
     final String path = (await _record.stop())!;

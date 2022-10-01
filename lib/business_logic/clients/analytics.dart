@@ -166,7 +166,7 @@ class Analytics {
     FirebaseAnalytics.instance.logEvent(
       name: 'pause',
       parameters: {
-        'cast_id': cast?.id,
+        if (cast != null) 'cast_id': cast.id,
         'paused_at_ms': pausedAt.inMilliseconds,
       },
     );
@@ -208,7 +208,7 @@ class Analytics {
     FirebaseAnalytics.instance.logEvent(
       name: 'setSpeed',
       parameters: {
-        'cast_id': cast?.id,
+        if (cast != null) 'cast_id': cast.id,
         'from_speed': fromSpeed,
         'to_speed': toSpeed,
       },

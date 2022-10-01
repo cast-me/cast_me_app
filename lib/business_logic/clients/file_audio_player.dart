@@ -1,18 +1,26 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
+
 import 'package:flutter/foundation.dart';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
+/// An isolated audio player for playing arbitrary files.
+///
+/// This is distinct from the `CastAudioPlayer` which has extra features for
+/// playing and managing published Casts.
+///
 /// TODO(caseycrogers): this has a lot of duplicative code with
 ///   `CastAudioPlayer`, consider creating a base class to inherit from.
-class ClipAudioPlayer {
-  ClipAudioPlayer._();
+class FileAudioPlayer {
+  FileAudioPlayer._();
 
-  static final ClipAudioPlayer instance = ClipAudioPlayer._();
+  static final FileAudioPlayer instance = FileAudioPlayer._();
 
   final AudioPlayer _player = AudioPlayer();
 
@@ -21,6 +29,10 @@ class ClipAudioPlayer {
   Stream<PlayerState> get playerStateStream => _player.playerStateStream;
 
   Stream<bool> get playingStream => _player.playingStream;
+
+  Duration? get duration => _player.duration;
+
+  Duration? get position => _player.position;
 
   bool get isCompleted => _player.processingState == ProcessingState.completed;
 
@@ -32,12 +44,12 @@ class ClipAudioPlayer {
   late final ValueListenable<double> currentSpeed =
       _player.speedStream.toListenable().map((value) => value ?? 1);
 
-  Future<void> setPath(String? path) async {
-    if (path == null) {
+  Future<Duration?> setFile(File? file) async {
+    if (file == null) {
       await _player.stop();
-      return;
+      return null;
     }
-    await _player.setFilePath(path);
+    return _player.setFilePath(file.path);
   }
 
   Future<void> play() async {
@@ -62,6 +74,16 @@ class ClipAudioPlayer {
 
   Future<void> setSpeed(double speed) async {
     await _player.setSpeed(speed);
+  }
+
+  Future<void> setClip({
+    required Duration start,
+    required Duration end,
+  }) async {
+    await _player.setClip(
+      start: start,
+      end: end,
+    );
   }
 
   Stream<Duration> get positionStream => _player.positionStream;

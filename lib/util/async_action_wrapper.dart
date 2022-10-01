@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
@@ -35,7 +36,7 @@ class AsyncActionWrapper extends InheritedWidget {
       onError: (Object error, StackTrace stackTrace) {
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
         log(
-          'Auth action failed.',
+          '$label failed',
           error: error,
           stackTrace: stackTrace,
         );
@@ -113,6 +114,56 @@ class AsyncErrorView extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class ProcessingView extends StatefulWidget {
+  const ProcessingView({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  State<ProcessingView> createState() => _ProcessingViewState();
+}
+
+class _ProcessingViewState extends State<ProcessingView> {
+  RenderBox? box;
+
+  @override
+  Widget build(BuildContext context) {
+    final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
+    return ValueListenableBuilder<bool>(
+      valueListenable: wrapper.status.map((status) => status.isProcessing),
+      builder: (context, isProcessing, child) {
+        if (isProcessing) {
+          return Container(
+            height: box!.size.height,
+            width: box!.size.width,
+            padding: const EdgeInsets.all(12),
+            alignment: Alignment.center,
+            child: const AspectRatio(
+              aspectRatio: 1,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 4,
+              ),
+            ),
+          );
+        }
+        return Builder(
+          builder: (context) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              box = context.findRenderObject() as RenderBox;
+            });
+            return child!;
+          }
+        );
+      },
+      child: widget.child,
     );
   }
 }
