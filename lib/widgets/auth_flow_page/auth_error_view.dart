@@ -4,7 +4,9 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_flow_builder.d
 import 'package:flutter/material.dart';
 
 class AuthErrorView extends StatelessWidget {
-  const AuthErrorView({Key? key}) : super(key: key);
+  const AuthErrorView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

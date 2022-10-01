@@ -56,6 +56,7 @@ class _AppInfoState extends State<_AppInfo> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text('user_id: ${AuthManager.instance.profile.id}'),
               Text('${info.appName}'),
               Text('v${info.version}+${info.buildNumber}'),
             ],

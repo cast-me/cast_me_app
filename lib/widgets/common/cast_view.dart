@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+/// TODO(caseycrogers): do a pass over this class to clean it up and break out
+///   logic into sub-widgets.
 class CastPreview extends StatelessWidget {
   const CastPreview({
     Key? key,
@@ -35,6 +37,19 @@ class CastPreview extends StatelessWidget {
 
   final bool isInTrackList;
 
+  bool shouldDim(BuildContext context) {
+    if (!(CastViewTheme.of(context)?.dimIfListened ?? true)) {
+      return false;
+    }
+    if (cast == ListenBloc.instance.currentCast.value) {
+      return false;
+    }
+    if (cast.authorId == AuthManager.instance.profile.id) {
+      return true;
+    }
+    return cast.hasViewed;
+  }
+
   @override
   Widget build(BuildContext context) {
     final CastViewTheme? theme = CastViewTheme.of(context);
@@ -44,11 +59,7 @@ class CastPreview extends StatelessWidget {
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
           return Opacity(
-            opacity: cast.authorId != AuthManager.instance.profile.id &&
-                    cast.hasViewed &&
-                    cast != nowPlaying
-                ? .4
-                : 1,
+            opacity: shouldDim(context) ? .4 : 1,
             child: Row(
               children: [
                 if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
@@ -246,7 +257,7 @@ class _CastMenu extends StatelessWidget {
                 CastMeBloc.instance.onTabChanged(CastMeTab.post);
               },
             ),
-            if (!(theme?.hideDelete ?? true))
+            if (cast.authorId != AuthManager.instance.profile.id)
               _MenuButton(
                 icon: Icons.delete,
                 text: 'delete cast',
@@ -448,26 +459,49 @@ class ReplyCastView extends StatelessWidget {
   }
 }
 
+/// Controls various stylings and functions of `CastPreview`.
+///
+/// All boolean flags default to true. Cast previews reference only the nearest
+/// enclosing cast view theme-themes do not inherit from each other.
 class CastViewTheme extends InheritedWidget {
-  const CastViewTheme({
-    Key? key,
-    required Widget child,
-    this.showMenu,
-    this.taggedUsersAreTappable,
-    this.isInteractive,
-    this.showLikes,
-    this.hideDelete,
-    this.onTap,
-    this.indentReplies,
-  })  : assert((isInteractive ?? true) || onTap == null),
-        super(key: key, child: child);
+  const CastViewTheme(
+      {Key? key,
+      required Widget child,
+      this.showMenu,
+      this.taggedUsersAreTappable,
+      this.isInteractive,
+      this.showLikes,
+      this.onTap,
+      this.indentReplies,
+      this.dimIfListened})
+      : super(key: key, child: child);
 
+  /// Whether or not to show the three dots menu.
   final bool? showMenu;
+
+  /// Whether or not tapping on a tagged user will take you to their profile.
   final bool? taggedUsersAreTappable;
+
+  /// Whether or not tapping on the cast triggers a callback.
+  ///
+  /// See [onTap].
   final bool? isInteractive;
-  final bool? hideDelete;
+
+  /// Whether or not to show the like icon below the cast.
   final bool? showLikes;
+
+  /// Whether or not to visually indent replies.
   final bool? indentReplies;
+
+  /// Whether or not to dim the cast to indicate that it's been listened.
+  ///
+  /// For the purposes of dimming, self-authored casts are considered to have
+  /// already been viewed.
+  final bool? dimIfListened;
+
+  /// The callback to be called when the cast is tapped on.
+  ///
+  /// By default `CastAudioPlayer.play(cast)` is called.
   final void Function(Cast)? onTap;
 
   static CastViewTheme? of(BuildContext context) {

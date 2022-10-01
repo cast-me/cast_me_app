@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
@@ -12,6 +14,8 @@ import 'package:image_cropper/image_cropper.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+/// TODO(caseycrogers): Consider migrating this mess to Flutter's shitty built
+///   form system.
 class CompleteProfileView extends StatefulWidget {
   const CompleteProfileView({Key? key}) : super(key: key);
 
@@ -20,36 +24,35 @@ class CompleteProfileView extends StatefulWidget {
 }
 
 class _CompleteProfileViewState extends State<CompleteProfileView> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController displayNameController = TextEditingController();
-  final ValueNotifier<CroppedFile?> selectedPhoto = ValueNotifier(null);
+  final ProfileFormData form = ProfileFormData();
 
   @override
   Widget build(BuildContext context) {
     return CastMePage(
-      headerText: 'Complete Profile',
+      headerText: 'Profile',
       child: Column(
         children: [
-          _UsernamePicker(controller: usernameController),
-          _DisplayNamePicker(controller: displayNameController),
-          _ProfilePicturePicker(selectedPhoto: selectedPhoto),
+          _UsernamePicker(form: form),
+          _DisplayNamePicker(form: form),
+          _ProfilePicturePicker(form: form),
           AuthSubmitButtonWrapper(
-            child: ValueListenableBuilder<CroppedFile?>(
-                valueListenable: selectedPhoto,
-                builder: (context, photo, _) {
-                  return ElevatedButton(
-                    onPressed: selectedPhoto.value != null
-                        ? () async {
-                            await AuthManager.instance.completeUserProfile(
-                              username: usernameController.text,
-                              displayName: displayNameController.text,
-                              profilePicture: File(selectedPhoto.value!.path),
-                            );
-                          }
-                        : null,
-                    child: const Text('Submit'),
-                  );
-                }),
+            child: AnimatedBuilder(
+              animation: form,
+              builder: (context, _) {
+                return ElevatedButton(
+                  onPressed: form.isValid()
+                      ? () async {
+                          await AuthManager.instance.completeUserProfile(
+                            username: form.usernameController.text,
+                            displayName: form.displayNameController.text,
+                            profilePicture: File(form.selectedPhoto!.path),
+                          );
+                        }
+                      : null,
+                  child: const Text('Submit'),
+                );
+              },
+            ),
           ),
           const AuthErrorView(),
         ],
@@ -61,147 +64,119 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
 class _ProfilePicturePicker extends StatelessWidget {
   const _ProfilePicturePicker({
     Key? key,
-    required this.selectedPhoto,
+    required this.form,
   }) : super(key: key);
 
-  final ValueNotifier<CroppedFile?> selectedPhoto;
+  final ProfileFormData form;
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<CroppedFile?>(
-        valueListenable: selectedPhoto,
-        builder: (context, photo, _) {
-          return Column(
-            children: [
-              if (photo != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: ProfilePictureBaseView(
-                    imageProvider: FileImage(
-                      File(selectedPhoto.value!.path),
-                    ),
+      valueListenable: form.select(() => form.selectedPhoto),
+      builder: (context, photo, _) {
+        return Column(
+          children: [
+            if (photo != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: ProfilePictureBaseView(
+                  imageProvider: FileImage(
+                    File(photo.path),
                   ),
                 ),
-              AsyncSubmitButton(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.image),
-                    const SizedBox(width: 6),
-                    Text(
-                      photo == null
-                          ? 'Select profile picture'
-                          : 'Replace profile picture',
-                    ),
-                  ],
-                ),
-                onPressed: () async {
-                  final XFile? file = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (file == null) {
-                    return;
-                  }
-
-                  final CroppedFile? croppedImage =
-                      await ImageCropper.platform.cropImage(
-                    sourcePath: file.path,
-                    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-                    cropStyle: CropStyle.circle,
-                  );
-                  if (croppedImage == null) {
-                    return;
-                  }
-                  selectedPhoto.value = croppedImage;
-                },
               ),
-            ],
+            AsyncSubmitButton(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.image),
+                  const SizedBox(width: 6),
+                  Text(
+                    photo == null
+                        ? 'Select profile picture'
+                        : 'Replace profile picture',
+                  ),
+                ],
+              ),
+              onPressed: () async {
+                final XFile? file =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
+                if (file == null) {
+                  return;
+                }
+
+                final CroppedFile? croppedImage =
+                    await ImageCropper.platform.cropImage(
+                  sourcePath: file.path,
+                  aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+                  cropStyle: CropStyle.circle,
+                );
+                if (croppedImage == null) {
+                  return;
+                }
+                form.selectedPhoto = croppedImage;
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DisplayNamePicker extends StatelessWidget {
+  _DisplayNamePicker({
+    Key? key,
+    required this.form,
+  }) : super(key: key);
+
+  final ProfileFormData form;
+  final ValueNotifier<String?> errorMessage = ValueNotifier(null);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String?>(
+        valueListenable: errorMessage,
+        builder: (context, message, _) {
+          return TextField(
+            controller: form.displayNameController,
+            onChanged: (displayName) {
+              errorMessage.value = form.validateDisplayName();
+            },
+            decoration: InputDecoration(
+              labelText: 'display name',
+              errorText: message,
+            ),
           );
         });
   }
 }
 
-class _DisplayNamePicker extends StatefulWidget {
-  const _DisplayNamePicker({
+class _UsernamePicker extends StatelessWidget {
+  _UsernamePicker({
     Key? key,
-    required this.controller,
+    required this.form,
   }) : super(key: key);
 
-  final TextEditingController controller;
-
-  @override
-  State<_DisplayNamePicker> createState() => _DisplayNamePickerState();
-}
-
-class _DisplayNamePickerState extends State<_DisplayNamePicker> {
-  String? errorMessage;
-  bool hasChanged = false;
+  final ProfileFormData form;
+  final ValueNotifier<String?> errorMessage = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.controller,
-      onChanged: (displayName) {
-        hasChanged = true;
-        if (displayName.length < 4) {
-          errorMessage = 'Display name must be at least 4 characters.';
-          setState(() {});
-          return;
-        }
-        if (displayName.length > 50) {
-          errorMessage = 'Display name must be less than 50 characters.';
-          setState(() {});
-          return;
-        }
-        setState(() {});
-        errorMessage = null;
+    return ValueListenableBuilder<String?>(
+      valueListenable: errorMessage,
+      builder: (context, message, _) {
+        return TextField(
+          controller: form.usernameController,
+          onChanged: (displayName) {
+            errorMessage.value = form.validateUsername();
+          },
+          decoration: InputDecoration(
+            labelText: 'username',
+            errorText: message,
+          ),
+        );
       },
-      decoration: InputDecoration(
-        labelText: 'display name',
-        errorText: errorMessage,
-      ),
-    );
-  }
-}
-
-class _UsernamePicker extends StatefulWidget {
-  const _UsernamePicker({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  final TextEditingController controller;
-
-  @override
-  State<_UsernamePicker> createState() => _UsernamePickerState();
-}
-
-class _UsernamePickerState extends State<_UsernamePicker> {
-  String? errorMessage;
-  bool hasChanged = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.controller,
-      onChanged: (displayName) {
-        hasChanged = true;
-        if (displayName.length < 4) {
-          errorMessage = 'Display name must be at least 4 characters.';
-          setState(() {});
-          return;
-        }
-        if (displayName.length > 50) {
-          errorMessage = 'Display name must be less than 50 characters.';
-          setState(() {});
-          return;
-        }
-        setState(() {});
-        errorMessage = null;
-      },
-      decoration: InputDecoration(
-        labelText: 'username',
-        errorText: errorMessage,
-      ),
     );
   }
 }

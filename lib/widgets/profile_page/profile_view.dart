@@ -47,8 +47,8 @@ class ProfileView extends StatelessWidget {
         Expanded(
           child: CastViewTheme(
             isInteractive: false,
-            hideDelete: profile != AuthManager.instance.profile,
             indentReplies: false,
+            dimIfListened: false,
             child: CastListView(
               filterProfile: profile,
             ),

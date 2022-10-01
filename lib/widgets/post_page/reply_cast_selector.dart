@@ -51,6 +51,7 @@ class ReplyCastSelector extends StatelessWidget {
                                     indentReplies: false,
                                     showMenu: false,
                                     showLikes: false,
+                                    dimIfListened: false,
                                     child: CastPreview(cast: cast),
                                   ),
                           ),
@@ -103,6 +104,7 @@ class _SelectCastModalState extends State<SelectCastModal> {
                   taggedUsersAreTappable: false,
                   showMenu: false,
                   showLikes: false,
+                  dimIfListened: false,
                   onTap: (cast) {
                     Navigator.of(context).pop();
                     PostBloc.instance.replyCast.value = cast;

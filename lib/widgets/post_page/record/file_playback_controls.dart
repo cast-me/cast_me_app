@@ -101,6 +101,7 @@ class _DenoiseButton extends StatelessWidget {
                   wrapper.wrap(
                     'denoise',
                     () async {
+                      await FileAudioPlayer.instance.pause();
                       await PostBloc.instance
                           .onFileUpdated(await castFile.toggleDenoised());
                       PostBloc.instance.denoise.value = newValue!;

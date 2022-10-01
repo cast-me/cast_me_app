@@ -26,8 +26,6 @@ class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
     supabase.auth.onAuthStateChange((event, session) {
-      // Try again in case we weren't logged in during the first attempt.
-      _setAndListenForRegistrationToken();
       if (event == AuthChangeEvent.passwordRecovery &&
           _signInState != SignInState.settingNewPassword) {
         _signInState = SignInState.settingNewPassword;
@@ -41,6 +39,8 @@ class AuthManager extends ChangeNotifier {
         notifyListeners();
       }
     });
+    // Listen for changes to ourself to update the registration token.
+    addListener(_setAndListenForRegistrationToken);
   }
 
   static final AuthManager instance = AuthManager._();

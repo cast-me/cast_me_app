@@ -17,6 +17,7 @@ class TrackListView extends StatelessWidget {
         return CastViewTheme(
           indentReplies: false,
           showLikes: false,
+          dimIfListened: false,
           child: ListView(
             padding: const EdgeInsets.all(24),
             children: queue.map<Widget>(
