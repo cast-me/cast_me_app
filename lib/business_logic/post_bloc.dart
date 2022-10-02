@@ -48,11 +48,11 @@ class PostBloc {
     );
     final Duration duration = (await FileAudioPlayer.instance.setFile(file))!;
     if (duration < const Duration(seconds: 10)) {
-    throw ArgumentError('Casts must be at least 10 seconds long!');
+      throw ArgumentError('Casts must be at least 10 seconds long!');
     }
     _castFile.value = CastFile(
-    file: file,
-    duration: duration,
+      file: file,
+      duration: duration,
     );
     denoise.value = false;
     _castFile.value!.trim.addListener(_onTrimChanged);

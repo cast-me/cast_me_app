@@ -53,6 +53,7 @@ class _AppInfoState extends State<_AppInfo> {
         final PackageInfo info = snapshot.data!;
         return DefaultTextStyle(
           style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          textAlign: TextAlign.center,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

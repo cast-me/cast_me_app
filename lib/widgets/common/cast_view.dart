@@ -242,7 +242,6 @@ class _CastMenu extends StatelessWidget {
     final CastListController? castListViewController =
         CastListController.of(context);
     final Cast cast = CastProvider.of(context);
-    final CastViewTheme? theme = CastViewTheme.of(context);
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
@@ -257,7 +256,7 @@ class _CastMenu extends StatelessWidget {
                 CastMeBloc.instance.onTabChanged(CastMeTab.post);
               },
             ),
-            if (cast.authorId != AuthManager.instance.profile.id)
+            if (cast.authorId == AuthManager.instance.profile.id)
               _MenuButton(
                 icon: Icons.delete,
                 text: 'delete cast',

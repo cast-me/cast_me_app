@@ -8,9 +8,9 @@ import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 import 'package:crypto/crypto.dart';
-import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter/media_information.dart';
-import 'package:ffmpeg_kit_flutter/media_information_session.dart';
+import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
+import 'package:ffmpeg_kit_flutter_audio/media_information_session.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 

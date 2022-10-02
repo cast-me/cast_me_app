@@ -85,6 +85,13 @@ class _DenoiseButton extends StatelessWidget {
 
   final CastFile castFile;
 
+  Future<void> _toggle(bool newValue) async {
+  //await FileAudioPlayer.instance.pause();
+  await PostBloc.instance
+      .onFileUpdated(await castFile.toggleDenoised());
+  PostBloc.instance.denoise.value = newValue;
+}
+
   @override
   Widget build(BuildContext context) {
     final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
@@ -95,19 +102,21 @@ class _DenoiseButton extends StatelessWidget {
           child: ValueListenableBuilder<bool>(
             valueListenable: PostBloc.instance.denoise,
             builder: (context, value, _) {
-              return Checkbox(
-                value: value,
-                onChanged: (newValue) {
-                  wrapper.wrap(
-                    'denoise',
-                    () async {
-                      await FileAudioPlayer.instance.pause();
-                      await PostBloc.instance
-                          .onFileUpdated(await castFile.toggleDenoised());
-                      PostBloc.instance.denoise.value = newValue!;
-                    },
-                  );
+              return GestureDetector(
+                onTap: () async {
+                  await _toggle(!value);
                 },
+                child: Checkbox(
+                  value: value,
+                  onChanged: (newValue) {
+                    wrapper.wrap(
+                      'denoise',
+                      () async {
+                        await _toggle(!value);
+                      },
+                    );
+                  },
+                ),
               );
             },
           ),

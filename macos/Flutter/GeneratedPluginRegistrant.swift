@@ -9,7 +9,7 @@ import app_links_macos
 import audio_service
 import audio_session
 import connectivity_plus_macos
-import ffmpeg_kit_flutter
+import ffmpeg_kit_flutter_audio
 import firebase_analytics
 import firebase_core
 import firebase_crashlytics

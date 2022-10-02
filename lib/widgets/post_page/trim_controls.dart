@@ -79,6 +79,7 @@ class _Cut extends StatelessWidget {
   final CastFile castFile;
   final Duration position;
 
+  bool get isEnd => !isStart;
   FileAudioPlayer get player => FileAudioPlayer.instance;
 
   @override
@@ -99,11 +100,12 @@ class _Cut extends StatelessWidget {
           ? () {
               final Trim oldTrim = castFile.trim.value;
               // We add the start back in because the audio player is measuring
-              // our position relative to the start.
+              // our position relative to start but trim expects the start
+              // relative to the underlying file.
               castFile.trim.value = Trim(
                 start:
                     isStart ? oldTrim.start + player.position! : oldTrim.start,
-                end: !isStart ? oldTrim.start + player.position! : oldTrim.end,
+                end: isEnd ? player.position! : oldTrim.end,
               );
             }
           : null,
@@ -117,7 +119,7 @@ class _Cut extends StatelessWidget {
     if (isStart && player.position == Duration.zero) {
       return false;
     }
-    if (!isStart &&
+    if (isEnd &&
         (player.position == player.duration || player.isCompleted)) {
       return false;
     }
