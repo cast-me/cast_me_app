@@ -4,6 +4,7 @@ import 'package:cast_me_app/business_logic/clients/file_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/listen_page/audio_playback_controls.dart';
 import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/post_page/trim_controls.dart';
@@ -86,11 +87,9 @@ class _DenoiseButton extends StatelessWidget {
   final CastFile castFile;
 
   Future<void> _toggle(bool newValue) async {
-  //await FileAudioPlayer.instance.pause();
-  await PostBloc.instance
-      .onFileUpdated(await castFile.toggleDenoised());
-  PostBloc.instance.denoise.value = newValue;
-}
+    await FileAudioPlayer.instance.pause();
+    await PostBloc.instance.onFileUpdated(await castFile.toggleDenoised());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,8 @@ class _DenoiseButton extends StatelessWidget {
       children: [
         ProcessingView(
           child: ValueListenableBuilder<bool>(
-            valueListenable: PostBloc.instance.denoise,
+            valueListenable: PostBloc.instance.castFile.select(
+                () => PostBloc.instance.castFile.value?.isDenoised ?? false),
             builder: (context, value, _) {
               return GestureDetector(
                 onTap: () async {

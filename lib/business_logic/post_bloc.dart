@@ -19,8 +19,6 @@ class PostBloc {
 
   final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
 
-  final ValueNotifier<bool> denoise = ValueNotifier(false);
-
   final ValueNotifier<CastFile?> _castFile = ValueNotifier(null);
 
   Future<void> _onTrimChanged() async {
@@ -34,7 +32,6 @@ class PostBloc {
   void clearFiles() {
     _castFile.value!.trim.removeListener(_onTrimChanged);
     _castFile.value = null;
-    denoise.value = false;
     FileAudioPlayer.instance.setFile(null);
   }
 
@@ -52,9 +49,8 @@ class PostBloc {
     }
     _castFile.value = CastFile(
       file: file,
-      duration: duration,
+      originalDuration: duration,
     );
-    denoise.value = false;
     _castFile.value!.trim.addListener(_onTrimChanged);
   }
 
@@ -76,7 +72,7 @@ class PostBloc {
   }) async {
     await CastDatabase.instance.createCast(
       title: title,
-      castFile: await castFile.trimmed(),
+      castFile: await castFile.applyTrim(),
       replyTo: PostBloc.instance.replyCast.value,
     );
     PostBloc.instance.clearFiles();

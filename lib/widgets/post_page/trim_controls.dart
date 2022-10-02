@@ -105,7 +105,7 @@ class _Cut extends StatelessWidget {
               castFile.trim.value = Trim(
                 start:
                     isStart ? oldTrim.start + player.position! : oldTrim.start,
-                end: isEnd ? player.position! : oldTrim.end,
+                end: isEnd ? oldTrim.start + player.position! : oldTrim.end,
               );
             }
           : null,
