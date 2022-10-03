@@ -13,6 +13,7 @@ import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/share_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,7 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      await FirebaseMessaging.instance.requestPermission();
       await Supabase.initialize(
         url: 'https://magmdywarmnzoatbuesp.supabase.co',
         anonKey:
@@ -56,7 +58,7 @@ void main() async {
           androidNotificationChannelName: 'Cast playback',
         ),
       );
-      BackgroundMessageHandler.register();
+      CastMeBackgroundMessageHandler.register();
       await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
       runApp(const CastMeApp());
     },
