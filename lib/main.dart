@@ -29,7 +29,11 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      await FirebaseMessaging.instance.requestPermission();
+      if ((await FirebaseMessaging.instance.getNotificationSettings())
+              .authorizationStatus ==
+          AuthorizationStatus.notDetermined) {
+        await FirebaseMessaging.instance.requestPermission();
+      }
       await Supabase.initialize(
         url: 'https://magmdywarmnzoatbuesp.supabase.co',
         anonKey:

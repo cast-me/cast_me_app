@@ -14,6 +14,8 @@ class AudioRecorder {
 
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
 
+  final Stopwatch durationRecording = Stopwatch();
+
   ValueListenable<bool> get isRecording => _isRecording;
 
   late final Stream<Amplitude> amplitudes = _record
@@ -28,6 +30,8 @@ class AudioRecorder {
       await _record.start(
         path: join((await getTemporaryDirectory()).path, '$name.m4a'),
       );
+      durationRecording.reset();
+      durationRecording.start();
       _isRecording.value = true;
       return;
     }
@@ -39,6 +43,7 @@ class AudioRecorder {
   Future<String> stopRecording() async {
     assert(_isRecording.value);
     final String path = (await _record.stop())!;
+    durationRecording.stop();
     _isRecording.value = false;
     return path;
   }
