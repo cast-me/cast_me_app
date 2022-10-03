@@ -103,7 +103,7 @@ class CastDatabase {
     required Cast cast,
   }) async {
     Analytics.instance.logDelete(cast: cast);
-    // TODO(caseycrogers): migrate listens to a table with cascading delets so
+    // TODO(caseycrogers): migrate listens to a table with cascading deletes so
     //   that we don't have to issue a separate delete to it.
     await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
     final List<dynamic> rowResult =
@@ -195,5 +195,6 @@ Future<int> getFileDuration(String mediaPath) async {
 }
 
 Future<String> _getHash(File file) async {
-  return file.openRead().transform(sha256).first.toString().substring(0, 10);
+  return (await file.openRead().transform(sha256).first)
+      .hashCode.toString();
 }
