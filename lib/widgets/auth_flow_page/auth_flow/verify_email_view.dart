@@ -28,7 +28,8 @@ class VerifyEmailView extends StatelessWidget {
                 );
               },
               child: const Text(
-                'Tap here to refresh after you\'ve verified your email',
+                'If the link in your email does not redirect you successfully,'
+                ' close and re-open CastMe or tap here to refresh.',
                 style: TextStyle(
                   color: Colors.white,
                   decoration: TextDecoration.underline,
