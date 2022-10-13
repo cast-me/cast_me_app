@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_form.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/login_with_providers.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/remember_me_view.dart';
 
@@ -10,7 +11,7 @@ class SignInView extends StatelessWidget {
   const SignInView({Key? key}) : super(key: key);
 
   SignInBloc get bloc => AuthManager.instance.signInBloc;
-  
+
   @override
   Widget build(BuildContext context) {
     return AuthForm(
@@ -54,6 +55,10 @@ class SignInView extends StatelessWidget {
       trailing: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 20),
+          LoginWithProviders(onGoogleSubmit: () async {
+            await AuthManager.instance.googleSignIn();
+          }),
           const SizedBox(height: 20),
           const RegisterSwitcher(),
           TextButton(
