@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
@@ -29,9 +30,10 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      if ((await FirebaseMessaging.instance.getNotificationSettings())
-              .authorizationStatus ==
-          AuthorizationStatus.notDetermined) {
+      if (Platform.isIOS &&
+          (await FirebaseMessaging.instance.getNotificationSettings())
+                  .authorizationStatus ==
+              AuthorizationStatus.notDetermined) {
         await FirebaseMessaging.instance.requestPermission();
       }
       await Supabase.initialize(

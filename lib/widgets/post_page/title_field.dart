@@ -20,7 +20,7 @@ class TitleField extends StatelessWidget {
         if (startsWith == null || startsWith.isEmpty) {
           return [];
         }
-        return AuthManager.instance.getProfiles(startsWith: startsWith);
+        return AuthManager.instance.searchForProfiles(startsWith: startsWith);
       },
       displayStringForOption: (profile) {
         return '${profile.username} (${profile.displayName})';

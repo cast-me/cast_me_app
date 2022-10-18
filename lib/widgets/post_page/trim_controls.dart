@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
-import 'package:cast_me_app/business_logic/clients/file_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class TrimControls extends StatelessWidget {
     return Row(
       children: [
         StreamBuilder<PositionData>(
-          stream: FileAudioPlayer.instance.positionDataStream,
+          stream: ClipAudioPlayer.instance.positionDataStream,
           builder: (context, positionSnap) {
             return Row(
               mainAxisSize: MainAxisSize.min,
@@ -80,7 +80,7 @@ class _Cut extends StatelessWidget {
   final Duration position;
 
   bool get isEnd => !isStart;
-  FileAudioPlayer get player => FileAudioPlayer.instance;
+  ClipAudioPlayer get player => ClipAudioPlayer.instance;
 
   @override
   Widget build(BuildContext context) {

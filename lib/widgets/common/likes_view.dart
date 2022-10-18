@@ -1,7 +1,11 @@
+import 'package:async_list_view/async_list_view.dart';
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
+import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
@@ -39,13 +43,78 @@ class _LikesViewState extends State<LikesView> {
         likeCount.toString(),
         style: const TextStyle(fontSize: size),
       ),
-      color: userLiked ? Colors.grey : null,
+      color: Theme.of(context).colorScheme.surface,
+      border: userLiked,
       onTap: () async {
         await CastDatabase.instance.setLiked(cast: cast, liked: !userLiked);
-        setState(() {
-          userLiked = !userLiked;
-          likeCount = _getNumberOfLikes();
-        });
+        setState(
+          () {
+            userLiked = !userLiked;
+            likeCount = _getNumberOfLikes();
+          },
+        );
+      },
+      onLongTap: () {
+        if (likeCount == 0) {
+          return;
+        }
+        final List<String> likeIds = cast.likes.map((l) => l.userId).toList();
+        if (!userLiked) {
+          likeIds.remove(AuthManager.instance.profile.id);
+        } else if (locallyOverridden) {
+          // User has liked the cast since it was locally cached, manually add
+          // them to the list.
+          likeIds.add(AuthManager.instance.profile.id);
+        }
+        // TODO(caseycrogers): actually position this in a sane spot.
+        showDialog<void>(
+          context: context,
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: AdaptiveMaterial(
+                    adaptiveColor: AdaptiveColor.surface,
+                    child: AsyncListView<Profile>(
+                      padding: const EdgeInsets.all(12),
+                      shrinkWrap: true,
+                      stream: AuthManager.instance.getProfiles(ids: likeIds),
+                      loadingWidget: Container(
+                        height: 24,
+                        width: 24,
+                        alignment: Alignment.center,
+                        child: const AspectRatio(
+                          aspectRatio: 1,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      itemBuilder: (context, snapshot, index) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        }
+                        final Profile profile = snapshot.data![index];
+                        return Padding(
+                          padding: EdgeInsets.only(top: index != 0 ? 4 : 0),
+                          child: ProfilePreview(
+                            profile: profile,
+                            onTap: () {
+                              CastMeBloc.instance.onProfileSelected(profile);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
@@ -72,26 +141,32 @@ class _LikeView extends StatelessWidget {
     required this.label,
     required this.color,
     required this.onTap,
+    required this.border,
+    required this.onLongTap,
   }) : super(key: key);
 
   final Widget icon;
   final Widget label;
-  final Color? color;
+  final Color color;
+  final bool border;
   final AsyncCallback? onTap;
+  final VoidCallback? onLongTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongTap,
       child: Container(
-        margin: const EdgeInsets.only(top: 2),
-        padding: const EdgeInsets.all(2),
+        margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           border: Border.all(
-            color: color ?? Colors.transparent,
+            color: border ? Colors.white : Colors.transparent,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(4),
+          color: color,
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

@@ -58,38 +58,38 @@ class CastPreview extends StatelessWidget {
       child: ValueListenableBuilder<Cast?>(
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
-          return Opacity(
-            opacity: shouldDim(context) ? .4 : 1,
-            child: Row(
-              children: [
-                if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Container(
-                      color: Colors.white.withAlpha(120),
-                      width: 2,
-                      // TODO(caseycrogers): make this programmatic.
-                      height: theme?.showLikes ?? true ? 84 : 58,
-                    ),
+          return Row(
+            children: [
+              if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Container(
+                    color: Colors.white.withAlpha(120),
+                    width: 2,
+                    // TODO(caseycrogers): make this programmatic.
+                    height: theme?.showLikes ?? true ? 89 : 63,
                   ),
-                Expanded(
-                  child: InkWell(
-                    onTap: _getOnTap(context, nowPlaying),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: Container(
-                        padding: padding ?? const EdgeInsets.all(4),
-                        color: _isTapToPlay(context) && nowPlaying == cast
-                            ? Colors.white.withAlpha(80)
-                            : null,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                ),
+              Expanded(
+                child: InkWell(
+                  onTap: _getOnTap(context, nowPlaying),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Container(
+                      padding: padding ?? const EdgeInsets.all(4),
+                      color: _isTapToPlay(context) && nowPlaying == cast
+                          ? Colors.white.withAlpha(80)
+                          : null,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Opacity(
+                                  opacity: shouldDim(context) ? .6 : 1,
+                                  child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       ClipRRect(
@@ -149,20 +149,20 @@ class CastPreview extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  if (theme?.showLikes ?? true)
-                                    const LikesView(),
-                                ],
-                              ),
+                                ),
+                                if (theme?.showLikes ?? true)
+                                  const LikesView(),
+                              ],
                             ),
-                            if (theme?.showMenu ?? true) const _CastMenu(),
-                          ],
-                        ),
+                          ),
+                          if (theme?.showMenu ?? true) const _CastMenu(),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),

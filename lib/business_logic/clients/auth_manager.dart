@@ -275,7 +275,7 @@ class AuthManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Profile>> getProfiles({
+  Future<List<Profile>> searchForProfiles({
     required String startsWith,
   }) async {
     final result = await profilesQuery
@@ -284,6 +284,17 @@ class AuthManager extends ChangeNotifier {
             '$displayNameCol.ilike.$startsWith%')
         .withConverter<List<Profile>>(_rowsToProfiles);
     return result!;
+  }
+
+  // TODO(caseycrogers): actually paginate this.
+  Stream<Profile> getProfiles({
+    required List<String> ids,
+  }) async* {
+    final result = await profilesQuery
+        .select()
+        .in_(idCol, ids)
+        .withConverter<List<Profile>>(_rowsToProfiles);
+    yield* Stream.fromIterable(result!);
   }
 
   List<Profile> _rowsToProfiles(dynamic rows) {

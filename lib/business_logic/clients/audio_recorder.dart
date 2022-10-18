@@ -1,3 +1,5 @@
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:path/path.dart';
@@ -26,6 +28,8 @@ class AudioRecorder {
     required String name,
   }) async {
     assert(!_isRecording.value);
+    await CastAudioPlayer.instance.pause();
+    await ClipAudioPlayer.instance.pause();
     if (await _record.hasPermission()) {
       await _record.start(
         path: join((await getTemporaryDirectory()).path, '$name.m4a'),
