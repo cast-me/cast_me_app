@@ -17,10 +17,10 @@ import 'package:rxdart/rxdart.dart';
 ///
 /// TODO(caseycrogers): this has a lot of duplicative code with
 ///   `CastAudioPlayer`, consider creating a base class to inherit from.
-class FileAudioPlayer {
-  FileAudioPlayer._();
+class ClipAudioPlayer {
+  ClipAudioPlayer._();
 
-  static final FileAudioPlayer instance = FileAudioPlayer._();
+  static final ClipAudioPlayer instance = ClipAudioPlayer._();
 
   final AudioPlayer _player = AudioPlayer();
 

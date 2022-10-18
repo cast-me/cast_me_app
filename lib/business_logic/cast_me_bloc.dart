@@ -45,25 +45,33 @@ class CastMeBloc {
       fromTab: _currentTab.value,
       toTab: newTab,
     );
-    if (newTab == CastMeTab.post) {
-      // We shouldn't play a cast while the user is posting their own cast.
-      CastAudioPlayer.instance.pause();
-    }
     _currentTab.value = newTab;
   }
 
-  void onUsernameSelected(String? newSelection) {
-    if (newSelection == null) {
+  void onProfileSelected(Profile? profile) {
+    _onSelectedProfile(
+      profile == null ? null : SelectedProfile.fromProfile(profile),
+    );
+  }
+
+  void onUsernameSelected(String? username) {
+    _onSelectedProfile(
+      username == null ? null : SelectedProfile(username: username),
+    );
+  }
+
+  void _onSelectedProfile(SelectedProfile? selection) {
+    if (selection == null) {
       _selectedProfile.value = null;
       return;
     }
-    if (AuthManager.instance.profile.username == newSelection) {
+    if (AuthManager.instance.profile.username == selection.username) {
       // If we're jumping to our profile just go to the profile page instead.
       _selectedProfile.value = null;
       onTabChanged(CastMeTab.profile);
       return;
     }
-    _selectedProfile.value = SelectedProfile(username: newSelection);
+    _selectedProfile.value = selection;
   }
 
   Future<void> onSharedFile(Iterable<String> filePaths) async {
@@ -75,6 +83,10 @@ class CastMeBloc {
 class SelectedProfile {
   SelectedProfile({required this.username})
       : profile = AuthManager.instance.getProfile(username: username);
+
+  SelectedProfile.fromProfile(Profile syncProfile)
+      : profile = Future.value(syncProfile),
+        username = syncProfile.username;
 
   String username;
   Future<Profile> profile;
