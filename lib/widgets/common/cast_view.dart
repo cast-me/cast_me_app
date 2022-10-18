@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
@@ -100,8 +101,8 @@ class CastPreview extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                               fit: BoxFit.cover,
-                                              image:
-                                                  NetworkImage(cast.imageUrl),
+                                              image: CachedNetworkImageProvider(
+                                                  cast.imageUrl),
                                             ),
                                           ),
                                           child: _isTapToPlay(context) &&
@@ -216,7 +217,7 @@ class CastView extends StatelessWidget {
               aspectRatio: 1,
               child: Image(
                 fit: BoxFit.cover,
-                image: NetworkImage(cast.imageUrl),
+                image: CachedNetworkImageProvider(cast.imageUrl),
               ),
             ),
           ),
@@ -442,7 +443,7 @@ class ReplyCastView extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: NetworkImage(replyCast.imageUrl),
+              image: CachedNetworkImageProvider(replyCast.imageUrl),
             ),
           ),
         ),
