@@ -21,6 +21,10 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
     return ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(
       listenable: AuthManager.instance,
       selector: () => AuthManager.instance.signInState,
+      initialHistory: [
+        // Ensures that there is always a base page that is not signed in.
+        const ValueHistoryEntry(0, SignInState.signingIn),
+      ],
       onPop: (poppedState, stateAfterPop) {
         switch (poppedState) {
           case SignInState.signingIn:

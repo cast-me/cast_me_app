@@ -28,6 +28,7 @@ class SignInView extends StatelessWidget {
             controller: bloc.passwordController,
             labelText: 'password',
           ),
+          const RememberMeView(),
         ],
       ),
       validate: () {

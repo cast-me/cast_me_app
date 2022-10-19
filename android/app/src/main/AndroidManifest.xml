@@ -38,19 +38,14 @@
                 <data android:mimeType="audio/*" />
             </intent-filter>
 
-            <!-- Supabse deeplinks -->
+            <!-- Supabase deeplinks -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
-                <data
-                    android:host="login-callback"
-                    android:scheme="io.supabase.castmeapp" />
-                <data
-                    android:host="reset-callback"
-                    android:scheme="io.supabase.castmeapp" />
+                <data android:scheme="io.supabase.castmeapp"/>
             </intent-filter>
         </activity>
         <activity
