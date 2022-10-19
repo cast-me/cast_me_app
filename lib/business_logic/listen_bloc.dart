@@ -27,8 +27,8 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
-  void onCastSelected(Cast newCast) {
-    CastAudioPlayer.instance.play(newCast);
+  void onCastSelected(Cast newCast, {bool autoPlay = true}) {
+    CastAudioPlayer.instance.load(newCast, autoPlay: autoPlay);
   }
 
   void onCastInTrackListSelected(Cast newCast) {

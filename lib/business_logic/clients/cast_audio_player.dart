@@ -77,7 +77,7 @@ class CastAudioPlayer {
   Stream<bool> get playingStream => _player.playingStream;
 
   /// Delete the queue and play [cast].
-  Future<void> play(Cast cast) async {
+  Future<void> load(Cast cast, {bool autoPlay = true}) async {
     if (cast == currentCast.value) {
       return;
     }
@@ -103,7 +103,9 @@ class CastAudioPlayer {
     });
     _sourceQueue = queue;
     await _player.setAudioSource(_sourceQueue!);
-    await _player.play();
+    if (autoPlay) {
+      await _player.play();
+    }
   }
 
   Future<void> skip() async {

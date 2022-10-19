@@ -161,6 +161,7 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
+  // https://magmdywarmnzoatbuesp.supabase.co/auth/v1/verify?type=signup&redirect_to=getcastme.com
   Future<void> signIn({
     required String email,
     required String password,
@@ -187,7 +188,9 @@ class AuthManager extends ChangeNotifier {
         await _completeSignIn(emailNotConfirmed);
       },
     );
-    Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+    if (supabase.auth.currentUser != null) {
+      Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+    }
   }
 
   Future<void> _completeSignIn(bool emailNotConfirmed) async {
