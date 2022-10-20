@@ -55,7 +55,7 @@ class CastPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final CastViewTheme? theme = CastViewTheme.of(context);
     return CastProvider(
-      cast: cast,
+      initialCast: cast,
       child: ValueListenableBuilder<Cast?>(
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
@@ -208,7 +208,7 @@ class CastView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CastProvider(
-      cast: cast,
+      initialCast: cast,
       child: Column(
         children: [
           ClipRRect(
@@ -227,6 +227,7 @@ class CastView extends StatelessWidget {
             style: TextStyle(color: Colors.grey.shade400),
             child: const _AuthorLine(),
           ),
+          const LikesView(),
         ],
       ),
     );
@@ -242,7 +243,7 @@ class _CastMenu extends StatelessWidget {
     // onPressed callback.
     final CastListController? castListViewController =
         CastListController.of(context);
-    final Cast cast = CastProvider.of(context);
+    final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
@@ -315,7 +316,7 @@ class _ListenCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Cast cast = CastProvider.of(context);
+    final Cast cast = CastProvider.of(context).value;
     return Text(
       '${cast.viewCount} listen${cast.viewCount == 1 ? '' : 's'}',
       style: TextStyle(color: Colors.grey.shade400),
@@ -328,7 +329,7 @@ class _CastTitleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Cast cast = CastProvider.of(context);
+    final Cast cast = CastProvider.of(context).value;
     // TODO(caseycrogers): get rid of this sloppy garbage and replace it with a
     //   `CastViewTheme` inherited widget.
     final bool tappable =
@@ -395,7 +396,7 @@ class _AuthorLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Cast cast = CastProvider.of(context);
+    final Cast cast = CastProvider.of(context).value;
     return DefaultTextStyle(
       style: TextStyle(color: Colors.grey.shade400),
       child: Text(
