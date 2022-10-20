@@ -14,10 +14,6 @@ class ListenBloc {
   ValueListenable<Cast?> get currentCast =>
       CastAudioPlayer.instance.currentCast;
 
-  final ValueNotifier<bool> _nowPlayingIsExpanded = ValueNotifier(false);
-
-  ValueListenable<bool> get nowPlayingIsExpanded => _nowPlayingIsExpanded;
-
   final ValueNotifier<bool> _trackListIsDisplayed = ValueNotifier(false);
 
   ValueListenable<bool> get trackListIsDisplayed => _trackListIsDisplayed;
@@ -41,12 +37,6 @@ class ListenBloc {
       duration: const Duration(milliseconds: 200),
       curve: Curves.linear,
     );
-  }
-
-  void onNowPlayingExpansionToggled() {
-    _nowPlayingIsExpanded.value = !_nowPlayingIsExpanded.value;
-    // Collapse the track list on close.
-    _trackListIsDisplayed.value = false;
   }
 
   void onDisplayTrackListToggled() {

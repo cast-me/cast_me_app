@@ -60,11 +60,12 @@ class CastDatabase {
     }
   }
 
-  Future<Cast> getSeedCast() {
+  Future<Cast?> getSeedCast() {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-    ).first;
+      limit: 1,
+    ).toList().then((value) => value.isEmpty ? null : value.single);
   }
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {

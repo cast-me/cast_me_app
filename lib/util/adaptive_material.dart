@@ -7,6 +7,34 @@ enum AdaptiveColor {
   surface,
 }
 
+extension ToColor on AdaptiveColor {
+  Color color(BuildContext context) {
+    switch (this) {
+      case AdaptiveColor.primary:
+        return Theme.of(context).colorScheme.primary;
+      case AdaptiveColor.secondary:
+        return Theme.of(context).colorScheme.secondary;
+      case AdaptiveColor.background:
+        return Theme.of(context).colorScheme.background;
+      case AdaptiveColor.surface:
+        return Theme.of(context).colorScheme.surface;
+    }
+  }
+
+  Color onColor(BuildContext context) {
+    switch (this) {
+      case AdaptiveColor.primary:
+        return Theme.of(context).colorScheme.onPrimary;
+      case AdaptiveColor.secondary:
+        return Theme.of(context).colorScheme.onSecondary;
+      case AdaptiveColor.background:
+        return Theme.of(context).colorScheme.onBackground;
+      case AdaptiveColor.surface:
+        return Theme.of(context).colorScheme.onSurface;
+    }
+  }
+}
+
 class AdaptiveMaterial extends StatelessWidget {
   const AdaptiveMaterial({
     required this.adaptiveColor,
@@ -27,13 +55,13 @@ class AdaptiveMaterial extends StatelessWidget {
         adaptiveColor,
         isVisible
             ? Material(
-                color: _toColor(context, adaptiveColor),
+                color: adaptiveColor.color(context),
                 child: child,
               )
             : Container(child: child),
-        _toColor(context, adaptiveColor)!,
+        adaptiveColor.color(context),
       ),
-      _toOnColor(context, adaptiveColor)!,
+      adaptiveColor.onColor(context),
     );
   }
 
@@ -47,7 +75,7 @@ class AdaptiveMaterial extends StatelessWidget {
   }
 
   static Color? onColorOf(BuildContext context) {
-    return _toOnColor(context, _adaptiveColorOf(context));
+    return _adaptiveColorOf(context)?.onColor(context);
   }
 
   static Color? secondaryOnColorOf(BuildContext context) {
@@ -58,42 +86,6 @@ class AdaptiveMaterial extends StatelessWidget {
     return context
         .dependOnInheritedWidgetOfExactType<_ColorProvider<_OnColor>>()
         ?.adaptiveColor;
-  }
-
-  static Color? _toColor(
-    BuildContext context,
-    AdaptiveColor? adaptiveColor,
-  ) {
-    switch (adaptiveColor) {
-      case null:
-        return null;
-      case AdaptiveColor.primary:
-        return Theme.of(context).colorScheme.primary;
-      case AdaptiveColor.secondary:
-        return Theme.of(context).colorScheme.secondary;
-      case AdaptiveColor.background:
-        return Theme.of(context).colorScheme.background;
-      case AdaptiveColor.surface:
-        return Theme.of(context).colorScheme.surface;
-    }
-  }
-
-  static Color? _toOnColor(
-    BuildContext context,
-    AdaptiveColor? adaptiveColor,
-  ) {
-    switch (adaptiveColor) {
-      case null:
-        return null;
-      case AdaptiveColor.primary:
-        return Theme.of(context).colorScheme.onPrimary;
-      case AdaptiveColor.secondary:
-        return Theme.of(context).colorScheme.onSecondary;
-      case AdaptiveColor.background:
-        return Theme.of(context).colorScheme.onBackground;
-      case AdaptiveColor.surface:
-        return Theme.of(context).colorScheme.onSurface;
-    }
   }
 }
 
