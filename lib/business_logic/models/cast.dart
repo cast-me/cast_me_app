@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_base.pb.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/like_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
@@ -45,4 +46,7 @@ extension CastUtils on CastBase {
   bool get isEmpty => id.isEmpty;
 
   bool get isNotEmpty => id.isNotEmpty;
+
+  bool get userLiked =>
+      likes.any((like) => AuthManager.instance.profile.id == like.userId);
 }

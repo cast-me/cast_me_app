@@ -34,6 +34,7 @@ class _ListenPageViewState extends State<ListenPageView> {
     return AdaptiveMaterial(
       adaptiveColor: AdaptiveColor.background,
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: const [
             ListenTabSelector(),

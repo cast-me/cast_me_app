@@ -3,6 +3,7 @@ import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
+import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:cast_me_app/widgets/listen_page/audio_playback_controls.dart';
 import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/listen_page/track_list_view.dart';
@@ -13,9 +14,6 @@ class NowPlayingCollapsedView extends StatelessWidget {
   const NowPlayingCollapsedView({Key? key}) : super(key: key);
 
   ListenBloc get model => CastMeBloc.instance.listenBloc;
-
-  // TODO(caseycrogers): make programmatic.
-  static const height = 68;
 
   @override
   Widget build(BuildContext context) {

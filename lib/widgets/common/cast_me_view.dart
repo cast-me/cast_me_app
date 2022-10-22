@@ -58,22 +58,26 @@ class CastMeView extends StatelessWidget {
                   : Theme.of(context).colorScheme.surface,
               body: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: CastMeNavigationBar.height,
-                    ),
-                    child: Builder(
-                      builder: (context) {
-                        switch (currentTab) {
-                          case CastMeTab.listen:
-                            return const ListenPageView();
-                          case CastMeTab.post:
-                            return const PostPageView();
-                          case CastMeTab.profile:
-                            return const ProfilePageView();
-                        }
-                      },
-                    ),
+                  Column(
+                    children: [
+                      Expanded(
+                        child: Builder(
+                          builder: (context) {
+                            switch (currentTab) {
+                              case CastMeTab.listen:
+                                return const ListenPageView();
+                              case CastMeTab.post:
+                                return const PostPageView();
+                              case CastMeTab.profile:
+                                return const ProfilePageView();
+                            }
+                          },
+                        ),
+                      ),
+                      // Dummy nav bar that's hidden under the real one to
+                      // ensure that the real one doesn't cover up the page.
+                      CastMeNavigationBar(tab: currentTab),
+                    ],
                   ),
                   const CastMeBottomSheet(),
                 ],

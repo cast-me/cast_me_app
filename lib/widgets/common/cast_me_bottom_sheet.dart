@@ -6,6 +6,7 @@ import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
+import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
   final ValueNotifier<double> progress = ValueNotifier(0);
   final DraggableScrollableController sheetController =
       DraggableScrollableController();
+  double? navBarHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,17 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                 // the listen tab.
                 return Align(
                   alignment: Alignment.bottomCenter,
-                  child: CastMeNavigationBar(tab: tab),
+                  child: SizeReportingContainer(
+                    sizeCallback: (size) {
+                      if (navBarHeight == size.height) {
+                        return;
+                      }
+                      setState(() {
+                        navBarHeight = size.height;
+                      });
+                    },
+                    child: CastMeNavigationBar(tab: tab),
+                  ),
                 );
               }
               return NotificationListener<DraggableScrollableNotification>(
@@ -53,8 +65,7 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                             return Opacity(
                               opacity: progress,
                               child: Container(
-                                height:
-                                    MediaQuery.of(context).viewPadding.top,
+                                height: MediaQuery.of(context).viewPadding.top,
                                 color: AdaptiveColor.surface.color(context),
                               ),
                             );
@@ -65,6 +76,7 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                         progress: progress,
                         sheetController: sheetController,
                         tab: tab,
+                        navBarHeight: navBarHeight,
                       ),
                     ),
                   ],
@@ -76,24 +88,33 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
   }
 }
 
-class _Sheet extends StatelessWidget {
+class _Sheet extends StatefulWidget {
   const _Sheet({
     Key? key,
     required this.progress,
     required this.sheetController,
     required this.tab,
+    required this.navBarHeight,
   }) : super(key: key);
 
   final ValueListenable<double> progress;
   final DraggableScrollableController sheetController;
   final CastMeTab tab;
+  final double? navBarHeight;
+
+  @override
+  State<_Sheet> createState() => _SheetState();
+}
+
+class _SheetState extends State<_Sheet> {
+  double? nowPlayingHeight;
 
   Future<void> onNowPlayingExpansionToggled() async {
     // Collapse the track list on close.
     if (ListenBloc.instance.trackListIsDisplayed.value)
       ListenBloc.instance.onDisplayTrackListToggled();
-    await sheetController.animateTo(
-      sheetController.size == 1 ? 0 : 1,
+    await widget.sheetController.animateTo(
+      widget.sheetController.size == 1 ? 0 : 1,
       duration: const Duration(milliseconds: 100),
       curve: Curves.linear,
     );
@@ -102,11 +123,10 @@ class _Sheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final double minSize =
-          (NowPlayingCollapsedView.height + CastMeNavigationBar.height) /
-              constraints.maxHeight;
+      final double minSize = ((nowPlayingHeight ?? 0) + widget.navBarHeight!) /
+          constraints.maxHeight;
       return DraggableScrollableSheet(
-        controller: sheetController,
+        controller: widget.sheetController,
         snap: true,
         minChildSize: minSize,
         maxChildSize: 1,
@@ -129,7 +149,7 @@ class _Sheet extends StatelessWidget {
                         // performance.
                         // This may not matter, consider removing.
                         ValueListenableBuilder<double>(
-                          valueListenable: progress,
+                          valueListenable: widget.progress,
                           builder: (context, progress, child) {
                             return Opacity(
                               opacity: progress,
@@ -144,16 +164,26 @@ class _Sheet extends StatelessWidget {
                           ),
                         ),
                         ValueListenableBuilder<double>(
-                          valueListenable: progress,
+                          valueListenable: widget.progress,
                           builder: (context, progress, child) {
                             return Opacity(
                               opacity: 1 - progress,
                               child: child!,
                             );
                           },
-                          child: GestureDetector(
-                            onTap: onNowPlayingExpansionToggled,
-                            child: const NowPlayingCollapsedView(),
+                          child: SizeReportingContainer(
+                            sizeCallback: (size) {
+                              if (size.height == nowPlayingHeight) {
+                                return;
+                              }
+                              setState(() {
+                                nowPlayingHeight = size.height;
+                              });
+                            },
+                            child: GestureDetector(
+                              onTap: onNowPlayingExpansionToggled,
+                              child: const NowPlayingCollapsedView(),
+                            ),
                           ),
                         ),
                       ],
@@ -163,14 +193,14 @@ class _Sheet extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ValueListenableBuilder<double>(
-                    valueListenable: progress,
+                    valueListenable: widget.progress,
                     builder: (context, progress, child) {
                       return FractionalTranslation(
                         translation: Offset(0, progress),
                         child: child!,
                       );
                     },
-                    child: CastMeNavigationBar(tab: tab),
+                    child: CastMeNavigationBar(tab: widget.tab),
                   ),
                 ),
               ],
