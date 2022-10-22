@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pbserver.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class ProfilePictureView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProfilePictureBaseView(
-      imageProvider: NetworkImage(profile.profilePictureUrl),
+      imageProvider: CachedNetworkImageProvider(profile.profilePictureUrl),
     );
   }
 }

@@ -162,6 +162,7 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
+  // https://magmdywarmnzoatbuesp.supabase.co/auth/v1/verify?type=signup&redirect_to=getcastme.com
   Future<void> signIn({
     required String email,
     required String password,
@@ -188,7 +189,9 @@ class AuthManager extends ChangeNotifier {
         await _completeSignIn(emailNotConfirmed);
       },
     );
-    Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+    if (supabase.auth.currentUser != null) {
+      Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+    }
   }
 
   Future<void> _completeSignIn(bool emailNotConfirmed) async {
@@ -276,7 +279,7 @@ class AuthManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Profile>> getProfiles({
+  Future<List<Profile>> searchForProfiles({
     required String startsWith,
   }) async {
     final result = await profilesQuery
@@ -285,6 +288,17 @@ class AuthManager extends ChangeNotifier {
             '$displayNameCol.ilike.$startsWith%')
         .withConverter<List<Profile>>(_rowsToProfiles);
     return result!;
+  }
+
+  // TODO(caseycrogers): actually paginate this.
+  Stream<Profile> getProfiles({
+    required List<String> ids,
+  }) async* {
+    final result = await profilesQuery
+        .select()
+        .in_(idCol, ids)
+        .withConverter<List<Profile>>(_rowsToProfiles);
+    yield* Stream.fromIterable(result!);
   }
 
   List<Profile> _rowsToProfiles(dynamic rows) {
@@ -373,10 +387,9 @@ class AuthManager extends ChangeNotifier {
       'signIn',
       () async {
         final res = await supabase.auth.signInWithProvider(Provider.google,
-            options:
-                const AuthOptions(redirectTo: 'ShareMedia-com.cast.me.app://'));
+            options: const AuthOptions(redirectTo: 'https://getcastme.com'));
         assert(res);
-        await _completeSignIn(false);
+//        await _completeSignIn(false);
       },
     );
     Analytics.instance.logSignIn(user: supabase.auth.currentUser);

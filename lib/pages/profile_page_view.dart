@@ -17,7 +17,6 @@ class ProfilePageView extends StatelessWidget {
       child: Column(
         children: [
           Expanded(child: ProfileView(profile: AuthManager.instance.profile)),
-          const _AppInfo(),
           AuthSubmitButtonWrapper(
             child: ElevatedButton(
               onPressed: () async {
@@ -26,6 +25,7 @@ class ProfilePageView extends StatelessWidget {
               child: const Text('Sign out'),
             ),
           ),
+          const _AppInfo(),
         ],
       ),
     );
@@ -57,9 +57,9 @@ class _AppInfoState extends State<_AppInfo> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('user_id: ${AuthManager.instance.profile.id}'),
-              Text('${info.appName}'),
-              Text('v${info.version}+${info.buildNumber}'),
+              SelectableText('user_id: ${AuthManager.instance.profile.id}'),
+              SelectableText('${info.appName}'
+                  ' v${info.version}+${info.buildNumber}'),
             ],
           ),
         );

@@ -27,12 +27,22 @@ class VerifyEmailView extends StatelessWidget {
                   password: authManager.signInBloc.passwordController.text,
                 );
               },
-              child: const Text(
-                'If the link in your email does not redirect you successfully,'
-                ' close and re-open CastMe or tap here to refresh.',
+              child: const Text.rich(
+                TextSpan(
+                  text: 'If the link in your email does not redirect you '
+                      'successfully, close and re-open CastMe or\n',
+                  children: [
+                    TextSpan(
+                      text: 'tap here to refresh',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  decoration: TextDecoration.underline,
                 ),
               ),
             ),

@@ -26,6 +26,7 @@ class CastDatabase {
     bool skipViewed = false,
     bool oldestFirst = false,
     String? searchTerm,
+    int? limit,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
@@ -43,16 +44,28 @@ class CastDatabase {
           '$authorUsernameCol.ilike.$searchTerm%,'
           '$authorDisplayNameCol.ilike.$searchTerm%');
     }
-    final List<Cast>? casts = await queryBuilder
+    PostgrestTransformBuilder transformBuilder = queryBuilder
         .order(treeUpdatedAtCol, ascending: oldestFirst)
         .order('depth', ascending: true)
-        .order(createdAtCol, ascending: oldestFirst)
-        .withConverter((dynamic data) {
+        .order(createdAtCol, ascending: oldestFirst);
+    if (limit != null) {
+      transformBuilder = transformBuilder.limit(limit);
+    }
+    final List<Cast>? casts =
+        await transformBuilder.withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToCast).toList();
     });
     for (final Cast cast in casts ?? <Cast>[]) {
       yield cast;
     }
+  }
+
+  Future<Cast?> getSeedCast() {
+    return getCasts(
+      skipViewed: true,
+      filterOutProfile: AuthManager.instance.profile,
+      limit: 1,
+    ).toList().then((value) => value.isEmpty ? null : value.single);
   }
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {
@@ -195,6 +208,5 @@ Future<int> getFileDuration(String mediaPath) async {
 }
 
 Future<String> _getHash(File file) async {
-  return (await file.openRead().transform(sha256).first)
-      .hashCode.toString();
+  return (await file.openRead().transform(sha256).first).hashCode.toString();
 }

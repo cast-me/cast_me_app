@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cast_me_app/business_logic/clients/file_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
@@ -37,7 +37,7 @@ class _BaseAudioControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileAudioPlayer player = FileAudioPlayer.instance;
+    final ClipAudioPlayer player = ClipAudioPlayer.instance;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -62,8 +62,8 @@ class _BaseAudioControls extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     PlaybackSpeedButton(
-                      currentSpeed: FileAudioPlayer.instance.currentSpeed,
-                      setSpeed: FileAudioPlayer.instance.setSpeed,
+                      currentSpeed: ClipAudioPlayer.instance.currentSpeed,
+                      setSpeed: ClipAudioPlayer.instance.setSpeed,
                     ),
                     _DenoiseButton(castFile: castFile),
                   ],
@@ -87,7 +87,7 @@ class _DenoiseButton extends StatelessWidget {
   final CastFile castFile;
 
   Future<void> _toggle(bool newValue) async {
-    await FileAudioPlayer.instance.pause();
+    await ClipAudioPlayer.instance.pause();
     await PostBloc.instance.onFileUpdated(await castFile.toggleDenoised());
   }
 
@@ -134,7 +134,7 @@ class _SkipPrevious extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        FileAudioPlayer.instance.previous();
+        ClipAudioPlayer.instance.previous();
       },
       child: const Icon(Icons.skip_previous),
     );
@@ -150,7 +150,7 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileAudioPlayer player = FileAudioPlayer.instance;
+    final ClipAudioPlayer player = ClipAudioPlayer.instance;
     if (!isPlaying) {
       return ElevatedButton(
         onPressed: path == null

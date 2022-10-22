@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class TrackListView extends StatelessWidget {
-  const TrackListView({Key? key}) : super(key: key);
+  const TrackListView({
+    Key? key,
+  }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +22,19 @@ class TrackListView extends StatelessWidget {
           showLikes: false,
           dimIfListened: false,
           child: ListView(
-            padding: const EdgeInsets.all(24),
-            children: queue.map<Widget>(
-              (source) {
-                return CastPreview(
-                  cast: source.cast,
-                  padding: EdgeInsets.zero,
-                  isInTrackList: true,
-                );
-              },
-            ).separated(const SizedBox(height: 8)).toList(),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            children: queue
+                .map<Widget>(
+                  (source) {
+                    return CastPreview(
+                      cast: source.cast,
+                      padding: EdgeInsets.zero,
+                      isInTrackList: true,
+                    );
+                  },
+                )
+                .separated(const SizedBox(height: 8))
+                .toList(),
           ),
         );
       },

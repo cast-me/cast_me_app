@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/clients/file_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 
@@ -23,7 +23,7 @@ class PostBloc {
 
   Future<void> _onTrimChanged() async {
     final Trim trim = _castFile.value!.trim.value;
-    return FileAudioPlayer.instance.setClip(
+    return ClipAudioPlayer.instance.setClip(
       start: trim.start,
       end: trim.end,
     );
@@ -32,7 +32,7 @@ class PostBloc {
   void clearFiles() {
     _castFile.value!.trim.removeListener(_onTrimChanged);
     _castFile.value = null;
-    FileAudioPlayer.instance.setFile(null);
+    ClipAudioPlayer.instance.setFile(null);
   }
 
   Future<void> onFileSelected(String path) async {
@@ -43,7 +43,7 @@ class PostBloc {
     final File file = File(path).copySync(
       join(documentsDirectory.path, name),
     );
-    final Duration duration = (await FileAudioPlayer.instance.setFile(file))!;
+    final Duration duration = (await ClipAudioPlayer.instance.setFile(file))!;
     if (duration < const Duration(seconds: 10)) {
       throw ArgumentError('Casts must be at least 10 seconds long!');
     }
@@ -56,7 +56,7 @@ class PostBloc {
 
   Future<void> onFileUpdated(CastFile castFile) async {
     final Duration duration =
-        (await FileAudioPlayer.instance.setFile(castFile.file))!;
+        (await ClipAudioPlayer.instance.setFile(castFile.file))!;
     if (duration < const Duration(seconds: 10)) {
       throw ArgumentError('Casts must be at least 10 seconds long!');
     }
