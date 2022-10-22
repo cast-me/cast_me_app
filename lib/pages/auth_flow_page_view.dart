@@ -55,6 +55,7 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
           builder: (context) {
             switch (signInState) {
               case SignInState.signingIn:
+              case SignInState.signingInThroughProvider:
                 return const SignInView();
               case SignInState.registering:
                 return const RegisterFormView();

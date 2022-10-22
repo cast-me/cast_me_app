@@ -38,6 +38,11 @@ class AuthManager extends ChangeNotifier {
         _signInState = SignInState.completingProfile;
         notifyListeners();
       }
+      if (event == AuthChangeEvent.signedIn &&
+          _signInState == SignInState.signingInThroughProvider) {
+        _completeSignIn(true);
+        notifyListeners();
+      }
     });
     // Listen for changes to ourself to update the registration token.
     addListener(_setAndListenForRegistrationToken);
@@ -81,7 +86,8 @@ class AuthManager extends ChangeNotifier {
   }
 
   void toggleAccountRegistrationFlow() {
-    if (signInState == SignInState.registering) {
+    if (signInState == SignInState.registering ||
+        signInState == SignInState.resettingPassword) {
       _signInState = SignInState.signingIn;
     } else if (signInState == SignInState.signingIn) {
       _signInState = SignInState.registering;
@@ -380,6 +386,22 @@ class AuthManager extends ChangeNotifier {
       await _handleToken(initialToken);
     }
   }
+
+  Future<void> googleSignIn() async {
+    await _authActionWrapper(
+      'signIn',
+      () async {
+        _signInState = SignInState.signingInThroughProvider;
+        final redirectToUrl =
+            Platform.isAndroid ? 'https://getcastme.com' : 'com.cast.me.app://';
+        final res = await supabase.auth.signInWithProvider(Provider.google,
+            options: AuthOptions(redirectTo: redirectToUrl));
+        assert(res);
+//        await _completeSignIn(false);
+      },
+    );
+    Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+  }
 }
 
 enum SignInState {
@@ -390,6 +412,7 @@ enum SignInState {
   verifyingEmail,
   completingProfile,
   signedIn,
+  signingInThroughProvider,
 }
 
 extension SignInExtention on SignInState {}
