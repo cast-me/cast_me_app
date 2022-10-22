@@ -265,6 +265,14 @@ class _CastMenu extends StatelessWidget {
                 CastMeBloc.instance.onTabChanged(CastMeTab.post);
               },
             ),
+            _MenuButton(
+              icon: Icons.person,
+              text: 'view profile',
+              onTap: () async {
+                hideMenu();
+                CastMeBloc.instance.onUsernameSelected(cast.authorUsername);
+              },
+            ),
             if (cast.authorId == AuthManager.instance.profile.id)
               _MenuButton(
                 icon: Icons.delete,
