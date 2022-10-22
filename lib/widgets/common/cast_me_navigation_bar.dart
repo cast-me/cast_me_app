@@ -1,37 +1,29 @@
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
-import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:flutter/material.dart';
 
 class CastMeNavigationBar extends StatelessWidget {
   const CastMeNavigationBar({
     Key? key,
-    required this.currentIndex,
+    required this.tab,
   }) : super(key: key);
 
-  final int currentIndex;
+  final CastMeTab tab;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: ListenBloc.instance.nowPlayingIsExpanded,
-      builder: (context, isExpanded, _) {
-        if (isExpanded) {
-          return Container();
-        }
-        return BottomNavigationBar(
-          currentIndex: currentIndex,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          items: CastMeTabs.tabs.values.toList(),
-          selectedIconTheme: const IconThemeData(size: 36),
-          onTap: (tabIndex) {
-            CastMeBloc.instance.onTabIndexChanged(tabIndex);
-          },
-          elevation: 0,
-        );
+    return BottomNavigationBar(
+      currentIndex: tab.index,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      items: CastMeTabs.tabs.values.toList(),
+      selectedIconTheme: const IconThemeData(size: 36),
+      onTap: (tabIndex) {
+        CastMeBloc.instance.onTabIndexChanged(tabIndex);
       },
+      elevation: 0,
     );
   }
 }

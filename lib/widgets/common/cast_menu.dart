@@ -24,7 +24,7 @@ class CastMenu extends StatelessWidget {
     // onPressed callback.
     final CastListController? castListViewController =
         CastListController.of(context);
-    final Cast cast = CastProvider.of(context);
+    final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
       builder: (context, hideMenu) {
         return Column(
@@ -45,6 +45,14 @@ class CastMenu extends StatelessWidget {
               onTap: () async {
                 hideMenu();
                 await ShareClient.instance.share(cast);
+              },
+            ),
+            _MenuButton(
+              icon: Icons.person,
+              text: 'view profile',
+              onTap: () async {
+                hideMenu();
+                CastMeBloc.instance.onUsernameSelected(cast.authorUsername);
               },
             ),
             if (cast.authorId == AuthManager.instance.profile.id)
