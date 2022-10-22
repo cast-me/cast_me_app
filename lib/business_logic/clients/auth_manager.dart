@@ -387,10 +387,9 @@ class AuthManager extends ChangeNotifier {
       'signIn',
       () async {
         final res = await supabase.auth.signInWithProvider(Provider.google,
-            options:
-                const AuthOptions(redirectTo: 'ShareMedia-com.cast.me.app://'));
+            options: const AuthOptions(redirectTo: 'https://getcastme.com'));
         assert(res);
-        await _completeSignIn(false);
+//        await _completeSignIn(false);
       },
     );
     Analytics.instance.logSignIn(user: supabase.auth.currentUser);
