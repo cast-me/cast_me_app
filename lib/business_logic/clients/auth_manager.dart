@@ -38,6 +38,11 @@ class AuthManager extends ChangeNotifier {
         _signInState = SignInState.completingProfile;
         notifyListeners();
       }
+      if (event == AuthChangeEvent.signedIn &&
+          _signInState == SignInState.signingInThroughProvider) {
+        _completeSignIn(true);
+        notifyListeners();
+      }
     });
     // Listen for changes to ourself to update the registration token.
     addListener(_setAndListenForRegistrationToken);
@@ -386,8 +391,11 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'signIn',
       () async {
+        _signInState = SignInState.signingInThroughProvider;
+        final redirectToUrl =
+            Platform.isAndroid ? 'https://getcastme.com' : 'com.cast.me.app://';
         final res = await supabase.auth.signInWithProvider(Provider.google,
-            options: const AuthOptions(redirectTo: 'https://getcastme.com'));
+            options: AuthOptions(redirectTo: redirectToUrl));
         assert(res);
 //        await _completeSignIn(false);
       },
@@ -404,6 +412,7 @@ enum SignInState {
   verifyingEmail,
   completingProfile,
   signedIn,
+  signingInThroughProvider,
 }
 
 extension SignInExtention on SignInState {}
