@@ -40,7 +40,7 @@ class AuthManager extends ChangeNotifier {
       }
       if (event == AuthChangeEvent.signedIn &&
           _signInState == SignInState.signingInThroughProvider) {
-        _completeSignIn(true);
+        _completeSignIn(false);
         notifyListeners();
       }
     });
