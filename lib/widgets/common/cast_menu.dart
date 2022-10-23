@@ -26,27 +26,12 @@ class CastMenu extends StatelessWidget {
         CastListController.of(context);
     final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
+      child: const Icon(Icons.more_vert, color: Colors.white),
+      adaptiveBackgroundColor: AdaptiveColor.background,
       builder: (context, hideMenu) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _MenuButton(
-              icon: Icons.reply,
-              text: 'reply',
-              onTap: () async {
-                hideMenu();
-                PostBloc.instance.replyCast.value = cast;
-                CastMeBloc.instance.onTabChanged(CastMeTab.post);
-              },
-            ),
-            _MenuButton(
-              icon: Platform.isIOS ? Icons.ios_share : Icons.share,
-              text: 'share',
-              onTap: () async {
-                hideMenu();
-                await ShareClient.instance.share(cast);
-              },
-            ),
             _MenuButton(
               icon: Icons.person,
               text: 'view profile',
@@ -68,8 +53,35 @@ class CastMenu extends StatelessWidget {
           ],
         );
       },
-      adaptiveBackgroundColor: AdaptiveColor.background,
-      child: const Icon(Icons.more_vert),
+    );
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  const ShareButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Platform.isIOS ? Icons.ios_share : Icons.share),
+      onPressed: () async {
+        await ShareClient.instance.share(CastProvider.of(context).value);
+      },
+    );
+  }
+}
+
+class ReplyButton extends StatelessWidget {
+  const ReplyButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.reply),
+      onPressed: () {
+        PostBloc.instance.replyCast.value = CastProvider.of(context).value;
+        CastMeBloc.instance.onTabChanged(CastMeTab.post);
+      },
     );
   }
 }
