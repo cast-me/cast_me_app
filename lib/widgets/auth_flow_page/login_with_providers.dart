@@ -2,6 +2,8 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.da
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
 class LoginWithProviders extends StatelessWidget {
   const LoginWithProviders({
     Key? key,
@@ -13,11 +15,12 @@ class LoginWithProviders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AuthSubmitButtonWrapper(
-      child: ElevatedButton(
+      child: SignInButton(
+        Buttons.Google,
+        text: 'Login with Google',
         onPressed: () async {
           await onGoogleSubmit();
         },
-        child: const Text('Login with Google'),
       ),
     );
   }

@@ -56,9 +56,11 @@ class SignInView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 20),
-          LoginWithProviders(onGoogleSubmit: () async {
-            await AuthManager.instance.googleSignIn();
-          }),
+          LoginWithProviders(
+            onGoogleSubmit: () async {
+              await AuthManager.instance.googleSignIn();
+            },
+          ),
           const SizedBox(height: 20),
           const RegisterSwitcher(),
           TextButton(

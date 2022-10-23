@@ -167,7 +167,6 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  // https://magmdywarmnzoatbuesp.supabase.co/auth/v1/verify?type=signup&redirect_to=getcastme.com
   Future<void> signIn({
     required String email,
     required String password,
