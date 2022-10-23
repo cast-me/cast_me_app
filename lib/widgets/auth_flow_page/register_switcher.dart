@@ -25,22 +25,17 @@ class RegisterSwitcher extends StatelessWidget {
         ),
       );
     }
-    return Column(
-      children: [
-        const AdaptiveText('Don\'t have an account?'),
-        TextButton(
-          onPressed: () async {
-            AuthManager.instance.toggleAccountRegistrationFlow();
-          },
-          child: const Text(
-            'Create one!',
-            style: TextStyle(
-              color: Colors.white,
-              decoration: TextDecoration.underline,
-            ),
-          ),
+    return TextButton(
+      onPressed: () async {
+        AuthManager.instance.toggleAccountRegistrationFlow();
+      },
+      child: const Text(
+        'Register with email',
+        style: TextStyle(
+          color: Colors.white,
+          decoration: TextDecoration.underline,
         ),
-      ],
+      ),
     );
   }
 }
