@@ -35,7 +35,7 @@ class ReplyCastSelector extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      height: 66,
+                      height: cast == null ? 66 : null,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: AdaptiveMaterial(
@@ -52,6 +52,7 @@ class ReplyCastSelector extends StatelessWidget {
                                     showMenu: false,
                                     showLikes: false,
                                     dimIfListened: false,
+                                    titleMaxLines: 1,
                                     child: CastPreview(cast: cast),
                                   ),
                           ),
