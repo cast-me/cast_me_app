@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/background_audio_handler.dart';
+import 'package:cast_me_app/business_logic/handlers/background_audio_handler.dart';
 import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/handlers/deep_link_handler.dart';
 import 'package:cast_me_app/firebase_options.dart';
 
 import 'package:cast_me_app/widgets/common/auth_gate.dart';
 import 'package:cast_me_app/widgets/common/cast_me_view.dart';
-import 'package:cast_me_app/widgets/common/share_handler.dart';
+import 'package:cast_me_app/business_logic/handlers/share_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -66,6 +67,7 @@ void main() async {
       );
       CastMeBackgroundMessageHandler.register();
       await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
+      await DeepLinkHandler.register(CastMeBloc.instance.onLinkPath);
       runApp(const CastMeApp());
     },
     (error, stack) {
