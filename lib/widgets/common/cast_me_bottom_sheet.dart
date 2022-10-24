@@ -22,7 +22,6 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
   final ValueNotifier<double> progress = ValueNotifier(0);
   final DraggableScrollableController sheetController =
       DraggableScrollableController();
-  double? navBarHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +36,7 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                 // the listen tab.
                 return Align(
                   alignment: Alignment.bottomCenter,
-                  child: SizeReportingContainer(
-                    sizeCallback: (size) {
-                      if (navBarHeight == size.height) {
-                        return;
-                      }
-                      setState(() {
-                        navBarHeight = size.height;
-                      });
-                    },
-                    child: CastMeNavigationBar(tab: tab),
-                  ),
+                  child: CastMeNavigationBar(tab: tab),
                 );
               }
               return NotificationListener<DraggableScrollableNotification>(
@@ -76,7 +65,6 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                         progress: progress,
                         sheetController: sheetController,
                         tab: tab,
-                        navBarHeight: navBarHeight,
                       ),
                     ),
                   ],
@@ -94,13 +82,11 @@ class _Sheet extends StatefulWidget {
     required this.progress,
     required this.sheetController,
     required this.tab,
-    required this.navBarHeight,
   }) : super(key: key);
 
   final ValueListenable<double> progress;
   final DraggableScrollableController sheetController;
   final CastMeTab tab;
-  final double? navBarHeight;
 
   @override
   State<_Sheet> createState() => _SheetState();
@@ -108,6 +94,7 @@ class _Sheet extends StatefulWidget {
 
 class _SheetState extends State<_Sheet> {
   double? nowPlayingHeight;
+  double? navBarHeight;
 
   Future<void> onNowPlayingExpansionToggled() async {
     // Collapse the track list on close.
@@ -123,90 +110,104 @@ class _SheetState extends State<_Sheet> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final double minSize = ((nowPlayingHeight ?? 0) + widget.navBarHeight!) /
+      // Assume a min height of 60 to avoid issues.
+      final double minSize = ((nowPlayingHeight ?? 0) + (navBarHeight ?? 100)) /
           constraints.maxHeight;
-      return DraggableScrollableSheet(
-        controller: widget.sheetController,
-        snap: true,
-        minChildSize: minSize,
-        maxChildSize: 1,
-        initialChildSize: minSize,
-        builder: (context, controller) {
-          return AdaptiveMaterial(
-            adaptiveColor: AdaptiveColor.surface,
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  controller: controller,
-                  physics: const ClampingScrollPhysics(),
-                  child: Container(
-                    height: constraints.maxHeight,
-                    child: Stack(
-                      children: [
-                        // Each of these is individually wrapped in progress so
-                        // that we don't have to rebuild the children as we're
-                        // scrolling. This is far worse readability but better
-                        // performance.
-                        // This may not matter, consider removing.
-                        ValueListenableBuilder<double>(
-                          valueListenable: widget.progress,
-                          builder: (context, progress, child) {
-                            return Opacity(
-                              opacity: progress,
-                              child: child!,
-                            );
-                          },
-                          child: Column(
-                            children: const [
-                              _DragHandle(),
-                              Expanded(child: NowPlayingExpandedView()),
-                            ],
-                          ),
-                        ),
-                        ValueListenableBuilder<double>(
-                          valueListenable: widget.progress,
-                          builder: (context, progress, child) {
-                            return Opacity(
-                              opacity: 1 - progress,
-                              child: child!,
-                            );
-                          },
-                          child: SizeReportingContainer(
-                            sizeCallback: (size) {
-                              if (size.height == nowPlayingHeight) {
-                                return;
-                              }
-                              setState(() {
-                                nowPlayingHeight = size.height;
-                              });
+      return Offstage(
+        // Don't display until after we've gotten the nav bar height.
+        offstage: navBarHeight == null,
+        child: DraggableScrollableSheet(
+          controller: widget.sheetController,
+          snap: true,
+          minChildSize: minSize,
+          maxChildSize: 1,
+          initialChildSize: minSize,
+          builder: (context, controller) {
+            return AdaptiveMaterial(
+              adaptiveColor: AdaptiveColor.surface,
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    controller: controller,
+                    physics: const ClampingScrollPhysics(),
+                    child: Container(
+                      height: constraints.maxHeight,
+                      child: Stack(
+                        children: [
+                          // Each of these is individually wrapped in progress so
+                          // that we don't have to rebuild the children as we're
+                          // scrolling. This is far worse readability but better
+                          // performance.
+                          // This may not matter, consider removing.
+                          ValueListenableBuilder<double>(
+                            valueListenable: widget.progress,
+                            builder: (context, progress, child) {
+                              return Opacity(
+                                opacity: progress,
+                                child: child!,
+                              );
                             },
-                            child: GestureDetector(
-                              onTap: onNowPlayingExpansionToggled,
-                              child: const NowPlayingCollapsedView(),
+                            child: Column(
+                              children: const [
+                                _DragHandle(),
+                                Expanded(child: NowPlayingExpandedView()),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
+                          ValueListenableBuilder<double>(
+                            valueListenable: widget.progress,
+                            builder: (context, progress, child) {
+                              return Opacity(
+                                opacity: 1 - progress,
+                                child: child!,
+                              );
+                            },
+                            child: SizeReportingContainer(
+                              sizeCallback: (size) {
+                                if (size.height == nowPlayingHeight) {
+                                  return;
+                                }
+                                setState(() {
+                                  nowPlayingHeight = size.height;
+                                });
+                              },
+                              child: GestureDetector(
+                                onTap: onNowPlayingExpansionToggled,
+                                child: const NowPlayingCollapsedView(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ValueListenableBuilder<double>(
-                    valueListenable: widget.progress,
-                    builder: (context, progress, child) {
-                      return FractionalTranslation(
-                        translation: Offset(0, progress),
-                        child: child!,
-                      );
-                    },
-                    child: CastMeNavigationBar(tab: widget.tab),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: widget.progress,
+                      builder: (context, progress, child) {
+                        return FractionalTranslation(
+                          translation: Offset(0, progress),
+                          child: child!,
+                        );
+                      },
+                      child: SizeReportingContainer(
+                        sizeCallback: (size) {
+                          if (navBarHeight != size.height) {
+                            setState(() {
+                              navBarHeight = size.height;
+                            });
+                          }
+                        },
+                        child: CastMeNavigationBar(tab: widget.tab),
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       );
     });
   }
