@@ -25,54 +25,27 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
         // Ensures that there is always a base page that is not signed in.
         const ValueHistoryEntry(0, SignInState.signingIn),
       ],
-      onPop: (poppedState, stateAfterPop) {
-        switch (poppedState) {
+      onPop: AuthManager.instance.handlePop,
+      getDepth: (signInState) => SignInState.values.indexOf(signInState),
+      builder: (context, signInState, animation, secondaryAnimation) {
+        switch (signInState) {
           case SignInState.signingIn:
-            throw Exception('Should not pop from the base state.');
+          case SignInState.signingInThroughProvider:
+            return const SignInView();
           case SignInState.registering:
-            AuthManager.instance.toggleAccountRegistrationFlow();
-            break;
+            return const RegisterFormView();
           case SignInState.resettingPassword:
-            AuthManager.instance.exitResetPassword();
-            break;
+            return const ResetPasswordView();
           case SignInState.settingNewPassword:
-            AuthManager.instance.exitSetNewPassword();
-            break;
+            return const SetNewPasswordView();
           case SignInState.verifyingEmail:
-            AuthManager.instance.exitEmailVerification();
-            break;
+            return const VerifyEmailView();
           case SignInState.completingProfile:
-            AuthManager.instance.signOut(returnToRegistering: true);
-            break;
+            return const CompleteProfileView();
           case SignInState.signedIn:
             throw Exception('`SignedIn` sign in state should not be '
                 'reachable from the sign in flow widget.');
         }
-      },
-      getDepth: (signInState) => SignInState.values.indexOf(signInState),
-      builder: (context, signInState, animation, secondaryAnimation) {
-        return Builder(
-          builder: (context) {
-            switch (signInState) {
-              case SignInState.signingIn:
-              case SignInState.signingInThroughProvider:
-                return const SignInView();
-              case SignInState.registering:
-                return const RegisterFormView();
-              case SignInState.resettingPassword:
-                return const ResetPasswordView();
-              case SignInState.settingNewPassword:
-                return const SetNewPasswordView();
-              case SignInState.verifyingEmail:
-                return const VerifyEmailView();
-              case SignInState.completingProfile:
-                return const CompleteProfileView();
-              case SignInState.signedIn:
-                throw Exception('`SignedIn` sign in state should not be '
-                    'reachable from the sign in flow widget.');
-            }
-          },
-        );
       },
       transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
     );
