@@ -60,6 +60,10 @@ class CastDatabase {
     }
   }
 
+  Future<Cast> getCast({required String castId}) async {
+    return _rowToCast(await castsReadQuery.select().eq(idCol, castId).single());
+  }
+
   Future<Cast?> getSeedCast() {
     return getCasts(
       skipViewed: true,

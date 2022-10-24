@@ -78,6 +78,15 @@ class CastMeBloc {
     await postBloc.onFileSelected(filePaths.first);
     onTabChanged(_currentTab.value = CastMeTab.post);
   }
+
+  // Called when an app link is received. For example, if the user clicks on a
+  // CastMe share link.
+  Future<void> onLinkPath(List<String> pathSegments) async {
+    if (pathSegments.first == 'casts') {
+      final String castId = pathSegments[1];
+      await ListenBloc.instance.onCastIdSelected(castId, autoPlay: true);
+    }
+  }
 }
 
 class SelectedProfile {

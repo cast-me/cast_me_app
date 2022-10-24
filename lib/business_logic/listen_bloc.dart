@@ -1,4 +1,5 @@
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 
@@ -23,12 +24,18 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
-  void onCastSelected(Cast newCast, {bool autoPlay = true}) {
-    CastAudioPlayer.instance.load(newCast, autoPlay: autoPlay);
+
+  Future<void> onCastIdSelected(String castId, {bool autoPlay = true}) async {
+    final Cast newCast = await CastDatabase.instance.getCast(castId: castId);
+    await CastAudioPlayer.instance.load(newCast, autoPlay: autoPlay);
   }
 
-  void onCastInTrackListSelected(Cast newCast) {
-    CastAudioPlayer.instance.seekToCast(newCast);
+  void onCastSelected(Cast cast, {bool autoPlay = true}) {
+    CastAudioPlayer.instance.load(cast, autoPlay: autoPlay);
+  }
+
+  void onCastInTrackListSelected(Cast cast) {
+    CastAudioPlayer.instance.seekToCast(cast);
   }
 
   void onListenPageChanged(ListenPage newPage) {
