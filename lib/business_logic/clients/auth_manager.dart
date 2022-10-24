@@ -25,7 +25,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
-    supabase.auth.onAuthStateChange((event, session) {
+    supabase.auth.onAuthStateChange((event, session) async  {
       if (event == AuthChangeEvent.passwordRecovery &&
           _signInState != SignInState.settingNewPassword) {
         _signInState = SignInState.settingNewPassword;
@@ -40,7 +40,7 @@ class AuthManager extends ChangeNotifier {
       }
       if (event == AuthChangeEvent.signedIn &&
           _signInState == SignInState.signingInThroughProvider) {
-        _completeSignIn(false);
+        await _completeSignIn(false);
         notifyListeners();
       }
     });
@@ -198,8 +198,8 @@ class AuthManager extends ChangeNotifier {
     }
   }
 
-  Future<void> _completeSignIn(bool emailNotConfirmed) async {
-    if (emailNotConfirmed) {
+  Future<void> _completeSignIn(bool requiresEmailConfirmation) async {
+    if (requiresEmailConfirmation) {
       _signInState = SignInState.verifyingEmail;
       return;
     }
@@ -211,33 +211,30 @@ class AuthManager extends ChangeNotifier {
     }
   }
 
-  void exitResetPassword() {
-    signOut();
-  }
-
-  void exitSetNewPassword() {
-    signOut();
-    _signInState = SignInState.resettingPassword;
+  Future<void> handlePop(
+    SignInState poppedState,
+    SignInState stateAfterPop,
+  ) async {
+    if (supabase.auth.currentUser != null) {
+      // If we were signed in, make sure we sign out first.
+      // This is really only applicable to the `CompletingProfile` and
+      // `SettingNewPassword` states.
+      return signOut(returnState: stateAfterPop);
+    }
+    _signInState = stateAfterPop;
     notifyListeners();
   }
 
-  void exitEmailVerification() {
-    _signInState = SignInState.registering;
-    notifyListeners();
-  }
-
-  Future<void> signOut({bool returnToRegistering = false}) async {
+  Future<void> signOut({
+    SignInState returnState = SignInState.signingIn,
+  }) async {
     Analytics.instance.logSignOut(user: supabase.auth.currentUser!);
     await _authActionWrapper(
       'signOut',
       () async {
         await supabase.auth.signOut().errorToException();
         _profile = null;
-        if (returnToRegistering) {
-          _signInState = SignInState.registering;
-        } else {
-          _signInState = SignInState.signingIn;
-        }
+        _signInState = returnState;
       },
     );
     // Also reset the current tab so that the user goes back to home if they log
@@ -391,10 +388,9 @@ class AuthManager extends ChangeNotifier {
       'signIn',
       () async {
         _signInState = SignInState.signingInThroughProvider;
-        final redirectToUrl =
-            Platform.isAndroid ? 'https://getcastme.com' : 'com.cast.me.app://';
+        const redirectToUrl = 'com.cast.me.app://';
         final res = await supabase.auth.signInWithProvider(Provider.google,
-            options: AuthOptions(redirectTo: redirectToUrl));
+            options: const AuthOptions(redirectTo: redirectToUrl));
         assert(res);
 //        await _completeSignIn(false);
       },
