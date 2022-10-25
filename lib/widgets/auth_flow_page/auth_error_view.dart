@@ -12,7 +12,7 @@ class AuthErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthFlowBuilder(
       builder: (context, authManager, _) {
-        if (AuthManager.instance.isProcessing ||
+        if (AuthManager.instance.currentAction != null ||
             AuthManager.instance.authError == null) {
           return Container();
         }

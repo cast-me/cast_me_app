@@ -11,7 +11,7 @@ class AsyncSubmitButton extends StatelessWidget {
   }) : super(key: key);
 
   final Widget child;
-  final ValueNotifier<bool> currentIsSubmitting = ValueNotifier(false);
+  final ValueNotifier<String?> currentIsSubmitting = ValueNotifier(null);
   final ValueNotifier<String?> currentErrorMessage = ValueNotifier(null);
   final AsyncCallback? onPressed;
 
@@ -22,10 +22,10 @@ class AsyncSubmitButton extends StatelessWidget {
         child: child,
         onPressed: onPressed != null
             ? () async {
-                currentIsSubmitting.value = true;
+                currentIsSubmitting.value = '';
                 await onPressed!().whenComplete(
                   () {
-                    currentIsSubmitting.value = false;
+                    currentIsSubmitting.value = null;
                   },
                 ).onError((error, stackTrace) {
                   currentErrorMessage.value = error.toString();
@@ -34,7 +34,7 @@ class AsyncSubmitButton extends StatelessWidget {
               }
             : null,
       ),
-      currentIsSubmitting: currentIsSubmitting,
+      currentAction: currentIsSubmitting,
       currentErrorMessage: currentErrorMessage,
     );
   }
@@ -44,20 +44,20 @@ class AsyncSubmitView extends StatelessWidget {
   const AsyncSubmitView({
     Key? key,
     required this.child,
-    required this.currentIsSubmitting,
+    required this.currentAction,
     this.currentErrorMessage,
   }) : super(key: key);
 
   final Widget child;
-  final ValueListenable<bool> currentIsSubmitting;
+  final ValueListenable<String?> currentAction;
   final ValueListenable<String?>? currentErrorMessage;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: currentIsSubmitting,
-      builder: (context, isSubmitting, _) {
-        if (isSubmitting) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: currentAction,
+      builder: (context, action, _) {
+        if (action != null) {
           return Container(
             height: 46,
             width: 46,

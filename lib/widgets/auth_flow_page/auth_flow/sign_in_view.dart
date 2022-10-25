@@ -51,15 +51,11 @@ class SignInView extends StatelessWidget {
           bloc.emailController.text,
         );
       },
-      submitText: 'Sign in',
+      submitText: 'Login with email',
       trailing: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          LoginWithProviders(
-            onGoogleSubmit: () async {
-              await AuthManager.instance.googleSignIn();
-            },
-          ),
+          const LoginWithProviders(),
           const RegisterSwitcher(),
           TextButton(
             onPressed: () async {
