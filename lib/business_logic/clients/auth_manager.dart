@@ -50,6 +50,8 @@ class AuthManager extends ChangeNotifier {
 
   static final AuthManager instance = AuthManager._();
 
+  static const redirectToUrl = 'com.cast.me.app://';
+
   final SignInBloc signInBloc = SignInBloc._();
 
   Profile? _profile;
@@ -65,11 +67,11 @@ class AuthManager extends ChangeNotifier {
 
   bool get isInitialized => _isInitialized;
 
-  bool _isProcessing = false;
+  String? _currAction;
 
   // Whether or not we're processing info and waiting for an async callback.
-  // Submit buttons in sign up flow should be disabled while this is true.
-  bool get isProcessing => _isProcessing;
+  // Submit buttons in sign up flow should be disabled while this is non null.
+  String? get currentAction => _currAction;
 
   bool get isFullySignedIn => _signInState == SignInState.signedIn;
 
@@ -112,7 +114,7 @@ class AuthManager extends ChangeNotifier {
               .signUp(
                 email,
                 password,
-                options: const AuthOptions(redirectTo: 'com.cast.me.app'),
+                options: const AuthOptions(redirectTo: redirectToUrl),
               )
               .errorToException();
         } on GoTrueException catch (e) {
@@ -343,7 +345,7 @@ class AuthManager extends ChangeNotifier {
     String action,
     AsyncCallback authAction,
   ) async {
-    _isProcessing = true;
+    _currAction = action;
     notifyListeners();
     await authAction().then(
       (value) async {
@@ -362,7 +364,7 @@ class AuthManager extends ChangeNotifier {
         throw error;
       },
     ).whenComplete(() {
-      _isProcessing = false;
+      _currAction = null;
       notifyListeners();
     });
   }
@@ -390,15 +392,27 @@ class AuthManager extends ChangeNotifier {
   }
 
   Future<void> googleSignIn() async {
+    await _signInWithProvider(provider: Provider.google);
+  }
+
+  Future<void> facebookSignIn() async {
+    await _signInWithProvider(provider: Provider.facebook);
+  }
+
+  Future<void> twitterSignIn() async {
+    await _signInWithProvider(provider: Provider.twitter);
+  }
+
+  Future<void> _signInWithProvider({required Provider provider}) async {
     await _authActionWrapper(
       'signIn',
       () async {
         _signInState = SignInState.signingInThroughProvider;
-        const redirectToUrl = 'com.cast.me.app://';
-        final res = await supabase.auth.signInWithProvider(Provider.google,
-            options: const AuthOptions(redirectTo: redirectToUrl));
+        final res = await supabase.auth.signInWithProvider(
+          provider,
+          options: const AuthOptions(redirectTo: redirectToUrl),
+        );
         assert(res);
-//        await _completeSignIn(false);
       },
     );
     Analytics.instance.logSignIn(user: supabase.auth.currentUser);
