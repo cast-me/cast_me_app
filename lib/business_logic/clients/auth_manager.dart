@@ -25,7 +25,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
-    supabase.auth.onAuthStateChange((event, session) async  {
+    supabase.auth.onAuthStateChange((event, session) async {
       if (event == AuthChangeEvent.passwordRecovery &&
           _signInState != SignInState.settingNewPassword) {
         _signInState = SignInState.settingNewPassword;
@@ -108,7 +108,13 @@ class AuthManager extends ChangeNotifier {
       'createUser',
       () async {
         try {
-          await supabase.auth.signUp(email, password).errorToException();
+          await supabase.auth
+              .signUp(
+                email,
+                password,
+                options: const AuthOptions(redirectTo: 'com.cast.me.app'),
+              )
+              .errorToException();
         } on GoTrueException catch (e) {
           // Hack to catch an erroneous error.
           // TODO(caseycrogers): remove this catch once the issue is resolved:
