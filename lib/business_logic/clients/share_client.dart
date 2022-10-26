@@ -12,7 +12,7 @@ class ShareClient {
   Future<void> share(Cast cast) async {
     await Share.share(
       'Check out this hot take on CastMe:\n'
-      '$_castMeDomain/casts/${cast.id}',
+      '$_castMeDomain/${cast.authorUsername}/${cast.id.substring(0, 8)}',
       subject: cast.title,
     );
   }
