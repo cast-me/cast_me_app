@@ -1,5 +1,6 @@
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 
@@ -16,35 +17,49 @@ class LoginWithProviders extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // TODO: Style these to match CastMe's native buttons.
-        AuthSubmitButtonWrapper(
-          child: SignInButton(
-            Buttons.Google,
-            text: 'Login with Google',
-            onPressed: () async {
-              await manager.googleSignIn();
-            },
-          ),
+        ProviderButton(
+          provider: Buttons.Google,
+          text: 'Login with Google',
+          signIn: manager.googleSignIn,
         ),
-        AuthSubmitButtonWrapper(
-          child: SignInButton(
-            Buttons.FacebookNew,
-            text: 'Login with Facebook',
-            onPressed: () async {
-              await manager.facebookSignIn();
-            },
-          ),
+        ProviderButton(
+          provider: Buttons.FacebookNew,
+          text: 'Login with Facebook',
+          signIn: manager.facebookSignIn,
         ),
-        AuthSubmitButtonWrapper(
-          child: SignInButton(
-            Buttons.Twitter,
-            text: 'Login with Twitter',
-            onPressed: () async {
-              await manager.twitterSignIn();
-            },
-          ),
+        ProviderButton(
+          provider: Buttons.Twitter,
+          text: 'Login with Twitter',
+          signIn: manager.twitterSignIn,
         ),
       ],
+    );
+  }
+}
+
+class ProviderButton extends StatelessWidget {
+  const ProviderButton({
+    Key? key,
+    required this.provider,
+    required this.text,
+    required this.signIn,
+  }) : super(key: key);
+
+  final Buttons provider;
+  final String text;
+  final AsyncCallback signIn;
+
+  @override
+  Widget build(BuildContext context) {
+    return AuthSubmitButtonWrapper(
+      // TODO: make the sign in button styling match the native buttons.
+      child: SignInButton(
+        provider,
+        text: text,
+        onPressed: () async {
+          await signIn();
+        },
+      ),
     );
   }
 }
