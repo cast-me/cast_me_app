@@ -13,15 +13,12 @@ class AuthSubmitButtonWrapper extends StatelessWidget {
 
   final Widget child;
 
-
   @override
   Widget build(BuildContext context) {
     return AsyncSubmitView(
       child: child,
-      currentIsSubmitting: AuthManager.instance.select(
-        () {
-          return AuthManager.instance.isProcessing;
-        },
+      currentAction: AuthManager.instance.select(
+        () => AuthManager.instance.currentAction,
       ),
     );
   }
