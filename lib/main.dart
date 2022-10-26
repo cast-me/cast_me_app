@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/handlers/background_audio_handler.dart';
 import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
@@ -57,6 +58,11 @@ void main() async {
         overlays: [SystemUiOverlay.top],
       );
       await AuthManager.instance.initialize();
+      // Ensure analytics has the user id set.
+      await Analytics.instance.setUserId(AuthManager.instance.user?.id);
+      AuthManager.instance.addListener(() {
+        Analytics.instance.setUserId(AuthManager.instance.user?.id);
+      });
 
       await AudioService.init(
         builder: () => BackgroundAudioHandler.instance,

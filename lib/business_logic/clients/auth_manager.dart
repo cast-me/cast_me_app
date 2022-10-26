@@ -56,6 +56,8 @@ class AuthManager extends ChangeNotifier {
 
   Profile get profile => _profile!;
 
+  User? get user => supabase.auth.currentUser;
+
   // Should not be accessed before verifying that the user manager has loaded.
   SignInState? _signInState = SignInState.signingIn;
 
@@ -137,7 +139,7 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'completeUserProfile',
       () async {
-        Analytics.instance.logCompleteProfile(user: supabase.auth.currentUser!);
+        Analytics.instance.logCompleteProfile();
         assert(
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
@@ -200,7 +202,7 @@ class AuthManager extends ChangeNotifier {
       },
     );
     if (supabase.auth.currentUser != null) {
-      Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+      Analytics.instance.logLogin(loginMethod: 'email');
     }
   }
 
@@ -234,7 +236,7 @@ class AuthManager extends ChangeNotifier {
   Future<void> signOut({
     SignInState returnState = SignInState.signingIn,
   }) async {
-    Analytics.instance.logSignOut(user: supabase.auth.currentUser!);
+    Analytics.instance.logLogout();
     await _authActionWrapper(
       'signOut',
       () async {
@@ -249,7 +251,7 @@ class AuthManager extends ChangeNotifier {
   }
 
   Future<void> setNewPassword({required String newPassword}) async {
-    Analytics.instance.logSetNewPassword(user: supabase.auth.currentUser!);
+    Analytics.instance.logSetNewPassword();
     await _authActionWrapper('reset password', () async {
       await supabase.auth.update(UserAttributes(password: newPassword));
       await _completeSignIn(false);
@@ -398,10 +400,9 @@ class AuthManager extends ChangeNotifier {
         final res = await supabase.auth.signInWithProvider(Provider.google,
             options: const AuthOptions(redirectTo: redirectToUrl));
         assert(res);
-//        await _completeSignIn(false);
       },
     );
-    Analytics.instance.logSignIn(user: supabase.auth.currentUser);
+    Analytics.instance.logLogin(loginMethod: 'google');
   }
 }
 

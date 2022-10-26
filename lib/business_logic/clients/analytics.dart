@@ -6,7 +6,20 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class Analytics {
   Analytics._();
 
-  static final Analytics instance = Analytics._();
+  static final instance = Analytics._();
+
+  String? _setId;
+
+  String? get userId => _setId;
+
+  Future<void> setUserId(String? userId) async {
+    if (_setId == userId) {
+      // Don't bother setting if there's nothing to change.
+      return;
+    }
+    await FirebaseAnalytics.instance.setUserId(id: userId);
+    _setId = userId;
+  }
 
   // AUTH
   // TODO(caseycrgers): some of these are logged after the auth action is
@@ -14,57 +27,30 @@ class Analytics {
   void logSignUp({
     required String email,
   }) {
-    FirebaseAnalytics.instance.logEvent(
-      name: 'signUp',
-      parameters: {
-        'email': email,
-      },
-    );
+    FirebaseAnalytics.instance.logSignUp(signUpMethod: 'email');
   }
 
-  void logCompleteProfile({
-    required User user,
+  void logLogin({
+    required String loginMethod,
   }) {
+    FirebaseAnalytics.instance.logLogin(loginMethod: loginMethod);
+  }
+
+  void logCompleteProfile() {
     FirebaseAnalytics.instance.logEvent(
       name: 'completeProfile',
-      parameters: {
-        'user_id': user.id,
-      },
     );
   }
 
-  // Allow user to be null because if we sign in and haven't verified our email
-  // we won't have access to `User` yet.
-  void logSignIn({
-    required User? user,
-  }) {
-    FirebaseAnalytics.instance.logEvent(
-      name: 'signIn',
-      parameters: {
-        'user_id': user?.id,
-      },
-    );
-  }
-
-  void logSignOut({
-    required User user,
-  }) {
+  void logLogout() {
     FirebaseAnalytics.instance.logEvent(
       name: 'signOut',
-      parameters: {
-        'user_id': user.id,
-      },
     );
   }
 
-  void logSetNewPassword({
-    required User user,
-  }) {
+  void logSetNewPassword() {
     FirebaseAnalytics.instance.logEvent(
       name: 'resetPasswordEmail',
-      parameters: {
-        'user_id': user.id,
-      },
     );
   }
 
