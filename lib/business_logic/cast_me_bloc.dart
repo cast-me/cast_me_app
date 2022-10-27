@@ -83,10 +83,16 @@ class CastMeBloc {
   // CastMe share link.
   Future<void> onLinkPath(List<String> pathSegments) async {
     // TODO: add error reporting and better sanity checking here.
-    if (pathSegments.length == 2 && pathSegments.last.length == 8) {
+    if (pathSegments.length == 4 &&
+        pathSegments[0] == 'users' &&
+        pathSegments[2] == 'casts') {
+      assert(
+        pathSegments[3].length == 8,
+        'Truncated cast ids must be exactly 8 characters long.',
+      );
       // This is a potentially valid cast link.
-      final String authorUsername = pathSegments[0];
-      final String truncId = pathSegments[1];
+      final String authorUsername = pathSegments[1];
+      final String truncId = pathSegments[3];
       await ListenBloc.instance.onTruncatedCastIdSelected(
         authorUsername: authorUsername,
         truncId: truncId,
