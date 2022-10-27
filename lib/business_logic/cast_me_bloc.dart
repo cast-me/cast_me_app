@@ -82,9 +82,16 @@ class CastMeBloc {
   // Called when an app link is received. For example, if the user clicks on a
   // CastMe share link.
   Future<void> onLinkPath(List<String> pathSegments) async {
-    if (pathSegments.first == 'casts') {
-      final String castId = pathSegments[1];
-      await ListenBloc.instance.onCastIdSelected(castId, autoPlay: true);
+    // TODO: add error reporting and better sanity checking here.
+    if (pathSegments.length == 2 && pathSegments.last.length == 8) {
+      // This is a potentially valid cast link.
+      final String authorUsername = pathSegments[0];
+      final String truncId = pathSegments[1];
+      await ListenBloc.instance.onTruncatedCastIdSelected(
+        authorUsername: authorUsername,
+        truncId: truncId,
+        autoPlay: true,
+      );
     }
   }
 }

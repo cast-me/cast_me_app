@@ -42,7 +42,7 @@
             </intent-filter>
 
             <!-- deeplinks -->
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
