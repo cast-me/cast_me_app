@@ -64,6 +64,22 @@ class CastDatabase {
     return _rowToCast(await castsReadQuery.select().eq(idCol, castId).single());
   }
 
+  /// Get a cast given an author and the first 8 characters of a cast id.
+  ///
+  /// Truncated cast ids are used in share links to make the links shorter.
+  Future<Cast> getCastFromTruncatedId({
+    required String authorUsername,
+    required String truncId,
+  }) async {
+    return _rowToCast(await castsReadQuery
+        .select()
+        .eq(authorUsernameCol, authorUsername)
+        // UUIDs are technically binary blobs not strings so we can't use like.
+        .gt('id', '$truncId-0000-0000-0000-000000000000')
+        .lt('id', '$truncId-ffff-ffff-ffff-ffffffffffff')
+        .single());
+  }
+
   Future<Cast?> getSeedCast() {
     return getCasts(
       skipViewed: true,

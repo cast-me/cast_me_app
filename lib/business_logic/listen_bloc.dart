@@ -24,9 +24,21 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
-
-  Future<void> onCastIdSelected(String castId, {bool autoPlay = true}) async {
-    final Cast newCast = await CastDatabase.instance.getCast(castId: castId);
+  Future<void> onTruncatedCastIdSelected({
+    required String authorUsername,
+    required String truncId,
+    bool autoPlay = true,
+  }) async {
+    // Truncated cast ids are used in share links. They're only 8 characters
+    // long to make them more user friendly.
+    assert(
+      truncId.length == 8,
+      'Truncated castId had an invalid length of ${truncId.length}.',
+    );
+    final Cast newCast = await CastDatabase.instance.getCastFromTruncatedId(
+      authorUsername: authorUsername,
+      truncId: truncId,
+    );
     await CastAudioPlayer.instance.load(newCast, autoPlay: autoPlay);
   }
 
