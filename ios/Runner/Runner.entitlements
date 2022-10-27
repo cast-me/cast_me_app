@@ -8,6 +8,8 @@
 		<string>applinks:www.getcastme.com</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
-	<array/>
+	<array>
+		<string>group.com.cast.me.app</string>
+	</array>
 </dict>
 </plist>
