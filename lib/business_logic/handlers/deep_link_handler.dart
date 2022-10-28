@@ -27,7 +27,10 @@ class DeepLinkHandler {
       }
     });
     void _handleLink(Uri? uri) {
-      if (uri == null || uri.host != 'getcastme.com') {
+      if (uri == null) {
+        return;
+      }
+      if (uri.host != 'getcastme.com' && uri.host != 'www.getcastme.com') {
         return;
       }
       if (!AuthManager.instance.isFullySignedIn) {
@@ -37,6 +40,7 @@ class DeepLinkHandler {
       }
       handlePath(uri.pathSegments);
     }
+
     _handleLink(await getInitialUri());
     uriLinkStream.listen(_handleLink);
   }
