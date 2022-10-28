@@ -11,8 +11,9 @@ class ShareClient {
 
   Future<void> share(Cast cast) async {
     await Share.share(
-      'Check out this hot take on CastMe:\n'
-      '$_castMeDomain/${cast.authorUsername}/${cast.id.substring(0, 8)}',
+      // TODO: make these constants and store them somewhere.
+      '$_castMeDomain/users/${cast.authorUsername}'
+      '/casts/${cast.id.substring(0, 8)}',
       subject: cast.title,
     );
   }
