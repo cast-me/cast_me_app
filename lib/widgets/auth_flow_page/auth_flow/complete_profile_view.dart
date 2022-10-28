@@ -1,5 +1,14 @@
+// Dart imports:
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
@@ -8,11 +17,6 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.da
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
-
-import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-
-import 'package:image_picker/image_picker.dart';
 
 /// TODO(caseycrogers): Consider migrating this mess to Flutter's shitty built
 ///   form system.

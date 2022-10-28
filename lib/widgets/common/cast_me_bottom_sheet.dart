@@ -1,5 +1,11 @@
+// Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
@@ -8,8 +14,6 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 class CastMeBottomSheet extends StatefulWidget {
   const CastMeBottomSheet({Key? key}) : super(key: key);
@@ -134,10 +138,10 @@ class _SheetState extends State<_Sheet> {
                       height: constraints.maxHeight,
                       child: Stack(
                         children: [
-                          // Each of these is individually wrapped in progress so
-                          // that we don't have to rebuild the children as we're
-                          // scrolling. This is far worse readability but better
-                          // performance.
+                          // Each of these is individually wrapped in progress
+                          // so that we don't have to rebuild the children as
+                          // we're scrolling. This is far worse readability but
+                          // better performance.
                           // This may not matter, consider removing.
                           ValueListenableBuilder<double>(
                             valueListenable: widget.progress,

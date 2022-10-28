@@ -1,8 +1,11 @@
-import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
-
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
 import 'package:record/record.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 
 class RecordingBar extends StatefulWidget {
   const RecordingBar({Key? key}) : super(key: key);

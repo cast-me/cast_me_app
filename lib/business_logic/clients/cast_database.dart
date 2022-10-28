@@ -1,18 +1,20 @@
+// Dart imports:
 import 'dart:io';
 
+// Package imports:
+import 'package:crypto/crypto.dart';
+import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
+import 'package:ffmpeg_kit_flutter_audio/media_information_session.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/util/string_utils.dart';
-
-import 'package:crypto/crypto.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
-import 'package:ffmpeg_kit_flutter_audio/media_information_session.dart';
-
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CastDatabase {
   CastDatabase._();

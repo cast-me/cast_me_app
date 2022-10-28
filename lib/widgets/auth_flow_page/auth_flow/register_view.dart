@@ -1,7 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_form.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
-import 'package:flutter/material.dart';
 
 final SignInBloc bloc = AuthManager.instance.signInBloc;
 

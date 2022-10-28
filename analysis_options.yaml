@@ -8,7 +8,7 @@ analyzer:
     todo: ignore
     sdk_version_async_exported_from_core: ignore
   exclude:
-    - lib/protobufs/**
+    - lib/business_logic/models/protobufs/**
 
 linter:
   rules:
@@ -62,7 +62,7 @@ linter:
     - control_flow_in_finally
     # - curly_braces_in_flow_control_structures # not yet tested
     # - diagnostic_describe_all_properties # not yet tested
-    - directives_ordering
+    # - directives_ordering # disabled because it conflicted with import_sorter's more sane ordering
     # - empty_catches
     - empty_constructor_bodies
     - empty_statements

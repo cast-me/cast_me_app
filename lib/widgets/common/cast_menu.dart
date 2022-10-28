@@ -1,5 +1,11 @@
+// Dart imports:
 import 'dart:io' show Platform;
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
@@ -11,9 +17,6 @@ import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 class CastMenu extends StatelessWidget {
   const CastMenu({Key? key}) : super(key: key);

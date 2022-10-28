@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:cast_me_app/business_logic/models/cast.dart';
 
 class Trend {

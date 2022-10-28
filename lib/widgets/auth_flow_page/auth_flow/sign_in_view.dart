@@ -1,11 +1,15 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:shared_preferences/shared_preferences.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_form.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/login_with_providers.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/remember_me_view.dart';
-
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInView extends StatelessWidget {
   const SignInView({Key? key}) : super(key: key);

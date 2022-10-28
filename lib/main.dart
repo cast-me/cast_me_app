@@ -1,27 +1,30 @@
+// Dart imports:
 import 'dart:async';
 import 'dart:io';
 
-import 'package:audio_service/audio_service.dart';
-import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
-import 'package:cast_me_app/business_logic/clients/analytics.dart';
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/handlers/background_audio_handler.dart';
-import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
-import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
-import 'package:cast_me_app/business_logic/handlers/deep_link_handler.dart';
-import 'package:cast_me_app/firebase_options.dart';
-
-import 'package:cast_me_app/widgets/common/auth_gate.dart';
-import 'package:cast_me_app/widgets/common/cast_me_view.dart';
-import 'package:cast_me_app/business_logic/handlers/share_handler.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Package imports:
+import 'package:audio_service/audio_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/analytics.dart';
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/clients/background_message_handler.dart';
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/handlers/background_audio_handler.dart';
+import 'package:cast_me_app/business_logic/handlers/deep_link_handler.dart';
+import 'package:cast_me_app/business_logic/handlers/share_handler.dart';
+import 'package:cast_me_app/firebase_options.dart';
+import 'package:cast_me_app/widgets/common/auth_gate.dart';
+import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 
 void main() async {
   await runZonedGuarded(

@@ -1,7 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/post_page/partial_auto_complete.dart';
-
-import 'package:flutter/material.dart';
 
 class TitleField extends StatelessWidget {
   const TitleField({Key? key, required this.titleText}) : super(key: key);

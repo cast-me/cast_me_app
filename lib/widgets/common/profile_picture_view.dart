@@ -1,6 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pbserver.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pbserver.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({

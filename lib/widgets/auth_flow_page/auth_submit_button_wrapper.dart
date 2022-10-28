@@ -1,7 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
-import 'package:flutter/material.dart';
 
 /// Wrap an auth specific async button so that it'll automatically display a
 /// loading indicator when the auth manager is processing.

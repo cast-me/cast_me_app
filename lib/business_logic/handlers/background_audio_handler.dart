@@ -1,7 +1,10 @@
+// Package imports:
 import 'package:audio_service/audio_service.dart';
+import 'package:just_audio/just_audio.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:just_audio/just_audio.dart';
 
 class BackgroundAudioHandler extends BaseAudioHandler {
   BackgroundAudioHandler._() {

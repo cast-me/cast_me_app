@@ -1,11 +1,16 @@
+// Dart imports:
 import 'dart:developer';
 
-import 'package:cast_me_app/util/listenable_utils.dart';
-import 'package:cast_me_app/util/string_utils.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/string_utils.dart';
 
 class AsyncActionWrapper extends InheritedWidget {
   AsyncActionWrapper({

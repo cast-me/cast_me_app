@@ -1,6 +1,11 @@
-import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:just_the_tooltip/just_the_tooltip.dart';
+
+// Project imports:
+import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
 
 class PostHelpTooltip extends StatelessWidget {
   const PostHelpTooltip({Key? key}) : super(key: key);

@@ -1,8 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/text_utils.dart';
-
-import 'package:flutter/material.dart';
 
 class ListenTabSelector extends StatelessWidget {
   const ListenTabSelector({Key? key}) : super(key: key);

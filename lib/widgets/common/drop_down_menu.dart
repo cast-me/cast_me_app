@@ -1,5 +1,8 @@
-import 'package:cast_me_app/util/adaptive_material.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/adaptive_material.dart';
 
 class DropDownMenu extends StatefulWidget {
   const DropDownMenu({

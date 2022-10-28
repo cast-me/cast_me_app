@@ -1,10 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:just_audio/just_audio.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
-
-import 'package:flutter/material.dart';
-
-import 'package:just_audio/just_audio.dart';
 
 class TrackListView extends StatelessWidget {
   const TrackListView({

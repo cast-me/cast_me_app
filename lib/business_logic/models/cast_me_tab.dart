@@ -1,7 +1,11 @@
+// Dart imports:
 import 'dart:collection';
 
-import 'package:cast_me_app/util/custom_icons.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/custom_icons.dart';
 
 class CastMeTabs {
   const CastMeTabs._();

@@ -1,8 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:file_picker/file_picker.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 
 class PickFileView extends StatelessWidget {
   const PickFileView({Key? key}) : super(key: key);

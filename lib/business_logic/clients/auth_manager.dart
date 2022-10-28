@@ -1,7 +1,20 @@
+// Dart imports:
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mime/mime.dart';
+import 'package:palette_generator/palette_generator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
@@ -9,15 +22,6 @@ import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:mime/mime.dart';
-import 'package:palette_generator/palette_generator.dart';
-
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 ///

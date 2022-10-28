@@ -1,11 +1,14 @@
-import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
-import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
 import 'package:path/path.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 
 class AudioRecorder {
   AudioRecorder._();

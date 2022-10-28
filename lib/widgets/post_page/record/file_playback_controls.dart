@@ -1,5 +1,10 @@
+// Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -8,7 +13,6 @@ import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/listen_page/audio_playback_controls.dart';
 import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/post_page/trim_controls.dart';
-import 'package:flutter/material.dart';
 
 class FileAudioPlayerControls extends StatelessWidget {
   const FileAudioPlayerControls({Key? key}) : super(key: key);

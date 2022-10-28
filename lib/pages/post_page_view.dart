@@ -1,3 +1,7 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -13,8 +17,6 @@ import 'package:cast_me_app/widgets/post_page/record/record_button.dart';
 import 'package:cast_me_app/widgets/post_page/record/recording_bar.dart';
 import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
-
-import 'package:flutter/material.dart';
 
 class PostPageView extends StatefulWidget {
   const PostPageView({Key? key}) : super(key: key);

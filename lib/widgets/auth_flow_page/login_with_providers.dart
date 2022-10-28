@@ -1,10 +1,13 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
-
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+// Package imports:
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 
 class LoginWithProviders extends StatelessWidget {
   const LoginWithProviders({

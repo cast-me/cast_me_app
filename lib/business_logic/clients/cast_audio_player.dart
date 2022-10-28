@@ -1,14 +1,17 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:just_audio/just_audio.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
-
-import 'package:flutter/foundation.dart';
-
-import 'package:just_audio/just_audio.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CastAudioPlayer {
   CastAudioPlayer._() {

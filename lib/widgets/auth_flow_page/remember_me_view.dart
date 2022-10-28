@@ -1,6 +1,11 @@
-import 'package:cast_me_app/util/adaptive_material.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/adaptive_material.dart';
 
 class RememberMeView extends StatefulWidget {
   const RememberMeView({Key? key}) : super(key: key);

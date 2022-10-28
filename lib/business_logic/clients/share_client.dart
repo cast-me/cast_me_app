@@ -1,6 +1,8 @@
-import 'package:cast_me_app/business_logic/models/cast.dart';
-
+// Package imports:
 import 'package:share_plus/share_plus.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/models/cast.dart';
 
 class ShareClient {
   ShareClient._();

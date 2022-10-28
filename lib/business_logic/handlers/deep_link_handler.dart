@@ -1,7 +1,11 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
 import 'package:uni_links/uni_links.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 
 /// Routes incoming deep links using the `getcastme` domain.
 ///

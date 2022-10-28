@@ -1,11 +1,12 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
-
-import 'package:flutter/foundation.dart';
 
 /// Contains the top level state for the CastMe App.
 ///
