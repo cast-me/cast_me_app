@@ -1,8 +1,11 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-@Deprecated('Is being replaced by async_action_wrapper.dart')
+// Package imports:
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+@Deprecated('It is being replaced by async_action_wrapper.dart')
 class AsyncSubmitButton extends StatelessWidget {
   AsyncSubmitButton({
     Key? key,

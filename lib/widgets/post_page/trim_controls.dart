@@ -1,9 +1,13 @@
+// Dart imports:
 import 'dart:math' as math;
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
-import 'package:flutter/material.dart';
 
 class TrimControls extends StatelessWidget {
   const TrimControls({

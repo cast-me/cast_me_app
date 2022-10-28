@@ -1,3 +1,4 @@
+// Package imports:
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 /// Handles push notifications from Firebase Cloud Messaging.

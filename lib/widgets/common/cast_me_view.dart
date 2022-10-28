@@ -1,3 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:implicit_navigator/implicit_navigator.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
@@ -8,9 +15,6 @@ import 'package:cast_me_app/widgets/common/cast_me_bottom_sheet.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
-
-import 'package:flutter/material.dart';
-import 'package:implicit_navigator/implicit_navigator.dart';
 
 class CastMeView extends StatelessWidget {
   const CastMeView({Key? key}) : super(key: key);

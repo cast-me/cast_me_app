@@ -1,5 +1,7 @@
+// Dart imports:
 import 'dart:ui';
 
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_base.pb.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/like_base.pb.dart';

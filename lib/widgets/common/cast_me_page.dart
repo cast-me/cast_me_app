@@ -1,6 +1,11 @@
-import 'package:cast_me_app/util/adaptive_material.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:implicit_navigator/implicit_navigator.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/adaptive_material.dart';
 
 class CastMePage extends StatelessWidget {
   const CastMePage({

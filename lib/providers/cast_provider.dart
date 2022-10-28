@@ -1,10 +1,13 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:protobuf/protobuf.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
-import 'package:flutter/foundation.dart';
-
-import 'package:flutter/widgets.dart';
-import 'package:protobuf/protobuf.dart';
 
 class CastProvider extends InheritedWidget {
   CastProvider({

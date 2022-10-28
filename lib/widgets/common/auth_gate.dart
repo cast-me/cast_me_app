@@ -1,10 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/pages/auth_flow_page_view.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
-
-import 'package:flutter/material.dart';
 
 /// This widget is used to keep users from entering the app if they don't have
 /// an internet connection or aren't logged in.

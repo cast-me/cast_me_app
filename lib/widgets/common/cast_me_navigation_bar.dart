@@ -1,7 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
-import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
-import 'package:flutter/material.dart';
 
 class CastMeNavigationBar extends StatelessWidget {
   const CastMeNavigationBar({

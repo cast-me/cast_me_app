@@ -1,7 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/trend.dart';
-
-import 'package:flutter/material.dart';
 
 /// Mock casts.
 Cast ezraLoneliness = CastUtils.mock(

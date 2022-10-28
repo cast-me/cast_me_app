@@ -1,6 +1,8 @@
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 
 class RegisterSwitcher extends StatelessWidget {
   const RegisterSwitcher({
