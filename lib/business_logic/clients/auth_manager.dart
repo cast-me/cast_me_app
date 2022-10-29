@@ -108,7 +108,7 @@ class AuthManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createUser({
+  Future<void> createUserEmail({
     required String email,
     required String password,
   }) async {
@@ -131,7 +131,11 @@ class AuthManager extends ChangeNotifier {
             rethrow;
           }
         }
-        Analytics.instance.logSignUp(email: email);
+        // A listener on `AuthManager` will set the user id, but lets set it
+        // here to avoid a potential race condition where we log before the
+        // value is set.
+        await Analytics.instance.setUserId(user?.id);
+        Analytics.instance.logSignUp(provider: 'email');
         _signInState = SignInState.verifyingEmail;
       },
     );
@@ -181,14 +185,14 @@ class AuthManager extends ChangeNotifier {
     );
   }
 
-  Future<void> signIn({
+  Future<void> signInEmail({
     required String email,
     required String password,
   }) async {
     await _authActionWrapper(
       'signIn',
       () async {
-        bool emailNotConfirmed = false;
+        bool requiredEmailConfirmation = false;
         try {
           await supabase.auth
               .signIn(
@@ -199,16 +203,19 @@ class AuthManager extends ChangeNotifier {
         } catch (e) {
           if (e is GoTrueException &&
               e.message.contains('Email not confirmed')) {
-            emailNotConfirmed = true;
+            requiredEmailConfirmation = true;
           } else {
             rethrow;
           }
         }
-        await _completeSignIn(emailNotConfirmed);
+        await _completeSignIn(requiredEmailConfirmation);
       },
     );
+    // A listener on `AuthManager` will set the user id, but lets set it here
+    // to avoid a potential race condition where we log before the value is set.
+    await Analytics.instance.setUserId(user?.id);
     if (supabase.auth.currentUser != null) {
-      Analytics.instance.logLogin(loginMethod: 'email');
+      Analytics.instance.logLogin(provider: 'email');
     }
   }
 
@@ -421,7 +428,15 @@ class AuthManager extends ChangeNotifier {
         assert(res);
       },
     );
-    Analytics.instance.logLogin(loginMethod: 'google');
+    // A listener on `AuthManager` will set the user id, but lets set it here
+    // to avoid a potential race condition where we log before the value is set.
+    await Analytics.instance.setUserId(user?.id);
+    if (!isFullySignedIn) {
+      // This is a new user, log this as a sign up not a login.
+      Analytics.instance.logSignUp(provider: provider.name());
+    } else {
+      Analytics.instance.logLogin(provider: provider.name());
+    }
   }
 }
 
