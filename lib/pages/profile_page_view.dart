@@ -1,11 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:package_info_plus/package_info_plus.dart';
-
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/app_info.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
@@ -28,45 +26,9 @@ class ProfilePageView extends StatelessWidget {
               child: const Text('Sign out'),
             ),
           ),
-          const _AppInfo(),
+          const AppInfo(showIcon: false),
         ],
       ),
-    );
-  }
-}
-
-class _AppInfo extends StatefulWidget {
-  const _AppInfo({Key? key}) : super(key: key);
-
-  @override
-  State<_AppInfo> createState() => _AppInfoState();
-}
-
-class _AppInfoState extends State<_AppInfo> {
-  final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: packageInfo,
-      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-        if (!snapshot.hasData) {
-          return Container();
-        }
-        final PackageInfo info = snapshot.data!;
-        return DefaultTextStyle(
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-          textAlign: TextAlign.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SelectableText('user_id: ${AuthManager.instance.profile.id}'),
-              SelectableText('${info.appName}'
-                  ' v${info.version}+${info.buildNumber}'),
-            ],
-          ),
-        );
-      },
     );
   }
 }
