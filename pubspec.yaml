@@ -21,7 +21,7 @@ dependencies:
   palette_generator: ^0.3.3+1
   shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.6
-  supabase_flutter: ^1.0.0-dev.7
+  supabase_flutter: ^1.0.1
   basic_utils: ^4.5.2
   ffmpeg_kit_flutter_audio: ^4.5.1
   crypto: ^3.0.2

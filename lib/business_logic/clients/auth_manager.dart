@@ -29,7 +29,8 @@ import 'package:cast_me_app/util/string_utils.dart';
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
-    supabase.auth.onAuthStateChange((event, session) async {
+    supabase.auth.onAuthStateChange.listen((state) async {
+      final AuthChangeEvent event = state.event;
       if (event == AuthChangeEvent.passwordRecovery &&
           _signInState != SignInState.settingNewPassword) {
         _signInState = SignInState.settingNewPassword;
@@ -115,22 +116,11 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'createUser',
       () async {
-        try {
-          await supabase.auth
-              .signUp(
-                email,
-                password,
-                options: const AuthOptions(redirectTo: redirectToUrl),
-              )
-              .errorToException();
-        } on GoTrueException catch (e) {
-          // Hack to catch an erroneous error.
-          // TODO(caseycrogers): remove this catch once the issue is resolved:
-          // https://github.com/supabase-community/supabase-flutter/issues/182
-          if (e.statusCode != null) {
-            rethrow;
-          }
-        }
+        await supabase.auth.signUp(
+          email: email,
+          password: password,
+          emailRedirectTo: redirectToUrl,
+        );
         Analytics.instance.logSignUp(email: email);
         _signInState = SignInState.verifyingEmail;
       },
@@ -190,15 +180,12 @@ class AuthManager extends ChangeNotifier {
       () async {
         bool emailNotConfirmed = false;
         try {
-          await supabase.auth
-              .signIn(
-                email: email,
-                password: password,
-              )
-              .errorToException();
+          await supabase.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
         } catch (e) {
-          if (e is GoTrueException &&
-              e.message.contains('Email not confirmed')) {
+          if (e is AuthException && e.message.contains('Email not confirmed')) {
             emailNotConfirmed = true;
           } else {
             rethrow;
@@ -246,7 +233,7 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'signOut',
       () async {
-        await supabase.auth.signOut().errorToException();
+        await supabase.auth.signOut();
         _profile = null;
         _signInState = returnState;
       },
@@ -259,7 +246,7 @@ class AuthManager extends ChangeNotifier {
   Future<void> setNewPassword({required String newPassword}) async {
     Analytics.instance.logSetNewPassword();
     await _authActionWrapper('reset password', () async {
-      await supabase.auth.update(UserAttributes(password: newPassword));
+      await supabase.auth.updateUser(UserAttributes(password: newPassword));
       await _completeSignIn(false);
     });
   }
@@ -267,10 +254,9 @@ class AuthManager extends ChangeNotifier {
   Future<void> sendResetPasswordEmail({required String email}) async {
     Analytics.instance.logSendResetPasswordEmail(email: email);
     await _authActionWrapper('reset password', () async {
-      await supabase.auth.api.resetPasswordForEmail(
+      await supabase.auth.resetPasswordForEmail(
         email,
-        options: const AuthOptions(
-            redirectTo: 'io.supabase.castmeapp://reset-callback/'),
+        redirectTo: 'io.supabase.castmeapp://reset-callback/',
       );
     });
   }
@@ -414,9 +400,9 @@ class AuthManager extends ChangeNotifier {
       'signIn',
       () async {
         _signInState = SignInState.signingInThroughProvider;
-        final res = await supabase.auth.signInWithProvider(
+        final res = await supabase.auth.signInWithOAuth(
           provider,
-          options: const AuthOptions(redirectTo: redirectToUrl),
+          redirectTo: redirectToUrl,
         );
         assert(res);
       },
