@@ -52,10 +52,8 @@ class UpdateMessage extends StatelessWidget {
   static Future<void> register(Future<PackageInfo> packageInfo) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     _installedVersion = (await packageInfo).version;
-    _displayFirstOpenMsg = (preferences.getBool(_firstOpenStr) ?? true) || true;
+    _displayFirstOpenMsg = preferences.getBool(_firstOpenStr) ?? true;
     _hasDisplayed = preferences.getBool(_hasDisplayedStr) ?? false;
-    await preferences.setBool(_firstOpenStr, false);
-    await preferences.setBool(_hasDisplayedStr, true);
   }
 
   @override
@@ -74,11 +72,15 @@ class UpdateMessage extends StatelessWidget {
           UpdateMessageContent(child: messageForVersion),
         );
       }
-      SharedPreferences.getInstance()
-          .then((p) => p.setBool(_hasDisplayedStr, true));
-      // Override locally too so that we don't re-display during this session.
     }
-    _hasDisplayed = true;
+    if (_displayFirstOpenMsg || !_hasDisplayed) {
+      SharedPreferences.getInstance().then((p) {
+        p.setBool(_firstOpenStr, false);
+        p.setBool(_hasDisplayedStr, true);
+      });
+      // Override locally too so that we don't re-display during this session.
+      _hasDisplayed = true;
+    }
     return Container(child: child);
   }
 
