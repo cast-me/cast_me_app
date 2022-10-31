@@ -5,11 +5,13 @@ import 'dart:ui';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/cast_base.pb.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/like_base.pb.dart';
+import 'package:cast_me_app/business_logic/models/protobufs/topic_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 typedef Cast = CastBase;
 typedef Like = LikeBase;
+typedef Topic = TopicBase;
 
 extension CastUtils on CastBase {
   static Cast mock({

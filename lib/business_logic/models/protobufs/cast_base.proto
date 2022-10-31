@@ -5,6 +5,7 @@ syntax = "proto3";
 
 package cast_me_app;
 
+import "business_logic/models/protobufs/topic_base.proto";
 import "business_logic/models/protobufs/like_base.proto";
 
 message CastBase {
@@ -20,13 +21,17 @@ message CastBase {
     uint32 view_count = 7;
     bool has_viewed = 8;
     repeated LikeBase likes = 9;
-    repeated string tagged_usernames = 10;
+    // We use names instead of `TopicBase` because we need to
+    // perform an array agg to filter and that only works with
+    // raw text values.
+    repeated string topic_names = 10;
+    repeated string tagged_usernames = 11;
 
     // Client Specified.
-    string author_id = 11;
-    string title = 12;
-    string topic = 13;
-    uint32 duration_ms = 14;
-    string audio_url = 15;
-    string reply_to = 16;
+    string author_id = 12;
+    string title = 13;
+    string topic = 14;
+    uint32 duration_ms = 15;
+    string audio_url = 16;
+    string reply_to = 17;
 }

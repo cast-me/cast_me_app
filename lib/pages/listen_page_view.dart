@@ -1,11 +1,11 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/listen_page/topic_filter_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/listen_page/listen_tab_selector.dart';
 import 'package:cast_me_app/widgets/listen_page/tab_switcher.dart';
 
 class ListenPageView extends StatefulWidget {
@@ -39,7 +39,7 @@ class _ListenPageViewState extends State<ListenPageView> {
         bottom: false,
         child: Column(
           children: const [
-            ListenTabSelector(),
+            TopicFilterView(),
             Expanded(
               child: ListenTabView(),
             ),

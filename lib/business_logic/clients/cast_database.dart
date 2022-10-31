@@ -25,6 +25,7 @@ class CastDatabase {
   Stream<Cast> getCasts({
     Profile? filterProfile,
     Profile? filterOutProfile,
+    List<Topic>? filterTopics,
     bool skipViewed = false,
     bool oldestFirst = false,
     String? searchTerm,
@@ -45,6 +46,12 @@ class CastDatabase {
       queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
           '$authorUsernameCol.ilike.$searchTerm%,'
           '$authorDisplayNameCol.ilike.$searchTerm%');
+    }
+    if (filterTopics != null) {
+      queryBuilder = queryBuilder.overlaps(
+        topicsCol,
+        filterTopics.map((t) => t.name).toList(),
+      );
     }
     PostgrestTransformBuilder transformBuilder = queryBuilder
         .order(treeUpdatedAtCol, ascending: oldestFirst)
@@ -191,6 +198,12 @@ class CastDatabase {
       castIdCol: cast.id,
     });
   }
+
+  Future<List<Topic>> getAllTopics() async {
+    return (await topicsQuery.select().withConverter((dynamic data) {
+      return (data as Iterable<dynamic>).map(_rowToTopic).toList();
+    }))!;
+  }
 }
 
 enum SkippedReason {
@@ -210,6 +223,15 @@ Cast _rowToCast(dynamic row) {
         'reply_cast': (rowMap['reply_cast_json'] as Map<String, dynamic>?),
         ...rowMap,
       },
+      ignoreUnknownFields: true,
+    );
+}
+
+Topic _rowToTopic(dynamic row) {
+  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
+  return Topic.create()
+    ..mergeFromProto3Json(
+      rowMap,
       ignoreUnknownFields: true,
     );
 }

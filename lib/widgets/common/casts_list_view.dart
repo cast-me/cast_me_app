@@ -20,6 +20,7 @@ class CastListView extends StatefulWidget {
     Key? key,
     this.filterProfile,
     this.filterOutProfile,
+    this.filterTopics,
     this.padding,
     this.controller,
   }) : super(key: key);
@@ -29,6 +30,9 @@ class CastListView extends StatefulWidget {
 
   /// If non-null, exclude casts by the specified user.
   final Profile? filterOutProfile;
+
+  /// If non-null, restrict casts to the given topic.
+  final List<Topic>? filterTopics;
 
   final EdgeInsets? padding;
 
@@ -54,6 +58,14 @@ class _CastListViewState extends State<CastListView> {
   void dispose() {
     controller._detach(this);
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant CastListView oldWidget) {
+    if (oldWidget.filterTopics != widget.filterTopics) {
+      controller.refresh();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -143,6 +155,7 @@ class CastListController extends ChangeNotifier {
         .getCasts(
       filterProfile: _widgetState!.widget.filterProfile,
       filterOutProfile: _widgetState!.widget.filterOutProfile,
+      filterTopics: _widgetState!.widget.filterTopics,
     )
         .handleError((Object error) {
       if (kDebugMode) {

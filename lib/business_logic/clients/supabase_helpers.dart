@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -33,6 +33,12 @@ const String castIdCol = 'cast_id';
 
 const String titleCol = 'title';
 
+const String topicIdCol = 'topic_id';
+
+const String nameCol = 'name';
+
+const String topicsCol = 'topics';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
 SupabaseQueryBuilder get fcmRegistrationTokensQuery =>
@@ -49,3 +55,7 @@ SupabaseQueryBuilder get listensQuery =>
 
 SupabaseQueryBuilder get likesQuery =>
     supabase.from(isStaging ? 'staging_likes' : 'likes');
+
+SupabaseQueryBuilder get topicsQuery =>
+    supabase.from(isStaging ? 'staging_topics' : 'topics');
+

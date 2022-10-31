@@ -1,0 +1,11 @@
+// Run from lib:
+// protoc --dart_out=. business_logic/models/protobufs/*.proto
+
+syntax = "proto3";
+
+package cast_me_app;
+
+message TopicBase {
+    string cast_id = 1;
+    string name = 2;
+}

@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -10,10 +12,16 @@ class ForYouView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CastViewTheme(
-      child: CastListView(
-        padding: EdgeInsets.all(8),
-      ),
+    return ValueListenableBuilder<List<Topic>>(
+      valueListenable: ListenBloc.instance.filteredTopics,
+      builder: (context, filteredTopics, _) {
+        return CastViewTheme(
+          child: CastListView(
+            padding: const EdgeInsets.all(8),
+            filterTopics: filteredTopics,
+          ),
+        );
+      }
     );
   }
 }

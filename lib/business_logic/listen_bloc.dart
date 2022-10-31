@@ -26,6 +26,10 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
+  final ValueNotifier<List<Topic>> _filteredTopics = ValueNotifier([]);
+
+  ValueListenable<List<Topic>> get filteredTopics => _filteredTopics;
+
   Future<void> onTruncatedCastIdSelected({
     required String authorUsername,
     required String truncId,
@@ -62,6 +66,15 @@ class ListenBloc {
 
   void onDisplayTrackListToggled() {
     _trackListIsDisplayed.value = !_trackListIsDisplayed.value;
+  }
+
+  void onTopicToggled(Topic topic) {
+    if (_filteredTopics.value.contains(topic)) {
+      // Use `toList()` to copy the list.
+      _filteredTopics.value = _filteredTopics.value.toList()..remove(topic);
+      return;
+    }
+    _filteredTopics.value = _filteredTopics.value.toList()..add(topic);
   }
 }
 
