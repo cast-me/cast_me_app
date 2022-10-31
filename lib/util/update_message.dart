@@ -138,41 +138,9 @@ class WelcomeMessageContent extends StatelessWidget {
           'Welcome to CastMe!',
           style: Theme.of(context).textTheme.headline5,
         ),
-        const Text('\nThank you for being an early adopter.\n\n'
-            'Here\'s how you can get involved:'),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(' - '),
-                Expanded(child: Text('Listen to and upload casts')),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(' - '),
-                Expanded(
-                  child: Text('Give feedback (this part is fun, this part is '
-                      'not, I wish it did X, etc)'),
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(' - '),
-                Expanded(
-                    child: Text('Report severe bugs (crashes, can\'t '
-                        'login, etc))\n\n')),
-              ],
-            ),
-          ],
-        ),
-        const Text('Join our discord server to provide us feedback and chat '
-            'with other early adopters!'),
+        const Text('\nThank you for being an early adopter!\n'),
+        const Text('Please join our discord server to provide feedback and '
+            'chat with other early adopters!'),
         Center(
           child: TextButton(
             onPressed: () {
