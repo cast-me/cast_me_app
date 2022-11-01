@@ -33,6 +33,12 @@ const String castIdCol = 'cast_id';
 
 const String titleCol = 'title';
 
+const String topicIdCol = 'topic_id';
+
+const String nameCol = 'name';
+
+const String topicsCol = 'topics';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
 SupabaseQueryBuilder get fcmRegistrationTokensQuery =>
@@ -49,3 +55,10 @@ SupabaseQueryBuilder get listensQuery =>
 
 SupabaseQueryBuilder get likesQuery =>
     supabase.from(isStaging ? 'staging_likes' : 'likes');
+
+SupabaseQueryBuilder get topicsReadQuery =>
+    supabase.from(isStaging ? 'staging_topics_agg_view' : 'topics_agg_view');
+
+SupabaseQueryBuilder get castsToTopicWriteQuery =>
+    supabase.from(isStaging ? 'staging_casts_to_topics' : 'casts_to_topics');
+

@@ -20,6 +20,7 @@ class CastListView extends StatefulWidget {
     Key? key,
     this.filterProfile,
     this.filterOutProfile,
+    this.filterTopics,
     this.padding,
     this.controller,
   }) : super(key: key);
@@ -30,6 +31,9 @@ class CastListView extends StatefulWidget {
   /// If non-null, exclude casts by the specified user.
   final Profile? filterOutProfile;
 
+  /// If non-null, restrict casts to the given topic.
+  final List<Topic>? filterTopics;
+
   final EdgeInsets? padding;
 
   final CastListController? controller;
@@ -39,14 +43,14 @@ class CastListView extends StatefulWidget {
 }
 
 class _CastListViewState extends State<CastListView> {
-  // TODO(caseycriogers): this will cause a bug if a controller is added later,
+  // TODO(caseycrogers): this will cause a bug if a controller is added later,
   //   consider adding didUpdateWidget logic.
-  late CastListController controller =
-      widget.controller ?? CastListController();
+  late final CastListController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = widget.controller ?? CastListController();
     controller._attach(this);
   }
 
@@ -54,6 +58,14 @@ class _CastListViewState extends State<CastListView> {
   void dispose() {
     controller._detach(this);
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant CastListView oldWidget) {
+    if (oldWidget.filterTopics != widget.filterTopics) {
+      controller._updateStream();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -115,6 +127,11 @@ class CastListController extends ChangeNotifier {
   _CastListViewState? _widgetState;
 
   void refresh() {
+    _updateStream();
+    _widgetState?.context.dispatchNotification(CastListRefreshNotification());
+  }
+
+  void _updateStream() {
     _castStream = _getStream();
     notifyListeners();
   }
@@ -143,6 +160,7 @@ class CastListController extends ChangeNotifier {
         .getCasts(
       filterProfile: _widgetState!.widget.filterProfile,
       filterOutProfile: _widgetState!.widget.filterOutProfile,
+      filterTopics: _widgetState!.widget.filterTopics,
     )
         .handleError((Object error) {
       if (kDebugMode) {
@@ -183,3 +201,5 @@ class SearchCastListController extends CastListController {
     });
   }
 }
+
+class CastListRefreshNotification extends Notification {}

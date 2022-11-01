@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/util/custom_icons.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/custom_icons.dart';
 
 class AppInfo extends StatefulWidget {
   const AppInfo({

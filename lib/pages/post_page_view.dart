@@ -12,6 +12,7 @@ import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/post_page/pick_file_view.dart';
 import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
+import 'package:cast_me_app/widgets/post_page/post_topic_selector.dart';
 import 'package:cast_me_app/widgets/post_page/record/file_playback_controls.dart';
 import 'package:cast_me_app/widgets/post_page/record/record_button.dart';
 import 'package:cast_me_app/widgets/post_page/record/recording_bar.dart';
@@ -77,6 +78,8 @@ class _PostPageViewState extends State<PostPageView> {
                 const SizedBox(height: 8),
                 const Text('Cast title'),
                 TitleField(key: titleFieldKey, titleText: titleText),
+                const SizedBox(height: 8),
+                const PostTopicSelector(),
                 ValueListenableBuilder<String>(
                   valueListenable: titleText,
                   builder: (context, title, _) {

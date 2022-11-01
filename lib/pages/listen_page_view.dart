@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/listen_page/listen_tab_selector.dart';
-import 'package:cast_me_app/widgets/listen_page/tab_switcher.dart';
+import 'package:cast_me_app/widgets/common/casts_list_view.dart';
+import 'package:cast_me_app/widgets/listen_page/listen_casts_view.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class ListenPageView extends StatefulWidget {
   const ListenPageView({Key? key}) : super(key: key);
@@ -16,6 +17,8 @@ class ListenPageView extends StatefulWidget {
 }
 
 class _ListenPageViewState extends State<ListenPageView> {
+  Key topicsKey = UniqueKey();
+
   @override
   void initState() {
     if (ListenBloc.instance.currentCast.value == null) {
@@ -37,13 +40,25 @@ class _ListenPageViewState extends State<ListenPageView> {
       adaptiveColor: AdaptiveColor.background,
       child: SafeArea(
         bottom: false,
-        child: Column(
-          children: const [
-            ListenTabSelector(),
-            Expanded(
-              child: ListenTabView(),
-            ),
-          ],
+        child: NotificationListener<CastListRefreshNotification>(
+          onNotification: (_) {
+            setState(() {
+              topicsKey = UniqueKey();
+            });
+            return false;
+          },
+          child: Column(
+            children: [
+              TopicsView(
+                key: topicsKey,
+                currentTopics: ListenBloc.instance.filteredTopics,
+                onTap: ListenBloc.instance.onTopicToggled,
+              ),
+              const Expanded(
+                child: ListenCastsView(),
+              ),
+            ],
+          ),
         ),
       ),
     );

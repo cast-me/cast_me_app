@@ -23,6 +23,8 @@ class PostBloc {
 
   final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
 
+  final ValueNotifier<List<Topic>> topics = ValueNotifier([]);
+
   final ValueNotifier<CastFile?> _castFile = ValueNotifier(null);
 
   Future<void> _onTrimChanged() async {
@@ -70,6 +72,7 @@ class PostBloc {
     await _onTrimChanged();
   }
 
+  // TODO: this is sloppy, we should just replace instance with a new instance.
   Future<void> submitFile({
     required String title,
     required CastFile castFile,
@@ -77,9 +80,11 @@ class PostBloc {
     await CastDatabase.instance.createCast(
       title: title,
       castFile: await castFile.applyTrim(),
-      replyTo: PostBloc.instance.replyCast.value,
+      replyTo: replyCast.value,
+      topics: topics.value,
     );
-    PostBloc.instance.clearFiles();
-    PostBloc.instance.replyCast.value = null;
+    clearFiles();
+    replyCast.value = null;
+    topics.value = [];
   }
 }

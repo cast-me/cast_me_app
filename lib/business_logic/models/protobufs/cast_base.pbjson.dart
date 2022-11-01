@@ -23,14 +23,16 @@ const CastBase$json = const {
     const {'1': 'view_count', '3': 7, '4': 1, '5': 13, '10': 'viewCount'},
     const {'1': 'has_viewed', '3': 8, '4': 1, '5': 8, '10': 'hasViewed'},
     const {'1': 'likes', '3': 9, '4': 3, '5': 11, '6': '.cast_me_app.LikeBase', '10': 'likes'},
-    const {'1': 'tagged_usernames', '3': 10, '4': 3, '5': 9, '10': 'taggedUsernames'},
-    const {'1': 'reply_to', '3': 11, '4': 1, '5': 9, '10': 'replyTo'},
+    const {'1': 'topic_names', '3': 10, '4': 3, '5': 9, '10': 'topicNames'},
+    const {'1': 'tagged_usernames', '3': 11, '4': 3, '5': 9, '10': 'taggedUsernames'},
     const {'1': 'author_id', '3': 12, '4': 1, '5': 9, '10': 'authorId'},
     const {'1': 'title', '3': 13, '4': 1, '5': 9, '10': 'title'},
-    const {'1': 'duration_ms', '3': 14, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_url', '3': 15, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'topic', '3': 14, '4': 1, '5': 9, '10': 'topic'},
+    const {'1': 'duration_ms', '3': 15, '4': 1, '5': 13, '10': 'durationMs'},
+    const {'1': 'audio_url', '3': 16, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'reply_to', '3': 17, '4': 1, '5': 9, '10': 'replyTo'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxInCg9hdXRob3JfdXNlcm5hbWUYAyABKAlSDmF1dGhvclVzZXJuYW1lEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYBCABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhsKCWltYWdlX3VybBgFIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYBiABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAcgASgNUgl2aWV3Q291bnQSHQoKaGFzX3ZpZXdlZBgIIAEoCFIJaGFzVmlld2VkEisKBWxpa2VzGAkgAygLMhUuY2FzdF9tZV9hcHAuTGlrZUJhc2VSBWxpa2VzEikKEHRhZ2dlZF91c2VybmFtZXMYCiADKAlSD3RhZ2dlZFVzZXJuYW1lcxIZCghyZXBseV90bxgLIAEoCVIHcmVwbHlUbxIbCglhdXRob3JfaWQYDCABKAlSCGF1dGhvcklkEhQKBXRpdGxlGA0gASgJUgV0aXRsZRIfCgtkdXJhdGlvbl9tcxgOIAEoDVIKZHVyYXRpb25NcxIbCglhdWRpb191cmwYDyABKAlSCGF1ZGlvVXJs');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxInCg9hdXRob3JfdXNlcm5hbWUYAyABKAlSDmF1dGhvclVzZXJuYW1lEi4KE2F1dGhvcl9kaXNwbGF5X25hbWUYBCABKAlSEWF1dGhvckRpc3BsYXlOYW1lEhsKCWltYWdlX3VybBgFIAEoCVIIaW1hZ2VVcmwSKgoRYWNjZW50X2NvbG9yX2Jhc2UYBiABKAlSD2FjY2VudENvbG9yQmFzZRIdCgp2aWV3X2NvdW50GAcgASgNUgl2aWV3Q291bnQSHQoKaGFzX3ZpZXdlZBgIIAEoCFIJaGFzVmlld2VkEisKBWxpa2VzGAkgAygLMhUuY2FzdF9tZV9hcHAuTGlrZUJhc2VSBWxpa2VzEh8KC3RvcGljX25hbWVzGAogAygJUgp0b3BpY05hbWVzEikKEHRhZ2dlZF91c2VybmFtZXMYCyADKAlSD3RhZ2dlZFVzZXJuYW1lcxIbCglhdXRob3JfaWQYDCABKAlSCGF1dGhvcklkEhQKBXRpdGxlGA0gASgJUgV0aXRsZRIUCgV0b3BpYxgOIAEoCVIFdG9waWMSHwoLZHVyYXRpb25fbXMYDyABKA1SCmR1cmF0aW9uTXMSGwoJYXVkaW9fdXJsGBAgASgJUghhdWRpb1VybBIZCghyZXBseV90bxgRIAEoCVIHcmVwbHlUbw==');

@@ -25,6 +25,7 @@ class CastDatabase {
   Stream<Cast> getCasts({
     Profile? filterProfile,
     Profile? filterOutProfile,
+    List<Topic>? filterTopics,
     bool skipViewed = false,
     bool oldestFirst = false,
     String? searchTerm,
@@ -45,6 +46,12 @@ class CastDatabase {
       queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
           '$authorUsernameCol.ilike.$searchTerm%,'
           '$authorDisplayNameCol.ilike.$searchTerm%');
+    }
+    if (filterTopics != null) {
+      queryBuilder = queryBuilder.overlaps(
+        topicsCol,
+        filterTopics.map((t) => t.name).toList(),
+      );
     }
     PostgrestTransformBuilder transformBuilder = queryBuilder
         .order(treeUpdatedAtCol, ascending: oldestFirst)
@@ -101,6 +108,7 @@ class CastDatabase {
     required String title,
     required CastFile castFile,
     required Cast? replyTo,
+    required List<Topic> topics,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
     final String fileExt = castFile.name.split('.').last;
@@ -129,6 +137,12 @@ class CastDatabase {
         .insert(_castToRow(cast))
         .select(idCol)
         .single() as Map<String, dynamic>;
+    await castsToTopicWriteQuery.insert(topics.map((t) {
+      return <String, dynamic>{
+        'topic_id': t.id,
+        'cast_id': castMap[idCol],
+      };
+    }).toList());
     // TODO(caseycrogers): this will only log if the create succeeds, consider
     //   wrapping in a finally or something.
     Analytics.instance.logCreate(castId: castMap[idCol] as String);
@@ -191,6 +205,15 @@ class CastDatabase {
       castIdCol: cast.id,
     });
   }
+
+  Future<List<Topic>> getAllTopics() async {
+    return (await topicsReadQuery
+        .select()
+        .order('cast_count')
+        .withConverter((dynamic data) {
+      return (data as Iterable<dynamic>).map(_rowToTopic).toList();
+    }))!;
+  }
 }
 
 enum SkippedReason {
@@ -210,6 +233,15 @@ Cast _rowToCast(dynamic row) {
         'reply_cast': (rowMap['reply_cast_json'] as Map<String, dynamic>?),
         ...rowMap,
       },
+      ignoreUnknownFields: true,
+    );
+}
+
+Topic _rowToTopic(dynamic row) {
+  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
+  return Topic.create()
+    ..mergeFromProto3Json(
+      rowMap,
       ignoreUnknownFields: true,
     );
 }
