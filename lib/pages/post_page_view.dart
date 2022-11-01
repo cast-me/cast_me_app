@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/post_page/post_topic_selector.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -77,6 +78,8 @@ class _PostPageViewState extends State<PostPageView> {
                 const SizedBox(height: 8),
                 const Text('Cast title'),
                 TitleField(key: titleFieldKey, titleText: titleText),
+                const SizedBox(height: 8),
+                const PostTopicSelector(),
                 ValueListenableBuilder<String>(
                   valueListenable: titleText,
                   builder: (context, title, _) {

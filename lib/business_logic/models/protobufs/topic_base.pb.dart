@@ -11,22 +11,27 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class TopicBase extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TopicBase', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'cast_me_app'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'castId')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
+    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'castCount', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
   TopicBase._() : super();
   factory TopicBase({
-    $core.String? castId,
     $core.String? name,
+    $core.String? id,
+    $core.int? castCount,
   }) {
     final _result = create();
-    if (castId != null) {
-      _result.castId = castId;
-    }
     if (name != null) {
       _result.name = name;
+    }
+    if (id != null) {
+      _result.id = id;
+    }
+    if (castCount != null) {
+      _result.castCount = castCount;
     }
     return _result;
   }
@@ -52,21 +57,30 @@ class TopicBase extends $pb.GeneratedMessage {
   static TopicBase? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get castId => $_getSZ(0);
+  $core.String get name => $_getSZ(0);
   @$pb.TagNumber(1)
-  set castId($core.String v) { $_setString(0, v); }
+  set name($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasCastId() => $_has(0);
+  $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearCastId() => clearField(1);
+  void clearName() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get name => $_getSZ(1);
+  $core.String get id => $_getSZ(1);
   @$pb.TagNumber(2)
-  set name($core.String v) { $_setString(1, v); }
+  set id($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasName() => $_has(1);
+  $core.bool hasId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearName() => clearField(2);
+  void clearId() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get castCount => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set castCount($core.int v) { $_setUnsignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasCastCount() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearCastCount() => clearField(3);
 }
 

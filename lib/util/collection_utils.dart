@@ -20,6 +20,10 @@ extension NotShittyList<T> on List<T> {
   void sortBy(Comparable Function(T) toComparable) {
     sort((a, b) => toComparable(a).compareTo(toComparable(b)));
   }
+
+  List<T> sortedBy(Comparable Function(T) toComparable) {
+    return toList()..sort((a, b) => toComparable(a).compareTo(toComparable(b)));
+  }
 }
 
 extension NotShittIterable<T> on Iterable<T> {

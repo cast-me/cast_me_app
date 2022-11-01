@@ -12,10 +12,11 @@ import 'dart:typed_data' as $typed_data;
 const TopicBase$json = const {
   '1': 'TopicBase',
   '2': const [
-    const {'1': 'cast_id', '3': 1, '4': 1, '5': 9, '10': 'castId'},
-    const {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
+    const {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'cast_count', '3': 3, '4': 1, '5': 13, '10': 'castCount'},
   ],
 };
 
 /// Descriptor for `TopicBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List topicBaseDescriptor = $convert.base64Decode('CglUb3BpY0Jhc2USFwoHY2FzdF9pZBgBIAEoCVIGY2FzdElkEhIKBG5hbWUYAiABKAlSBG5hbWU=');
+final $typed_data.Uint8List topicBaseDescriptor = $convert.base64Decode('CglUb3BpY0Jhc2USEgoEbmFtZRgBIAEoCVIEbmFtZRIOCgJpZBgCIAEoCVICaWQSHQoKY2FzdF9jb3VudBgDIAEoDVIJY2FzdENvdW50');

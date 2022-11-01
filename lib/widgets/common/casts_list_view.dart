@@ -43,14 +43,14 @@ class CastListView extends StatefulWidget {
 }
 
 class _CastListViewState extends State<CastListView> {
-  // TODO(caseycriogers): this will cause a bug if a controller is added later,
+  // TODO(caseycrogers): this will cause a bug if a controller is added later,
   //   consider adding didUpdateWidget logic.
-  late CastListController controller =
-      widget.controller ?? CastListController();
+  late final CastListController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = widget.controller ?? CastListController();
     controller._attach(this);
   }
 
@@ -63,7 +63,7 @@ class _CastListViewState extends State<CastListView> {
   @override
   void didUpdateWidget(covariant CastListView oldWidget) {
     if (oldWidget.filterTopics != widget.filterTopics) {
-      controller.refresh();
+      controller._updateStream();
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -127,6 +127,11 @@ class CastListController extends ChangeNotifier {
   _CastListViewState? _widgetState;
 
   void refresh() {
+    _updateStream();
+    _widgetState?.context.dispatchNotification(CastListRefreshNotification());
+  }
+
+  void _updateStream() {
     _castStream = _getStream();
     notifyListeners();
   }
@@ -196,3 +201,5 @@ class SearchCastListController extends CastListController {
     });
   }
 }
+
+class CastListRefreshNotification extends Notification {}

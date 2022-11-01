@@ -108,6 +108,7 @@ class CastDatabase {
     required String title,
     required CastFile castFile,
     required Cast? replyTo,
+    required List<Topic> topics,
   }) async {
     // TODO(caseycrogers): consider moving this to a server function.
     final String fileExt = castFile.name.split('.').last;
@@ -136,6 +137,12 @@ class CastDatabase {
         .insert(_castToRow(cast))
         .select(idCol)
         .single() as Map<String, dynamic>;
+    await castsToTopicWriteQuery.insert(topics.map((t) {
+      return <String, dynamic>{
+        'topic_id': t.id,
+        'cast_id': castMap[idCol],
+      };
+    }).toList());
     // TODO(caseycrogers): this will only log if the create succeeds, consider
     //   wrapping in a finally or something.
     Analytics.instance.logCreate(castId: castMap[idCol] as String);
@@ -200,7 +207,10 @@ class CastDatabase {
   }
 
   Future<List<Topic>> getAllTopics() async {
-    return (await topicsQuery.select().withConverter((dynamic data) {
+    return (await topicsReadQuery
+        .select()
+        .order('cast_count')
+        .withConverter((dynamic data) {
       return (data as Iterable<dynamic>).map(_rowToTopic).toList();
     }))!;
   }

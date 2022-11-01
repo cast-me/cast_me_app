@@ -6,6 +6,7 @@ syntax = "proto3";
 package cast_me_app;
 
 message TopicBase {
-    string cast_id = 1;
-    string name = 2;
+    string name = 1;
+    string id = 2;
+    uint32 cast_count = 3;
 }

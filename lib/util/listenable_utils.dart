@@ -53,6 +53,16 @@ extension ValueListenableUtils<T> on ValueListenable<T> {
   }
 }
 
+extension ListValueNotifier<T> on ValueNotifier<List<T>> {
+  void toggle(T element) {
+    if (value.contains(element)) {
+      value = value.toList()..remove(element);
+    } else {
+      value = value.toList()..add(element);
+    }
+  }
+}
+
 extension ListenableUtils on Listenable {
   ValueListenable<T> select<T>(T Function() selector) {
     final ValueNotifier<T> proxyListenable = ValueNotifier(selector());

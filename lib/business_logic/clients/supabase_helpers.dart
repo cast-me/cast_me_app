@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = true;
+const bool isStaging = false;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -56,6 +56,9 @@ SupabaseQueryBuilder get listensQuery =>
 SupabaseQueryBuilder get likesQuery =>
     supabase.from(isStaging ? 'staging_likes' : 'likes');
 
-SupabaseQueryBuilder get topicsQuery =>
-    supabase.from(isStaging ? 'staging_topics' : 'topics');
+SupabaseQueryBuilder get topicsReadQuery =>
+    supabase.from(isStaging ? 'staging_topics_agg_view' : 'topics_agg_view');
+
+SupabaseQueryBuilder get castsToTopicWriteQuery =>
+    supabase.from(isStaging ? 'staging_casts_to_topics' : 'casts_to_topics');
 

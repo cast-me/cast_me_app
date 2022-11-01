@@ -69,12 +69,7 @@ class ListenBloc {
   }
 
   void onTopicToggled(Topic topic) {
-    if (_filteredTopics.value.contains(topic)) {
-      // Use `toList()` to copy the list.
-      _filteredTopics.value = _filteredTopics.value.toList()..remove(topic);
-      return;
-    }
-    _filteredTopics.value = _filteredTopics.value.toList()..add(topic);
+    _filteredTopics.toggle(topic);
   }
 }
 
