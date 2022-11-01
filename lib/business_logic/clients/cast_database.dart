@@ -67,6 +67,10 @@ class CastDatabase {
     );
   }
 
+  // TODO: This will return duplicative elements if casts were added between
+  //  requests.
+  // Consider client-side de-dup logic or migrating off `range` and onto
+  // `gt/lt`.
   Stream<Cast> paginated(
     PostgrestTransformBuilder query, {
     int? limit,
