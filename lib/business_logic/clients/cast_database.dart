@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:io';
+import 'dart:math';
 
 // Package imports:
 import 'package:crypto/crypto.dart';
@@ -60,12 +61,37 @@ class CastDatabase {
     if (limit != null) {
       transformBuilder = transformBuilder.limit(limit);
     }
-    final List<Cast>? casts =
-        await transformBuilder.withConverter((dynamic data) {
-      return (data as Iterable<dynamic>).map(_rowToCast).toList();
-    });
-    for (final Cast cast in casts ?? <Cast>[]) {
-      yield cast;
+    yield* paginated(
+      transformBuilder,
+      limit: limit,
+    );
+  }
+
+  Stream<Cast> paginated(
+    PostgrestTransformBuilder query, {
+    int? limit,
+    int chunk = 20,
+  }) async* {
+    int soFar = 0;
+    while (limit == null || soFar < limit) {
+      // chunk - 1 because range is bad and should feel bad and is inclusive.
+      // I mean seriously, what asshole decides a range should an inclusive
+      // upper bound?
+      int upper = soFar + chunk - 1;
+      if (limit != null && upper > limit) {
+        upper = limit;
+      }
+      final Iterable<dynamic> rows =
+          await query.range(soFar, upper) as Iterable<dynamic>;
+      soFar += chunk;
+      if (rows.isEmpty) {
+        // We've run out of casts.
+        return;
+      }
+      for (final dynamic row in rows) {
+        final Cast cast = _rowToCast(row);
+        yield cast;
+      }
     }
   }
 
