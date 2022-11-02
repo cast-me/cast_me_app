@@ -18,7 +18,7 @@ class PostTopicSelector extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text('Topics (max 3, can\'t be used if \'reply to\' is set):'),
+        const Text('Topics (can\'t be used if \'reply to\' is set):'),
         const SizedBox(height: 8),
         ValueListenableBuilder<Cast?>(
           valueListenable: bloc.replyCast,
@@ -32,23 +32,19 @@ class PostTopicSelector extends StatelessWidget {
               ),
             );
           },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: AdaptiveMaterial(
-              adaptiveColor: AdaptiveColor.background,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: TopicsView(
-                  currentTopics: bloc.topics,
-                  onTap: (topic) {
-                    if (bloc.topics.value.length == 3) {
-                      // Only allow a max of 3 topics.
-                      return;
-                    }
-                    bloc.topics.toggle(topic);
-                  },
-                ),
-              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: TopicsView(
+              currentTopics: bloc.topics,
+              onTap: (topic) {
+                if (bloc.topics.value.length == 3 &&
+                    !bloc.topics.value.contains(topic)) {
+                  // Only allow a max of 3 topics.
+                  return;
+                }
+                bloc.topics.toggle(topic);
+              },
+              max: 3,
             ),
           ),
         ),

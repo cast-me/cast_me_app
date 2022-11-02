@@ -81,7 +81,7 @@ class PostBloc {
       title: title,
       castFile: await castFile.applyTrim(),
       replyTo: replyCast.value,
-      topics: topics.value,
+      topics: replyCast.value == null ? topics.value : [],
     );
     clearFiles();
     replyCast.value = null;

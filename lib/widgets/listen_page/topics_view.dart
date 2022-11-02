@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +12,12 @@ class TopicsView extends StatefulWidget {
     Key? key,
     required this.currentTopics,
     required this.onTap,
+    this.max,
   }) : super(key: key);
 
   final ValueListenable<List<Topic>> currentTopics;
   final void Function(Topic) onTap;
+  final int? max;
 
   @override
   State<TopicsView> createState() => _TopicsViewState();
@@ -40,6 +43,7 @@ class _TopicsViewState extends State<TopicsView> {
         return ValueListenableBuilder<List<Topic>>(
           valueListenable: widget.currentTopics,
           builder: (context, selectedTopics, _) {
+            final numTopics = selectedTopics.length;
             return Align(
               alignment: Alignment.centerLeft,
               child: Wrap(
@@ -48,6 +52,7 @@ class _TopicsViewState extends State<TopicsView> {
                     key: ValueKey<Topic>(topic),
                     topic: topic,
                     isSelected: selectedTopics.contains(topic),
+                    isEnabled: widget.max == null || numTopics < widget.max!,
                     onTap: () => widget.onTap(topic),
                   );
                 }).toList(),
@@ -66,14 +71,20 @@ class TopicChip extends StatelessWidget {
     required this.topic,
     required this.isSelected,
     required this.onTap,
+    this.isEnabled = true,
   }) : super(key: key);
 
   final Topic topic;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
+    final Color color =
+        AdaptiveMaterial.adaptiveColorOf(context) == AdaptiveColor.background
+            ? AdaptiveColor.surface.color(context)
+            : AdaptiveColor.background.color(context);
     return DefaultTextStyle(
       style: const TextStyle(color: Colors.white),
       child: Padding(
@@ -90,14 +101,14 @@ class TopicChip extends StatelessWidget {
               ],
             ),
           ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          selectedColor: Colors.transparent,
+          backgroundColor: color,
+          selectedColor: color,
           side: BorderSide(
             width: 1,
             color: isSelected ? Colors.white : Colors.transparent,
           ),
           selected: isSelected,
-          onSelected: (_) => onTap(),
+          onSelected: isSelected || isEnabled ? (_) => onTap() : null,
         ),
       ),
     );
