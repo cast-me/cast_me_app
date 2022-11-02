@@ -76,14 +76,14 @@ class AdaptiveMaterial extends StatelessWidget {
   }
 
   static Color? onColorOf(BuildContext context) {
-    return _adaptiveColorOf(context)?.onColor(context);
+    return adaptiveColorOf(context)?.onColor(context);
   }
 
   static Color? secondaryOnColorOf(BuildContext context) {
     return onColorOf(context)?.withAlpha(120);
   }
 
-  static AdaptiveColor? _adaptiveColorOf(BuildContext context) {
+  static AdaptiveColor? adaptiveColorOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<_ColorProvider<_OnColor>>()
         ?.adaptiveColor;
