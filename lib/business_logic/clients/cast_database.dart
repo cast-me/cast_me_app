@@ -24,13 +24,13 @@ class CastDatabase {
 
   // TODO(caseycrogers): paginate this.
   Stream<Cast> getCasts({
+    Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
     List<Topic>? filterTopics,
     bool skipViewed = false,
-    bool oldestFirst = false,
     String? searchTerm,
-    int? limit,
+    bool single = false,
   }) async* {
     PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
     if (filterProfile != null) {
@@ -54,17 +54,30 @@ class CastDatabase {
         filterTopics.map((t) => t.name).toList(),
       );
     }
-    PostgrestTransformBuilder transformBuilder = queryBuilder
-        .order(treeUpdatedAtCol, ascending: oldestFirst)
-        .order('depth', ascending: true)
-        .order(createdAtCol, ascending: oldestFirst);
-    if (limit != null) {
-      transformBuilder = transformBuilder.limit(limit);
+
+    Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
+      final PostgrestTransformBuilder transformBuilder = query
+          .order(treeUpdatedAtCol, ascending: false)
+          .order('depth', ascending: true)
+          .order(createdAtCol, ascending: false);
+      return paginated(
+        transformBuilder,
+        chunkSize: single ? 1 : 20,
+        chunkLimit: single ? 1 : null,
+      );
     }
-    yield* paginated(
-      transformBuilder,
-      limit: limit,
-    );
+
+    if (seedCast != null) {
+      queryBuilder = queryBuilder.neq(idCol, seedCast.id);
+      // Yield all the casts form the seed cast's conversation first, then play
+      // casts from outside the conversation.
+      // This is to ensure that, when a user selects a cast, the whole
+      // conversation is played through before casts form other conversations.
+      yield* orderAndRun(queryBuilder.eq(rootIdCol, seedCast.rootId));
+      yield* orderAndRun(queryBuilder.neq(rootIdCol, seedCast.rootId));
+    } else {
+      yield* orderAndRun(queryBuilder);
+    }
   }
 
   // TODO: This will return duplicative elements if casts were added between
@@ -73,21 +86,18 @@ class CastDatabase {
   // `gt/lt`.
   Stream<Cast> paginated(
     PostgrestTransformBuilder query, {
-    int? limit,
-    int chunk = 20,
+    required int chunkSize,
+    int? chunkLimit,
   }) async* {
     int soFar = 0;
-    while (limit == null || soFar < limit) {
-      int upper = soFar + chunk;
-      if (limit != null && upper > limit) {
-        upper = limit;
-      }
+    while (chunkLimit == null || soFar < chunkLimit * chunkSize) {
+      final int upper = soFar + chunkSize;
       // `upper - 1` because range is bad and should feel bad and is inclusive.
       // I mean seriously, what asshole decides a range should have an inclusive
       // upper bound?
       final Iterable<dynamic> rows =
           await query.range(soFar, upper - 1) as Iterable<dynamic>;
-      soFar += chunk;
+      soFar += chunkSize;
       if (rows.isEmpty) {
         // We've run out of casts.
         return;
@@ -123,7 +133,7 @@ class CastDatabase {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-      limit: 1,
+      single: true,
     ).toList().then((value) {
       return value.isEmpty ? null : value.single;
     });
@@ -131,9 +141,10 @@ class CastDatabase {
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {
     return getCasts(
+      seedCast: seedCast,
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-    ).where((cast) => cast.id != seedCast.id);
+    );
   }
 
   Future<void> createCast({
