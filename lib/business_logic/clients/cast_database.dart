@@ -78,15 +78,15 @@ class CastDatabase {
   }) async* {
     int soFar = 0;
     while (limit == null || soFar < limit) {
-      // chunk - 1 because range is bad and should feel bad and is inclusive.
-      // I mean seriously, what asshole decides a range should an inclusive
-      // upper bound?
-      int upper = soFar + chunk - 1;
+      int upper = soFar + chunk;
       if (limit != null && upper > limit) {
         upper = limit;
       }
+      // `upper - 1` because range is bad and should feel bad and is inclusive.
+      // I mean seriously, what asshole decides a range should have an inclusive
+      // upper bound?
       final Iterable<dynamic> rows =
-          await query.range(soFar, upper) as Iterable<dynamic>;
+          await query.range(soFar, upper - 1) as Iterable<dynamic>;
       soFar += chunk;
       if (rows.isEmpty) {
         // We've run out of casts.
@@ -124,7 +124,9 @@ class CastDatabase {
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
       limit: 1,
-    ).toList().then((value) => value.isEmpty ? null : value.single);
+    ).toList().then((value) {
+      return value.isEmpty ? null : value.single;
+    });
   }
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {
