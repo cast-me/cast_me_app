@@ -34,4 +34,5 @@ message CastBase {
     uint32 duration_ms = 15;
     string audio_url = 16;
     string reply_to = 17;
+    string external_url = 18;
 }

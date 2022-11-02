@@ -2,6 +2,7 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +52,15 @@ class CastMenu extends StatelessWidget {
                   hideMenu();
                   await CastDatabase.instance.deleteCast(cast: cast);
                   castListViewController?.refresh();
+                },
+              ),
+            if (cast.externalUri != null)
+              _MenuButton(
+                icon: Icons.link,
+                text: 'visit link',
+                onTap: () async {
+                  hideMenu();
+                  ExternalLinkModal.showMessage(context, cast.externalUri!);
                 },
               ),
           ],

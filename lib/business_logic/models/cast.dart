@@ -8,6 +8,7 @@ import 'package:cast_me_app/business_logic/models/protobufs/like_base.pb.dart';
 import 'package:cast_me_app/business_logic/models/protobufs/topic_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
+import 'package:cast_me_app/util/uri_utils.dart';
 
 typedef Cast = CastBase;
 typedef Like = LikeBase;
@@ -37,6 +38,10 @@ extension CastUtils on CastBase {
         audioUrl.emptyToNull ??
             'https://www.americanrhetoric.com/mp3clips/politicalspeeches/jfkinaugural2.mp3',
       );
+
+  Uri? get externalUri {
+    return UriUtils.tryParse(externalUrl);
+  }
 
   String get audioPath => audioUri.pathSegments.last;
 
