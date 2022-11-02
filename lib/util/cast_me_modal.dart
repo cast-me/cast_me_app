@@ -4,13 +4,38 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:cast_me_app/util/adaptive_material.dart';
 
-class CastMeDialog extends StatelessWidget {
-  const CastMeDialog({
+class CastMeModal extends StatelessWidget {
+  const CastMeModal({
     Key? key,
     required this.child,
   }) : super(key: key);
 
   final Widget child;
+
+  static void showMessage(
+    BuildContext context,
+    Widget child, {
+    bool postFrame = false,
+  }) {
+    void showModal() {
+      showDialog<void>(
+        context: context,
+        builder: (context) {
+          return CastMeModal(child: child);
+        },
+      );
+    }
+
+    if (postFrame) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) {
+          showModal();
+        },
+      );
+      return;
+    }
+    showModal();
+  }
 
   @override
   Widget build(BuildContext context) {

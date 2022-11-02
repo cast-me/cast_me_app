@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -197,17 +198,29 @@ class CastView extends StatelessWidget {
       initialCast: cast,
       child: Column(
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: Image(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(cast.imageUrl),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(cast.imageUrl),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          if (cast.externalUri != null)
+            ExternalLinkButton(uri: cast.externalUri!)
+          else
+            const SizedBox(height: 8),
           const _CastTitleView(),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
@@ -375,7 +388,6 @@ class _PreviewThumbnail extends StatelessWidget {
         child: _isTapToPlay(context) && nowPlaying == cast
             ? Container(
                 color: (cast.accentColor).withAlpha(120),
-                child: const Icon(Icons.bar_chart, size: 30),
               )
             : null,
       ),
@@ -399,6 +411,7 @@ class CastViewTheme extends InheritedWidget {
     this.indentReplies,
     this.dimIfListened,
     this.titleMaxLines,
+    this.imageLinkTapEnabled,
   }) : super(key: key, child: child);
 
   /// Whether or not to show the three dots menu.
@@ -426,6 +439,10 @@ class CastViewTheme extends InheritedWidget {
 
   /// How many lines of text the title should be truncated to-unlimited if null.
   final int? titleMaxLines;
+
+  /// Whether or not clicking on the cast's image should take the user to the
+  /// cast's associated link, if non-null.
+  final bool? imageLinkTapEnabled;
 
   /// The callback to be called when the cast is tapped on.
   ///

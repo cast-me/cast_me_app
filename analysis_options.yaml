@@ -26,7 +26,7 @@ linter:
     - avoid_bool_literals_in_conditional_expressions
     # - avoid_catches_without_on_clauses
     # - avoid_catching_errors # If I'm catching an error it's because I have to
-    - avoid_classes_with_only_static_members
+    # - avoid_classes_with_only_static_members # this is a bad opinion
     # - avoid_double_and_int_checks # only useful when targeting JS runtime
     - avoid_empty_else
     - avoid_field_initializers_in_const_classes

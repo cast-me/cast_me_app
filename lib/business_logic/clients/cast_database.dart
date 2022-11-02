@@ -138,6 +138,7 @@ class CastDatabase {
 
   Future<void> createCast({
     required String title,
+    required String url,
     required CastFile castFile,
     required Cast? replyTo,
     required List<Topic> topics,
@@ -164,6 +165,7 @@ class CastDatabase {
       durationMs: castFile.duration.inMilliseconds,
       audioUrl: audioFileUrl,
       replyTo: replyTo?.id,
+      externalUrl: url.emptyToNull,
     );
     final Map<String, dynamic> castMap = await castsWriteQuery
         .insert(_castToRow(cast))

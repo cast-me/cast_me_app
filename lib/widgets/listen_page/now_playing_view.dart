@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -44,6 +45,16 @@ class NowPlayingCollapsedView extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (cast.externalUri != null)
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    onPressed: () {
+                      ExternalLinkModal.showMessage(
+                        context,
+                        cast.externalUri!,
+                      );
+                    },
+                  ),
                 const PlayButton(),
                 const SkipCast(),
               ],

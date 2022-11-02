@@ -75,12 +75,14 @@ class PostBloc {
   // TODO: this is sloppy, we should just replace instance with a new instance.
   Future<void> submitFile({
     required String title,
+    required String url,
     required CastFile castFile,
   }) async {
     await CastDatabase.instance.createCast(
       title: title,
       castFile: await castFile.applyTrim(),
       replyTo: replyCast.value,
+      url: url,
       topics: replyCast.value == null ? topics.value : [],
     );
     clearFiles();

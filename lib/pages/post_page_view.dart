@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/widgets/post_page/external_link_field.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -28,6 +30,8 @@ class PostPageView extends StatefulWidget {
 
 class _PostPageViewState extends State<PostPageView> {
   final ValueNotifier<String> titleText = ValueNotifier('');
+  final TextEditingController externalLinkTextController =
+      TextEditingController();
   final CastListController castListController = CastListController();
 
   Key titleFieldKey = UniqueKey();
@@ -76,36 +80,49 @@ class _PostPageViewState extends State<PostPageView> {
                 const AsyncErrorView(),
                 const ReplyCastSelector(),
                 const SizedBox(height: 8),
-                const Text('Cast title'),
+                const Text('Cast title:'),
                 TitleField(key: titleFieldKey, titleText: titleText),
+                const Text('external link:'),
+                ExternalLinkField(controller: externalLinkTextController),
                 const SizedBox(height: 8),
                 const PostTopicSelector(),
-                ValueListenableBuilder<String>(
-                  valueListenable: titleText,
-                  builder: (context, title, _) {
-                    final ScaffoldMessengerState messenger =
-                        ScaffoldMessenger.of(context);
-                    return AsyncSubmitButton(
-                      child: const Text('Submit'),
-                      onPressed: castFile != null && title.isNotEmpty
-                          ? () async {
-                              await PostBloc.instance.submitFile(
-                                title: title,
-                                castFile: castFile,
-                              );
-                              setState(() {
-                                titleText.value = '';
-                                // Gross hack to force the title field to
-                                // rebuild from scratch.
-                                titleFieldKey = UniqueKey();
-                              });
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text('Cast posted!'),
-                                ),
-                              );
-                            }
-                          : null,
+                ValueListenableBuilder<bool>(
+                  valueListenable: externalLinkTextController.select(() =>
+                      ExternalLinkField.isValid(
+                          externalLinkTextController.text)),
+                  builder: (context, linkIsValid, _) {
+                    return ValueListenableBuilder<String>(
+                      valueListenable: titleText,
+                      builder: (context, title, _) {
+                        final ScaffoldMessengerState messenger =
+                            ScaffoldMessenger.of(context);
+                        return AsyncSubmitButton(
+                          child: const Text('Submit'),
+                          onPressed: castFile != null &&
+                                  title.isNotEmpty &&
+                                  linkIsValid
+                              ? () async {
+                                  await PostBloc.instance.submitFile(
+                                    title: title,
+                                    url: externalLinkTextController.text,
+                                    castFile: castFile,
+                                  );
+                                  setState(() {
+                                    externalLinkTextController.text = '';
+                                    titleText.value = '';
+                                    // Gross hack to force the title field to
+                                    // rebuild from scratch.
+                                    titleFieldKey = UniqueKey();
+                                  });
+                                  messenger.showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Cast posted!'),
+                                    ),
+                                  );
+                                }
+                              : null,
+                        );
+                      },
                     );
                   },
                 ),

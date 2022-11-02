@@ -5,13 +5,10 @@
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
-// Dart imports:
 import 'dart:core' as $core;
 
-// Package imports:
 import 'package:protobuf/protobuf.dart' as $pb;
 
-// Project imports:
 import 'like_base.pb.dart' as $0;
 
 class CastBase extends $pb.GeneratedMessage {
@@ -33,6 +30,7 @@ class CastBase extends $pb.GeneratedMessage {
     ..a<$core.int>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
     ..aOS(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
     ..aOS(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'replyTo')
+    ..aOS(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'externalUrl')
     ..hasRequiredFields = false
   ;
 
@@ -55,6 +53,7 @@ class CastBase extends $pb.GeneratedMessage {
     $core.int? durationMs,
     $core.String? audioUrl,
     $core.String? replyTo,
+    $core.String? externalUrl,
   }) {
     final _result = create();
     if (id != null) {
@@ -107,6 +106,9 @@ class CastBase extends $pb.GeneratedMessage {
     }
     if (replyTo != null) {
       _result.replyTo = replyTo;
+    }
+    if (externalUrl != null) {
+      _result.externalUrl = externalUrl;
     }
     return _result;
   }
@@ -265,5 +267,14 @@ class CastBase extends $pb.GeneratedMessage {
   $core.bool hasReplyTo() => $_has(16);
   @$pb.TagNumber(17)
   void clearReplyTo() => clearField(17);
+
+  @$pb.TagNumber(18)
+  $core.String get externalUrl => $_getSZ(17);
+  @$pb.TagNumber(18)
+  set externalUrl($core.String v) { $_setString(17, v); }
+  @$pb.TagNumber(18)
+  $core.bool hasExternalUrl() => $_has(17);
+  @$pb.TagNumber(18)
+  void clearExternalUrl() => clearField(18);
 }
 

@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:cast_me_app/util/app_info.dart';
-import 'package:cast_me_app/util/cast_me_dialog.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
 
 /// Displays update messages to the user.
 ///
@@ -60,16 +60,18 @@ class UpdateMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (_displayFirstOpenMsg) {
       _displayFirstOpenMsg = false;
-      showMessage(
+      CastMeModal.showMessage(
         context,
         const WelcomeMessageContent(),
+        postFrame: true,
       );
     } else if (!_hasDisplayed && !_displayFirstOpenMsg) {
       final Widget? messageForVersion = updateMessages[_installedVersion];
       if (messageForVersion != null) {
-        showMessage(
+        CastMeModal.showMessage(
           context,
           UpdateMessageContent(child: messageForVersion),
+          postFrame: true,
         );
       }
     }
@@ -82,20 +84,6 @@ class UpdateMessage extends StatelessWidget {
       _hasDisplayed = true;
     }
     return Container(child: child);
-  }
-
-  void showMessage(BuildContext context, Widget content) {
-    // show dialog doesn't like being called on the very first frame.
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        showDialog<void>(
-          context: context,
-          builder: (context) {
-            return CastMeDialog(child: content);
-          },
-        );
-      },
-    );
   }
 }
 
