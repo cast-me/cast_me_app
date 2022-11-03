@@ -29,7 +29,7 @@ import 'package:cast_me_app/util/update_message.dart';
 import 'package:cast_me_app/widgets/common/auth_gate.dart';
 import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 
-void main() async {
+Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();

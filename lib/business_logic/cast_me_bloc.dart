@@ -99,6 +99,12 @@ class CastMeBloc {
         truncId: truncId,
         autoPlay: true,
       );
+    } else if (pathSegments.length == 2 && pathSegments[0] == 'casts') {
+      final String castId = pathSegments[1];
+      await ListenBloc.instance.onCastIdSelected(
+        castId: castId,
+        autoplay: true,
+      );
     }
   }
 }
