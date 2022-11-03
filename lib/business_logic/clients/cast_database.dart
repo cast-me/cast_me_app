@@ -22,49 +22,77 @@ class CastDatabase {
 
   static final CastDatabase instance = CastDatabase._();
 
-  // TODO(caseycrogers): paginate this.
   Stream<Cast> getCasts({
+    Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
     List<Topic>? filterTopics,
     bool skipViewed = false,
-    bool oldestFirst = false,
     String? searchTerm,
-    int? limit,
+    bool single = false,
   }) async* {
-    PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
-    if (filterProfile != null) {
-      // Get only casts authored by the given profiles.
-      queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
+    // This is here because we need two instances of the builder at the end to
+    // run two separate queries because Supabase doesn't provide a copy method.
+    // TODO: remove this function and use copy once it's available.
+    PostgrestFilterBuilder getBuilder() {
+      PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
+      if (filterProfile != null) {
+        // Get only casts authored by the given profiles.
+        queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
+      }
+      if (filterOutProfile != null) {
+        queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
+      }
+      if (skipViewed) {
+        queryBuilder = queryBuilder.eq(hasViewedCol, false);
+      }
+      if (searchTerm != null && searchTerm.isNotEmpty) {
+        queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
+            '$authorUsernameCol.ilike.$searchTerm%,'
+            '$authorDisplayNameCol.ilike.$searchTerm%');
+      }
+      if (filterTopics != null) {
+        queryBuilder = queryBuilder.overlaps(
+          topicsCol,
+          filterTopics.map((t) => t.name).toList(),
+        );
+      }
+      return queryBuilder;
     }
-    if (filterOutProfile != null) {
-      queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
-    }
-    if (skipViewed) {
-      queryBuilder = queryBuilder.eq(hasViewedCol, false);
-    }
-    if (searchTerm != null && searchTerm.isNotEmpty) {
-      queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
-          '$authorUsernameCol.ilike.$searchTerm%,'
-          '$authorDisplayNameCol.ilike.$searchTerm%');
-    }
-    if (filterTopics != null) {
-      queryBuilder = queryBuilder.overlaps(
-        topicsCol,
-        filterTopics.map((t) => t.name).toList(),
+
+    Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
+      final PostgrestTransformBuilder transformBuilder = query
+          // Play the freshest conversations first.
+          .order(treeUpdatedAtCol, ascending: false)
+          // Play parent content before replies. Not sure this is desirable,
+          // This is equivalent to BFS. Removing it would produce insertion
+          // order search. Could also consider implementing DFS. Not clear which
+          // is most desirable from a user perspective.
+          .order('depth', ascending: true)
+          // Within a specific depth level, play the oldest content first as new
+          // content in a level might build on other content in that level.
+          .order(createdAtCol, ascending: true);
+      return paginated(
+        transformBuilder,
+        chunkSize: single ? 1 : 20,
+        chunkLimit: single ? 1 : null,
       );
     }
-    PostgrestTransformBuilder transformBuilder = queryBuilder
-        .order(treeUpdatedAtCol, ascending: oldestFirst)
-        .order('depth', ascending: true)
-        .order(createdAtCol, ascending: oldestFirst);
-    if (limit != null) {
-      transformBuilder = transformBuilder.limit(limit);
+
+    if (seedCast != null) {
+      // Yield all the casts from the seed cast's conversation first, then play
+      // casts from outside the conversation.
+      // This is to ensure that, when a user selects a cast, the whole
+      // conversation is played through before casts form other conversations.
+      yield* orderAndRun(
+        getBuilder().neq(idCol, seedCast.id).eq(rootIdCol, seedCast.rootId),
+      );
+      yield* orderAndRun(
+        getBuilder().neq(idCol, seedCast.id).neq(rootIdCol, seedCast.rootId),
+      );
+    } else {
+      yield* orderAndRun(getBuilder());
     }
-    yield* paginated(
-      transformBuilder,
-      limit: limit,
-    );
   }
 
   // TODO: This will return duplicative elements if casts were added between
@@ -73,21 +101,18 @@ class CastDatabase {
   // `gt/lt`.
   Stream<Cast> paginated(
     PostgrestTransformBuilder query, {
-    int? limit,
-    int chunk = 20,
+    required int chunkSize,
+    int? chunkLimit,
   }) async* {
     int soFar = 0;
-    while (limit == null || soFar < limit) {
-      int upper = soFar + chunk;
-      if (limit != null && upper > limit) {
-        upper = limit;
-      }
+    while (chunkLimit == null || soFar < chunkLimit * chunkSize) {
+      final int upper = soFar + chunkSize;
       // `upper - 1` because range is bad and should feel bad and is inclusive.
       // I mean seriously, what asshole decides a range should have an inclusive
       // upper bound?
       final Iterable<dynamic> rows =
           await query.range(soFar, upper - 1) as Iterable<dynamic>;
-      soFar += chunk;
+      soFar += chunkSize;
       if (rows.isEmpty) {
         // We've run out of casts.
         return;
@@ -123,7 +148,7 @@ class CastDatabase {
     return getCasts(
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-      limit: 1,
+      single: true,
     ).toList().then((value) {
       return value.isEmpty ? null : value.single;
     });
@@ -131,9 +156,10 @@ class CastDatabase {
 
   Stream<Cast> getPlayQueue({required Cast seedCast}) {
     return getCasts(
+      seedCast: seedCast,
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
-    ).where((cast) => cast.id != seedCast.id);
+    );
   }
 
   Future<void> createCast({

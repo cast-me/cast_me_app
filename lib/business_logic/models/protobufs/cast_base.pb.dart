@@ -15,22 +15,23 @@ class CastBase extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CastBase', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'cast_me_app'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'createdAtString')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorUsername')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorDisplayName')
-    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUrl')
-    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
-    ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
-    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hasViewed')
-    ..pc<$0.LikeBase>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'likes', $pb.PbFieldType.PM, subBuilder: $0.LikeBase.create)
-    ..pPS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'topicNames')
-    ..pPS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'taggedUsernames')
-    ..aOS(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
-    ..aOS(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
-    ..aOS(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'topic')
-    ..a<$core.int>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
-    ..aOS(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
-    ..aOS(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'replyTo')
-    ..aOS(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'externalUrl')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rootId')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorUsername')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorDisplayName')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageUrl')
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accentColorBase')
+    ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'viewCount', $pb.PbFieldType.OU3)
+    ..aOB(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hasViewed')
+    ..pc<$0.LikeBase>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'likes', $pb.PbFieldType.PM, subBuilder: $0.LikeBase.create)
+    ..pPS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'topicNames')
+    ..pPS(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'taggedUsernames')
+    ..aOS(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authorId')
+    ..aOS(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'title')
+    ..aOS(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'topic')
+    ..a<$core.int>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'durationMs', $pb.PbFieldType.OU3)
+    ..aOS(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'audioUrl')
+    ..aOS(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'replyTo')
+    ..aOS(19, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'externalUrl')
     ..hasRequiredFields = false
   ;
 
@@ -38,6 +39,7 @@ class CastBase extends $pb.GeneratedMessage {
   factory CastBase({
     $core.String? id,
     $core.String? createdAtString,
+    $core.String? rootId,
     $core.String? authorUsername,
     $core.String? authorDisplayName,
     $core.String? imageUrl,
@@ -61,6 +63,9 @@ class CastBase extends $pb.GeneratedMessage {
     }
     if (createdAtString != null) {
       _result.createdAtString = createdAtString;
+    }
+    if (rootId != null) {
+      _result.rootId = rootId;
     }
     if (authorUsername != null) {
       _result.authorUsername = authorUsername;
@@ -152,129 +157,138 @@ class CastBase extends $pb.GeneratedMessage {
   void clearCreatedAtString() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get authorUsername => $_getSZ(2);
+  $core.String get rootId => $_getSZ(2);
   @$pb.TagNumber(3)
-  set authorUsername($core.String v) { $_setString(2, v); }
+  set rootId($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasAuthorUsername() => $_has(2);
+  $core.bool hasRootId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearAuthorUsername() => clearField(3);
+  void clearRootId() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get authorDisplayName => $_getSZ(3);
+  $core.String get authorUsername => $_getSZ(3);
   @$pb.TagNumber(4)
-  set authorDisplayName($core.String v) { $_setString(3, v); }
+  set authorUsername($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasAuthorDisplayName() => $_has(3);
+  $core.bool hasAuthorUsername() => $_has(3);
   @$pb.TagNumber(4)
-  void clearAuthorDisplayName() => clearField(4);
+  void clearAuthorUsername() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get imageUrl => $_getSZ(4);
+  $core.String get authorDisplayName => $_getSZ(4);
   @$pb.TagNumber(5)
-  set imageUrl($core.String v) { $_setString(4, v); }
+  set authorDisplayName($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasImageUrl() => $_has(4);
+  $core.bool hasAuthorDisplayName() => $_has(4);
   @$pb.TagNumber(5)
-  void clearImageUrl() => clearField(5);
+  void clearAuthorDisplayName() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.String get accentColorBase => $_getSZ(5);
+  $core.String get imageUrl => $_getSZ(5);
   @$pb.TagNumber(6)
-  set accentColorBase($core.String v) { $_setString(5, v); }
+  set imageUrl($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasAccentColorBase() => $_has(5);
+  $core.bool hasImageUrl() => $_has(5);
   @$pb.TagNumber(6)
-  void clearAccentColorBase() => clearField(6);
+  void clearImageUrl() => clearField(6);
 
   @$pb.TagNumber(7)
-  $core.int get viewCount => $_getIZ(6);
+  $core.String get accentColorBase => $_getSZ(6);
   @$pb.TagNumber(7)
-  set viewCount($core.int v) { $_setUnsignedInt32(6, v); }
+  set accentColorBase($core.String v) { $_setString(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasViewCount() => $_has(6);
+  $core.bool hasAccentColorBase() => $_has(6);
   @$pb.TagNumber(7)
-  void clearViewCount() => clearField(7);
+  void clearAccentColorBase() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.bool get hasViewed => $_getBF(7);
+  $core.int get viewCount => $_getIZ(7);
   @$pb.TagNumber(8)
-  set hasViewed($core.bool v) { $_setBool(7, v); }
+  set viewCount($core.int v) { $_setUnsignedInt32(7, v); }
   @$pb.TagNumber(8)
-  $core.bool hasHasViewed() => $_has(7);
+  $core.bool hasViewCount() => $_has(7);
   @$pb.TagNumber(8)
-  void clearHasViewed() => clearField(8);
+  void clearViewCount() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.List<$0.LikeBase> get likes => $_getList(8);
+  $core.bool get hasViewed => $_getBF(8);
+  @$pb.TagNumber(9)
+  set hasViewed($core.bool v) { $_setBool(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasHasViewed() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearHasViewed() => clearField(9);
 
   @$pb.TagNumber(10)
-  $core.List<$core.String> get topicNames => $_getList(9);
+  $core.List<$0.LikeBase> get likes => $_getList(9);
 
   @$pb.TagNumber(11)
-  $core.List<$core.String> get taggedUsernames => $_getList(10);
+  $core.List<$core.String> get topicNames => $_getList(10);
 
   @$pb.TagNumber(12)
-  $core.String get authorId => $_getSZ(11);
-  @$pb.TagNumber(12)
-  set authorId($core.String v) { $_setString(11, v); }
-  @$pb.TagNumber(12)
-  $core.bool hasAuthorId() => $_has(11);
-  @$pb.TagNumber(12)
-  void clearAuthorId() => clearField(12);
+  $core.List<$core.String> get taggedUsernames => $_getList(11);
 
   @$pb.TagNumber(13)
-  $core.String get title => $_getSZ(12);
+  $core.String get authorId => $_getSZ(12);
   @$pb.TagNumber(13)
-  set title($core.String v) { $_setString(12, v); }
+  set authorId($core.String v) { $_setString(12, v); }
   @$pb.TagNumber(13)
-  $core.bool hasTitle() => $_has(12);
+  $core.bool hasAuthorId() => $_has(12);
   @$pb.TagNumber(13)
-  void clearTitle() => clearField(13);
+  void clearAuthorId() => clearField(13);
 
   @$pb.TagNumber(14)
-  $core.String get topic => $_getSZ(13);
+  $core.String get title => $_getSZ(13);
   @$pb.TagNumber(14)
-  set topic($core.String v) { $_setString(13, v); }
+  set title($core.String v) { $_setString(13, v); }
   @$pb.TagNumber(14)
-  $core.bool hasTopic() => $_has(13);
+  $core.bool hasTitle() => $_has(13);
   @$pb.TagNumber(14)
-  void clearTopic() => clearField(14);
+  void clearTitle() => clearField(14);
 
   @$pb.TagNumber(15)
-  $core.int get durationMs => $_getIZ(14);
+  $core.String get topic => $_getSZ(14);
   @$pb.TagNumber(15)
-  set durationMs($core.int v) { $_setUnsignedInt32(14, v); }
+  set topic($core.String v) { $_setString(14, v); }
   @$pb.TagNumber(15)
-  $core.bool hasDurationMs() => $_has(14);
+  $core.bool hasTopic() => $_has(14);
   @$pb.TagNumber(15)
-  void clearDurationMs() => clearField(15);
+  void clearTopic() => clearField(15);
 
   @$pb.TagNumber(16)
-  $core.String get audioUrl => $_getSZ(15);
+  $core.int get durationMs => $_getIZ(15);
   @$pb.TagNumber(16)
-  set audioUrl($core.String v) { $_setString(15, v); }
+  set durationMs($core.int v) { $_setUnsignedInt32(15, v); }
   @$pb.TagNumber(16)
-  $core.bool hasAudioUrl() => $_has(15);
+  $core.bool hasDurationMs() => $_has(15);
   @$pb.TagNumber(16)
-  void clearAudioUrl() => clearField(16);
+  void clearDurationMs() => clearField(16);
 
   @$pb.TagNumber(17)
-  $core.String get replyTo => $_getSZ(16);
+  $core.String get audioUrl => $_getSZ(16);
   @$pb.TagNumber(17)
-  set replyTo($core.String v) { $_setString(16, v); }
+  set audioUrl($core.String v) { $_setString(16, v); }
   @$pb.TagNumber(17)
-  $core.bool hasReplyTo() => $_has(16);
+  $core.bool hasAudioUrl() => $_has(16);
   @$pb.TagNumber(17)
-  void clearReplyTo() => clearField(17);
+  void clearAudioUrl() => clearField(17);
 
   @$pb.TagNumber(18)
-  $core.String get externalUrl => $_getSZ(17);
+  $core.String get replyTo => $_getSZ(17);
   @$pb.TagNumber(18)
-  set externalUrl($core.String v) { $_setString(17, v); }
+  set replyTo($core.String v) { $_setString(17, v); }
   @$pb.TagNumber(18)
-  $core.bool hasExternalUrl() => $_has(17);
+  $core.bool hasReplyTo() => $_has(17);
   @$pb.TagNumber(18)
-  void clearExternalUrl() => clearField(18);
+  void clearReplyTo() => clearField(18);
+
+  @$pb.TagNumber(19)
+  $core.String get externalUrl => $_getSZ(18);
+  @$pb.TagNumber(19)
+  set externalUrl($core.String v) { $_setString(18, v); }
+  @$pb.TagNumber(19)
+  $core.bool hasExternalUrl() => $_has(18);
+  @$pb.TagNumber(19)
+  void clearExternalUrl() => clearField(19);
 }
 
