@@ -22,7 +22,6 @@ class CastDatabase {
 
   static final CastDatabase instance = CastDatabase._();
 
-  // TODO(caseycrogers): paginate this.
   Stream<Cast> getCasts({
     Cast? seedCast,
     Profile? filterProfile,
@@ -32,34 +31,47 @@ class CastDatabase {
     String? searchTerm,
     bool single = false,
   }) async* {
-    PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
-    if (filterProfile != null) {
-      // Get only casts authored by the given profiles.
-      queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
-    }
-    if (filterOutProfile != null) {
-      queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
-    }
-    if (skipViewed) {
-      queryBuilder = queryBuilder.eq(hasViewedCol, false);
-    }
-    if (searchTerm != null && searchTerm.isNotEmpty) {
-      queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
-          '$authorUsernameCol.ilike.$searchTerm%,'
-          '$authorDisplayNameCol.ilike.$searchTerm%');
-    }
-    if (filterTopics != null) {
-      queryBuilder = queryBuilder.overlaps(
-        topicsCol,
-        filterTopics.map((t) => t.name).toList(),
-      );
+    // This is here because we need two instances of the builder at the end to
+    // run two separate queries because Supabase doesn't provide a copy method.
+    // TODO: remove this function and use copy once it's available.
+    PostgrestFilterBuilder getBuilder() {
+      PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
+      if (filterProfile != null) {
+        // Get only casts authored by the given profiles.
+        queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
+      }
+      if (filterOutProfile != null) {
+        queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
+      }
+      if (skipViewed) {
+        queryBuilder = queryBuilder.eq(hasViewedCol, false);
+      }
+      if (searchTerm != null && searchTerm.isNotEmpty) {
+        queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
+            '$authorUsernameCol.ilike.$searchTerm%,'
+            '$authorDisplayNameCol.ilike.$searchTerm%');
+      }
+      if (filterTopics != null) {
+        queryBuilder = queryBuilder.overlaps(
+          topicsCol,
+          filterTopics.map((t) => t.name).toList(),
+        );
+      }
+      return queryBuilder;
     }
 
     Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
       final PostgrestTransformBuilder transformBuilder = query
+          // Play the freshest conversations first.
           .order(treeUpdatedAtCol, ascending: false)
+          // Play parent content before replies. Not sure this is desirable,
+          // This is equivalent to BFS. Removing it would produce insertion
+          // order search. Could also consider implementing DFS. Not clear which
+          // is most desirable from a user perspective.
           .order('depth', ascending: true)
-          .order(createdAtCol, ascending: false);
+          // Within a specific depth level, play the oldest content first as new
+          // content in a level might build on other content in that level.
+          .order(createdAtCol, ascending: true);
       return paginated(
         transformBuilder,
         chunkSize: single ? 1 : 20,
@@ -68,15 +80,18 @@ class CastDatabase {
     }
 
     if (seedCast != null) {
-      queryBuilder = queryBuilder.neq(idCol, seedCast.id);
-      // Yield all the casts form the seed cast's conversation first, then play
+      // Yield all the casts from the seed cast's conversation first, then play
       // casts from outside the conversation.
       // This is to ensure that, when a user selects a cast, the whole
       // conversation is played through before casts form other conversations.
-      yield* orderAndRun(queryBuilder.eq(rootIdCol, seedCast.rootId));
-      yield* orderAndRun(queryBuilder.neq(rootIdCol, seedCast.rootId));
+      yield* orderAndRun(
+        getBuilder().neq(idCol, seedCast.id).eq(rootIdCol, seedCast.rootId),
+      );
+      yield* orderAndRun(
+        getBuilder().neq(idCol, seedCast.id).neq(rootIdCol, seedCast.rootId),
+      );
     } else {
-      yield* orderAndRun(queryBuilder);
+      yield* orderAndRun(getBuilder());
     }
   }
 
