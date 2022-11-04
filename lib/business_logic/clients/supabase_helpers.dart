@@ -13,6 +13,8 @@ const String createdAtCol = 'created_at';
 
 const String treeUpdatedAtCol = 'tree_updated_at';
 
+const String treeHasNewCastsCol = 'tree_has_new_casts';
+
 const String hasViewedCol = 'has_viewed';
 
 const String authorIdCol = 'author_id';

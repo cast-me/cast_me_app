@@ -21,19 +21,20 @@ message CastBase {
     string accent_color_base = 7;
     uint32 view_count = 8;
     bool has_viewed = 9;
-    repeated LikeBase likes = 10;
+    bool tree_has_new_casts = 10;
+    repeated LikeBase likes = 11;
     // We use names instead of `TopicBase` because we need to
     // perform an array agg to filter and that only works with
     // raw text values.
-    repeated string topic_names = 11;
-    repeated string tagged_usernames = 12;
+    repeated string topic_names = 12;
+    repeated string tagged_usernames = 13;
 
     // Client Specified.
-    string author_id = 13;
-    string title = 14;
-    string topic = 15;
-    uint32 duration_ms = 16;
-    string audio_url = 17;
-    string reply_to = 18;
-    string external_url = 19;
+    string author_id = 14;
+    string title = 15;
+    string topic = 16;
+    uint32 duration_ms = 17;
+    string audio_url = 18;
+    string reply_to = 19;
+    string external_url = 20;
 }

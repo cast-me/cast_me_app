@@ -62,6 +62,9 @@ class CastDatabase {
 
     Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
       final PostgrestTransformBuilder transformBuilder = query
+          // Put conversations and individual casts that don't have any new
+          // content at the bottom.
+          .order(treeHasNewCastsCol, ascending: false)
           // Play the freshest conversations first.
           .order(treeUpdatedAtCol, ascending: false)
           // Play parent content before replies. Not sure this is desirable,
