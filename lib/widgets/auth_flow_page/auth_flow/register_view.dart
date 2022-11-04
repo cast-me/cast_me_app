@@ -50,7 +50,7 @@ class RegisterFormView extends StatelessWidget {
         return true;
       },
       onSubmit: () async {
-        await AuthManager.instance.createUser(
+        await AuthManager.instance.createUserEmail(
           email: bloc.emailController.text,
           password: bloc.passwordController.text,
         );

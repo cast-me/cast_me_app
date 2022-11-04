@@ -27,15 +27,15 @@ class Analytics {
   // TODO(caseycrgers): some of these are logged after the auth action is
   //  complete which is inconsistent with all other logging. Consider flipping.
   void logSignUp({
-    required String email,
+    required String provider,
   }) {
-    FirebaseAnalytics.instance.logSignUp(signUpMethod: 'email');
+    FirebaseAnalytics.instance.logSignUp(signUpMethod: provider);
   }
 
   void logLogin({
-    required String loginMethod,
+    required String provider,
   }) {
-    FirebaseAnalytics.instance.logLogin(loginMethod: loginMethod);
+    FirebaseAnalytics.instance.logLogin(loginMethod: provider);
   }
 
   void logCompleteProfile() {
