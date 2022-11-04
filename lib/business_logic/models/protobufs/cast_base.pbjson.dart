@@ -21,18 +21,19 @@ const CastBase$json = const {
     const {'1': 'accent_color_base', '3': 7, '4': 1, '5': 9, '10': 'accentColorBase'},
     const {'1': 'view_count', '3': 8, '4': 1, '5': 13, '10': 'viewCount'},
     const {'1': 'has_viewed', '3': 9, '4': 1, '5': 8, '10': 'hasViewed'},
-    const {'1': 'likes', '3': 10, '4': 3, '5': 11, '6': '.cast_me_app.LikeBase', '10': 'likes'},
-    const {'1': 'topic_names', '3': 11, '4': 3, '5': 9, '10': 'topicNames'},
-    const {'1': 'tagged_usernames', '3': 12, '4': 3, '5': 9, '10': 'taggedUsernames'},
-    const {'1': 'author_id', '3': 13, '4': 1, '5': 9, '10': 'authorId'},
-    const {'1': 'title', '3': 14, '4': 1, '5': 9, '10': 'title'},
-    const {'1': 'topic', '3': 15, '4': 1, '5': 9, '10': 'topic'},
-    const {'1': 'duration_ms', '3': 16, '4': 1, '5': 13, '10': 'durationMs'},
-    const {'1': 'audio_url', '3': 17, '4': 1, '5': 9, '10': 'audioUrl'},
-    const {'1': 'reply_to', '3': 18, '4': 1, '5': 9, '10': 'replyTo'},
-    const {'1': 'external_url', '3': 19, '4': 1, '5': 9, '10': 'externalUrl'},
+    const {'1': 'tree_has_new_casts', '3': 10, '4': 1, '5': 8, '10': 'treeHasNewCasts'},
+    const {'1': 'likes', '3': 11, '4': 3, '5': 11, '6': '.cast_me_app.LikeBase', '10': 'likes'},
+    const {'1': 'topic_names', '3': 12, '4': 3, '5': 9, '10': 'topicNames'},
+    const {'1': 'tagged_usernames', '3': 13, '4': 3, '5': 9, '10': 'taggedUsernames'},
+    const {'1': 'author_id', '3': 14, '4': 1, '5': 9, '10': 'authorId'},
+    const {'1': 'title', '3': 15, '4': 1, '5': 9, '10': 'title'},
+    const {'1': 'topic', '3': 16, '4': 1, '5': 9, '10': 'topic'},
+    const {'1': 'duration_ms', '3': 17, '4': 1, '5': 13, '10': 'durationMs'},
+    const {'1': 'audio_url', '3': 18, '4': 1, '5': 9, '10': 'audioUrl'},
+    const {'1': 'reply_to', '3': 19, '4': 1, '5': 9, '10': 'replyTo'},
+    const {'1': 'external_url', '3': 20, '4': 1, '5': 9, '10': 'externalUrl'},
   ],
 };
 
 /// Descriptor for `CastBase`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxIXCgdyb290X2lkGAMgASgJUgZyb290SWQSJwoPYXV0aG9yX3VzZXJuYW1lGAQgASgJUg5hdXRob3JVc2VybmFtZRIuChNhdXRob3JfZGlzcGxheV9uYW1lGAUgASgJUhFhdXRob3JEaXNwbGF5TmFtZRIbCglpbWFnZV91cmwYBiABKAlSCGltYWdlVXJsEioKEWFjY2VudF9jb2xvcl9iYXNlGAcgASgJUg9hY2NlbnRDb2xvckJhc2USHQoKdmlld19jb3VudBgIIAEoDVIJdmlld0NvdW50Eh0KCmhhc192aWV3ZWQYCSABKAhSCWhhc1ZpZXdlZBIrCgVsaWtlcxgKIAMoCzIVLmNhc3RfbWVfYXBwLkxpa2VCYXNlUgVsaWtlcxIfCgt0b3BpY19uYW1lcxgLIAMoCVIKdG9waWNOYW1lcxIpChB0YWdnZWRfdXNlcm5hbWVzGAwgAygJUg90YWdnZWRVc2VybmFtZXMSGwoJYXV0aG9yX2lkGA0gASgJUghhdXRob3JJZBIUCgV0aXRsZRgOIAEoCVIFdGl0bGUSFAoFdG9waWMYDyABKAlSBXRvcGljEh8KC2R1cmF0aW9uX21zGBAgASgNUgpkdXJhdGlvbk1zEhsKCWF1ZGlvX3VybBgRIAEoCVIIYXVkaW9VcmwSGQoIcmVwbHlfdG8YEiABKAlSB3JlcGx5VG8SIQoMZXh0ZXJuYWxfdXJsGBMgASgJUgtleHRlcm5hbFVybA==');
+final $typed_data.Uint8List castBaseDescriptor = $convert.base64Decode('CghDYXN0QmFzZRIOCgJpZBgBIAEoCVICaWQSKgoRY3JlYXRlZF9hdF9zdHJpbmcYAiABKAlSD2NyZWF0ZWRBdFN0cmluZxIXCgdyb290X2lkGAMgASgJUgZyb290SWQSJwoPYXV0aG9yX3VzZXJuYW1lGAQgASgJUg5hdXRob3JVc2VybmFtZRIuChNhdXRob3JfZGlzcGxheV9uYW1lGAUgASgJUhFhdXRob3JEaXNwbGF5TmFtZRIbCglpbWFnZV91cmwYBiABKAlSCGltYWdlVXJsEioKEWFjY2VudF9jb2xvcl9iYXNlGAcgASgJUg9hY2NlbnRDb2xvckJhc2USHQoKdmlld19jb3VudBgIIAEoDVIJdmlld0NvdW50Eh0KCmhhc192aWV3ZWQYCSABKAhSCWhhc1ZpZXdlZBIrChJ0cmVlX2hhc19uZXdfY2FzdHMYCiABKAhSD3RyZWVIYXNOZXdDYXN0cxIrCgVsaWtlcxgLIAMoCzIVLmNhc3RfbWVfYXBwLkxpa2VCYXNlUgVsaWtlcxIfCgt0b3BpY19uYW1lcxgMIAMoCVIKdG9waWNOYW1lcxIpChB0YWdnZWRfdXNlcm5hbWVzGA0gAygJUg90YWdnZWRVc2VybmFtZXMSGwoJYXV0aG9yX2lkGA4gASgJUghhdXRob3JJZBIUCgV0aXRsZRgPIAEoCVIFdGl0bGUSFAoFdG9waWMYECABKAlSBXRvcGljEh8KC2R1cmF0aW9uX21zGBEgASgNUgpkdXJhdGlvbk1zEhsKCWF1ZGlvX3VybBgSIAEoCVIIYXVkaW9VcmwSGQoIcmVwbHlfdG8YEyABKAlSB3JlcGx5VG8SIQoMZXh0ZXJuYWxfdXJsGBQgASgJUgtleHRlcm5hbFVybA==');

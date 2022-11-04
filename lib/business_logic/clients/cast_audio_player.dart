@@ -80,7 +80,11 @@ class CastAudioPlayer {
   Stream<bool> get playingStream => _player.playingStream;
 
   /// Delete the queue and play [cast].
-  Future<void> load(Cast cast, {bool autoPlay = true}) async {
+  Future<void> load(
+    Cast cast, {
+    required List<Topic> filterTopics,
+    bool autoPlay = true,
+  }) async {
     if (cast == currentCast.value) {
       return;
     }
@@ -94,7 +98,12 @@ class CastAudioPlayer {
         ),
       ],
     );
-    CastDatabase.instance.getPlayQueue(seedCast: cast).listen((cast) {
+    CastDatabase.instance
+        .getPlayQueue(
+      seedCast: cast,
+      filterTopics: filterTopics,
+    )
+        .listen((cast) {
       // Use a locally scoped variable so that we don't accidentally add to a
       // later queue.
       queue.add(

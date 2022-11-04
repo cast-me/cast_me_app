@@ -53,13 +53,19 @@ extension ValueListenableUtils<T> on ValueListenable<T> {
   }
 }
 
-extension ListValueNotifier<T> on ValueNotifier<List<T>> {
-  void toggle(T element) {
-    if (value.contains(element)) {
-      value = value.toList()..remove(element);
-    } else {
-      value = value.toList()..add(element);
+extension ListValueNotifier<K, V> on ValueNotifier<List<V>> {
+  void toggle(V element, {K Function(V)? byKey}) {
+    final int index = value.indexWhere((v) {
+      if (byKey != null) {
+        return byKey(v) == byKey(element);
+      }
+      return v == element;
+    });
+    if (index != -1) {
+      value = value.toList()..removeAt(index);
+      return;
     }
+    value = value.toList()..add(element);
   }
 }
 

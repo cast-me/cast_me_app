@@ -9,4 +9,5 @@ message TopicBase {
     string name = 1;
     string id = 2;
     uint32 cast_count = 3;
+    uint32 new_cast_count = 4;
 }

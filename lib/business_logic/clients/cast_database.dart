@@ -51,7 +51,7 @@ class CastDatabase {
             '$authorUsernameCol.ilike.$searchTerm%,'
             '$authorDisplayNameCol.ilike.$searchTerm%');
       }
-      if (filterTopics != null) {
+      if (filterTopics != null && filterTopics.isNotEmpty) {
         queryBuilder = queryBuilder.overlaps(
           topicsCol,
           filterTopics.map((t) => t.name).toList(),
@@ -62,6 +62,9 @@ class CastDatabase {
 
     Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
       final PostgrestTransformBuilder transformBuilder = query
+          // Put conversations and individual casts that don't have any new
+          // content at the bottom.
+          .order(treeHasNewCastsCol, ascending: false)
           // Play the freshest conversations first.
           .order(treeUpdatedAtCol, ascending: false)
           // Play parent content before replies. Not sure this is desirable,
@@ -154,11 +157,15 @@ class CastDatabase {
     });
   }
 
-  Stream<Cast> getPlayQueue({required Cast seedCast}) {
+  Stream<Cast> getPlayQueue({
+    required Cast seedCast,
+    required List<Topic> filterTopics
+  }) {
     return getCasts(
       seedCast: seedCast,
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
+      filterTopics: filterTopics,
     );
   }
 
@@ -232,8 +239,8 @@ class CastDatabase {
   Future<void> setListened({required Cast cast}) async {
     Analytics.instance.logListen(cast: cast);
     await listensQuery.insert({
-      'cast_id': cast.id,
-      'user_id': supabase.auth.currentUser!.id,
+      castIdCol: cast.id,
+      userIdCol: supabase.auth.currentUser!.id,
     });
   }
 
@@ -244,7 +251,7 @@ class CastDatabase {
   }) async {
     Analytics.instance.logSkip(cast: cast, skippedAt: skippedAt);
     await listensQuery.insert({
-      idCol: cast.id,
+      castIdCol: cast.id,
       userIdCol: supabase.auth.currentUser!.id,
       'skipped_reason': skippedReason.toString().split('.').last,
     });

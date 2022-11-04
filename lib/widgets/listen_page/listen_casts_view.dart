@@ -17,7 +17,7 @@ class ListenCastsView extends StatelessWidget {
       builder: (context, filteredTopics, _) {
         return CastViewTheme(
           child: CastListView(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             filterTopics: filteredTopics.isEmpty ? null : filteredTopics,
           ),
         );
