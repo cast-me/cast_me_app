@@ -14,41 +14,46 @@ class PostTopicSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PostBloc bloc = PostBloc.instance;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text('Topics (can\'t be used if \'reply to\' is set):'),
-        const SizedBox(height: 8),
-        ValueListenableBuilder<Cast?>(
-          valueListenable: bloc.replyCast,
-          builder: (context, cast, child) {
-            // You can't specify topics if this is a reply cast.
-            return IgnorePointer(
-              ignoring: cast != null,
-              child: Opacity(
-                opacity: cast == null ? 1 : .5,
-                child: child!,
+    return TopicViewTheme(
+      data: const TopicThemeData(
+        showNewCastsCount: false,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Topics (can\'t be used if \'reply to\' is set):'),
+          const SizedBox(height: 8),
+          ValueListenableBuilder<Cast?>(
+            valueListenable: bloc.replyCast,
+            builder: (context, cast, child) {
+              // You can't specify topics if this is a reply cast.
+              return IgnorePointer(
+                ignoring: cast != null,
+                child: Opacity(
+                  opacity: cast == null ? 1 : .5,
+                  child: child!,
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: TopicsView(
+                currentTopics: bloc.topics,
+                onTap: (topic) {
+                  if (bloc.topics.value.length == 3 &&
+                      !bloc.topics.value.contains(topic)) {
+                    // Only allow a max of 3 topics.
+                    return;
+                  }
+                  bloc.topics.toggle(topic);
+                },
+                max: 3,
               ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: TopicsView(
-              currentTopics: bloc.topics,
-              onTap: (topic) {
-                if (bloc.topics.value.length == 3 &&
-                    !bloc.topics.value.contains(topic)) {
-                  // Only allow a max of 3 topics.
-                  return;
-                }
-                bloc.topics.toggle(topic);
-              },
-              max: 3,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

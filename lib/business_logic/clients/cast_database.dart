@@ -154,11 +154,15 @@ class CastDatabase {
     });
   }
 
-  Stream<Cast> getPlayQueue({required Cast seedCast}) {
+  Stream<Cast> getPlayQueue({
+    required Cast seedCast,
+    required List<Topic> filterTopics
+  }) {
     return getCasts(
       seedCast: seedCast,
       skipViewed: true,
       filterOutProfile: AuthManager.instance.profile,
+      filterTopics: filterTopics,
     );
   }
 
