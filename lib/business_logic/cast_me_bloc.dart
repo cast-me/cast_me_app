@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
@@ -94,10 +95,26 @@ class CastMeBloc {
       // This is a potentially valid cast link.
       final String authorUsername = pathSegments[1];
       final String truncId = pathSegments[3];
-      await ListenBloc.instance.onTruncatedCastIdSelected(
+      await listenBloc.onTruncatedCastIdSelected(
         authorUsername: authorUsername,
         truncId: truncId,
         autoPlay: true,
+      );
+    } else if (pathSegments.length == 2 && pathSegments[0] == 'casts') {
+      final String castId = pathSegments[1];
+      await listenBloc.onCastIdSelected(
+        castId: castId,
+        autoplay: true,
+      );
+    }
+  }
+
+  Future<void> onFirebaseMessage(Map<String, dynamic> messageData) async {
+    final String? castId = messageData[castIdCol] as String?;
+    if (castId != null) {
+      await listenBloc.onCastIdSelected(
+        castId: castId,
+        autoplay: true,
       );
     }
   }

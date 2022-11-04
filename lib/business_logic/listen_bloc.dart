@@ -30,6 +30,14 @@ class ListenBloc {
 
   ValueListenable<List<Topic>> get filteredTopics => _filteredTopics;
 
+  Future<void> onCastIdSelected({
+    required String castId,
+    bool autoplay = true,
+  }) async {
+    final Cast newCast = await CastDatabase.instance.getCast(castId: castId);
+    await onCastSelected(newCast, autoPlay: autoplay);
+  }
+
   Future<void> onTruncatedCastIdSelected({
     required String authorUsername,
     required String truncId,
@@ -52,20 +60,20 @@ class ListenBloc {
     );
   }
 
-  void onCastSelected(Cast cast, {bool autoPlay = true}) {
-    CastAudioPlayer.instance.load(
+  Future<void> onCastSelected(Cast cast, {bool autoPlay = true}) async {
+    await CastAudioPlayer.instance.load(
       cast,
       filterTopics: filteredTopics.value,
       autoPlay: autoPlay,
     );
   }
 
-  void onCastInTrackListSelected(Cast cast) {
-    CastAudioPlayer.instance.seekToCast(cast);
+  Future<void> onCastInTrackListSelected(Cast cast) async {
+    await CastAudioPlayer.instance.seekToCast(cast);
   }
 
-  void onListenPageChanged(ListenPage newPage) {
-    listenPageController.animateToPage(
+  Future<void> onListenPageChanged(ListenPage newPage) async {
+    await listenPageController.animateToPage(
       ListenPage.values.indexOf(newPage),
       duration: const Duration(milliseconds: 200),
       curve: Curves.linear,

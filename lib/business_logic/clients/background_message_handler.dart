@@ -1,16 +1,52 @@
 // Package imports:
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
+import 'package:cast_me_app/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 
-/// Handles push notifications from Firebase Cloud Messaging.
-/// See: https://firebase.flutter.dev/docs/messaging/usage
-class CastMeBackgroundMessageHandler {
-  CastMeBackgroundMessageHandler._();
-
-  static void register() {
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  }
-}
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // See [DeepLinkHandler], we use it instead of FCM's built in message handler.
   print('Handling a background message: ${message.messageId}');
+}
+
+class FirebaseMessageHandler extends StatefulWidget {
+  const FirebaseMessageHandler({
+    Key? key,
+    required this.child,
+    required this.onMessage,
+  }) : super(key: key);
+
+  final Widget child;
+  final Function(Map<String, dynamic>) onMessage;
+
+  @override
+  State<FirebaseMessageHandler> createState() => _FirebaseMessageHandlerState();
+}
+
+class _FirebaseMessageHandlerState extends State<FirebaseMessageHandler> {
+  Future<void> _register() async {
+    final RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      widget.onMessage(initialMessage.data);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen((m) {
+      widget.onMessage(m.data);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _register();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: widget.child,
+    );
+  }
 }

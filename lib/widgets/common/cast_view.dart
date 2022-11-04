@@ -157,11 +157,12 @@ class CastPreview extends StatelessWidget {
     );
   }
 
-  void _playOnTap() {
+  Future<void> _playOnTap() async {
     if (isInTrackList) {
-      return ListenBloc.instance.onCastInTrackListSelected(cast);
+      await ListenBloc.instance.onCastInTrackListSelected(cast);
+      return;
     }
-    ListenBloc.instance.onCastSelected(cast);
+    await ListenBloc.instance.onCastSelected(cast);
   }
 
   VoidCallback? _getOnTap(

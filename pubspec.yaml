@@ -45,6 +45,7 @@ dependencies:
   share_plus: ^6.0.0
   flutter_signin_button: ^2.0.0
   uni_links: ^0.5.1
+  collection: ^1.16.0
   badges: ^2.0.3
 
 dev_dependencies:
