@@ -51,7 +51,7 @@ class CastDatabase {
             '$authorUsernameCol.ilike.$searchTerm%,'
             '$authorDisplayNameCol.ilike.$searchTerm%');
       }
-      if (filterTopics != null) {
+      if (filterTopics != null && filterTopics.isNotEmpty) {
         queryBuilder = queryBuilder.overlaps(
           topicsCol,
           filterTopics.map((t) => t.name).toList(),
