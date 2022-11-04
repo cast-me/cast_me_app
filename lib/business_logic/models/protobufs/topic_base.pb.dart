@@ -14,6 +14,7 @@ class TopicBase extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
     ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'castCount', $pb.PbFieldType.OU3)
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newCastCount', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -22,6 +23,7 @@ class TopicBase extends $pb.GeneratedMessage {
     $core.String? name,
     $core.String? id,
     $core.int? castCount,
+    $core.int? newCastCount,
   }) {
     final _result = create();
     if (name != null) {
@@ -32,6 +34,9 @@ class TopicBase extends $pb.GeneratedMessage {
     }
     if (castCount != null) {
       _result.castCount = castCount;
+    }
+    if (newCastCount != null) {
+      _result.newCastCount = newCastCount;
     }
     return _result;
   }
@@ -82,5 +87,14 @@ class TopicBase extends $pb.GeneratedMessage {
   $core.bool hasCastCount() => $_has(2);
   @$pb.TagNumber(3)
   void clearCastCount() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get newCastCount => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set newCastCount($core.int v) { $_setUnsignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasNewCastCount() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearNewCastCount() => clearField(4);
 }
 

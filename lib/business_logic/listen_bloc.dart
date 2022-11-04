@@ -45,11 +45,19 @@ class ListenBloc {
       authorUsername: authorUsername,
       truncId: truncId,
     );
-    await CastAudioPlayer.instance.load(newCast, autoPlay: autoPlay);
+    await CastAudioPlayer.instance.load(
+      newCast,
+      filterTopics: [],
+      autoPlay: autoPlay,
+    );
   }
 
   void onCastSelected(Cast cast, {bool autoPlay = true}) {
-    CastAudioPlayer.instance.load(cast, autoPlay: autoPlay);
+    CastAudioPlayer.instance.load(
+      cast,
+      filterTopics: filteredTopics.value,
+      autoPlay: autoPlay,
+    );
   }
 
   void onCastInTrackListSelected(Cast cast) {
@@ -69,7 +77,7 @@ class ListenBloc {
   }
 
   void onTopicToggled(Topic topic) {
-    _filteredTopics.toggle(topic);
+    _filteredTopics.toggle(topic, byKey: (t) => t.id);
   }
 }
 
