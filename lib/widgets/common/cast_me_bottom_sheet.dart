@@ -51,8 +51,11 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                 },
                 child: Column(
                   children: [
-                    IgnorePointer(
-                      child: ValueListenableBuilder<double>(
+                    // Shim at the top of the screen that pulls down to hide the
+                    // awkward view padding gap that the sheet can't occupy.
+                    if (MediaQuery.of(context).viewPadding.top != 0)
+                      IgnorePointer(
+                        child: ValueListenableBuilder<double>(
                           valueListenable: progress,
                           builder: (context, progress, _) {
                             return Opacity(
@@ -62,8 +65,9 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                                 color: AdaptiveColor.surface.color(context),
                               ),
                             );
-                          }),
-                    ),
+                          },
+                        ),
+                      ),
                     Expanded(
                       child: _Sheet(
                         progress: progress,
@@ -71,6 +75,25 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                         tab: tab,
                       ),
                     ),
+                    // Shim that pulls up to ensure the bottom sheet doesn't get
+                    // stuck under bottom nav buttons.
+                    if (MediaQuery.of(context).viewPadding.bottom != 0)
+                      IgnorePointer(
+                        child: ValueListenableBuilder<double>(
+                          valueListenable: progress,
+                          builder: (context, progress, _) {
+                            return Opacity(
+                              opacity: progress,
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).viewPadding.bottom *
+                                        progress,
+                                color: AdaptiveColor.surface.color(context),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                   ],
                 ),
               );
