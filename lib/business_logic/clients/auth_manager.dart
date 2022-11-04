@@ -415,7 +415,6 @@ class AuthManager extends ChangeNotifier {
         assert(res);
       },
     );
-
     // A listener on `AuthManager` will set the user id, but lets set it here
     // to avoid a potential race condition where we log before the value is set.
     await Analytics.instance.setUserId(user?.id);
