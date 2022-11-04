@@ -77,7 +77,7 @@ class ListenBloc {
   }
 
   void onTopicToggled(Topic topic) {
-    _filteredTopics.toggle(topic);
+    _filteredTopics.toggle(topic, byKey: (t) => t.id);
   }
 }
 

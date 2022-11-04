@@ -2,6 +2,7 @@
 import 'package:badges/badges.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,14 +11,18 @@ import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 
 class TopicsView extends StatefulWidget {
-  const TopicsView({
+  TopicsView({
     Key? key,
-    required this.currentTopics,
+    this.controller,
+    required ValueListenable<List<Topic>> selectedTopics,
     required this.onTap,
     this.max,
-  }) : super(key: key);
+  })  : selectedTopicIds =
+            selectedTopics.map((topics) => topics.map((t) => t.id).toList()),
+        super(key: key);
 
-  final ValueListenable<List<Topic>> currentTopics;
+  final TopicsViewController? controller;
+  final ValueListenable<List<String>> selectedTopicIds;
   final void Function(Topic) onTap;
   final int? max;
 
@@ -26,7 +31,29 @@ class TopicsView extends StatefulWidget {
 }
 
 class _TopicsViewState extends State<TopicsView> {
-  final Future<List<Topic>> allTopics = CastDatabase.instance.getAllTopics();
+  Future<List<Topic>> allTopics = _getTopics();
+
+  static Future<List<Topic>> _getTopics() async {
+    return CastDatabase.instance.getAllTopics();
+  }
+
+  void _onRefresh() {
+    setState(() {
+      allTopics = _getTopics();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.addListener(_onRefresh);
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_onRefresh);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +71,12 @@ class _TopicsViewState extends State<TopicsView> {
         }
         final List<Topic> topics = snap.data!;
         return ValueListenableBuilder<List<Topic>>(
-          valueListenable: widget.currentTopics,
+          // We get the actual topic objects from all topics as it has fresh
+          // view and cast counts.
+          valueListenable: widget.selectedTopicIds.map(
+            (ids) =>
+                ids.map((id) => topics.singleWhere((t) => t.id == id)).toList(),
+          ),
           builder: (context, selectedTopics, _) {
             final numTopics = selectedTopics.length;
             return Column(
@@ -56,7 +88,7 @@ class _TopicsViewState extends State<TopicsView> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: topics
-                        .where((t) => !selectedTopics.contains(t))
+                        .where((t) => !selectedTopics.any((s) => s.id == t.id))
                         .toList()
                         .asMap()
                         .mapDown((index, topic) {
@@ -227,4 +259,10 @@ class TopicThemeData {
 
   final bool? showCount;
   final bool? showNewCastsCount;
+}
+
+class TopicsViewController extends ChangeNotifier {
+  void refresh() {
+    notifyListeners();
+  }
 }

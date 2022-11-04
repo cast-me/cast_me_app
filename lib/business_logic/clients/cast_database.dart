@@ -239,8 +239,8 @@ class CastDatabase {
   Future<void> setListened({required Cast cast}) async {
     Analytics.instance.logListen(cast: cast);
     await listensQuery.insert({
-      'cast_id': cast.id,
-      'user_id': supabase.auth.currentUser!.id,
+      castIdCol: cast.id,
+      userIdCol: supabase.auth.currentUser!.id,
     });
   }
 
@@ -251,7 +251,7 @@ class CastDatabase {
   }) async {
     Analytics.instance.logSkip(cast: cast, skippedAt: skippedAt);
     await listensQuery.insert({
-      idCol: cast.id,
+      castIdCol: cast.id,
       userIdCol: supabase.auth.currentUser!.id,
       'skipped_reason': skippedReason.toString().split('.').last,
     });
