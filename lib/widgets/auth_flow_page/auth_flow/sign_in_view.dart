@@ -46,7 +46,7 @@ class SignInView extends StatelessWidget {
         return true;
       },
       onSubmit: () async {
-        await AuthManager.instance.signIn(
+        await AuthManager.instance.signInEmail(
           email: bloc.emailController.text,
           password: bloc.passwordController.text,
         );
