@@ -1,7 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
-
-import 'package:flutter/material.dart';
 
 class ExternalLinkModal {
   static void showMessage(BuildContext context, Uri uri) =>

@@ -2,7 +2,6 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
-import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +17,7 @@ import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
+import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 
 class CastMenu extends StatelessWidget {
   const CastMenu({Key? key}) : super(key: key);
