@@ -30,9 +30,6 @@ class DeepLinkHandler {
       if (uri == null) {
         return;
       }
-      if (uri.host != 'getcastme.com' && uri.host != 'www.getcastme.com') {
-        return;
-      }
       if (!AuthManager.instance.isFullySignedIn) {
         // Handle the path after we've logged in.
         _deferredUntilSignIn = () => handlePath(uri.pathSegments);

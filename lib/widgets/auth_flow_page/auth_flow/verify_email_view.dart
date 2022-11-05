@@ -24,7 +24,7 @@ class VerifyEmailView extends StatelessWidget {
           AuthSubmitButtonWrapper(
             child: TextButton(
               onPressed: () async {
-                await authManager.signIn(
+                await authManager.signInEmail(
                   email: authManager.signInBloc.emailController.text,
                   password: authManager.signInBloc.passwordController.text,
                 );
