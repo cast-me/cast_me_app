@@ -1,5 +1,8 @@
-import 'package:cast_me_app/util/uri_utils.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:cast_me_app/util/uri_utils.dart';
 
 class ExternalLinkField extends StatelessWidget {
   const ExternalLinkField({

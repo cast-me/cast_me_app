@@ -25,9 +25,11 @@ import 'package:cast_me_app/util/cast_me_modal.dart';
 /// If no version message matching the current version is found in
 /// [updateMessages], no message will be displayed at all.
 class UpdateMessage extends StatelessWidget {
-  const UpdateMessage(
-      {Key? key, required this.updateMessages, required this.child})
-      : super(key: key);
+  const UpdateMessage({
+    Key? key,
+    required this.updateMessages,
+    required this.child,
+  }) : super(key: key);
 
   /// A mapping of version numbers (ie '1.1.5') to message widgets to be
   /// displayed for that version.
