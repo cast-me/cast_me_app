@@ -47,13 +47,11 @@ class _ListenPageViewState extends State<ListenPageView> {
           },
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: TopicsView(
-                  controller: topicsController,
-                  selectedTopics: ListenBloc.instance.filteredTopics,
-                  onTap: ListenBloc.instance.onTopicToggled,
-                ),
+              TopicsView(
+                interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
+                controller: topicsController,
+                selectedTopics: ListenBloc.instance.filteredTopics,
+                onTap: ListenBloc.instance.onTopicToggled,
               ),
               const Expanded(
                 child: ListenCastsView(),
