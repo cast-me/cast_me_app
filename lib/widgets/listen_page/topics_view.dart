@@ -15,6 +15,7 @@ import 'package:cast_me_app/util/listenable_utils.dart';
 class TopicsView extends StatefulWidget {
   TopicsView({
     Key? key,
+    this.interiorPadding,
     this.controller,
     required ValueListenable<List<Topic>> selectedTopics,
     required this.onTap,
@@ -23,6 +24,7 @@ class TopicsView extends StatefulWidget {
             selectedTopics.map((topics) => topics.map((t) => t.id).toList()),
         super(key: key);
 
+  final EdgeInsets? interiorPadding;
   final TopicsViewController? controller;
   final ValueListenable<List<String>> selectedTopicIds;
   final void Function(Topic) onTap;
@@ -87,6 +89,7 @@ class _TopicsViewState extends State<TopicsView> {
               children: [
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  padding: widget.interiorPadding,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: topics
@@ -106,17 +109,20 @@ class _TopicsViewState extends State<TopicsView> {
                     }).toList(),
                   ),
                 ),
-                Wrap(
-                  children: selectedTopics.asMap().mapDown((index, topic) {
-                    return _ListTopic(
-                      key: ValueKey(topic.name),
-                      index: index,
-                      topic: topic,
-                      isSelected: true,
-                      isEnabled: true,
-                      onTap: widget.onTap,
-                    );
-                  }).toList(),
+                Padding(
+                  padding: widget.interiorPadding ?? EdgeInsets.zero,
+                  child: Wrap(
+                    children: selectedTopics.asMap().mapDown((index, topic) {
+                      return _ListTopic(
+                        key: ValueKey(topic.name),
+                        index: index,
+                        topic: topic,
+                        isSelected: true,
+                        isEnabled: true,
+                        onTap: widget.onTap,
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             );

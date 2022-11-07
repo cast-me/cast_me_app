@@ -75,25 +75,6 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                         tab: tab,
                       ),
                     ),
-                    // Shim that pulls up to ensure the bottom sheet doesn't get
-                    // stuck under bottom nav buttons.
-                    if (MediaQuery.of(context).viewPadding.bottom != 0)
-                      IgnorePointer(
-                        child: ValueListenableBuilder<double>(
-                          valueListenable: progress,
-                          builder: (context, progress, _) {
-                            return Opacity(
-                              opacity: progress,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).viewPadding.bottom *
-                                        progress,
-                                color: AdaptiveColor.surface.color(context),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                   ],
                 ),
               );
@@ -159,53 +140,62 @@ class _SheetState extends State<_Sheet> {
                     SingleChildScrollView(
                       controller: controller,
                       physics: const ClampingScrollPhysics(),
-                      child: Container(
+                      child: SizedBox(
                         height: constraints.maxHeight,
-                        child: Stack(
+                        child: Column(
                           children: [
-                            // Each of these is individually wrapped in progress
-                            // so that we don't have to rebuild the children as
-                            // we're scrolling. This is far worse readability but
-                            // better performance.
-                            // This may not matter, consider removing.
-                            ValueListenableBuilder<double>(
-                              valueListenable: widget.progress,
-                              builder: (context, progress, child) {
-                                return Opacity(
-                                  opacity: progress,
-                                  child: child!,
-                                );
-                              },
-                              child: Column(
-                                children: const [
-                                  _DragHandle(),
-                                  Expanded(child: NowPlayingExpandedView()),
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  ValueListenableBuilder<double>(
+                                    valueListenable: widget.progress,
+                                    builder: (context, progress, child) {
+                                      return Opacity(
+                                        opacity: progress,
+                                        child: child!,
+                                      );
+                                    },
+                                    child: Column(
+                                      children: const [
+                                        _DragHandle(),
+                                        Expanded(
+                                          child: NowPlayingExpandedView(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  ValueListenableBuilder<double>(
+                                    valueListenable: widget.progress,
+                                    builder: (context, progress, child) {
+                                      return Opacity(
+                                        opacity: 1 - progress,
+                                        child: child!,
+                                      );
+                                    },
+                                    child: SizeReportingContainer(
+                                      sizeCallback: (size) {
+                                        if (size.height == nowPlayingHeight) {
+                                          return;
+                                        }
+                                        setState(() {
+                                          nowPlayingHeight = size.height;
+                                        });
+                                      },
+                                      child: GestureDetector(
+                                        onTap: onNowPlayingExpansionToggled,
+                                        child: const NowPlayingCollapsedView(),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            ValueListenableBuilder<double>(
-                              valueListenable: widget.progress,
-                              builder: (context, progress, child) {
-                                return Opacity(
-                                  opacity: 1 - progress,
-                                  child: child!,
-                                );
-                              },
-                              child: SizeReportingContainer(
-                                sizeCallback: (size) {
-                                  if (size.height == nowPlayingHeight) {
-                                    return;
-                                  }
-                                  setState(() {
-                                    nowPlayingHeight = size.height;
-                                  });
-                                },
-                                child: GestureDetector(
-                                  onTap: onNowPlayingExpansionToggled,
-                                  child: const NowPlayingCollapsedView(),
-                                ),
+                            if (MediaQuery.of(context).viewPadding.bottom != 0)
+                              Container(
+                                height:
+                                    MediaQuery.of(context).viewPadding.bottom,
+                                color: AdaptiveColor.surface.color(context),
                               ),
-                            ),
                           ],
                         ),
                       ),
