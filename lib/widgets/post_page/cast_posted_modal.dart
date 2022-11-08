@@ -23,7 +23,10 @@ class CastPostedModal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Cast posted!'),
+          Text(
+            'Cast posted!',
+            style: Theme.of(context).textTheme.headline5,
+          ),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),

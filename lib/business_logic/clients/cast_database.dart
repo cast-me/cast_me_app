@@ -157,10 +157,8 @@ class CastDatabase {
     });
   }
 
-  Stream<Cast> getPlayQueue({
-    required Cast seedCast,
-    required List<Topic> filterTopics
-  }) {
+  Stream<Cast> getPlayQueue(
+      {required Cast seedCast, required List<Topic> filterTopics}) {
     return getCasts(
       seedCast: seedCast,
       skipViewed: true,
@@ -169,7 +167,8 @@ class CastDatabase {
     );
   }
 
-  Future<void> createCast({
+  // Returns the id of the cast.
+  Future<String> createCast({
     required String title,
     required String url,
     required CastFile castFile,
@@ -192,7 +191,7 @@ class CastDatabase {
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
-    final Cast cast = Cast(
+    Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
       durationMs: castFile.duration.inMilliseconds,
@@ -200,19 +199,20 @@ class CastDatabase {
       replyTo: replyTo?.id,
       externalUrl: url.emptyToNull,
     );
-    final Map<String, dynamic> castMap = await castsWriteQuery
-        .insert(_castToRow(cast))
-        .select(idCol)
-        .single() as Map<String, dynamic>;
+    final String castId = _rowToId(
+      await castsWriteQuery.insert(_castToRow(cast)).select(idCol).single(),
+    );
     await castsToTopicWriteQuery.insert(topics.map((t) {
       return <String, dynamic>{
         'topic_id': t.id,
-        'cast_id': castMap[idCol],
+        'cast_id': castId,
       };
     }).toList());
+    // Override the local id with the server set value
     // TODO(caseycrogers): this will only log if the create succeeds, consider
     //   wrapping in a finally or something.
-    Analytics.instance.logCreate(castId: castMap[idCol] as String);
+    Analytics.instance.logCreate(castId: castId);
+    return castId;
   }
 
   Future<void> deleteCast({
@@ -286,6 +286,10 @@ class CastDatabase {
 enum SkippedReason {
   nextButton,
   seekButton,
+}
+
+String _rowToId(dynamic row) {
+  return (row as Map<String, dynamic>)[idCol]! as String;
 }
 
 Cast _rowToCast(dynamic row) {

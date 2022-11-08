@@ -13,6 +13,8 @@ class ShareClient {
 
   static const String _castMeDomain = 'https://www.getcastme.com';
 
+  static const String _sharePrefix = 'Check out my hot take on CastMe! ';
+
   Future<void> share(Cast cast) async {
     await Share.share(
       // TODO: make these constants and store them somewhere.
@@ -25,9 +27,15 @@ class ShareClient {
     await SocialShare.shareTwitter(
       // Space at end because `SocialShare` doesn't add a space between the
       // hashtags and the content.
-      'Check out my hot take on CastMe! ',
+      _sharePrefix,
       hashtags: ['CastMe', ...cast.topicNames],
       url: castShareUrl(cast),
+    );
+  }
+
+  Future<void> shareToWhatsapp(Cast cast) async {
+    await SocialShare.shareWhatsapp(
+      'Check out my hot take on CastMe!\n${castShareUrl(cast)}',
     );
   }
 

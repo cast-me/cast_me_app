@@ -74,12 +74,12 @@ class PostBloc {
   }
 
   // TODO: this is sloppy, we should just replace instance with a new instance.
-  Future<void> submitFile({
+  Future<String> submitFile({
     required String title,
     required String url,
     required CastFile castFile,
   }) async {
-    await CastDatabase.instance.createCast(
+    final String castId = await CastDatabase.instance.createCast(
       title: title,
       castFile: await castFile.applyTrim(),
       replyTo: replyCast.value,
@@ -89,5 +89,6 @@ class PostBloc {
     clearFiles();
     replyCast.value = null;
     topics.value = [];
+    return castId;
   }
 }

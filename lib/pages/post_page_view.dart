@@ -88,18 +88,6 @@ class _PostPageViewState extends State<PostPageView> {
                 ExternalLinkField(controller: externalLinkTextController),
                 const SizedBox(height: 8),
                 const PostTopicSelector(),
-                TextButton(
-                  onPressed: () async {
-                    final Cast cast = await CastDatabase.instance.getCast(
-                      castId: 'c1611b09-2181-486e-bd2b-852f63689bcb',
-                    );
-                    CastMeModal.showMessage(
-                      context,
-                      CastPostedModal(cast: cast),
-                    );
-                  },
-                  child: Text('asdf'),
-                ),
                 ValueListenableBuilder<bool>(
                   valueListenable: externalLinkTextController.select(() =>
                       ExternalLinkField.isValid(
@@ -116,11 +104,14 @@ class _PostPageViewState extends State<PostPageView> {
                                   title.isNotEmpty &&
                                   linkIsValid
                               ? () async {
-                                  await PostBloc.instance.submitFile(
+                                  final String castId =
+                                      await PostBloc.instance.submitFile(
                                     title: title,
                                     url: externalLinkTextController.text,
                                     castFile: castFile,
                                   );
+                                  final Cast cast = await CastDatabase.instance
+                                      .getCast(castId: castId);
                                   setState(() {
                                     externalLinkTextController.text = '';
                                     titleText.value = '';
@@ -128,10 +119,9 @@ class _PostPageViewState extends State<PostPageView> {
                                     // rebuild from scratch.
                                     titleFieldKey = UniqueKey();
                                   });
-                                  messenger.showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Cast posted!'),
-                                    ),
+                                  CastMeModal.showMessage(
+                                    context,
+                                    CastPostedModal(cast: cast),
                                   );
                                 }
                               : null,
