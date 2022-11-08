@@ -118,7 +118,6 @@ class NowPlayingExpandedView extends StatelessWidget {
                   positionDataStream:
                       CastAudioPlayer.instance.positionDataStream,
                   seekTo: CastAudioPlayer.instance.seekTo,
-                  color: cast.accentColor,
                 ),
                 const Padding(
                   padding: EdgeInsets.only(

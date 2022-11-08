@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = true;
+const bool isStaging = false;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 

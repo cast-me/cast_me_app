@@ -8,4 +8,9 @@ const Map<String, Widget> changelogMessages = {
  - Notifications automatically play the relevant cast when selected
  - Casts can now link out to external content''',
   ),
+  '0.1.9': Text(
+    ''' - Fixed bug when expanding now playing sheet
+ - Tweaked color palette
+ - Improved cast posting and sharing UX''',
+  ),
 };
