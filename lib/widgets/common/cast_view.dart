@@ -49,6 +49,12 @@ class CastPreview extends StatelessWidget {
     return cast.hasViewed;
   }
 
+  Color overlayColor(BuildContext context) => Color.lerp(
+        Colors.white,
+        Theme.of(context).colorScheme.surface,
+        .92,
+      )!;
+
   @override
   Widget build(BuildContext context) {
     final CastViewTheme? theme = CastViewTheme.of(context);
@@ -63,16 +69,11 @@ class CastPreview extends StatelessWidget {
             child: Container(
               padding: padding ?? const EdgeInsets.all(4),
               color: _isTapToPlay(context) && nowPlaying == cast
-                  ? Color.lerp(
-                      Colors.white,
-                      Theme.of(context).colorScheme.surface,
-                      .92,
-                    )
+                  ? overlayColor(context)
                   : null,
               child: Row(
                 children: [
-                  if ((theme?.indentReplies ?? true) &&
-                      cast.replyTo.isNotEmpty)
+                  if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Container(
@@ -102,8 +103,7 @@ class CastPreview extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Opacity(
                                       opacity: shouldDim(context) ? .6 : 1,
@@ -386,11 +386,6 @@ class _PreviewThumbnail extends StatelessWidget {
             image: CachedNetworkImageProvider(cast.imageUrl),
           ),
         ),
-        child: _isTapToPlay(context) && nowPlaying == cast
-            ? Container(
-                color: (cast.accentColor).withAlpha(120),
-              )
-            : null,
       ),
     );
   }
