@@ -1,3 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/share_client.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
@@ -8,8 +15,6 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/copy_to_clipboard_text.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CastPostedModal extends StatelessWidget {
   const CastPostedModal({Key? key, required this.cast}) : super(key: key);
