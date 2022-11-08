@@ -2,6 +2,7 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -66,6 +67,35 @@ class CastMenu extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class StackCastMenu extends StatelessWidget {
+  const StackCastMenu({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (CastViewTheme.of(context)?.showMenu == false) {
+      return child;
+    }
+    return Stack(
+      children: [
+        child,
+        Positioned.fill(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              ReplyButton(),
+              ShareButton(),
+              CastMenu(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

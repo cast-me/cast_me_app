@@ -119,7 +119,7 @@ class CastMeApp extends StatelessWidget {
           onPrimary: Colors.white,
           secondary: Colors.white,
           onSecondary: Colors.grey.shade700,
-          surface: Colors.grey.shade900,
+          surface: const Color.fromARGB(255, 25, 25, 31),
           onSurface: Colors.white,
           background: Colors.black,
           onBackground: Colors.white,

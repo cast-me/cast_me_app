@@ -24,6 +24,14 @@ class CastFile {
           ),
         );
 
+  static Future<CastFile> initiallyDenoised({
+    required File file,
+    required Duration originalDuration,
+  }) async {
+    return CastFile(file: file, originalDuration: originalDuration)
+        .toggleDenoised();
+  }
+
   final File originalFile;
 
   final File? denoisedFile;

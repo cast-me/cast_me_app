@@ -1,4 +1,8 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
+import 'package:cast_me_app/widgets/post_page/cast_posted_modal.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -80,9 +84,7 @@ class _PostPageViewState extends State<PostPageView> {
                 const AsyncErrorView(),
                 const ReplyCastSelector(),
                 const SizedBox(height: 8),
-                const Text('Cast title:'),
                 TitleField(key: titleFieldKey, titleText: titleText),
-                const Text('external link:'),
                 ExternalLinkField(controller: externalLinkTextController),
                 const SizedBox(height: 8),
                 const PostTopicSelector(),
@@ -102,11 +104,14 @@ class _PostPageViewState extends State<PostPageView> {
                                   title.isNotEmpty &&
                                   linkIsValid
                               ? () async {
-                                  await PostBloc.instance.submitFile(
+                                  final String castId =
+                                      await PostBloc.instance.submitFile(
                                     title: title,
                                     url: externalLinkTextController.text,
                                     castFile: castFile,
                                   );
+                                  final Cast cast = await CastDatabase.instance
+                                      .getCast(castId: castId);
                                   setState(() {
                                     externalLinkTextController.text = '';
                                     titleText.value = '';
@@ -114,10 +119,9 @@ class _PostPageViewState extends State<PostPageView> {
                                     // rebuild from scratch.
                                     titleFieldKey = UniqueKey();
                                   });
-                                  messenger.showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Cast posted!'),
-                                    ),
+                                  CastMeModal.showMessage(
+                                    context,
+                                    CastPostedModal(cast: cast),
                                   );
                                 }
                               : null,

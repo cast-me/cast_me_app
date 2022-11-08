@@ -36,6 +36,9 @@ class TitleField extends StatelessWidget {
         return TextField(
           controller: textEditingController,
           focusNode: focusNode,
+          decoration: const InputDecoration(
+            labelText: 'Cast title',
+          ),
         );
       },
       updateTextField: (textController, selection) {
