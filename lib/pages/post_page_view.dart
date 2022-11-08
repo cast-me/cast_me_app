@@ -1,4 +1,8 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
+import 'package:cast_me_app/widgets/post_page/cast_posted_modal.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -84,6 +88,18 @@ class _PostPageViewState extends State<PostPageView> {
                 ExternalLinkField(controller: externalLinkTextController),
                 const SizedBox(height: 8),
                 const PostTopicSelector(),
+                TextButton(
+                  onPressed: () async {
+                    final Cast cast = await CastDatabase.instance.getCast(
+                      castId: 'c1611b09-2181-486e-bd2b-852f63689bcb',
+                    );
+                    CastMeModal.showMessage(
+                      context,
+                      CastPostedModal(cast: cast),
+                    );
+                  },
+                  child: Text('asdf'),
+                ),
                 ValueListenableBuilder<bool>(
                   valueListenable: externalLinkTextController.select(() =>
                       ExternalLinkField.isValid(

@@ -58,28 +58,32 @@ class CastPreview extends StatelessWidget {
       child: ValueListenableBuilder<Cast?>(
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
-          return Row(
-            children: [
-              if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Container(
-                    color: Colors.white.withAlpha(120),
-                    width: 2,
-                    // TODO(caseycrogers): make this programmatic.
-                    height: theme?.showLikes ?? true ? 89 : 63,
-                  ),
-                ),
-              Expanded(
-                child: InkWell(
-                  onTap: _getOnTap(context, nowPlaying),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: Container(
-                      padding: padding ?? const EdgeInsets.all(4),
-                      color: _isTapToPlay(context) && nowPlaying == cast
-                          ? Colors.white.withAlpha(80)
-                          : null,
+          return InkWell(
+            onTap: _getOnTap(context, nowPlaying),
+            child: Container(
+              padding: padding ?? const EdgeInsets.all(4),
+              color: _isTapToPlay(context) && nowPlaying == cast
+                  ? Color.lerp(
+                      Colors.white,
+                      Theme.of(context).colorScheme.surface,
+                      .92,
+                    )
+                  : null,
+              child: Row(
+                children: [
+                  if ((theme?.indentReplies ?? true) &&
+                      cast.replyTo.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Container(
+                        color: Colors.white.withAlpha(120),
+                        width: 2,
+                        // TODO(caseycrogers): make this programmatic.
+                        height: theme?.showLikes ?? true ? 89 : 63,
+                      ),
+                    ),
+                  Expanded(
+                    child: StackCastMenu(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +102,8 @@ class CastPreview extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Opacity(
                                       opacity: shouldDim(context) ? .6 : 1,
@@ -137,20 +142,15 @@ class CastPreview extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              if (theme?.showMenu ?? true) ...[
-                                const ReplyButton(),
-                                const ShareButton(),
-                                const CastMenu(),
-                              ],
                             ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           );
         },
       ),
@@ -340,7 +340,7 @@ class _HowOldLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final Cast cast = CastProvider.of(context).value;
     return Text(
-      '${_oldString(cast.createdAt)} old',
+      _oldString(cast.createdAt),
       style: TextStyle(color: Colors.grey.shade400),
     );
   }
@@ -352,13 +352,13 @@ String _oldString(DateTime createdAt) {
     return DateFormat('MMM d').format(createdAt);
   }
   if (howOld.inHours > 24) {
-    return '${howOld.inDays}d';
+    return '${howOld.inDays} day${howOld.inDays == 1 ? '' : 's'} ago';
   }
   if (howOld.inMinutes > 60) {
-    return '${howOld.inHours}h';
+    return '${howOld.inHours} hour${howOld.inHours == 1 ? '' : 's'} ago';
   }
   if (howOld.inSeconds > 60) {
-    return '${howOld.inMinutes}m';
+    return '${howOld.inMinutes} month${howOld.inMinutes == 1 ? '' : 's'} ago';
   }
   return 'just now';
 }

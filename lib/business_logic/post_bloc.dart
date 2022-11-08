@@ -53,10 +53,11 @@ class PostBloc {
     if (duration < const Duration(seconds: 10)) {
       throw ArgumentError('Casts must be at least 10 seconds long!');
     }
-    _castFile.value = CastFile(
+    final CastFile castFile = await CastFile.initiallyDenoised(
       file: file,
       originalDuration: duration,
     );
+    _castFile.value = castFile;
     _castFile.value!.trim.addListener(_onTrimChanged);
   }
 

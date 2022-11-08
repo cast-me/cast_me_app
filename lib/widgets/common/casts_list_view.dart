@@ -92,6 +92,12 @@ class _CastListViewState extends State<CastListView> {
                 return const AdaptiveText('loading...');
               }
               return CastPreview(
+                padding: const EdgeInsets.only(
+                  top: 4,
+                  bottom: 2,
+                  left: 12,
+                  right: 12,
+                ),
                 cast: snapshot.data![index],
               );
             },
