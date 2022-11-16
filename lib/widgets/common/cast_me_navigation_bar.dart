@@ -29,3 +29,18 @@ class CastMeNavigationBar extends StatelessWidget {
     );
   }
 }
+
+Widget navigationBarTransition(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return SlideTransition(
+    position: Tween(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(animation),
+    child: child,
+  );
+}
