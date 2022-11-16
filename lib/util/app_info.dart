@@ -37,6 +37,7 @@ class _AppInfoState extends State<AppInfo> {
           textAlign: TextAlign.center,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SelectableText('user_id: ${AuthManager.instance.profile.id}'),
               SelectableText('${info.appName}'
