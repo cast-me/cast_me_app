@@ -4,16 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-// Project imports:
-import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
-import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/main.dart';
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // See [DeepLinkHandler], we use it instead of FCM's built in message handler.
-  print('Handling a background message: ${message.messageId}');
-}
-
 class FirebaseMessageHandler extends StatefulWidget {
   const FirebaseMessageHandler({
     Key? key,

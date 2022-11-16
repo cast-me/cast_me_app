@@ -13,12 +13,10 @@ class SeekBar extends StatefulWidget {
     Key? key,
     required this.positionDataStream,
     required this.seekTo,
-    this.color,
   }) : super(key: key);
 
   final Stream<PositionData> positionDataStream;
   final Future<void> Function(Duration) seekTo;
-  final Color? color;
 
   @override
   State<SeekBar> createState() => _SeekBarState();
@@ -53,7 +51,7 @@ class _SeekBarState extends State<SeekBar> {
                   data: SliderTheme.of(context).copyWith(
                     thumbShape: HiddenThumbComponentShape(),
                     activeTrackColor: Color.lerp(
-                      widget.color ?? Colors.white,
+                      Colors.white,
                       Colors.black,
                       .6,
                     ),
@@ -73,9 +71,9 @@ class _SeekBarState extends State<SeekBar> {
                 ),
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: widget.color ?? Colors.white,
+                    activeTrackColor: Colors.white,
                     inactiveTrackColor: Colors.transparent,
-                    thumbColor: widget.color ?? Colors.white,
+                    thumbColor: Colors.white,
                   ),
                   child: Slider(
                     min: 0,
@@ -97,8 +95,7 @@ class _SeekBarState extends State<SeekBar> {
                 Positioned(
                   left: 16,
                   bottom: 0,
-                  child: Text(
-                      data.position.toFormattedString(),
+                  child: Text(data.position.toFormattedString(),
                       style: Theme.of(context).textTheme.caption),
                 ),
                 Positioned(
