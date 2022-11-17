@@ -130,7 +130,7 @@ class WelcomeMessageContent extends StatelessWidget {
           'Welcome to CastMe!',
           style: Theme.of(context).textTheme.headline5,
         ),
-        const Text('\nThank you for being an early adopter!\n'),
+        const Text('\nThank you for being an early adopter.\n'),
         const Text('Please join our discord server to provide feedback and '
             'chat with other early adopters!'),
         Center(

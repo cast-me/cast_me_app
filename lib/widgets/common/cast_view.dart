@@ -358,7 +358,7 @@ String _oldString(DateTime createdAt) {
     return '${howOld.inHours} hour${howOld.inHours == 1 ? '' : 's'} ago';
   }
   if (howOld.inSeconds > 60) {
-    return '${howOld.inMinutes} month${howOld.inMinutes == 1 ? '' : 's'} ago';
+    return '${howOld.inMinutes} minutes${howOld.inMinutes == 1 ? '' : 's'} ago';
   }
   return 'just now';
 }
