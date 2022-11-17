@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:path/path.dart';
@@ -27,6 +28,13 @@ class PostBloc {
 
   final ValueNotifier<CastFile?> _castFile = ValueNotifier(null);
 
+  // Used as a hack to force the title text field to rebuild.
+  Key titleFieldKey = UniqueKey();
+  final ValueNotifier<String> titleText = ValueNotifier('');
+
+  final TextEditingController externalLinkTextController =
+      TextEditingController();
+
   Future<void> _onTrimChanged() async {
     final Trim trim = _castFile.value!.trim.value;
     return ClipAudioPlayer.instance.setClip(
@@ -50,8 +58,8 @@ class PostBloc {
       join(documentsDirectory.path, name),
     );
     final Duration duration = (await ClipAudioPlayer.instance.setFile(file))!;
-    if (duration < const Duration(seconds: 10)) {
-      throw ArgumentError('Casts must be at least 10 seconds long!');
+    if (duration < const Duration(seconds: 5)) {
+      throw ArgumentError('Casts must be at least 5 seconds long!');
     }
     final CastFile castFile = await CastFile.initiallyDenoised(
       file: file,
@@ -62,11 +70,7 @@ class PostBloc {
   }
 
   Future<void> onFileUpdated(CastFile castFile) async {
-    final Duration duration =
-        (await ClipAudioPlayer.instance.setFile(castFile.file))!;
-    if (duration < const Duration(seconds: 10)) {
-      throw ArgumentError('Casts must be at least 10 seconds long!');
-    }
+    await ClipAudioPlayer.instance.setFile(castFile.file);
     _castFile.value = castFile;
     _castFile.value!.trim.addListener(_onTrimChanged);
     // Force an immediate trim check in case the cast file has a trim.
@@ -86,9 +90,16 @@ class PostBloc {
       url: url,
       topics: replyCast.value == null ? topics.value : [],
     );
+    return castId;
+  }
+
+  void reset() {
     clearFiles();
     replyCast.value = null;
     topics.value = [];
-    return castId;
+    externalLinkTextController.text = '';
+    titleText.value = '';
+    // Gross hack to force the title field to rebuild from scratch.
+    titleFieldKey = UniqueKey();
   }
 }

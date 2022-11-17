@@ -14,7 +14,6 @@ class ProfilePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CastMePage(
-      headerText: 'Your Profile',
       child: Column(
         children: [
           Expanded(child: ProfileView(profile: AuthManager.instance.profile)),

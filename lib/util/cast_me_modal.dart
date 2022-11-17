@@ -8,9 +8,11 @@ class CastMeModal extends StatelessWidget {
   const CastMeModal({
     Key? key,
     required this.child,
+    this.adaptiveColor,
   }) : super(key: key);
 
   final Widget child;
+  final AdaptiveColor? adaptiveColor;
 
   static void showMessage(
     BuildContext context,
@@ -39,20 +41,18 @@ class CastMeModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      alignment: Alignment.center,
       padding: const EdgeInsets.all(24),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Container(
-            width: double.infinity,
-            child: AdaptiveMaterial(
-              adaptiveColor: AdaptiveColor.surface,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: child,
-              ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          width: double.infinity,
+          child: AdaptiveMaterial(
+            adaptiveColor: adaptiveColor ?? AdaptiveColor.canvas,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: child,
             ),
           ),
         ),

@@ -6,6 +6,7 @@ enum AdaptiveColor {
   secondary,
   background,
   surface,
+  canvas,
 }
 
 extension ToColor on AdaptiveColor {
@@ -19,6 +20,8 @@ extension ToColor on AdaptiveColor {
         return Theme.of(context).colorScheme.background;
       case AdaptiveColor.surface:
         return Theme.of(context).colorScheme.surface;
+      case AdaptiveColor.canvas:
+        return Theme.of(context).canvasColor;
     }
   }
 
@@ -31,6 +34,8 @@ extension ToColor on AdaptiveColor {
       case AdaptiveColor.background:
         return Theme.of(context).colorScheme.onBackground;
       case AdaptiveColor.surface:
+        return Theme.of(context).colorScheme.onSurface;
+      case AdaptiveColor.canvas:
         return Theme.of(context).colorScheme.onSurface;
     }
   }

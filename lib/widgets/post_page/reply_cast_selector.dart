@@ -19,7 +19,10 @@ class ReplyCastSelector extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const AdaptiveText('Is a reply to:'),
+        Text(
+          '1. Reply to',
+          style: Theme.of(context).textTheme.headline5,
+        ),
         const SizedBox(height: 8),
         ValueListenableBuilder<Cast?>(
           valueListenable: PostBloc.instance.replyCast,
@@ -83,7 +86,10 @@ class ReplyCastSelector extends StatelessWidget {
 class SelectCastModal extends StatefulWidget {
   const SelectCastModal({
     Key? key,
+    this.adaptiveColor,
   }) : super(key: key);
+
+  final AdaptiveColor? adaptiveColor;
 
   @override
   State<SelectCastModal> createState() => _SelectCastModalState();
@@ -99,7 +105,7 @@ class _SelectCastModalState extends State<SelectCastModal> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: AdaptiveMaterial(
-          adaptiveColor: AdaptiveColor.surface,
+          adaptiveColor: widget.adaptiveColor ?? AdaptiveColor.canvas,
           child: Column(
             children: [
               _CastSearchBar(searchController: searchController),

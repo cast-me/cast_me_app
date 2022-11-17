@@ -27,7 +27,7 @@ class ExternalLinkField extends StatelessWidget {
         return TextField(
           controller: controller,
           decoration: InputDecoration(
-            labelText: 'External link',
+            labelText: 'Link',
             errorText: isValid(controller.text)
                 ? null
                 : 'Link must be a valid url including \'http\' or \'https\'',

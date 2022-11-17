@@ -44,7 +44,7 @@ class _DropDownMenuState extends State<DropDownMenu> {
     }
     BoxConstraints? prevConstraints;
     showDialog<void>(
-      useRootNavigator: false,
+      useRootNavigator: true,
       useSafeArea: false,
       context: context,
       builder: (context) {
@@ -63,7 +63,7 @@ class _DropDownMenuState extends State<DropDownMenu> {
                     : width - upperLeft.dx - 2 * renderBox.size.width / 3,
                 child: AdaptiveMaterial(
                   adaptiveColor:
-                      widget.adaptiveBackgroundColor ?? AdaptiveColor.surface,
+                      widget.adaptiveBackgroundColor ?? AdaptiveColor.canvas,
                   child: Padding(
                     padding: widget.padding ?? const EdgeInsets.all(2),
                     child: widget.builder(

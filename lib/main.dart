@@ -29,6 +29,8 @@ import 'package:cast_me_app/widgets/common/auth_gate.dart';
 import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 
+const Color castMeGrey = Color.fromARGB(255, 25, 25, 31);
+
 Future<void> main() async {
   await runZonedGuarded(
     () async {
@@ -113,13 +115,19 @@ class CastMeApp extends StatelessWidget {
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Colors.white,
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(const StadiumBorder())
+          ),
+        ),
+        canvasColor: Color.lerp(Colors.white, castMeGrey, .95),
         colorScheme: ColorScheme(
           brightness: Brightness.dark,
           primary: Colors.black,
           onPrimary: Colors.white,
           secondary: Colors.white,
           onSecondary: Colors.grey.shade700,
-          surface: const Color.fromARGB(255, 25, 25, 31),
+          surface: castMeGrey,
           onSurface: Colors.white,
           background: Colors.black,
           onBackground: Colors.white,
