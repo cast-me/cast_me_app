@@ -1,12 +1,11 @@
 // Flutter imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
-import 'package:cast_me_app/widgets/post_page/submit_cast_button.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
+import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
@@ -17,6 +16,7 @@ import 'package:cast_me_app/widgets/post_page/record/file_playback_controls.dart
 import 'package:cast_me_app/widgets/post_page/record/record_button.dart';
 import 'package:cast_me_app/widgets/post_page/record/recording_bar.dart';
 import 'package:cast_me_app/widgets/post_page/reply_cast_selector.dart';
+import 'package:cast_me_app/widgets/post_page/submit_cast_button.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
 class PostPageView extends StatefulWidget {

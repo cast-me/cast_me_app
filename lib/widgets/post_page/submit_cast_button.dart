@@ -1,3 +1,7 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
@@ -7,7 +11,6 @@ import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/post_page/cast_posted_modal.dart';
 import 'package:cast_me_app/widgets/post_page/external_link_field.dart';
-import 'package:flutter/material.dart';
 
 class SubmitCastButton extends StatelessWidget {
   const SubmitCastButton({
