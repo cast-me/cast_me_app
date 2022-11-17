@@ -32,7 +32,6 @@ class CastMenu extends StatelessWidget {
     final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
       child: const Icon(Icons.more_vert, color: Colors.white),
-      adaptiveBackgroundColor: AdaptiveColor.background,
       builder: (context, hideMenu) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

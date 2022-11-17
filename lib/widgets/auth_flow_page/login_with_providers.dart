@@ -63,6 +63,7 @@ class ProviderButton extends StatelessWidget {
         onPressed: () async {
           await signIn();
         },
+        shape: const StadiumBorder(),
       ),
     );
   }

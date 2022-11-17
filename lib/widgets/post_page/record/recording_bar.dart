@@ -18,7 +18,7 @@ class _RecordingBarState extends State<RecordingBar> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(19),
       child: Container(
         height: 38,
         color: Colors.black,
@@ -41,7 +41,7 @@ class _RecordingBarState extends State<RecordingBar> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.only(left: 8),
+                  padding: const EdgeInsets.only(left: 10),
                   alignment: Alignment.centerLeft,
                   child: Text(
                     (AudioRecorder

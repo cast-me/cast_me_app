@@ -45,28 +45,23 @@ class CastMeView extends StatelessWidget {
             ),
           );
         }
-        return Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: ImplicitNavigator.fromValueListenable<CastMeTab>(
-                    key: const PageStorageKey('cast_tab_key'),
-                    maintainHistory: true,
-                    valueListenable: CastMeBloc.instance.currentTab,
-                    onPop: (_, tabAfterPop) =>
-                        CastMeBloc.instance.onTabChanged(tabAfterPop),
-                    transitionsBuilder: navigationBarTransition,
-                    getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
-                    builder:
-                        (context, currentTab, animation, secondaryAnimation) {
-                      return Scaffold(
-                        // Used to avoid the faint grey line between the navigation
-                        // bar and the body when both are the same color.
-                        backgroundColor: currentTab == CastMeTab.listen
-                            ? Theme.of(context).colorScheme.background
-                            : Theme.of(context).colorScheme.surface,
-                        body: Builder(
+        return Scaffold(
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: ImplicitNavigator.fromValueListenable<CastMeTab>(
+                      key: const PageStorageKey('cast_tab_key'),
+                      maintainHistory: true,
+                      valueListenable: CastMeBloc.instance.currentTab,
+                      onPop: (_, tabAfterPop) =>
+                          CastMeBloc.instance.onTabChanged(tabAfterPop),
+                      transitionsBuilder: navigationBarTransition,
+                      getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
+                      builder:
+                          (context, currentTab, animation, secondaryAnimation) {
+                        return Builder(
                           builder: (context) {
                             switch (currentTab) {
                               case CastMeTab.listen:
@@ -77,18 +72,18 @@ class CastMeView extends StatelessWidget {
                                 return const ProfilePageView();
                             }
                           },
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                // Dummy nav bar that's hidden under the real one to
-                // ensure that the real one doesn't cover up the page.
-                const CastMeNavigationBar(tab: CastMeTab.listen),
-              ],
-            ),
-            const CastMeBottomSheet(),
-          ],
+                  // Dummy nav bar that's hidden under the real one to
+                  // ensure that the real one doesn't cover up the page.
+                  const CastMeNavigationBar(tab: CastMeTab.listen),
+                ],
+              ),
+              const CastMeBottomSheet(),
+            ],
+          ),
         );
       },
     );

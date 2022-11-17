@@ -40,13 +40,14 @@ class ClipAudioPlayer {
 
   bool get isCompleted => _player.processingState == ProcessingState.completed;
 
-  String? get currentPath => _player.audioSource == null ||
+  String? get currentPath =>
+      _player.audioSource == null ||
           _player.processingState == ProcessingState.idle
-      ? null
-      : (_player.audioSource as UriAudioSource).uri.path;
+          ? null
+          : (_player.audioSource as UriAudioSource).uri.path;
 
   late final ValueListenable<double> currentSpeed =
-      _player.speedStream.toListenable().map((value) => value ?? 1);
+  _player.speedStream.toListenable().map((value) => value ?? 1);
 
   Future<Duration?> setFile(File? file) async {
     if (file == null) {
@@ -76,6 +77,20 @@ class ClipAudioPlayer {
     await _player.seek(Duration.zero);
   }
 
+  Future<void> next() async {
+    await _player.seek(duration!);
+  }
+
+  Future<void> tick(Duration tickLength) async {
+    Duration target = position! + tickLength;
+    if (target.isNegative) {
+      target = Duration.zero;
+    } else if (target > duration!) {
+      target = duration!;
+    }
+    await _player.seek(target);
+  }
+
   Future<void> setSpeed(double speed) async {
     await _player.setSpeed(speed);
   }
@@ -97,6 +112,7 @@ class ClipAudioPlayer {
           _player.positionStream,
           _player.bufferedPositionStream,
           _player.durationStream,
-          (position, bufferedPosition, duration) => PositionData(
-              position, bufferedPosition, duration ?? Duration.zero));
+              (position, bufferedPosition, duration) =>
+              PositionData(
+                  position, bufferedPosition, duration ?? Duration.zero));
 }

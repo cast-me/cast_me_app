@@ -70,8 +70,6 @@ class _AuthSignInFormState extends State<AuthForm> {
   @override
   Widget build(BuildContext context) {
     return CastMePage(
-      isBasePage: AuthManager.instance.signInState == SignInState.signingIn,
-      headerText: widget.headerText,
       child: Column(
         children: [
           widget.body,

@@ -10,16 +10,18 @@ import 'package:cast_me_app/util/adaptive_material.dart';
 class CastMePage extends StatelessWidget {
   const CastMePage({
     Key? key,
-    required this.headerText,
+    this.headerText,
     this.trailingIcon,
     required this.child,
+    this.footer,
     this.isBasePage = false,
     this.scrollable = false,
   }) : super(key: key);
 
-  final String headerText;
+  final String? headerText;
   final Widget? trailingIcon;
   final Widget child;
+  final Widget? footer;
   final bool isBasePage;
   final bool scrollable;
 
@@ -29,7 +31,11 @@ class CastMePage extends StatelessWidget {
     // separately so that the scrollable content, if applicable, is padded
     // internally not externally.
     final Widget paddedChild = Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: headerText == null ? 24 : 0,
+      ),
       child: child,
     );
     return AdaptiveMaterial(
@@ -37,20 +43,21 @@ class CastMePage extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
-              child: Row(
+            if (headerText != null)
+              Row(
                 children: [
                   if (!isBasePage)
                     const ImplicitNavigatorBackButton(
                       transitionDuration: Duration.zero,
                     ),
-                  Text(
-                    headerText,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.white),
+                  Expanded(
+                    child: Text(
+                      headerText!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3!
+                          .copyWith(color: Colors.white),
+                    ),
                   ),
                   if (trailingIcon != null)
                     Padding(
@@ -65,11 +72,14 @@ class CastMePage extends StatelessWidget {
                     ),
                 ],
               ),
-            ),
             if (scrollable)
               Expanded(child: SingleChildScrollView(child: paddedChild))
             else
               Expanded(child: paddedChild),
+            if (footer != null) Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: footer!,
+            ),
           ],
         ),
       ),

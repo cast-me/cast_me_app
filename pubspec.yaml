@@ -65,7 +65,7 @@ flutter_icons:
   remove_alpha_ios: true
   image_path_android: "assets/icons/cast_me_icon_android.png"
   image_path_ios: "assets/icons/cast_me_icon_ios.png"
-  adaptive_icon_background: "#000000"
+  adaptive_icon_background: "#19191F"
   adaptive_icon_foreground: "assets/icons/cast_me_icon_foreground.png"
 
 flutter:
