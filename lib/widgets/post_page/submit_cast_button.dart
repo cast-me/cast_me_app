@@ -1,10 +1,10 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
