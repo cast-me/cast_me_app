@@ -1,55 +1,42 @@
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class CastListView extends StatelessWidget {
-  const CastListView({
+class ConversationListView extends StatelessWidget {
+  const ConversationListView({
     Key? key,
-    this.filterProfile,
-    this.filterOutProfile,
     this.filterTopics,
     this.padding,
     this.controller,
   }) : super(key: key);
 
-  /// If non-null, fetch only casts authored by the specified user.
-  final Profile? filterProfile;
-
-  /// If non-null, exclude casts by the specified user.
-  final Profile? filterOutProfile;
-
-  /// If non-null, restrict casts to the given topic.
+  /// If non-null, restrict conversations to the given topic.
   final List<Topic>? filterTopics;
 
   final EdgeInsets? padding;
 
-  final CastMeListController<Cast>? controller;
+  final CastMeListController<Conversation>? controller;
 
   @override
   Widget build(BuildContext context) {
-    return CastMeListView<Cast>(
+    return CastMeListView<Conversation>(
       controller: controller,
       getStream: () => CastDatabase.instance
-          .getCasts(
-        filterProfile: filterProfile,
-        filterOutProfile: filterOutProfile,
+          .getConversations(
         filterTopics: filterTopics,
-        searchTerm: controller?.searchTextController?.text,
       )
           .handleError(
-        (Object error, StackTrace stackTrace) {
+        (Object error) {
           if (kDebugMode) {
             print(error);
-            print(stackTrace);
           }
         },
       ),
-      builder: (context, casts, index) {
+      builder: (context, conversations, index) {
         return CastPreview(
           padding: const EdgeInsets.only(
             top: 4,
@@ -57,7 +44,7 @@ class CastListView extends StatelessWidget {
             left: 12,
             right: 12,
           ),
-          cast: casts[index],
+          cast: conversations[index].rootCast,
         );
       },
     );

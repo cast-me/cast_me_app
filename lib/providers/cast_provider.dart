@@ -1,13 +1,11 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/widgets.dart';
-
-// Package imports:
-import 'package:protobuf/protobuf.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
 
 class CastProvider extends InheritedWidget {
   CastProvider({
@@ -36,21 +34,20 @@ class CastProvider extends InheritedWidget {
 class CastProviderData extends ValueNotifier<Cast> {
   CastProviderData(Cast initialCast) : super(initialCast);
 
-  Future<void> setLiked(bool newValue) async {
+  Future<void> setLiked(bool newIsLiked) async {
     final Profile profile = AuthManager.instance.profile;
-    await CastDatabase.instance.setLiked(cast: value, liked: newValue);
-    final Cast newCast = value.deepCopy();
-    if (newValue) {
-      newCast.likes.add(
-        Like(
-          createdAtString: DateTime.now().toUtc().toString(),
-          userId: profile.id,
-          userDisplayName: profile.displayName,
-        ),
-      );
-    } else {
-      newCast.likes.removeWhere((like) => like.userId == profile.id);
-    }
-    value = newCast;
+    await CastDatabase.instance.setLiked(cast: value, liked: newIsLiked);
+    value = value.copyWith(
+      likes: newIsLiked
+          ? [
+              ...value.likes ?? [],
+              Like(
+                createdAt: DateTime.now().toUtc().toString(),
+                userId: profile.id,
+                userDisplayName: profile.displayName,
+              ),
+            ]
+          : value.likes?.where((like) => like.userId != profile.id).toList(),
+    );
   }
 }

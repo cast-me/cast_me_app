@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,7 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
-import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pb.dart';
 import 'package:cast_me_app/util/color_utils.dart';
-import 'package:cast_me_app/util/string_utils.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
 ///
@@ -170,7 +169,7 @@ class AuthManager extends ChangeNotifier {
           profilePictureUrl: profilePictureUrl,
           accentColorBase: paletteGenerator.vibrantColor?.color.serialize,
         );
-        await profilesQuery.upsert(completedProfile.toSQLJson());
+        await profilesQuery.upsert(completedProfile.toJson());
         _profile = completedProfile;
         _signInState = SignInState.signedIn;
       },
@@ -316,11 +315,7 @@ class AuthManager extends ChangeNotifier {
   }
 
   Profile? _rowToProfile(Map<String, dynamic> row) {
-    return Profile()
-      ..mergeFromProto3Json(
-        row,
-        ignoreUnknownFields: true,
-      );
+    return Profile.fromJson(row);
   }
 
   Future<Profile> getProfile({required String username}) async {
@@ -435,26 +430,6 @@ enum SignInState {
   completingProfile,
   signedIn,
   signingInThroughProvider,
-}
-
-extension SignInExtention on SignInState {}
-
-extension CastMeUserUtils on CastMeProfileBase {
-  bool get isComplete => displayName.isNotEmpty && profilePictureUrl.isNotEmpty;
-
-  // The auth-specific user data.
-  User get authUser => supabase.auth.currentUser!;
-
-  Map<String, dynamic> toSQLJson() {
-    return (toProto3Json() as Map<String, dynamic>).toSnakeCase();
-  }
-}
-
-typedef Profile = CastMeProfileBase;
-
-extension ProfileUtils on CastMeProfileBase {
-  Color get accentColor =>
-      ColorUtils.deserialize(accentColorBase.emptyToNull ?? 'FFFFFFFF');
 }
 
 class SignInBloc {

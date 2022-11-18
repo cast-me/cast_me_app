@@ -1,3 +1,5 @@
+import 'package:basic_utils/basic_utils.dart';
+
 extension MapUtils<K, V> on Map<K, V> {
   V getOrElse(K key, V defaultValue) {
     if (containsKey(key)) {
@@ -44,5 +46,51 @@ extension NotShittIterable<T> on Iterable<T> {
       }
     }
     return ret;
+  }
+}
+
+extension JsonString on Map<String, dynamic> {
+  Map<String, dynamic> toSnakeCase() {
+    return map<String, dynamic>((String key, dynamic value) {
+      return MapEntry<String, dynamic>(
+        StringUtils.camelCaseToLowerUnderscore(key),
+        value is Map<String, dynamic> ? value.toSnakeCase() : value,
+      );
+    });
+  }
+
+  Map<String, dynamic> jsonMap({
+    String Function(String)? mapKey,
+    dynamic Function(String, dynamic)? mapValue,
+  }) {
+    return map<String, dynamic>(
+      (String key, dynamic value) {
+        final newKey = mapKey != null ? mapKey(key) : key;
+        if (value is Map<String, dynamic>) {
+          return MapEntry<String, dynamic>(
+            newKey,
+            value.jsonMap(mapKey: mapKey, mapValue: mapValue),
+          );
+        }
+        if (value is Iterable<Map<String, dynamic>>) {
+          return MapEntry<String, dynamic>(
+            newKey,
+            value.map(
+              (element) => element.jsonMap(mapKey: mapKey, mapValue: mapValue),
+            ),
+          );
+        }
+        if (value is Iterable<dynamic> && mapValue != null) {
+          return MapEntry<String, dynamic>(
+            newKey,
+            value.map<dynamic>((dynamic v) => mapValue(key, v)),
+          );
+        }
+        return MapEntry<String, dynamic>(
+          newKey,
+          mapValue != null ? mapValue(key, value) : value,
+        );
+      },
+    );
   }
 }

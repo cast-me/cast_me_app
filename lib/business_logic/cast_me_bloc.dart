@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/foundation.dart';
 
 // Project imports:

@@ -13,6 +13,8 @@ const String createdAtCol = 'created_at';
 
 const String treeUpdatedAtCol = 'tree_updated_at';
 
+const String depthCol = 'depth';
+
 const String treeHasNewCastsCol = 'tree_has_new_casts';
 
 const String hasViewedCol = 'has_viewed';
@@ -54,6 +56,9 @@ SupabaseQueryBuilder get castsWriteQuery =>
 SupabaseQueryBuilder get castsReadQuery =>
     supabase.from(isStaging ? 'staging_casts_view' : 'casts_view');
 
+SupabaseQueryBuilder get conversationsReadQuery => supabase
+    .from(isStaging ? 'staging_conversations_view' : 'conversations_view');
+
 SupabaseQueryBuilder get listensQuery =>
     supabase.from(isStaging ? 'staging_views' : 'views');
 
@@ -65,4 +70,3 @@ SupabaseQueryBuilder get topicsReadQuery =>
 
 SupabaseQueryBuilder get castsToTopicWriteQuery =>
     supabase.from(isStaging ? 'staging_casts_to_topics' : 'casts_to_topics');
-
