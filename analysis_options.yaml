@@ -8,7 +8,7 @@ analyzer:
     todo: ignore
     sdk_version_async_exported_from_core: ignore
   exclude:
-    - lib/business_logic/models/protobufs/**
+    - lib/business_logic/models/*.g.dart
 
 linter:
   rules:

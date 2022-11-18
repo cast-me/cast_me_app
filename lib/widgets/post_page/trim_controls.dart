@@ -117,9 +117,9 @@ class _Cut extends StatelessWidget {
           onPressed: enabled
               ? () {
                   final Trim oldTrim = castFile.trim.value;
-                  // We add the start back in because the audio player is measuring
-                  // our position relative to start but trim expects the start
-                  // relative to the underlying file.
+                  // We add the start back in because the audio player is
+                  // measuring our position relative to start but trim expects
+                  // the start relative to the underlying file.
                   castFile.trim.value = Trim(
                     start: cutFromStart
                         ? oldTrim.start + player.position!

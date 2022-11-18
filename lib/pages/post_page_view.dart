@@ -1,14 +1,14 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
-import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/post_page/external_link_field.dart';
 import 'package:cast_me_app/widgets/post_page/pick_file_view.dart';
 import 'package:cast_me_app/widgets/post_page/post_topic_selector.dart';
@@ -27,7 +27,7 @@ class PostPageView extends StatefulWidget {
 }
 
 class _PostPageViewState extends State<PostPageView> {
-  final CastListController castListController = CastListController();
+  final CastMeListController<Cast> castListController = CastMeListController();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class _SubmitFormField extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               '3. Details',
               style: Theme.of(context).textTheme.headline5,

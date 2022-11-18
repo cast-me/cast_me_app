@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/cast_menu.dart';
@@ -73,7 +73,7 @@ class CastPreview extends StatelessWidget {
                   : null,
               child: Row(
                 children: [
-                  if ((theme?.indentReplies ?? true) && cast.replyTo.isNotEmpty)
+                  if ((theme?.indentReplies ?? true) && cast.replyTo != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Container(
@@ -263,7 +263,7 @@ class _CastTitleView extends StatelessWidget {
     final CastViewTheme? theme = CastViewTheme.of(context);
     final bool tappable = theme?.taggedUsersAreTappable ?? true;
     return Text.rich(
-      _constructSpan(cast.title, cast.taggedUsernames, tappable),
+      _constructSpan(cast.title, cast.taggedUsernames ?? [], tappable),
       style: const TextStyle(color: Colors.white),
       maxLines: theme?.titleMaxLines,
       overflow: theme?.titleMaxLines != null ? TextOverflow.ellipsis : null,
@@ -340,7 +340,7 @@ class _HowOldLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final Cast cast = CastProvider.of(context).value;
     return Text(
-      _oldString(cast.createdAt),
+      _oldString(cast.createdAtStamp),
       style: TextStyle(color: Colors.grey.shade400),
     );
   }

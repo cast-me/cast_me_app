@@ -1,8 +1,10 @@
 // Dart imports:
 import 'dart:io';
-import 'dart:math';
 
 // Package imports:
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
@@ -13,7 +15,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
@@ -22,7 +24,11 @@ class CastDatabase {
 
   static final CastDatabase instance = CastDatabase._();
 
-  Stream<Cast> getCasts({
+  late final getConversations = getCastOrConversation<Conversation>;
+
+  late final getCasts = getCastOrConversation<Cast>;
+
+  Stream<T> getCastOrConversation<T>({
     Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
@@ -31,6 +37,11 @@ class CastDatabase {
     String? searchTerm,
     bool single = false,
   }) async* {
+    assert(
+      T == Cast || T == Conversation,
+      '$T was not CastBase or ConversationBase.',
+    );
+    final bool isCast = T == Cast;
     // This is here because we need two instances of the builder at the end to
     // run two separate queries because Supabase doesn't provide a copy method.
     // TODO: remove this function and use copy once it's available.
@@ -60,7 +71,7 @@ class CastDatabase {
       return queryBuilder;
     }
 
-    Stream<Cast> orderAndRun(PostgrestFilterBuilder query) {
+    Stream<T> orderAndRun(PostgrestFilterBuilder query) {
       final PostgrestTransformBuilder transformBuilder = query
           // Put conversations and individual casts that don't have any new
           // content at the bottom.
@@ -71,14 +82,21 @@ class CastDatabase {
           // This is equivalent to BFS. Removing it would produce insertion
           // order search. Could also consider implementing DFS. Not clear which
           // is most desirable from a user perspective.
-          .order('depth', ascending: true)
+          .order(depthCol, ascending: true)
           // Within a specific depth level, play the oldest content first as new
           // content in a level might build on other content in that level.
           .order(createdAtCol, ascending: true);
-      return paginated(
+      return paginated<T>(
         transformBuilder,
         chunkSize: single ? 1 : 20,
         chunkLimit: single ? 1 : null,
+        convertRow: (dynamic row) {
+          if (isCast) {
+            return _rowToCast(row) as T;
+          } else {
+            return _rowToConversation(row) as T;
+          }
+        },
       );
     }
 
@@ -102,9 +120,10 @@ class CastDatabase {
   //  requests.
   // Consider client-side de-dup logic or migrating off `range` and onto
   // `gt/lt`.
-  Stream<Cast> paginated(
+  Stream<T> paginated<T>(
     PostgrestTransformBuilder query, {
     required int chunkSize,
+    required T Function(dynamic) convertRow,
     int? chunkLimit,
   }) async* {
     int soFar = 0;
@@ -121,8 +140,8 @@ class CastDatabase {
         return;
       }
       for (final dynamic row in rows) {
-        final Cast cast = _rowToCast(row);
-        yield cast;
+        final T element = convertRow(row);
+        yield element;
       }
     }
   }
@@ -191,7 +210,7 @@ class CastDatabase {
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
-    Cast cast = Cast(
+    final WriteCast cast = WriteCast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
       durationMs: castFile.duration.inMilliseconds,
@@ -200,7 +219,10 @@ class CastDatabase {
       externalUrl: url.emptyToNull,
     );
     final String castId = _rowToId(
-      await castsWriteQuery.insert(_castToRow(cast)).select(idCol).single(),
+      await castsWriteQuery
+          .insert(_writeCastToRow(cast))
+          .select(idCol)
+          .single(),
     );
     await castsToTopicWriteQuery.insert(topics.map((t) {
       return <String, dynamic>{
@@ -292,33 +314,20 @@ String _rowToId(dynamic row) {
   return (row as Map<String, dynamic>)[idCol]! as String;
 }
 
+Conversation _rowToConversation(dynamic row) {
+  return Conversation.fromJson(row as Map<String, dynamic>);
+}
+
 Cast _rowToCast(dynamic row) {
-  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
-  return Cast.create()
-    ..mergeFromProto3Json(
-      // TODO(caseycrogers): consider figuring out how to use timestamp.proto.
-      <String, dynamic>{
-        'created_at_string': rowMap['created_at'].toString(),
-        // Note that this only populates some of the values of `reply_cast`
-        // because the reply cast is generated from the base table.
-        'reply_cast': (rowMap['reply_cast_json'] as Map<String, dynamic>?),
-        ...rowMap,
-      },
-      ignoreUnknownFields: true,
-    );
+  return Cast.fromJson(row as Map<String, dynamic>);
 }
 
 Topic _rowToTopic(dynamic row) {
-  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
-  return Topic.create()
-    ..mergeFromProto3Json(
-      rowMap,
-      ignoreUnknownFields: true,
-    );
+  return Topic.fromJson(row as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _castToRow(Cast cast) {
-  return (cast.toProto3Json() as Map<String, dynamic>).toSnakeCase();
+Map<String, dynamic> _writeCastToRow(WriteCast cast) {
+  return cast.toJson();
 }
 
 Future<int> getFileDuration(String mediaPath) async {

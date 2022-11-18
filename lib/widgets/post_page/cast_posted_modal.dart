@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/share_client.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';

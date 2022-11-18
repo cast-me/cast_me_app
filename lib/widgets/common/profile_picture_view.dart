@@ -1,11 +1,9 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-
-// Project imports:
-import 'package:cast_me_app/business_logic/models/protobufs/cast_me_profile_base.pbserver.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({
@@ -13,7 +11,7 @@ class ProfilePictureView extends StatelessWidget {
     required this.profile,
   }) : super(key: key);
 
-  final CastMeProfileBase profile;
+  final Profile profile;
 
   @override
   Widget build(BuildContext context) {
