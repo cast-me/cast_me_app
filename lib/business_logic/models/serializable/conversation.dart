@@ -1,5 +1,8 @@
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 
 part 'conversation.freezed.dart';
 

@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'dart:io';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +19,7 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.

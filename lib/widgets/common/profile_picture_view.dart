@@ -1,9 +1,11 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({

@@ -1,9 +1,9 @@
 // Package imports:
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 
 class Analytics {
   Analytics._();

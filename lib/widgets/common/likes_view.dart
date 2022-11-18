@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +8,8 @@ import 'package:async_list_view/async_list_view.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
