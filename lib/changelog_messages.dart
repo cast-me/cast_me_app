@@ -13,4 +13,8 @@ const Map<String, Widget> changelogMessages = {
  - Tweaked color palette
  - Improved cast posting and sharing UX''',
   ),
+  '0.1.10': Text(
+    ''' - Made buttons hip
+ - Fixed bug when creating a new account''',
+  ),
 };
