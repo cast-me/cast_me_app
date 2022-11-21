@@ -35,7 +35,8 @@ class CastDatabase {
     // run two separate queries because Supabase doesn't provide a copy method.
     // TODO: remove this function and use copy once it's available.
     PostgrestFilterBuilder getBuilder() {
-      PostgrestFilterBuilder queryBuilder = castsReadQuery.select();
+      PostgrestFilterBuilder queryBuilder =
+          castsReadQuery.select<List<Map<String, dynamic>>>();
       if (filterProfile != null) {
         // Get only casts authored by the given profiles.
         queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
@@ -113,14 +114,14 @@ class CastDatabase {
       // `upper - 1` because range is bad and should feel bad and is inclusive.
       // I mean seriously, what asshole decides a range should have an inclusive
       // upper bound?
-      final Iterable<dynamic> rows =
-          await query.range(soFar, upper - 1) as Iterable<dynamic>;
+      final Iterable<Map<String, dynamic>> rows =
+          await query.range(soFar, upper - 1) as Iterable<Map<String, dynamic>>;
       soFar += chunkSize;
       if (rows.isEmpty) {
         // We've run out of casts.
         return;
       }
-      for (final dynamic row in rows) {
+      for (final Map<String, dynamic> row in rows) {
         final Cast cast = _rowToCast(row);
         yield cast;
       }
@@ -128,7 +129,11 @@ class CastDatabase {
   }
 
   Future<Cast> getCast({required String castId}) async {
-    return _rowToCast(await castsReadQuery.select().eq(idCol, castId).single());
+    return castsReadQuery
+        .select<Map<String, dynamic>>()
+        .eq(idCol, castId)
+        .single()
+        .withConverter(_rowToCast);
   }
 
   /// Get a cast given an author and the first 8 characters of a cast id.
@@ -138,13 +143,14 @@ class CastDatabase {
     required String authorUsername,
     required String truncId,
   }) async {
-    return _rowToCast(await castsReadQuery
-        .select()
+    return castsReadQuery
+        .select<Map<String, dynamic>>()
         .eq(authorUsernameCol, authorUsername)
         // UUIDs are technically binary blobs not strings so we can't use like.
         .gt('id', '$truncId-0000-0000-0000-000000000000')
         .lt('id', '$truncId-ffff-ffff-ffff-ffffffffffff')
-        .single());
+        .single()
+        .withConverter(_rowToCast);
   }
 
   Future<Cast?> getSeedCast() {
@@ -191,7 +197,7 @@ class CastDatabase {
       fileOptions: const FileOptions(upsert: true),
     );
     final String audioFileUrl = castAudioFileBucket.getPublicUrl(fileName);
-    Cast cast = Cast(
+    final Cast cast = Cast(
       authorId: supabase.auth.currentUser!.id,
       title: title,
       durationMs: castFile.duration.inMilliseconds,
@@ -200,7 +206,10 @@ class CastDatabase {
       externalUrl: url.emptyToNull,
     );
     final String castId = _rowToId(
-      await castsWriteQuery.insert(_castToRow(cast)).select(idCol).single(),
+      await castsWriteQuery
+          .insert(_castToRow(cast))
+          .select<List<Map<String, dynamic>>>(idCol)
+          .single(),
     );
     await castsToTopicWriteQuery.insert(topics.map((t) {
       return <String, dynamic>{
@@ -274,12 +283,12 @@ class CastDatabase {
   }
 
   Future<List<Topic>> getAllTopics() async {
-    return (await topicsReadQuery
-        .select()
+    return await topicsReadQuery
+        .select<List<Map<String, dynamic>>>()
         .order('cast_count')
-        .withConverter((dynamic data) {
-      return (data as Iterable<dynamic>).map(_rowToTopic).toList();
-    }))!;
+        .withConverter((data) {
+      return data.map(_rowToTopic).toList();
+    });
   }
 }
 
@@ -292,27 +301,25 @@ String _rowToId(dynamic row) {
   return (row as Map<String, dynamic>)[idCol]! as String;
 }
 
-Cast _rowToCast(dynamic row) {
-  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
+Cast _rowToCast(Map<String, dynamic> row) {
   return Cast.create()
     ..mergeFromProto3Json(
       // TODO(caseycrogers): consider figuring out how to use timestamp.proto.
       <String, dynamic>{
-        'created_at_string': rowMap['created_at'].toString(),
+        'created_at_string': row['created_at'].toString(),
         // Note that this only populates some of the values of `reply_cast`
         // because the reply cast is generated from the base table.
-        'reply_cast': (rowMap['reply_cast_json'] as Map<String, dynamic>?),
-        ...rowMap,
+        'reply_cast': (row['reply_cast_json'] as Map<String, dynamic>?),
+        ...row,
       },
       ignoreUnknownFields: true,
     );
 }
 
-Topic _rowToTopic(dynamic row) {
-  final Map<String, dynamic> rowMap = row as Map<String, dynamic>;
+Topic _rowToTopic(Map<String, dynamic> row) {
   return Topic.create()
     ..mergeFromProto3Json(
-      rowMap,
+      row,
       ignoreUnknownFields: true,
     );
 }
