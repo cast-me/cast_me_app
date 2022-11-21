@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/widgets/post_page/partial_auto_complete.dart';
 
 class TitleField extends StatelessWidget {

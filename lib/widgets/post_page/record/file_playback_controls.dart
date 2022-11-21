@@ -146,34 +146,6 @@ class _DenoiseButton extends StatelessWidget {
   }
 }
 
-class _ToBeginning extends StatelessWidget {
-  const _ToBeginning({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        ClipAudioPlayer.instance.previous();
-      },
-      child: const Icon(Icons.skip_previous),
-    );
-  }
-}
-
-class _ToEnd extends StatelessWidget {
-  const _ToEnd({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        ClipAudioPlayer.instance.next();
-      },
-      child: const Icon(Icons.skip_next),
-    );
-  }
-}
-
 class _PlayButton extends StatelessWidget {
   const _PlayButton({Key? key, required this.isPlaying, this.path})
       : super(key: key);

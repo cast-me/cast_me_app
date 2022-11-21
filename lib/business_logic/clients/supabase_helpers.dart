@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -12,6 +12,8 @@ final castAudioFileBucket = supabase.storage.from('cast-audio-files');
 const String createdAtCol = 'created_at';
 
 const String treeUpdatedAtCol = 'tree_updated_at';
+
+const String depthCol = 'depth';
 
 const String treeHasNewCastsCol = 'tree_has_new_casts';
 
@@ -54,6 +56,9 @@ SupabaseQueryBuilder get castsWriteQuery =>
 SupabaseQueryBuilder get castsReadQuery =>
     supabase.from(isStaging ? 'staging_casts_view' : 'casts_view');
 
+SupabaseQueryBuilder get conversationsReadQuery => supabase
+    .from(isStaging ? 'staging_conversations_view' : 'conversations_view');
+
 SupabaseQueryBuilder get listensQuery =>
     supabase.from(isStaging ? 'staging_views' : 'views');
 
@@ -65,4 +70,3 @@ SupabaseQueryBuilder get topicsReadQuery =>
 
 SupabaseQueryBuilder get castsToTopicWriteQuery =>
     supabase.from(isStaging ? 'staging_casts_to_topics' : 'casts_to_topics');
-

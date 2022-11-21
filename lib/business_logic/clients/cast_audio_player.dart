@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/stream_utils.dart';
 

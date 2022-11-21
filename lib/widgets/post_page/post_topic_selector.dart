@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';

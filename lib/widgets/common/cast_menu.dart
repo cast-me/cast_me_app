@@ -10,13 +10,13 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/clients/share_client.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
-import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 
@@ -27,8 +27,8 @@ class CastMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // Fetch these here because we don't have a valid `context` from an
     // onPressed callback.
-    final CastListController? castListViewController =
-        CastListController.of(context);
+    final CastMeListController<Cast>? listController =
+        CastMeListController.of<Cast>(context);
     final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
       child: const Icon(Icons.more_vert, color: Colors.white),
@@ -51,7 +51,7 @@ class CastMenu extends StatelessWidget {
                 onTap: () async {
                   hideMenu();
                   await CastDatabase.instance.deleteCast(cast: cast);
-                  castListViewController?.refresh();
+                  listController?.refresh();
                 },
               ),
             if (cast.externalUri != null)

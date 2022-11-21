@@ -3,7 +3,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:social_share/social_share.dart';
 
 // Project imports:
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 
 class ShareClient {
   ShareClient._();
@@ -27,7 +27,7 @@ class ShareClient {
       // Space at end because `SocialShare` doesn't add a space between the
       // hashtags and the content.
       _sharePrefix,
-      hashtags: ['CastMe', ...cast.topicNames],
+      hashtags: ['CastMe', ...cast.topicNames ?? []],
       url: castShareUrl(cast),
     );
   }

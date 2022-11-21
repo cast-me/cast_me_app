@@ -1,6 +1,6 @@
 extension UriUtils on Uri {
-  static Uri? tryParse(String url, {List<String>? schemes}) {
-    if (url.isEmpty) {
+  static Uri? tryParse(String? url, {List<String>? schemes}) {
+    if (url == null || url.isEmpty) {
       return null;
     }
     try {

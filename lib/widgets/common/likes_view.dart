@@ -8,7 +8,8 @@ import 'package:async_list_view/async_list_view.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
@@ -29,16 +30,17 @@ class _LikesViewState extends State<LikesView> {
     return ValueListenableBuilder<Cast>(
         valueListenable: currentCast,
         builder: (context, cast, _) {
-          final bool userLiked = cast.likes
+          final List<Like> likes = cast.likes ?? [];
+          final bool userLiked = likes
               .any((like) => like.userId == AuthManager.instance.profile.id);
-          final int likeCount = cast.likes.length;
+          final int likeCount = likes.length;
           return _LikeView(
             icon: const Icon(
               Icons.thumb_up,
               size: size,
             ),
             label: Text(
-              cast.likes.length.toString(),
+              likes.length.toString(),
               style: const TextStyle(fontSize: size),
             ),
             color: Theme.of(context).colorScheme.surface,
@@ -50,8 +52,7 @@ class _LikesViewState extends State<LikesView> {
               if (likeCount == 0) {
                 return;
               }
-              final List<String> likeIds =
-                  cast.likes.map((l) => l.userId).toList();
+              final List<String> likeIds = likes.map((l) => l.userId).toList();
               // TODO(caseycrogers): actually position this in a sane spot.
               showDialog<void>(
                 context: context,

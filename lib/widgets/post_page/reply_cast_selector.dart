@@ -2,9 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:cast_me_app/business_logic/models/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/adaptive_material.dart';
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 
@@ -96,7 +97,8 @@ class SelectCastModal extends StatefulWidget {
 }
 
 class _SelectCastModalState extends State<SelectCastModal> {
-  final SearchCastListController searchController = SearchCastListController();
+  final CastMeSearchListController<Cast> searchController =
+      CastMeSearchListController<Cast>();
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +140,7 @@ class _CastSearchBar extends StatelessWidget {
     required this.searchController,
   }) : super(key: key);
 
-  final SearchCastListController searchController;
+  final CastMeSearchListController<Cast> searchController;
 
   @override
   Widget build(BuildContext context) {

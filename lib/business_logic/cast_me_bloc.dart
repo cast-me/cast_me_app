@@ -7,6 +7,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 
 /// Contains the top level state for the CastMe App.
