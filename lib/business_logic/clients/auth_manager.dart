@@ -148,8 +148,9 @@ class AuthManager extends ChangeNotifier {
         // There's a bug in supabase storage where it only understands jpeg.
         // https://github.com/supabase-community/supabase-flutter/issues/213
         final String fileExt = profilePicture.path.split('.').last;
-        // Anonymize the file name so we don't get naming conflicts.
-        final String fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+        final String fileName = '${supabase.auth.currentUser!.id}'
+             // Anonymize the file name so we don't get naming conflicts.
+            '/${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
         await profilePicturesBucket.uploadBinary(
           fileName,
@@ -292,11 +293,11 @@ class AuthManager extends ChangeNotifier {
     required String startsWith,
   }) async {
     final result = await profilesQuery
-        .select()
+        .select<List<Map<String, dynamic>>>()
         .or('$usernameCol.ilike.$startsWith%,'
             '$displayNameCol.ilike.$startsWith%')
         .withConverter<List<Profile>>(_rowsToProfiles);
-    return result!;
+    return result;
   }
 
   // TODO(caseycrogers): actually paginate this.
@@ -304,29 +305,27 @@ class AuthManager extends ChangeNotifier {
     required List<String> ids,
   }) async* {
     final result = await profilesQuery
-        .select()
+        .select<List<Map<String, dynamic>>>()
         .in_(idCol, ids)
         .withConverter<List<Profile>>(_rowsToProfiles);
-    yield* Stream.fromIterable(result!);
+    yield* Stream.fromIterable(result);
   }
 
-  List<Profile> _rowsToProfiles(dynamic rows) {
-    return (rows as List<dynamic>)
-        .map((dynamic row) => _rowToProfile(row)!)
-        .toList();
+  List<Profile> _rowsToProfiles(List<Map<String, dynamic>> rows) {
+    return rows.map((row) => _rowToProfile(row)!).toList();
   }
 
-  Profile? _rowToProfile(dynamic row) {
+  Profile? _rowToProfile(Map<String, dynamic> row) {
     return Profile()
       ..mergeFromProto3Json(
-        row as Map<String, dynamic>,
+        row,
         ignoreUnknownFields: true,
       );
   }
 
   Future<Profile> getProfile({required String username}) async {
     return (await profilesQuery
-        .select()
+        .select<Map<String, dynamic>>()
         .eq(usernameCol, username)
         .maybeSingle()
         .withConverter<Profile?>(_rowToProfile))!;
@@ -334,7 +333,7 @@ class AuthManager extends ChangeNotifier {
 
   Future<Profile?> _fetchCurrentProfile() async {
     return await profilesQuery
-        .select()
+        .select<Map<String, dynamic>>()
         .eq('id', supabase.auth.currentUser!.id)
         .maybeSingle()
         .withConverter<Profile?>(_rowToProfile);

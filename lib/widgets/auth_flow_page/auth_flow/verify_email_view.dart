@@ -19,7 +19,16 @@ class VerifyEmailView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            'Check your email to verify your account!\n',
+            'Verification email sent to:\n',
+          ),
+          Text(
+            AuthManager.instance.signInBloc.emailController.text,
+            style: const TextStyle(
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          const Text(
+            '\nCheck your email to verify your account!\n',
           ),
           AuthSubmitButtonWrapper(
             child: TextButton(
