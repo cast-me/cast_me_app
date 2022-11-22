@@ -17,4 +17,8 @@ const Map<String, Widget> changelogMessages = {
     ''' - Made buttons hip
  - Fixed bug when creating a new account''',
   ),
+  '0.1.11': Text(
+    ''' - Made cast ordering stable and more intuitive
+ - Fixed bug with pull-down-to-refresh''',
+  ),
 };
