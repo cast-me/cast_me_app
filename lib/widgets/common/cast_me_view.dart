@@ -54,6 +54,7 @@ class CastMeView extends StatelessWidget {
                     child: ImplicitNavigator.fromValueListenable<CastMeTab>(
                       key: const PageStorageKey('cast_tab_key'),
                       maintainHistory: true,
+                      maintainState: true,
                       valueListenable: CastMeBloc.instance.currentTab,
                       onPop: (_, tabAfterPop) =>
                           CastMeBloc.instance.onTabChanged(tabAfterPop),

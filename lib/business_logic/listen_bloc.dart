@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -24,6 +25,8 @@ class ListenBloc {
 
   final ValueListenablePageController listenPageController =
       ValueListenablePageController();
+
+  final CastMeListController<Cast> castListController = CastMeListController();
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
@@ -87,6 +90,7 @@ class ListenBloc {
 
   void onTopicToggled(Topic topic) {
     _filteredTopics.toggle(topic, byKey: (t) => t.id);
+    castListController.refresh();
   }
 }
 

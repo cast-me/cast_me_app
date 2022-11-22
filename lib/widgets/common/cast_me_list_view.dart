@@ -37,7 +37,7 @@ class CastMeListView<T> extends StatefulWidget {
 class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   // TODO(caseycrogers): this will cause a bug if a controller is added later,
   //   consider adding didUpdateWidget logic.
-  late final CastMeListController<T>? controller;
+  late CastMeListController<T> controller;
   late Stream<T> stream = widget.getStream();
 
   void onRefresh() {
@@ -49,14 +49,24 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   @override
   void initState() {
     super.initState();
-    controller = widget.controller;
-    controller?.addListener(onRefresh);
+    controller = widget.controller ?? CastMeListController<T>();
+    controller.addListener(onRefresh);
   }
 
   @override
   void dispose() {
-    controller?.removeListener(onRefresh);
+    controller.removeListener(onRefresh);
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant CastMeListView<T> oldWidget) {
+    if (oldWidget.controller != widget.controller) {
+      controller.removeListener(onRefresh);
+      controller = widget.controller ?? CastMeListController<T>();
+      controller.addListener(onRefresh);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -64,7 +74,7 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
     return RefreshIndicator(
       color: Colors.white,
       onRefresh: () async {
-        controller?.refresh();
+        controller.refresh();
       },
       // Wrap in an animated builder so that the controller can force the list
       // view to rebuild.

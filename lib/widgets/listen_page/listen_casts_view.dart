@@ -18,6 +18,7 @@ class ListenCastsView extends StatelessWidget {
         return CastViewTheme(
           child: CastListView(
             padding: const EdgeInsets.only(bottom: 8),
+            controller: ListenBloc.instance.castListController,
             filterTopics: filteredTopics.isEmpty ? null : filteredTopics,
           ),
         );
