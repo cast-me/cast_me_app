@@ -74,16 +74,8 @@ class CastDatabase {
 
     Stream<T> orderAndRun(PostgrestFilterBuilder query) {
       final PostgrestTransformBuilder transformBuilder = query
-          // Put conversations and individual casts that don't have any new
-          // content at the bottom.
-          .order(treeHasNewCastsCol, ascending: false)
           // Play the freshest conversations first.
           .order(treeUpdatedAtCol, ascending: false)
-          // Play parent content before replies. Not sure this is desirable,
-          // This is equivalent to BFS. Removing it would produce insertion
-          // order search. Could also consider implementing DFS. Not clear which
-          // is most desirable from a user perspective.
-          .order(depthCol, ascending: true)
           // Within a specific depth level, play the oldest content first as new
           // content in a level might build on other content in that level.
           .order(createdAtCol, ascending: true);
