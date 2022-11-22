@@ -24,11 +24,11 @@ class CastDatabase {
 
   static final CastDatabase instance = CastDatabase._();
 
-  late final getConversations = getCastOrConversation<Conversation>;
+  late final getConversations = getPaginatedAndFilteredContent<Conversation>;
 
-  late final getCasts = getCastOrConversation<Cast>;
+  late final getCasts = getPaginatedAndFilteredContent<Cast>;
 
-  Stream<T> getCastOrConversation<T>({
+  Stream<T> getPaginatedAndFilteredContent<T>({
     Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
