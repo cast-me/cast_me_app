@@ -80,6 +80,11 @@ class ListenBloc {
     );
   }
 
+  Future<void> onConversationSelected(Conversation? conversation) async {
+    _selectedConversation.value = conversation;
+  }
+
+
   Future<void> onCastInTrackListSelected(Cast cast) async {
     await CastAudioPlayer.instance.seekToCast(cast);
   }

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boxy/flex.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -67,15 +68,18 @@ class CastPreview extends StatelessWidget {
           return InkWell(
             onTap: _getOnTap(context, nowPlaying),
             child: Container(
-              padding: padding ?? const EdgeInsets.all(4),
+              padding: EdgeInsets.only(
+                left: padding?.left ?? 4,
+                right: padding?.right ?? 4,
+              ),
               color: _isTapToPlay(context) && nowPlaying == cast
                   ? overlayColor(context)
                   : null,
-              child: Row(
+              child: BoxyRow(
                 children: [
                   if ((theme?.indentReplies ?? true) && cast.replyTo != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: Container(
                         color: Colors.white.withAlpha(120),
                         width: 2,
@@ -83,7 +87,7 @@ class CastPreview extends StatelessWidget {
                         height: theme?.showLikes ?? true ? 89 : 63,
                       ),
                     ),
-                  Expanded(
+                  Dominant.expanded(
                     child: StackCastMenu(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

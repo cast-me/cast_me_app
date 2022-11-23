@@ -58,7 +58,6 @@ class CastMeView extends StatelessWidget {
                       valueListenable: CastMeBloc.instance.currentTab,
                       onPop: (_, tabAfterPop) =>
                           CastMeBloc.instance.onTabChanged(tabAfterPop),
-                      transitionsBuilder: navigationBarTransition,
                       getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
                       builder:
                           (context, currentTab, animation, secondaryAnimation) {

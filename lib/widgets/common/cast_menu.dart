@@ -143,12 +143,19 @@ class _MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(width: 4),
-          Text(text),
-        ],
+      // Don't let text button inject it's own theme.
+      child: IconTheme(
+        data: IconTheme.of(context),
+        child: DefaultTextStyle(
+          style: DefaultTextStyle.of(context).style,
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(text),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,16 +1,26 @@
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
-import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:flutter/material.dart';
 
 class ConversationPageView extends StatelessWidget {
-  const ConversationPageView({Key? key}) : super(key: key);
+  const ConversationPageView({
+    Key? key,
+    required this.conversation,
+  }) : super(key: key);
+
+  final Conversation conversation;
 
   @override
   Widget build(BuildContext context) {
-    final Conversation conversation = ConversationProvider.of(context);
-    return CastListView(
-      getCasts: () => Stream.fromIterable(conversation.allCasts),
+    return CastMePage(
+      scrollable: false,
+      headerText: conversation.rootCast.title,
+      padding: EdgeInsets.zero,
+      child: CastListView(
+        padding: EdgeInsets.zero,
+        getCasts: () => Stream.fromIterable(conversation.allCasts),
+      ),
     );
   }
 }

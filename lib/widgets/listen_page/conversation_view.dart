@@ -1,5 +1,6 @@
 import 'package:adaptive_material/adaptive_material.dart';
 import 'package:boxy/flex.dart';
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
@@ -18,82 +19,88 @@ class ConversationPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Cast rootCast = conversation.rootCast;
-    return ConversationProvider(
-      conversation: conversation,
-      child: CastProvider(
-        initialCast: rootCast,
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          padding: const EdgeInsets.all(4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              DefaultTextStyle(
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: AdaptiveMaterial.secondaryOnColorOf(context),
-                    ),
-                child: BoxyRow(
+    return InkWell(
+      onTap: () {
+        ListenBloc.instance.onConversationSelected(conversation);
+      },
+      child: ConversationProvider(
+        conversation: conversation,
+        child: CastProvider(
+          initialCast: rootCast,
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DefaultTextStyle(
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: AdaptiveMaterial.secondaryOnColorOf(context),
+                      ),
+                  child: BoxyRow(
+                    children: [
+                      PreviewThumbnail(cast: rootCast),
+                      const SizedBox(width: 4),
+                      Dominant(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              rootCast.authorDisplayName,
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            Text('@${rootCast.authorUsername}'),
+                            Text(
+                              _topicsToString(conversation.topics),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  rootCast.title,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                const SizedBox(height: 4),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PreviewThumbnail(cast: rootCast),
-                    const SizedBox(width: 4),
-                    Dominant(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            rootCast.authorDisplayName,
-                            style: Theme.of(context).textTheme.bodyText2,
+                    if (rootCast.externalUri != null)
+                      UriButton(uri: rootCast.externalUri!),
+                    Row(
+                      children: [
+                        Text(_repliesString(conversation.allCasts.length)),
+                        Text(' - ${conversation.newCastCount} new - '),
+                        HowOldLine(createdAt: rootCast.createdAtStamp),
+                      ],
+                    ),
+                    ElevatedButtonTheme(
+                      data: ElevatedButtonThemeData(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all(const StadiumBorder()),
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.surface,
                           ),
-                          Text('@${rootCast.authorUsername}'),
-                          Text(
-                            _topicsToString(conversation.topics),
-                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: const [
+                          PlayConversationButton(),
                         ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                rootCast.title,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              const SizedBox(height: 4),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (rootCast.externalUri != null)
-                    UriButton(uri: rootCast.externalUri!),
-                  Row(
-                    children: [
-                      Text(_repliesString(conversation.allCasts.length)),
-                      Text(' - ${conversation.newCastCount} new - '),
-                      HowOldLine(createdAt: rootCast.createdAtStamp),
-                    ],
-                  ),
-                  ElevatedButtonTheme(
-                    data: ElevatedButtonThemeData(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(const StadiumBorder()),
-                        backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.surface,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: const [
-                        PlayConversationButton(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
