@@ -1,13 +1,13 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/widgets/listen_page/timeline_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
-import 'package:cast_me_app/widgets/listen_page/listen_casts_view.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class ListenPageView extends StatefulWidget {
@@ -37,25 +37,25 @@ class _ListenPageViewState extends State<ListenPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.background,
+    return AdaptiveMaterial.background(
       child: SafeArea(
         bottom: false,
-        child: NotificationListener<CastMeListRefreshNotification<Cast>>(
+        child:
+            NotificationListener<CastMeListRefreshNotification<Conversation>>(
           onNotification: (_) {
             topicsController.refresh();
             return false;
           },
           child: Column(
             children: [
-              TopicsView(
+              TopicSelector(
                 interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
                 controller: topicsController,
                 selectedTopics: ListenBloc.instance.filteredTopics,
                 onTap: ListenBloc.instance.onTopicToggled,
               ),
               const Expanded(
-                child: ListenCastsView(),
+                child: TimelineView(),
               ),
             ],
           ),

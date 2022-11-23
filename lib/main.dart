@@ -117,8 +117,7 @@ class CastMeApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            shape: MaterialStateProperty.all(const StadiumBorder())
-          ),
+              shape: MaterialStateProperty.all(const StadiumBorder())),
         ),
         canvasColor: Color.lerp(Colors.white, castMeGrey, .95),
         colorScheme: ColorScheme(

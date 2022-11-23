@@ -7,9 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:launch_review/launch_review.dart';
 
-// Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
-
 class AudioRecorderRecommender extends StatelessWidget {
   const AudioRecorderRecommender({Key? key}) : super(key: key);
 
@@ -27,7 +24,7 @@ class AudioRecorderRecommender extends StatelessWidget {
           },
           child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: AdaptiveText(
+            child: Text(
               'Voice Memos',
               style: TextStyle(decoration: TextDecoration.underline),
             ),
@@ -47,7 +44,7 @@ class AudioRecorderRecommender extends StatelessWidget {
           },
           child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: AdaptiveText(
+            child: Text(
               'Pro Audio Editor',
               style: TextStyle(decoration: TextDecoration.underline),
             ),

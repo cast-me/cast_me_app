@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,6 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 
 class LikesView extends StatefulWidget {
@@ -22,7 +22,7 @@ class LikesView extends StatefulWidget {
 }
 
 class _LikesViewState extends State<LikesView> {
-  static const double size = 16;
+  static const double size = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +63,7 @@ class _LikesViewState extends State<LikesView> {
                       alignment: Alignment.topCenter,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: AdaptiveMaterial(
-                          adaptiveColor: AdaptiveColor.surface,
+                        child: AdaptiveMaterial.surface(
                           child: AsyncListView<Profile>(
                             padding: const EdgeInsets.all(12),
                             shrinkWrap: true,

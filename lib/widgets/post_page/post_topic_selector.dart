@@ -36,7 +36,7 @@ class PostTopicSelector extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: TopicsView(
+              child: TopicSelector(
                 selectedTopics: bloc.topics,
                 onTap: (topic) {
                   if (bloc.topics.value.length == 3 &&

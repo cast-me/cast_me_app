@@ -1,11 +1,9 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:implicit_navigator/implicit_navigator.dart';
-
-// Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class CastMePage extends StatelessWidget {
   const CastMePage({
@@ -38,8 +36,7 @@ class CastMePage extends StatelessWidget {
       ),
       child: child,
     );
-    return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.surface,
+    return AdaptiveMaterial.surface(
       child: SafeArea(
         child: Column(
           children: [

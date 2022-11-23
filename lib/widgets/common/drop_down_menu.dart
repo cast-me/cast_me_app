@@ -1,8 +1,6 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
-
-// Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class DropDownMenu extends StatefulWidget {
   const DropDownMenu({
@@ -17,7 +15,7 @@ class DropDownMenu extends StatefulWidget {
   final Widget child;
   final EdgeInsets? padding;
   final Color? selectedColor;
-  final AdaptiveColor? adaptiveBackgroundColor;
+  final AdaptiveMaterialType? adaptiveBackgroundColor;
 
   @override
   _DropDownMenuState createState() => _DropDownMenuState();
@@ -26,7 +24,7 @@ class DropDownMenu extends StatefulWidget {
 class _DropDownMenuState extends State<DropDownMenu> {
   @override
   Widget build(BuildContext context) {
-    return AdaptiveIconButton(
+    return IconButton(
       splashColor: widget.selectedColor,
       highlightColor: widget.selectedColor,
       icon: widget.child,
@@ -62,8 +60,8 @@ class _DropDownMenuState extends State<DropDownMenu> {
                     ? null
                     : width - upperLeft.dx - 2 * renderBox.size.width / 3,
                 child: AdaptiveMaterial(
-                  adaptiveColor:
-                      widget.adaptiveBackgroundColor ?? AdaptiveColor.canvas,
+                  material: widget.adaptiveBackgroundColor ??
+                      AdaptiveMaterialType.surface,
                   child: Padding(
                     padding: widget.padding ?? const EdgeInsets.all(2),
                     child: widget.builder(

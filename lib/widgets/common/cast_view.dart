@@ -111,9 +111,9 @@ class CastPreview extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          _PreviewThumbnail(
+                                          PreviewThumbnail(
                                             cast: cast,
-                                            nowPlaying: nowPlaying,
+                                            size: 50,
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
@@ -127,10 +127,13 @@ class CastPreview extends StatelessWidget {
                                                         true) &&
                                                     !showHowOld)
                                                   const _CastTitleView(),
-                                                const _AuthorLine(),
+                                                const AuthorLine(),
                                                 const _ListenCount(),
                                                 if (showHowOld)
-                                                  const _HowOldLine(),
+                                                  HowOldLine(
+                                                    createdAt:
+                                                        cast.createdAtStamp,
+                                                  ),
                                               ],
                                             ),
                                           ),
@@ -225,7 +228,7 @@ class CastView extends StatelessWidget {
           const _CastTitleView(),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
-            child: const _AuthorLine(),
+            child: const AuthorLine(),
           ),
           const LikesView(),
         ],
@@ -317,8 +320,8 @@ class _CastTitleView extends StatelessWidget {
   }
 }
 
-class _AuthorLine extends StatelessWidget {
-  const _AuthorLine({
+class AuthorLine extends StatelessWidget {
+  const AuthorLine({
     Key? key,
   }) : super(key: key);
 
@@ -331,59 +334,65 @@ class _AuthorLine extends StatelessWidget {
   }
 }
 
-class _HowOldLine extends StatelessWidget {
-  const _HowOldLine({
+class HowOldLine extends StatelessWidget {
+  const HowOldLine({
     Key? key,
+    required this.createdAt,
   }) : super(key: key);
+
+  final DateTime createdAt;
 
   @override
   Widget build(BuildContext context) {
-    final Cast cast = CastProvider.of(context).value;
     return Text(
-      _oldString(cast.createdAtStamp),
-      style: TextStyle(color: Colors.grey.shade400),
+      oldString(),
     );
   }
+
+  String oldString() {
+    final Duration howOld = DateTime.now().difference(createdAt);
+    if (howOld.inDays > 31) {
+      return DateFormat('MMM d').format(createdAt);
+    }
+    if (howOld.inHours > 24) {
+      return '${howOld.inDays}d ago';
+    }
+    if (howOld.inMinutes > 60) {
+      return '${howOld.inHours}h ago';
+    }
+    if (howOld.inSeconds > 60) {
+      return '${howOld.inMinutes}m ago';
+    }
+    return 'just now';
+  }
 }
 
-String _oldString(DateTime createdAt) {
-  final Duration howOld = DateTime.now().difference(createdAt);
-  if (howOld.inDays > 31) {
-    return DateFormat('MMM d').format(createdAt);
-  }
-  if (howOld.inHours > 24) {
-    return '${howOld.inDays} day${howOld.inDays == 1 ? '' : 's'} ago';
-  }
-  if (howOld.inMinutes > 60) {
-    return '${howOld.inHours} hour${howOld.inHours == 1 ? '' : 's'} ago';
-  }
-  if (howOld.inSeconds > 60) {
-    return '${howOld.inMinutes} minutes${howOld.inMinutes == 1 ? '' : 's'} ago';
-  }
-  return 'just now';
-}
-
-class _PreviewThumbnail extends StatelessWidget {
-  const _PreviewThumbnail({
+class PreviewThumbnail extends StatelessWidget {
+  const PreviewThumbnail({
     Key? key,
     required this.cast,
-    required this.nowPlaying,
+    this.size,
   }) : super(key: key);
 
   final Cast cast;
-  final Cast? nowPlaying;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(2),
-      child: Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: CachedNetworkImageProvider(cast.imageUrl),
+    return SizedBox(
+      height: size,
+      width: size,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(cast.imageUrl),
+              ),
+            ),
           ),
         ),
       ),

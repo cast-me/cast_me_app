@@ -9,7 +9,6 @@ import 'package:async_list_view/async_list_view.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class CastMeListView<T> extends StatefulWidget {
   const CastMeListView({
@@ -44,6 +43,7 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
     setState(() {
       stream = widget.getStream();
     });
+    CastMeListRefreshNotification<T>().dispatch(context);
   }
 
   @override
@@ -74,7 +74,7 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
     return RefreshIndicator(
       color: Colors.white,
       onRefresh: () async {
-        controller.refresh();
+        onRefresh();
       },
       // Wrap in an animated builder so that the controller can force the list
       // view to rebuild.
@@ -87,7 +87,7 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
           index,
         ) {
           if (!snapshot.hasData) {
-            return const AdaptiveText('loading...');
+            return const Text('loading...');
           }
           return widget.builder(context, snapshot.data!, index);
         },

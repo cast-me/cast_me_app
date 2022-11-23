@@ -28,6 +28,8 @@ class CastDatabase {
 
   late final getCasts = getPaginatedAndFilteredContent<Cast>;
 
+  /// TODO(caseycrogers): The way we're avoiding code duplication across
+  ///   conversations and casts is a mess. Revisit this.
   Stream<T> getPaginatedAndFilteredContent<T>({
     Cast? seedCast,
     Profile? filterProfile,
@@ -39,15 +41,16 @@ class CastDatabase {
   }) async* {
     assert(
       T == Cast || T == Conversation,
-      '$T was not CastBase or ConversationBase.',
+      '$T was not Cast or Conversation.',
     );
     final bool isCast = T == Cast;
+    final tableQuery = isCast ? castsReadQuery : conversationsReadQuery;
     // This is here because we need two instances of the builder at the end to
     // run two separate queries because Supabase doesn't provide a copy method.
     // TODO: remove this function and use copy once it's available.
     PostgrestFilterBuilder getBuilder() {
       PostgrestFilterBuilder queryBuilder =
-          castsReadQuery.select<List<Map<String, dynamic>>>();
+          tableQuery.select<List<Map<String, dynamic>>>();
       if (filterProfile != null) {
         // Get only casts authored by the given profiles.
         queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,7 +8,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/pages/auth_flow_page_view.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 /// This widget is used to keep users from entering the app if they don't have
 /// an internet connection or aren't logged in.
@@ -26,10 +26,9 @@ class AuthGate extends StatelessWidget {
       stream: Connectivity().onConnectivityChanged,
       builder: (context, connectivityResult) {
         if (connectivityResult.data == ConnectivityResult.none) {
-          return const AdaptiveMaterial(
-            adaptiveColor: AdaptiveColor.surface,
+          return const AdaptiveMaterial.surface(
             child: Center(
-              child: AdaptiveText(
+              child: Text(
                 'You are offline!\n'
                 'CastMe is currently online only.',
                 textAlign: TextAlign.center,
@@ -41,8 +40,7 @@ class AuthGate extends StatelessWidget {
           animation: authManager,
           builder: (context, child) {
             if (!authManager.isInitialized) {
-              return const AdaptiveMaterial(
-                adaptiveColor: AdaptiveColor.background,
+              return const AdaptiveMaterial.background(
                 child: Center(
                   child: SizedBox(
                     width: 50,

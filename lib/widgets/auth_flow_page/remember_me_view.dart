@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class RememberMeView extends StatefulWidget {
   const RememberMeView({Key? key}) : super(key: key);
@@ -60,7 +59,7 @@ class _RememberMeViewState extends State<RememberMeView> {
                     });
                   },
                 ),
-                const AdaptiveText('Remember me'),
+                const Text('Remember me'),
                 const SizedBox(width: 8),
               ],
             ),

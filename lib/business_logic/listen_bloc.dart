@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -26,13 +27,20 @@ class ListenBloc {
   final ValueListenablePageController listenPageController =
       ValueListenablePageController();
 
-  final CastMeListController<Cast> castListController = CastMeListController();
+  final CastMeListController<Conversation> timelineListController =
+      CastMeListController();
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
   final ValueNotifier<List<Topic>> _filteredTopics = ValueNotifier([]);
 
   ValueListenable<List<Topic>> get filteredTopics => _filteredTopics;
+
+  final ValueNotifier<Conversation?> _selectedConversation =
+      ValueNotifier(null);
+
+  ValueListenable<Conversation?> get selectedConversation =>
+      _selectedConversation;
 
   Future<void> onCastIdSelected({
     required String castId,
@@ -90,7 +98,7 @@ class ListenBloc {
 
   void onTopicToggled(Topic topic) {
     _filteredTopics.toggle(topic, byKey: (t) => t.id);
-    castListController.refresh();
+    timelineListController.refresh();
   }
 }
 

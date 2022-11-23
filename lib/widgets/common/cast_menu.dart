@@ -14,7 +14,6 @@ import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
@@ -148,7 +147,7 @@ class _MenuButton extends StatelessWidget {
         children: [
           Icon(icon, color: Colors.white),
           const SizedBox(width: 4),
-          AdaptiveText(text),
+          Text(text),
         ],
       ),
     );
