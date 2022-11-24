@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
@@ -50,9 +49,6 @@ class CastMeBloc {
       toTab: newTab,
     );
     _currentTab.value = newTab;
-    if (newTab != CastMeTab.post && AudioRecorder.instance.isRecording.value) {
-      PostBloc.instance.stopRecording();
-    }
   }
 
   void onProfileSelected(Profile? profile) {

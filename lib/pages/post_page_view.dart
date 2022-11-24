@@ -31,6 +31,15 @@ class _PostPageViewState extends State<PostPageView> {
   final CastMeListController<Cast> castListController = CastMeListController();
 
   @override
+  void dispose() {
+    if (AudioRecorder.instance.isRecording.value) {
+      // Ensure we save our recording before we exit the page.
+      PostBloc.instance.stopRecording();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AsyncActionWrapper(
       child: CastMePage(
