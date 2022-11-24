@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:wakelock/wakelock.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
@@ -40,6 +41,7 @@ class AudioRecorder {
       durationRecording.reset();
       durationRecording.start();
       _isRecording.value = true;
+      await Wakelock.enable();
       return;
     }
     throw Exception('You have to give CastMe permission to use your mic, check '
@@ -52,6 +54,7 @@ class AudioRecorder {
     final String path = (await _record.stop())!;
     durationRecording.stop();
     _isRecording.value = false;
+    await Wakelock.disable();
     return path;
   }
 }

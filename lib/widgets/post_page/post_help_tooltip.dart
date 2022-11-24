@@ -16,7 +16,7 @@ class PostHelpTooltip extends StatelessWidget {
       isModal: true,
       triggerMode: TooltipTriggerMode.tap,
       child: const Icon(Icons.help),
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).canvasColor,
       content: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(

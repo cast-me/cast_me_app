@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -70,9 +71,15 @@ class _SubmitFormField extends StatelessWidget {
       children: [
         const ReplyCastSelector(),
         const SizedBox(height: 8),
-        Text(
-          '2. Audio',
-          style: Theme.of(context).textTheme.headline5,
+        Row(
+          children: [
+            Text(
+              '2. Audio',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            const SizedBox(width: 4),
+            const PostHelpTooltip(),
+          ],
         ),
         Container(
           child: Row(
