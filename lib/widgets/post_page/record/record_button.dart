@@ -38,21 +38,13 @@ class RecordButton extends StatelessWidget {
           'record',
           () async {
             if (!AudioRecorder.instance.isRecording.value) {
-              return AudioRecorder.instance.startRecording(name: name);
+              return PostBloc.instance.startRecording();
             }
-            await PostBloc.instance
-                .onFileSelected(await recorder.stopRecording());
+            await PostBloc.instance.stopRecording();
             return;
           },
         );
       },
     );
-  }
-
-  String get name {
-    final DateFormat formatter = DateFormat('yyyy_MM_dd_ssSSS');
-    final DateTime now = DateTime.now();
-    return 'recording'
-        '_${formatter.format(now)}';
   }
 }

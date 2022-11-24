@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/post_page/post_help_tooltip.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -28,6 +29,15 @@ class PostPageView extends StatefulWidget {
 
 class _PostPageViewState extends State<PostPageView> {
   final CastMeListController<Cast> castListController = CastMeListController();
+
+  @override
+  void dispose() {
+    if (AudioRecorder.instance.isRecording.value) {
+      // Ensure we save our recording before we exit the page.
+      PostBloc.instance.stopRecording();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +80,15 @@ class _SubmitFormField extends StatelessWidget {
       children: [
         const ReplyCastSelector(),
         const SizedBox(height: 8),
-        Text(
-          '2. Audio',
-          style: Theme.of(context).textTheme.headline5,
+        Row(
+          children: [
+            Text(
+              '2. Audio',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            const SizedBox(width: 4),
+            const PostHelpTooltip(),
+          ],
         ),
         Container(
           child: Row(

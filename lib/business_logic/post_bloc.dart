@@ -2,8 +2,10 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 // Package imports:
 import 'package:path/path.dart';
@@ -92,6 +94,18 @@ class PostBloc {
       topics: replyCast.value == null ? topics.value : [],
     );
     return castId;
+  }
+
+  Future<void> startRecording() async {
+    final DateFormat formatter = DateFormat('yyyy_MM_dd_ssSSS');
+    final DateTime now = DateTime.now();
+    final String name = 'recording_${formatter.format(now)}';
+    return AudioRecorder.instance.startRecording(name: name);
+  }
+
+  Future<void> stopRecording() async {
+    await PostBloc.instance
+        .onFileSelected(await AudioRecorder.instance.stopRecording());
   }
 
   void reset() {
