@@ -45,9 +45,9 @@ class CastPreview extends StatelessWidget {
       return false;
     }
     if (cast.authorId == AuthManager.instance.profile.id) {
-      return true;
+      return false;
     }
-    return cast.hasViewed;
+    return !cast.hasViewed;
   }
 
   Color overlayColor(BuildContext context) => Color.lerp(
@@ -67,95 +67,82 @@ class CastPreview extends StatelessWidget {
         builder: (context, nowPlaying, _) {
           return InkWell(
             onTap: _getOnTap(context, nowPlaying),
-            child: Container(
-              padding: EdgeInsets.only(
-                left: padding?.left ?? 4,
-                right: padding?.right ?? 4,
-              ),
-              color: _isTapToPlay(context) && nowPlaying == cast
-                  ? overlayColor(context)
-                  : null,
-              child: BoxyRow(
-                children: [
-                  if ((theme?.indentReplies ?? true) && cast.replyTo != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Container(
-                        color: Colors.white.withAlpha(120),
-                        width: 2,
-                        // TODO(caseycrogers): make this programmatic.
-                        height: theme?.showLikes ?? true ? 89 : 63,
+            child: IndicateViewed(
+              showIndicator: shouldDim(context),
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: padding?.left ?? 4,
+                  right: padding?.right ?? 4,
+                ),
+                color: _isTapToPlay(context) && nowPlaying == cast
+                    ? overlayColor(context)
+                    : null,
+                child: BoxyRow(
+                  children: [
+                    if ((theme?.indentReplies ?? true) && cast.replyTo != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Container(
+                          color: Colors.white.withAlpha(120),
+                          width: 2,
+                          // TODO(caseycrogers): make this programmatic.
+                          height: theme?.showLikes ?? true ? 89 : 63,
+                        ),
                       ),
-                    ),
-                  Dominant.expanded(
-                    child: StackCastMenu(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Put the title here if we're showing the menu or
-                          // showing how old.
-                          // Else put it below in the row.
-                          if ((theme?.showMenu ?? true) || showHowOld)
-                            Opacity(
-                              opacity: shouldDim(context) ? .6 : 1,
-                              child: const _CastTitleView(),
-                            ),
-                          const SizedBox(height: 2),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                    Dominant.expanded(
+                      child: StackCastMenu(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Put the title here if we're showing the menu or
+                            // showing how old.
+                            // Else put it below in the row.
+                            if ((theme?.showMenu ?? true) || showHowOld)
+                              const _CastTitleView(),
+                            const SizedBox(height: 2),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Opacity(
-                                      opacity: shouldDim(context) ? .6 : 1,
-                                      child: Row(
+                                    PreviewThumbnail(
+                                      cast: cast,
+                                      size: 50,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          PreviewThumbnail(
-                                            cast: cast,
-                                            size: 50,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                if (!(theme?.showMenu ??
-                                                        true) &&
-                                                    !showHowOld)
-                                                  const _CastTitleView(),
-                                                const AuthorLine(),
-                                                const _ListenCount(),
-                                                if (showHowOld)
-                                                  HowOldLine(
-                                                    createdAt:
-                                                        cast.createdAtStamp,
-                                                  ),
-                                              ],
+                                          if (!(theme?.showMenu ?? true) &&
+                                              !showHowOld)
+                                            const _CastTitleView(),
+                                          const AuthorLine(),
+                                          const _ListenCount(),
+                                          if (showHowOld)
+                                            HowOldLine(
+                                              createdAt: cast.createdAtStamp,
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),
-                                    if (theme?.showLikes ?? true)
-                                      const LikesView(),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                if (theme?.showLikes ?? true) const LikesView(),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -190,6 +177,41 @@ class CastPreview extends StatelessWidget {
   }
 }
 
+class IndicateViewed extends StatelessWidget {
+  const IndicateViewed({
+    Key? key,
+    required this.showIndicator,
+    required this.child,
+  }) : super(key: key);
+
+  final bool showIndicator;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!showIndicator) {
+      return child;
+    }
+    return Stack(
+      children: [
+        const Positioned(
+          top: 10,
+          right: 10,
+          width: 10,
+          height: 10,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+}
+
 // If `onTap` isn't overwritten, then this is a basic now-playing cast.
 bool _isTapToPlay(BuildContext context) =>
     CastViewTheme.of(context)?.isInteractive != false &&
@@ -206,20 +228,19 @@ class CastView extends StatelessWidget {
       initialCast: cast,
       child: Column(
         children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(4)),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(cast.imageUrl),
-                      ),
-                    ),
+          const Spacer(),
+          const CastButtonRow(),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                alignment: Alignment.topRight,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(cast.imageUrl),
                   ),
                 ),
               ),

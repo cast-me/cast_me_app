@@ -24,8 +24,9 @@ class CastMeBottomSheet extends StatefulWidget {
 
 class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
   final ValueNotifier<double> progress = ValueNotifier(0);
-  final DraggableScrollableController sheetController =
-      DraggableScrollableController();
+
+  DraggableScrollableController get sheetController =>
+      ListenBloc.instance.sheetController;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                             return Opacity(
                               opacity: progress,
                               child: AdaptiveMaterial.surface(
-                                child: SizedBox(
+                                child: Container(
                                   height:
                                       MediaQuery.of(context).viewPadding.top,
                                 ),

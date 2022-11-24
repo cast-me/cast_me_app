@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'dart:async';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -56,6 +59,8 @@ class CastAudioPlayer {
   late final ValueListenable<List<IndexedAudioSource>> queue =
       _player.sequenceStream.toListenable().map((lst) => lst ?? []);
 
+  List<Cast> get castQueue => queue.value.map((s) => s.cast).toList();
+
   late final ValueListenable<Cast?> currentCast =
       Rx.combineLatest2<int?, List<IndexedAudioSource>?, Cast?>(
     _player.currentIndexStream,
@@ -84,9 +89,13 @@ class CastAudioPlayer {
   Future<void> load(
     Cast cast, {
     required List<Topic> filterTopics,
+    List<Cast>? playQueue,
     bool autoPlay = true,
+    int startAt = 0,
   }) async {
-    if (cast == currentCast.value) {
+    if (cast == currentCast.value &&
+        const ListEquality<Cast>().equals(playQueue, castQueue)) {
+      await _player.seek(Duration.zero, index: startAt);
       return;
     }
     Analytics.instance.logPlay(cast: cast);
@@ -99,23 +108,29 @@ class CastAudioPlayer {
         ),
       ],
     );
-    CastDatabase.instance
-        .getPlayQueue(
-      seedCast: cast,
-      filterTopics: filterTopics,
-    )
-        .listen((cast) {
-      // Use a locally scoped variable so that we don't accidentally add to a
-      // later queue.
-      queue.add(
-        AudioSource.uri(
-          cast.audioUri,
-          tag: cast,
-        ),
+    if (playQueue == null) {
+      CastDatabase.instance
+          .getPlayQueue(
+        seedCast: cast,
+        filterTopics: filterTopics,
+      )
+          .listen((cast) {
+        // Use a locally scoped variable so that we don't accidentally add to a
+        // later queue.
+        queue.add(
+          AudioSource.uri(
+            cast.audioUri,
+            tag: cast,
+          ),
+        );
+      });
+    } else {
+      await queue.addAll(
+        playQueue.map((c) => AudioSource.uri(c.audioUri, tag: c)).toList(),
       );
-    });
+    }
     _sourceQueue = queue;
-    await _player.setAudioSource(_sourceQueue!);
+    await _player.setAudioSource(_sourceQueue!, initialIndex: startAt);
     if (autoPlay) {
       await _player.play();
     }

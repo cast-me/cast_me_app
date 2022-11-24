@@ -39,18 +39,24 @@ class _ListenPageViewState extends State<ListenPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return ImplicitNavigator.fromValueListenable<Conversation?>(
+    return ImplicitNavigator.fromValueListenable<SelectedConversation?>(
       key: const PageStorageKey('selected_conversation_key'),
       maintainHistory: true,
       valueListenable: ListenBloc.instance.selectedConversation,
       onPop: (poppedValue, valueAfterPop) {
-        ListenBloc.instance.onConversationSelected(valueAfterPop);
+        ListenBloc.instance.onConversationIdSelected(
+          valueAfterPop?.id,
+          conversation: valueAfterPop?.conversation,
+        );
       },
-      getDepth: (conversation) => conversation == null ? 0 : 1,
+      getDepth: (selection) => selection == null ? 0 : 1,
       transitionsBuilder: transition,
-      builder: (context, conversation, animation, secondaryAnimation) {
-        if (conversation != null) {
-          return ConversationPageView(conversation: conversation);
+      transitionDuration: const Duration(milliseconds: 100),
+      builder: (context, selectedConversation, animation, secondaryAnimation) {
+        if (selectedConversation != null) {
+          return ConversationPageView(
+            selectedConversation: selectedConversation,
+          );
         }
         return AdaptiveMaterial.background(
           child: SafeArea(
@@ -83,11 +89,11 @@ class _ListenPageViewState extends State<ListenPageView> {
 }
 
 Widget transition(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-    ) {
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
   return SlideTransition(
     position: Tween(
       begin: const Offset(1, 0),
@@ -102,4 +108,3 @@ Widget transition(
     ),
   );
 }
-

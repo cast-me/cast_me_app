@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
@@ -25,7 +26,9 @@ class Conversation with _$Conversation {
   factory Conversation.fromJson(Map<String, Object?> json) =>
       _$ConversationFromJson(json);
 
-  List<Cast> get allCasts => [rootCast, if (casts != null) ...casts!];
+  List<Cast> get allCasts => [rootCast, if (casts != null) ...casts!]
+      .sortedBy((c) => c.createdAtStamp)
+      .toList();
 
   List<Cast> get newCasts => allCasts.where((c) => !c.hasViewed).toList();
 

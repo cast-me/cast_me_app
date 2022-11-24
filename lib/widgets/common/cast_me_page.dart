@@ -45,36 +45,43 @@ class CastMePage extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            Row(
-              children: [
-                if (showBackButton)
-                  const ImplicitNavigatorBackButton(
-                    transitionDuration: Duration.zero,
-                  ),
-                if (headerText != null)
-                  Expanded(
-                    child: Text(
-                      headerText!,
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                            color: Colors.white,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+            IconTheme(
+              data: IconThemeData(
+                // We should use the on color instead of secondary on color for
+                // the header.
+                color: material.onColorOf(context),
+              ),
+              child: Row(
+                children: [
+                  if (showBackButton)
+                    const ImplicitNavigatorBackButton(
+                      transitionDuration: Duration.zero,
                     ),
-                  ),
-                if (headerText == null) const Spacer(),
-                if (trailingIcon != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: IconTheme(
-                      data: IconThemeData(
-                        size: Theme.of(context).textTheme.headline3!.fontSize,
-                        color: Colors.white,
+                  if (headerText != null)
+                    Expanded(
+                      child: Text(
+                        headerText!,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.headline3!.copyWith(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                       ),
-                      child: trailingIcon!,
                     ),
-                  ),
-              ],
+                  if (headerText == null) const Spacer(),
+                  if (trailingIcon != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: IconTheme(
+                        data: IconThemeData(
+                          size: Theme.of(context).textTheme.headline3!.fontSize,
+                          color: Colors.white,
+                        ),
+                        child: trailingIcon!,
+                      ),
+                    ),
+                ],
+              ),
             ),
             if (scrollable)
               Expanded(child: SingleChildScrollView(child: paddedChild))

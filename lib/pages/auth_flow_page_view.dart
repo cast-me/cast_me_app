@@ -29,6 +29,7 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
         // Ensures that there is always a base page that is not signed in.
         const ValueHistoryEntry(0, SignInState.signingIn),
       ],
+      transitionDuration: const Duration(milliseconds: 100),
       onPop: AuthManager.instance.handlePop,
       getDepth: (signInState) => SignInState.values.indexOf(signInState),
       builder: (context, signInState, animation, secondaryAnimation) {

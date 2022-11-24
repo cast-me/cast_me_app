@@ -81,21 +81,10 @@ class ConversationPreview extends StatelessWidget {
                         HowOldLine(createdAt: rootCast.createdAtStamp),
                       ],
                     ),
-                    ElevatedButtonTheme(
-                      data: ElevatedButtonThemeData(
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all(const StadiumBorder()),
-                          backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.surface,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: const [
-                          PlayConversationButton(),
-                        ],
-                      ),
+                    Row(
+                      children: const [
+                        PlayConversationButton(),
+                      ],
                     ),
                   ],
                 ),
@@ -118,7 +107,7 @@ class ConversationPreview extends StatelessWidget {
     if (length == 0) {
       return '1 cast';
     }
-    return '${length + 1} casts';
+    return '$length casts';
   }
 }
 
@@ -161,7 +150,12 @@ class PlayConversationButton extends StatelessWidget {
         ),
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          ListenBloc.instance.playConversation(
+            conversation,
+            skipViewed: !isReplay,
+          );
+        },
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

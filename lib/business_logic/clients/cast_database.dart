@@ -149,6 +149,14 @@ class CastDatabase {
         .withConverter(_rowToCast);
   }
 
+  Future<Conversation> getConversation(String rootId) async {
+    return conversationsReadQuery
+        .select<Map<String, dynamic>>()
+        .eq(rootIdCol, rootId)
+        .single()
+        .withConverter(_rowToConversation);
+  }
+
   /// Get a cast given an author and the first 8 characters of a cast id.
   ///
   /// Truncated cast ids are used in share links to make the links shorter.
