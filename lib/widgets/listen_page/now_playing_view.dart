@@ -31,18 +31,23 @@ class NowPlayingCollapsedView extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: CastViewTheme(
-                    isInteractive: false,
-                    showMenu: false,
-                    taggedUsersAreTappable: false,
-                    indentReplies: false,
-                    showLikes: false,
-                    indicateNew: false,
-                    showLink: false,
-                    titleMaxLines: 1,
-                    child: CastPreview(
-                      cast: cast,
-                      showHowOld: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ),
+                    child: CastViewTheme(
+                      isInteractive: false,
+                      showMenu: false,
+                      taggedUsersAreTappable: false,
+                      indentReplies: false,
+                      showLikes: false,
+                      indicateNew: false,
+                      showLink: false,
+                      titleMaxLines: 1,
+                      child: CastPreview(
+                        cast: cast,
+                        showHowOld: false,
+                      ),
                     ),
                   ),
                 ),

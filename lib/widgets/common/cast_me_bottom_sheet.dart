@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -25,79 +24,94 @@ class CastMeBottomSheet extends StatefulWidget {
 }
 
 class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
-  final ValueNotifier<double> progress = ValueNotifier(0);
+  final ValueNotifier<SheetProgress> sheetProgress = ValueNotifier(
+    const SheetProgress(0, null, 1),
+  );
 
   DraggableScrollableController get sheetController =>
       ListenBloc.instance.sheetController;
 
   @override
+  void initState() {
+    super.initState();
+    sheetController.addListener(_onSheetChange);
+  }
+
+  @override
+  void dispose() {
+    sheetController.removeListener(_onSheetChange);
+    super.dispose();
+  }
+
+  void _onSheetChange() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      sheetProgress.value = sheetProgress.value.copyWith(
+        size: sheetController.size,
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Cast?>(
-        valueListenable: ListenBloc.instance.currentCast,
-        builder: (context, cast, _) {
-          return ValueListenableBuilder<CastMeTab>(
-            valueListenable: CastMeBloc.instance.currentTab,
-            builder: (context, tab, _) {
-              if (tab != CastMeTab.listen || cast == null) {
-                // Don't apply any of the now playing logic if we're not in
-                // the listen tab.
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CastMeNavigationBar(tab: tab),
-                );
-              }
-              return NotificationListener<DraggableScrollableNotification>(
-                onNotification: (n) {
-                  progress.value =
-                      (n.extent - n.minExtent) / (n.maxExtent - n.minExtent);
-                  return true;
-                },
-                child: Column(
-                  children: [
-                    // Shim at the top of the screen that pulls down to hide the
-                    // awkward view padding gap that the sheet can't occupy.
-                    if (MediaQuery.of(context).viewPadding.top != 0)
-                      IgnorePointer(
-                        child: ValueListenableBuilder<double>(
-                          valueListenable: progress,
-                          builder: (context, progress, _) {
-                            return Opacity(
-                              opacity: progress,
-                              child: AdaptiveMaterial.surface(
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).viewPadding.top,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    Expanded(
-                      child: _Sheet(
-                        progress: progress,
-                        sheetController: sheetController,
-                        tab: tab,
-                      ),
-                    ),
-                  ],
-                ),
+      valueListenable: ListenBloc.instance.currentCast,
+      builder: (context, cast, _) {
+        return ValueListenableBuilder<CastMeTab>(
+          valueListenable: CastMeBloc.instance.currentTab,
+          builder: (context, tab, _) {
+            if (tab != CastMeTab.listen || cast == null) {
+              // Don't apply any of the now playing logic if we're not in
+              // the listen tab.
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: CastMeNavigationBar(tab: tab),
               );
-            },
-          );
-        });
+            }
+            return Column(
+              children: [
+                // Shim at the top of the screen that pulls down to hide the
+                // awkward view padding gap that the sheet can't occupy.
+                if (MediaQuery.of(context).viewPadding.top != 0)
+                  IgnorePointer(
+                    child: ValueListenableBuilder<SheetProgress>(
+                      valueListenable: sheetProgress,
+                      builder: (context, progress, _) {
+                        return Opacity(
+                          opacity: progress.current ?? 0,
+                          child: AdaptiveMaterial.surface(
+                            child: Container(
+                              height: MediaQuery.of(context).viewPadding.top,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                Expanded(
+                  child: _Sheet(
+                    sheetProgress: sheetProgress,
+                    sheetController: sheetController,
+                    tab: tab,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
 
 class _Sheet extends StatefulWidget {
   const _Sheet({
     Key? key,
-    required this.progress,
+    required this.sheetProgress,
     required this.sheetController,
     required this.tab,
   }) : super(key: key);
 
-  final ValueListenable<double> progress;
+  final ValueNotifier<SheetProgress> sheetProgress;
   final DraggableScrollableController sheetController;
   final CastMeTab tab;
 
@@ -138,6 +152,13 @@ class _SheetState extends State<_Sheet> {
             maxChildSize: 1,
             initialChildSize: minSize,
             builder: (context, controller) {
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                widget.sheetProgress.value =
+                    widget.sheetProgress.value.copyWith(
+                  minSize: minSize,
+                  maxSize: 1,
+                );
+              });
               return AdaptiveMaterial.surface(
                 child: Stack(
                   children: [
@@ -151,11 +172,11 @@ class _SheetState extends State<_Sheet> {
                             Expanded(
                               child: Stack(
                                 children: [
-                                  ValueListenableBuilder<double>(
-                                    valueListenable: widget.progress,
+                                  ValueListenableBuilder<SheetProgress>(
+                                    valueListenable: widget.sheetProgress,
                                     builder: (context, progress, child) {
                                       return Opacity(
-                                        opacity: progress,
+                                        opacity: progress.current ?? 0,
                                         child: child!,
                                       );
                                     },
@@ -168,11 +189,15 @@ class _SheetState extends State<_Sheet> {
                                       ],
                                     ),
                                   ),
-                                  ValueListenableBuilder<double>(
-                                    valueListenable: widget.progress,
+                                  ValueListenableBuilder<SheetProgress>(
+                                    valueListenable: widget.sheetProgress,
                                     builder: (context, progress, child) {
                                       return Opacity(
-                                        opacity: 1 - progress,
+                                        // Fade out fully by the halfway point.
+                                        opacity:
+                                            (1 - 2 * (progress.current ?? 0))
+                                                .clamp(0, 1)
+                                                .toDouble(),
                                         child: child!,
                                       );
                                     },
@@ -207,11 +232,11 @@ class _SheetState extends State<_Sheet> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: ValueListenableBuilder<double>(
-                        valueListenable: widget.progress,
+                      child: ValueListenableBuilder<SheetProgress>(
+                        valueListenable: widget.sheetProgress,
                         builder: (context, progress, child) {
                           return FractionalTranslation(
-                            translation: Offset(0, progress),
+                            translation: Offset(0, progress.current ?? 0),
                             child: child!,
                           );
                         },
@@ -258,5 +283,36 @@ class _DragHandle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SheetProgress {
+  const SheetProgress(this.size, this.minSize, this.maxSize);
+
+  SheetProgress copyWith({
+    double? size,
+    double? minSize,
+    double? maxSize,
+  }) {
+    return SheetProgress(
+      size ?? this.size,
+      minSize ?? this.minSize,
+      maxSize ?? this.maxSize,
+    );
+  }
+
+  final double size;
+  final double? maxSize;
+  final double? minSize;
+
+  double? get current {
+    if (maxSize == null || minSize == null) {
+      return null;
+    }
+    // Sometimes size gets updated before minSize.
+    if (size < minSize!) {
+      return size;
+    }
+    return (size - minSize!) / (maxSize! - minSize!);
   }
 }

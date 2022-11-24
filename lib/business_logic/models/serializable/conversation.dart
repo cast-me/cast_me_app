@@ -36,6 +36,9 @@ class Conversation with _$Conversation {
 
   int get newCastCount => newCasts.length;
 
+  int get likeCount =>
+      allCasts.fold(0, (sum, c) => sum += c.likes?.length ?? 0);
+
   Duration get contentLength =>
       allCasts.fold<Duration>(Duration.zero, (sum, b) => sum + b.duration);
 

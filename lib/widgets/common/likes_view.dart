@@ -114,7 +114,6 @@ class _LikeView extends StatelessWidget {
     Key? key,
     required this.icon,
     required this.label,
-    this.material,
     required this.onTap,
     required this.border,
     required this.onLongTap,
@@ -122,41 +121,46 @@ class _LikeView extends StatelessWidget {
 
   final Widget icon;
   final Widget label;
-  final AdaptiveMaterialType? material;
   final bool border;
   final AsyncCallback? onTap;
   final VoidCallback? onLongTap;
 
   @override
   Widget build(BuildContext context) {
-    final AdaptiveMaterialType actualMaterial = material ??
-        (AdaptiveMaterial.of(context) == AdaptiveMaterialType.background
+    final AdaptiveMaterialType actualMaterial =
+        AdaptiveMaterial.of(context) == AdaptiveMaterialType.background
             ? AdaptiveMaterialType.surface
-            : AdaptiveMaterialType.background);
+            : AdaptiveMaterialType.background;
     return InkWell(
       onTap: onTap,
       onLongPress: onLongTap,
       child: AdaptiveMaterial(
         shouldDraw: false,
         material: actualMaterial,
-        child: Container(
-          margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: actualMaterial.colorOf(context),
-            border: Border.all(
-              color: border ? Colors.white : Colors.transparent,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(20),
+        child: IconTheme(
+          // Force the icons to use the primary color.
+          data: IconThemeData(
+            color: actualMaterial.onColorOf(context),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              icon,
-              const SizedBox(width: 2),
-              label,
-            ],
+          child: Container(
+            margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: actualMaterial.colorOf(context),
+              border: Border.all(
+                color: border ? Colors.white : Colors.transparent,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                icon,
+                const SizedBox(width: 4),
+                label,
+              ],
+            ),
           ),
         ),
       ),
