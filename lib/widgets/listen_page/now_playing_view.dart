@@ -37,7 +37,7 @@ class NowPlayingCollapsedView extends StatelessWidget {
                     taggedUsersAreTappable: false,
                     indentReplies: false,
                     showLikes: false,
-                    dimIfListened: false,
+                    indicateNew: false,
                     titleMaxLines: 1,
                     child: CastPreview(
                       cast: cast,

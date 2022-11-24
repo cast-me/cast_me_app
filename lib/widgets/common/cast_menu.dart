@@ -2,6 +2,7 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -14,14 +15,18 @@ import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 
 class CastMenu extends StatelessWidget {
-  const CastMenu({Key? key}) : super(key: key);
+  const CastMenu({
+    Key? key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +36,27 @@ class CastMenu extends StatelessWidget {
         CastMeListController.of<Cast>(context);
     final Cast cast = CastProvider.of(context).value;
     return DropDownMenu(
-      child: const Icon(Icons.more_vert, color: Colors.white),
+      child: const Icon(Icons.more_vert),
       builder: (context, hideMenu) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _MenuButton(
+              icon: Icons.list,
+              text: 'view thread',
+              onTap: () async {
+                hideMenu();
+                onTap?.call();
+                CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+                ListenBloc.instance.onConversationIdSelected(cast.rootId);
+              },
+            ),
+            _MenuButton(
               icon: Icons.person,
               text: 'view profile',
               onTap: () async {
                 hideMenu();
+                onTap?.call();
                 CastMeBloc.instance.onUsernameSelected(cast.authorUsername);
               },
             ),
@@ -50,6 +66,7 @@ class CastMenu extends StatelessWidget {
                 text: 'delete cast',
                 onTap: () async {
                   hideMenu();
+                  onTap?.call();
                   await CastDatabase.instance.deleteCast(cast: cast);
                   listController?.refresh();
                 },
@@ -60,6 +77,7 @@ class CastMenu extends StatelessWidget {
                 text: 'visit link',
                 onTap: () async {
                   hideMenu();
+                  onTap?.call();
                   ExternalLinkModal.showMessage(context, cast.externalUri!);
                 },
               ),
@@ -83,17 +101,26 @@ class StackCastMenu extends StatelessWidget {
     return Stack(
       children: [
         child,
-        Positioned.fill(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              ReplyButton(),
-              ShareButton(),
-              CastMenu(),
-            ],
-          ),
+        const Positioned.fill(
+          child: CastButtonRow(),
         ),
+      ],
+    );
+  }
+}
+
+class CastButtonRow extends StatelessWidget {
+  const CastButtonRow({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: const [
+        ReplyButton(),
+        ShareButton(),
+        CastMenu(),
       ],
     );
   }
@@ -144,12 +171,19 @@ class _MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(width: 4),
-          AdaptiveText(text),
-        ],
+      // Don't let text button inject it's own theme.
+      child: IconTheme(
+        data: IconTheme.of(context),
+        child: DefaultTextStyle(
+          style: DefaultTextStyle.of(context).style,
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(text),
+            ],
+          ),
+        ),
       ),
     );
   }

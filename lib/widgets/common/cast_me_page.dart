@@ -1,11 +1,9 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:implicit_navigator/implicit_navigator.dart';
-
-// Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class CastMePage extends StatelessWidget {
   const CastMePage({
@@ -14,16 +12,20 @@ class CastMePage extends StatelessWidget {
     this.trailingIcon,
     required this.child,
     this.footer,
-    this.isBasePage = false,
+    this.showBackButton = true,
     this.scrollable = false,
+    this.material = AdaptiveMaterialType.surface,
+    this.padding,
   }) : super(key: key);
 
   final String? headerText;
   final Widget? trailingIcon;
   final Widget child;
   final Widget? footer;
-  final bool isBasePage;
+  final bool showBackButton;
   final bool scrollable;
+  final AdaptiveMaterialType material;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class CastMePage extends StatelessWidget {
     // separately so that the scrollable content, if applicable, is padded
     // internally not externally.
     final Widget paddedChild = Padding(
-      padding: EdgeInsets.only(
+      padding: padding ?? EdgeInsets.only(
         left: 24,
         right: 24,
         top: headerText == null ? 24 : 0,
@@ -39,26 +41,34 @@ class CastMePage extends StatelessWidget {
       child: child,
     );
     return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.surface,
+      material: material,
       child: SafeArea(
         child: Column(
           children: [
-            if (headerText != null)
-              Row(
+            IconTheme(
+              data: IconThemeData(
+                // We should use the on color instead of secondary on color for
+                // the header.
+                color: material.onColorOf(context),
+              ),
+              child: Row(
                 children: [
-                  if (!isBasePage)
+                  if (showBackButton)
                     const ImplicitNavigatorBackButton(
                       transitionDuration: Duration.zero,
                     ),
-                  Expanded(
-                    child: Text(
-                      headerText!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(color: Colors.white),
+                  if (headerText != null)
+                    Expanded(
+                      child: Text(
+                        headerText!,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.headline3!.copyWith(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                      ),
                     ),
-                  ),
+                  if (headerText == null) const Spacer(),
                   if (trailingIcon != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
@@ -72,14 +82,16 @@ class CastMePage extends StatelessWidget {
                     ),
                 ],
               ),
+            ),
             if (scrollable)
               Expanded(child: SingleChildScrollView(child: paddedChild))
             else
               Expanded(child: paddedChild),
-            if (footer != null) Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              child: footer!,
-            ),
+            if (footer != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: footer!,
+              ),
           ],
         ),
       ),

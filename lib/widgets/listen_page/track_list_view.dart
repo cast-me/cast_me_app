@@ -23,7 +23,7 @@ class TrackListView extends StatelessWidget {
         return CastViewTheme(
           indentReplies: false,
           showLikes: false,
-          dimIfListened: false,
+          indicateNew: false,
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             children: queue

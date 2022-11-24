@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'dart:async';
+
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -26,13 +29,23 @@ class ListenBloc {
   final ValueListenablePageController listenPageController =
       ValueListenablePageController();
 
-  final CastMeListController<Cast> castListController = CastMeListController();
+  final CastMeListController<Conversation> timelineListController =
+      CastMeListController();
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
   final ValueNotifier<List<Topic>> _filteredTopics = ValueNotifier([]);
 
   ValueListenable<List<Topic>> get filteredTopics => _filteredTopics;
+
+  final ValueNotifier<SelectedConversation?> _selectedConversation =
+      ValueNotifier(null);
+
+  ValueListenable<SelectedConversation?> get selectedConversation =>
+      _selectedConversation;
+
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
 
   Future<void> onCastIdSelected({
     required String castId,
@@ -72,6 +85,46 @@ class ListenBloc {
     );
   }
 
+  void onConversationIdSelected(
+    String? id, {
+    Future<Conversation>? conversation,
+  }) {
+    if (id == _selectedConversation.value?.id) {
+      return;
+    }
+    if (id == null) {
+      _selectedConversation.value = null;
+      return;
+    }
+    _selectedConversation.value = SelectedConversation(
+      id,
+      conversation: conversation,
+    );
+  }
+
+  void onConversationSelected(Conversation? conversation) {
+    onConversationIdSelected(
+      conversation?.rootId,
+      conversation: conversation == null ? null : Future.value(conversation),
+    );
+  }
+
+  Future<void> playConversation(
+    Conversation conversation, {
+    bool skipViewed = true,
+    Cast? startAtCast,
+  }) async {
+    final List<Cast> castsToPlay =
+        skipViewed ? conversation.newCasts : conversation.allCasts;
+    final int startAtIndex =
+        startAtCast == null ? 0 : castsToPlay.indexOf(startAtCast);
+    await CastAudioPlayer.instance.load(castsToPlay[0],
+        // Provide empty list, not relevant.
+        filterTopics: [],
+        playQueue: castsToPlay.sublist(1),
+        startAt: startAtIndex);
+  }
+
   Future<void> onCastInTrackListSelected(Cast cast) async {
     await CastAudioPlayer.instance.seekToCast(cast);
   }
@@ -90,11 +143,33 @@ class ListenBloc {
 
   void onTopicToggled(Topic topic) {
     _filteredTopics.toggle(topic, byKey: (t) => t.id);
-    castListController.refresh();
+    timelineListController.refresh();
+  }
+
+  void closeBottomSheet() {
+    sheetController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 50),
+      curve: Curves.linear,
+    );
   }
 }
 
 enum ListenPage {
   following,
   trending,
+}
+
+class SelectedConversation {
+  SelectedConversation(
+    this.id, {
+    Future<Conversation>? conversation,
+  }) : conversation = conversation ?? CastDatabase.instance.getConversation(id);
+
+  SelectedConversation.fromConversation(Conversation syncConversation)
+      : id = syncConversation.rootId,
+        conversation = Future.value(syncConversation);
+
+  final String id;
+  final Future<Conversation> conversation;
 }

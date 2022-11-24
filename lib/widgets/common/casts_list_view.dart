@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -18,6 +17,7 @@ class CastListView extends StatelessWidget {
     this.filterTopics,
     this.padding,
     this.controller,
+    this.getCasts,
   }) : super(key: key);
 
   /// If non-null, fetch only casts authored by the specified user.
@@ -33,11 +33,13 @@ class CastListView extends StatelessWidget {
 
   final CastMeListController<Cast>? controller;
 
+  final Stream<Cast> Function()? getCasts;
+
   @override
   Widget build(BuildContext context) {
     return CastMeListView<Cast>(
       controller: controller,
-      getStream: () => CastDatabase.instance
+      getStream: () => getCasts?.call() ?? CastDatabase.instance
           .getCasts(
         filterProfile: filterProfile,
         filterOutProfile: filterOutProfile,
@@ -46,10 +48,9 @@ class CastListView extends StatelessWidget {
       )
           .handleError(
         (Object error, StackTrace stackTrace) {
-          if (kDebugMode) {
-            print(error);
-            print(stackTrace);
-          }
+          FlutterError.onError!.call(
+            FlutterErrorDetails(exception: error, stack: stackTrace),
+          );
         },
       ),
       builder: (context, casts, index) {

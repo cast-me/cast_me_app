@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,11 @@ import 'package:badges/badges.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 
-class TopicsView extends StatefulWidget {
-  TopicsView({
+class TopicSelector extends StatefulWidget {
+  TopicSelector({
     Key? key,
     this.interiorPadding,
     this.controller,
@@ -31,10 +31,10 @@ class TopicsView extends StatefulWidget {
   final int? max;
 
   @override
-  State<TopicsView> createState() => _TopicsViewState();
+  State<TopicSelector> createState() => _TopicSelectorState();
 }
 
-class _TopicsViewState extends State<TopicsView> {
+class _TopicSelectorState extends State<TopicSelector> {
   Future<List<Topic>> allTopics = _getTopics();
 
   static Future<List<Topic>> _getTopics() async {
@@ -87,48 +87,91 @@ class _TopicsViewState extends State<TopicsView> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: widget.interiorPadding,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: topics
-                        .where((t) => !selectedTopics.any((s) => s.id == t.id))
-                        .toList()
-                        .asMap()
-                        .mapDown((index, topic) {
-                      return _ListTopic(
-                        key: ValueKey(topic.name),
-                        index: index,
-                        topic: topic,
-                        isSelected: false,
-                        isEnabled:
-                            widget.max == null || numTopics < widget.max!,
-                        onTap: widget.onTap,
-                      );
-                    }).toList(),
-                  ),
+                TopicsView(
+                  topics: topics
+                      .sortedBy((t) => -t.newCastCount)
+                      .where((t) => !selectedTopics.any((s) => s.id == t.id))
+                      .toList(),
+                  onTap: widget.onTap,
+                  isSelected: (_) => false,
+                  isEnabled: widget.max == null || numTopics < widget.max!,
+                  interiorPadding: widget.interiorPadding,
+                  scrollable: true,
                 ),
-                Padding(
-                  padding: widget.interiorPadding ?? EdgeInsets.zero,
-                  child: Wrap(
-                    children: selectedTopics.asMap().mapDown((index, topic) {
-                      return _ListTopic(
-                        key: ValueKey(topic.name),
-                        index: index,
-                        topic: topic,
-                        isSelected: true,
-                        isEnabled: true,
-                        onTap: widget.onTap,
-                      );
-                    }).toList(),
-                  ),
+                TopicsView(
+                  topics: selectedTopics,
+                  onTap: widget.onTap,
+                  isSelected: (_) => true,
+                  interiorPadding: widget.interiorPadding,
                 ),
               ],
             );
           },
         );
       },
+    );
+  }
+}
+
+class TopicsView extends StatelessWidget {
+  const TopicsView({
+    Key? key,
+    required this.topics,
+    required this.onTap,
+    required this.isSelected,
+    this.isEnabled = true,
+    this.interiorPadding,
+    this.scrollable = false,
+  }) : super(key: key);
+
+  final List<Topic> topics;
+  final void Function(Topic) onTap;
+  final bool Function(Topic) isSelected;
+  final bool isEnabled;
+  final EdgeInsetsGeometry? interiorPadding;
+  final bool scrollable;
+
+  @override
+  Widget build(BuildContext context) {
+    late final Widget content;
+    if (scrollable) {
+      content = SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: interiorPadding,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: topics.asMap().mapDown((index, topic) {
+            return _ListTopic(
+              key: ValueKey(topic.name),
+              index: index,
+              topic: topic,
+              isSelected: isSelected(topic),
+              isEnabled: isEnabled,
+              onTap: onTap,
+            );
+          }).toList(),
+        ),
+      );
+    } else {
+      content = Wrap(
+        children: topics.asMap().mapDown((index, topic) {
+          return _ListTopic(
+            key: ValueKey(topic.name),
+            index: index,
+            topic: topic,
+            isSelected: isSelected(topic),
+            isEnabled: true,
+            onTap: onTap,
+          );
+        }).toList(),
+      );
+    }
+    if (interiorPadding == null) {
+      return content;
+    }
+    return Padding(
+      padding: interiorPadding!,
+      child: content,
     );
   }
 }
@@ -186,9 +229,9 @@ class TopicChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color =
-        AdaptiveMaterial.adaptiveColorOf(context) == AdaptiveColor.background
-            ? AdaptiveColor.surface.color(context)
-            : AdaptiveColor.background.color(context);
+        AdaptiveMaterial.of(context) == AdaptiveMaterialType.background
+            ? AdaptiveMaterialType.surface.colorOf(context)
+            : AdaptiveMaterialType.background.colorOf(context);
     final TopicThemeData? theme = TopicViewTheme.of(context);
     return DefaultTextStyle(
       style: const TextStyle(color: Colors.white),
@@ -211,18 +254,10 @@ class TopicChip extends StatelessWidget {
           toAnimate: false,
           child: FilterChip(
             showCheckmark: false,
-            label: Text.rich(
-              TextSpan(
-                text: topic.name,
-                children: [
-                  if (theme?.showCount != false)
-                    TextSpan(
-                      text: ' ${topic.castCount}',
-                    ),
-                ],
-                style: TextStyle(
-                  fontWeight: isSelected ? FontWeight.bold : null,
-                ),
+            label: Text(
+              topic.name,
+              style: TextStyle(
+                fontWeight: isSelected ? FontWeight.bold : null,
               ),
             ),
             backgroundColor: color,
@@ -261,11 +296,9 @@ class TopicViewTheme extends InheritedWidget {
 
 class TopicThemeData {
   const TopicThemeData({
-    this.showCount,
     this.showNewCastsCount,
   });
 
-  final bool? showCount;
   final bool? showNewCastsCount;
 }
 

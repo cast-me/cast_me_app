@@ -1,14 +1,16 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/pages/conversation_page_view.dart';
+import 'package:cast_me_app/widgets/listen_page/timeline_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
-import 'package:cast_me_app/widgets/listen_page/listen_casts_view.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
+import 'package:implicit_navigator/implicit_navigator.dart';
 
 class ListenPageView extends StatefulWidget {
   const ListenPageView({Key? key}) : super(key: key);
@@ -37,30 +39,72 @@ class _ListenPageViewState extends State<ListenPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveMaterial(
-      adaptiveColor: AdaptiveColor.background,
-      child: SafeArea(
-        bottom: false,
-        child: NotificationListener<CastMeListRefreshNotification<Cast>>(
-          onNotification: (_) {
-            topicsController.refresh();
-            return false;
-          },
-          child: Column(
-            children: [
-              TopicsView(
-                interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
-                controller: topicsController,
-                selectedTopics: ListenBloc.instance.filteredTopics,
-                onTap: ListenBloc.instance.onTopicToggled,
+    return ImplicitNavigator.fromValueListenable<SelectedConversation?>(
+      key: const PageStorageKey('selected_conversation_key'),
+      maintainHistory: true,
+      valueListenable: ListenBloc.instance.selectedConversation,
+      onPop: (poppedValue, valueAfterPop) {
+        ListenBloc.instance.onConversationIdSelected(
+          valueAfterPop?.id,
+          conversation: valueAfterPop?.conversation,
+        );
+      },
+      getDepth: (selection) => selection == null ? 0 : 1,
+      transitionsBuilder: transition,
+      transitionDuration: const Duration(milliseconds: 100),
+      builder: (context, selectedConversation, animation, secondaryAnimation) {
+        if (selectedConversation != null) {
+          return ConversationPageView(
+            selectedConversation: selectedConversation,
+          );
+        }
+        return AdaptiveMaterial.background(
+          child: SafeArea(
+            bottom: false,
+            child: NotificationListener<
+                CastMeListRefreshNotification<Conversation>>(
+              onNotification: (_) {
+                topicsController.refresh();
+                return false;
+              },
+              child: Column(
+                children: [
+                  TopicSelector(
+                    interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    controller: topicsController,
+                    selectedTopics: ListenBloc.instance.filteredTopics,
+                    onTap: ListenBloc.instance.onTopicToggled,
+                  ),
+                  const Expanded(
+                    child: TimelineView(),
+                  ),
+                ],
               ),
-              const Expanded(
-                child: ListenCastsView(),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+}
+
+Widget transition(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return SlideTransition(
+    position: Tween(
+      begin: const Offset(1, 0),
+      end: Offset.zero,
+    ).animate(animation),
+    child: SlideTransition(
+      position: Tween(
+        begin: Offset.zero,
+        end: const Offset(-.5, 0),
+      ).animate(secondaryAnimation),
+      child: child,
+    ),
+  );
 }

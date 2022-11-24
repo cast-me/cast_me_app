@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
@@ -91,7 +90,7 @@ class ProfileView extends StatelessWidget {
         const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerLeft,
-          child: AdaptiveText(
+          child: Text(
             'Casts:',
             style: Theme.of(context).textTheme.headline5,
           ),
@@ -100,7 +99,7 @@ class ProfileView extends StatelessWidget {
           child: CastViewTheme(
             isInteractive: false,
             indentReplies: false,
-            dimIfListened: false,
+            indicateNew: false,
             child: CastListView(
               filterProfile: profile,
             ),

@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,6 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
@@ -24,8 +24,9 @@ class CastMeBottomSheet extends StatefulWidget {
 
 class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
   final ValueNotifier<double> progress = ValueNotifier(0);
-  final DraggableScrollableController sheetController =
-      DraggableScrollableController();
+
+  DraggableScrollableController get sheetController =>
+      ListenBloc.instance.sheetController;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +61,11 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
                           builder: (context, progress, _) {
                             return Opacity(
                               opacity: progress,
-                              child: Container(
-                                height: MediaQuery.of(context).viewPadding.top,
-                                color: AdaptiveColor.surface.color(context),
+                              child: AdaptiveMaterial.surface(
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).viewPadding.top,
+                                ),
                               ),
                             );
                           },
@@ -133,8 +136,7 @@ class _SheetState extends State<_Sheet> {
             maxChildSize: 1,
             initialChildSize: minSize,
             builder: (context, controller) {
-              return AdaptiveMaterial(
-                adaptiveColor: AdaptiveColor.surface,
+              return AdaptiveMaterial.surface(
                 child: Stack(
                   children: [
                     SingleChildScrollView(
@@ -191,10 +193,11 @@ class _SheetState extends State<_Sheet> {
                               ),
                             ),
                             if (MediaQuery.of(context).viewPadding.bottom != 0)
-                              Container(
-                                height:
-                                    MediaQuery.of(context).viewPadding.bottom,
-                                color: AdaptiveColor.surface.color(context),
+                              AdaptiveMaterial.surface(
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).viewPadding.bottom,
+                                ),
                               ),
                           ],
                         ),

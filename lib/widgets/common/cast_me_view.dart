@@ -28,6 +28,7 @@ class CastMeView extends StatelessWidget {
       onPop: (_, afterPop) {
         CastMeBloc.instance.onUsernameSelected(afterPop?.username);
       },
+      transitionDuration: const Duration(milliseconds: 100),
       transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
       getDepth: (selectedProfile) => selectedProfile == null ? 0 : 1,
       builder: (context, selectedProfile, animation, secondaryAnimation) {
@@ -56,9 +57,9 @@ class CastMeView extends StatelessWidget {
                       maintainHistory: true,
                       maintainState: true,
                       valueListenable: CastMeBloc.instance.currentTab,
+                      transitionDuration: const Duration(milliseconds: 100),
                       onPop: (_, tabAfterPop) =>
                           CastMeBloc.instance.onTabChanged(tabAfterPop),
-                      transitionsBuilder: navigationBarTransition,
                       getDepth: (tab) => tab == CastMeTab.listen ? 0 : 1,
                       builder:
                           (context, currentTab, animation, secondaryAnimation) {

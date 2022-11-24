@@ -1,10 +1,10 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
-import 'package:cast_me_app/util/adaptive_material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
@@ -45,11 +45,10 @@ class ReplyCastSelector extends StatelessWidget {
                       height: cast == null ? 66 : null,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: AdaptiveMaterial(
-                          adaptiveColor: AdaptiveColor.background,
+                        child: AdaptiveMaterial.background(
                           child: Center(
                             child: cast == null
-                                ? const AdaptiveText(
+                                ? const Text(
                                     'Select a cast (optional)',
                                   )
                                 : CastViewTheme(
@@ -58,7 +57,7 @@ class ReplyCastSelector extends StatelessWidget {
                                     indentReplies: false,
                                     showMenu: false,
                                     showLikes: false,
-                                    dimIfListened: false,
+                                    indicateNew: false,
                                     titleMaxLines: 1,
                                     child: CastPreview(cast: cast),
                                   ),
@@ -90,7 +89,7 @@ class SelectCastModal extends StatefulWidget {
     this.adaptiveColor,
   }) : super(key: key);
 
-  final AdaptiveColor? adaptiveColor;
+  final AdaptiveMaterialType? adaptiveColor;
 
   @override
   State<SelectCastModal> createState() => _SelectCastModalState();
@@ -107,7 +106,7 @@ class _SelectCastModalState extends State<SelectCastModal> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: AdaptiveMaterial(
-          adaptiveColor: widget.adaptiveColor ?? AdaptiveColor.canvas,
+          material: widget.adaptiveColor ?? AdaptiveMaterialType.surface,
           child: Column(
             children: [
               _CastSearchBar(searchController: searchController),
@@ -116,7 +115,7 @@ class _SelectCastModalState extends State<SelectCastModal> {
                   taggedUsersAreTappable: false,
                   showMenu: false,
                   showLikes: false,
-                  dimIfListened: false,
+                  indicateNew: false,
                   onTap: (cast) {
                     Navigator.of(context).pop();
                     PostBloc.instance.replyCast.value = cast;

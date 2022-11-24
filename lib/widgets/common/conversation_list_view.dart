@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,6 @@ import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
-import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 class ConversationListView extends StatelessWidget {
   const ConversationListView({
@@ -40,15 +40,7 @@ class ConversationListView extends StatelessWidget {
         },
       ),
       builder: (context, conversations, index) {
-        return CastPreview(
-          padding: const EdgeInsets.only(
-            top: 4,
-            bottom: 2,
-            left: 12,
-            right: 12,
-          ),
-          cast: conversations[index].rootCast,
-        );
+        return ConversationPreview(conversation: conversations[index]);
       },
     );
   }

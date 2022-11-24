@@ -17,9 +17,11 @@ _$_Conversation _$$_ConversationFromJson(Map<String, dynamic> json) =>
               'root_cast', (v) => Cast.fromJson(v as Map<String, dynamic>)),
           casts: $checkedConvert(
               'casts',
-              (v) => (v as List<dynamic>)
-                  .map((e) => Cast.fromJson(e as Map<String, dynamic>))
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => Cast.fromJson(e as Map<String, dynamic>))
                   .toList()),
+          topics: $checkedConvert('topics',
+              (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
         );
         return val;
       },
@@ -30,5 +32,6 @@ Map<String, dynamic> _$$_ConversationToJson(_$_Conversation instance) =>
     <String, dynamic>{
       'root_id': instance.rootId,
       'root_cast': instance.rootCast.toJson(),
-      'casts': instance.casts.map((e) => e.toJson()).toList(),
+      'casts': instance.casts?.map((e) => e.toJson()).toList(),
+      'topics': instance.topics,
     };

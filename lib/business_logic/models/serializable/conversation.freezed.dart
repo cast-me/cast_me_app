@@ -23,7 +23,8 @@ mixin _$Conversation {
 // Server specified.
   String get rootId => throw _privateConstructorUsedError;
   Cast get rootCast => throw _privateConstructorUsedError;
-  List<Cast> get casts => throw _privateConstructorUsedError;
+  List<Cast>? get casts => throw _privateConstructorUsedError;
+  List<String>? get topics => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +38,8 @@ abstract class $ConversationCopyWith<$Res> {
           Conversation value, $Res Function(Conversation) then) =
       _$ConversationCopyWithImpl<$Res, Conversation>;
   @useResult
-  $Res call({String rootId, Cast rootCast, List<Cast> casts});
+  $Res call(
+      {String rootId, Cast rootCast, List<Cast>? casts, List<String>? topics});
 
   $CastCopyWith<$Res> get rootCast;
 }
@@ -57,7 +59,8 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
   $Res call({
     Object? rootId = null,
     Object? rootCast = null,
-    Object? casts = null,
+    Object? casts = freezed,
+    Object? topics = freezed,
   }) {
     return _then(_value.copyWith(
       rootId: null == rootId
@@ -68,10 +71,14 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
           ? _value.rootCast
           : rootCast // ignore: cast_nullable_to_non_nullable
               as Cast,
-      casts: null == casts
+      casts: freezed == casts
           ? _value.casts
           : casts // ignore: cast_nullable_to_non_nullable
-              as List<Cast>,
+              as List<Cast>?,
+      topics: freezed == topics
+          ? _value.topics
+          : topics // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 
@@ -92,7 +99,8 @@ abstract class _$$_ConversationCopyWith<$Res>
       __$$_ConversationCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String rootId, Cast rootCast, List<Cast> casts});
+  $Res call(
+      {String rootId, Cast rootCast, List<Cast>? casts, List<String>? topics});
 
   @override
   $CastCopyWith<$Res> get rootCast;
@@ -111,7 +119,8 @@ class __$$_ConversationCopyWithImpl<$Res>
   $Res call({
     Object? rootId = null,
     Object? rootCast = null,
-    Object? casts = null,
+    Object? casts = freezed,
+    Object? topics = freezed,
   }) {
     return _then(_$_Conversation(
       rootId: null == rootId
@@ -122,22 +131,29 @@ class __$$_ConversationCopyWithImpl<$Res>
           ? _value.rootCast
           : rootCast // ignore: cast_nullable_to_non_nullable
               as Cast,
-      casts: null == casts
+      casts: freezed == casts
           ? _value._casts
           : casts // ignore: cast_nullable_to_non_nullable
-              as List<Cast>,
+              as List<Cast>?,
+      topics: freezed == topics
+          ? _value._topics
+          : topics // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_Conversation implements _Conversation {
+class _$_Conversation extends _Conversation {
   const _$_Conversation(
       {required this.rootId,
       required this.rootCast,
-      required final List<Cast> casts})
-      : _casts = casts;
+      required final List<Cast>? casts,
+      required final List<String>? topics})
+      : _casts = casts,
+        _topics = topics,
+        super._();
 
   factory _$_Conversation.fromJson(Map<String, dynamic> json) =>
       _$$_ConversationFromJson(json);
@@ -147,16 +163,27 @@ class _$_Conversation implements _Conversation {
   final String rootId;
   @override
   final Cast rootCast;
-  final List<Cast> _casts;
+  final List<Cast>? _casts;
   @override
-  List<Cast> get casts {
+  List<Cast>? get casts {
+    final value = _casts;
+    if (value == null) return null;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_casts);
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _topics;
+  @override
+  List<String>? get topics {
+    final value = _topics;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
   }
 
   @override
   String toString() {
-    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts)';
+    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts, topics: $topics)';
   }
 
   @override
@@ -167,13 +194,18 @@ class _$_Conversation implements _Conversation {
             (identical(other.rootId, rootId) || other.rootId == rootId) &&
             (identical(other.rootCast, rootCast) ||
                 other.rootCast == rootCast) &&
-            const DeepCollectionEquality().equals(other._casts, _casts));
+            const DeepCollectionEquality().equals(other._casts, _casts) &&
+            const DeepCollectionEquality().equals(other._topics, _topics));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, rootId, rootCast,
-      const DeepCollectionEquality().hash(_casts));
+  int get hashCode => Object.hash(
+      runtimeType,
+      rootId,
+      rootCast,
+      const DeepCollectionEquality().hash(_casts),
+      const DeepCollectionEquality().hash(_topics));
 
   @JsonKey(ignore: true)
   @override
@@ -189,11 +221,13 @@ class _$_Conversation implements _Conversation {
   }
 }
 
-abstract class _Conversation implements Conversation {
+abstract class _Conversation extends Conversation {
   const factory _Conversation(
       {required final String rootId,
       required final Cast rootCast,
-      required final List<Cast> casts}) = _$_Conversation;
+      required final List<Cast>? casts,
+      required final List<String>? topics}) = _$_Conversation;
+  const _Conversation._() : super._();
 
   factory _Conversation.fromJson(Map<String, dynamic> json) =
       _$_Conversation.fromJson;
@@ -203,7 +237,9 @@ abstract class _Conversation implements Conversation {
   @override
   Cast get rootCast;
   @override
-  List<Cast> get casts;
+  List<Cast>? get casts;
+  @override
+  List<String>? get topics;
   @override
   @JsonKey(ignore: true)
   _$$_ConversationCopyWith<_$_Conversation> get copyWith =>

@@ -1,18 +1,16 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
-
-// Project imports:
-import 'package:cast_me_app/util/adaptive_material.dart';
 
 class CastMeModal extends StatelessWidget {
   const CastMeModal({
     Key? key,
     required this.child,
-    this.adaptiveColor,
+    this.adaptiveMaterial,
   }) : super(key: key);
 
   final Widget child;
-  final AdaptiveColor? adaptiveColor;
+  final AdaptiveMaterialType? adaptiveMaterial;
 
   static void showMessage(
     BuildContext context,
@@ -49,7 +47,7 @@ class CastMeModal extends StatelessWidget {
         child: Container(
           width: double.infinity,
           child: AdaptiveMaterial(
-            adaptiveColor: adaptiveColor ?? AdaptiveColor.canvas,
+            material: adaptiveMaterial ?? AdaptiveMaterialType.surface,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: child,

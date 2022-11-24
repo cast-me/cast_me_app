@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
+import 'package:cast_me_app/util/disable_analytics_if_test_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -82,6 +83,7 @@ Future<void> main() async {
       await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
       await DeepLinkHandler.register(CastMeBloc.instance.onLinkPath);
       await UpdateMessage.register(PackageInfo.fromPlatform());
+      await disableAnalyticsIfTestDevice();
       runApp(const CastMeApp());
     },
     (error, stack) {
@@ -117,8 +119,7 @@ class CastMeApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            shape: MaterialStateProperty.all(const StadiumBorder())
-          ),
+              shape: MaterialStateProperty.all(const StadiumBorder())),
         ),
         canvasColor: Color.lerp(Colors.white, castMeGrey, .95),
         colorScheme: ColorScheme(
