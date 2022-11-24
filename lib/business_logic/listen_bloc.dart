@@ -35,9 +35,8 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
-  final ValueNotifier<List<Topic>> _filteredTopics = ValueNotifier([]);
-
-  ValueListenable<List<Topic>> get filteredTopics => _filteredTopics;
+  ValueListenable<List<Topic>> get filteredTopics =>
+      timelineListController.select(() => timelineListController.filterTopics);
 
   final ValueNotifier<SelectedConversation?> _selectedConversation =
       ValueNotifier(null);
@@ -143,8 +142,11 @@ class ListenBloc {
   }
 
   void onTopicToggled(Topic topic) {
-    _filteredTopics.toggle(topic, byKey: (t) => t.id);
-    timelineListController.refresh();
+    timelineListController.filterTopics =
+        timelineListController.filterTopics.toggled(
+      topic,
+      byKey: (t) => t.name,
+    );
   }
 
   void closeBottomSheet() {

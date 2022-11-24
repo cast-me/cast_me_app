@@ -28,17 +28,6 @@ class ConversationListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CastMeListView<Conversation>(
       controller: controller,
-      getStream: () => CastDatabase.instance
-          .getConversations(
-        filterTopics: filterTopics,
-      )
-          .handleError(
-        (Object error) {
-          if (kDebugMode) {
-            print(error);
-          }
-        },
-      ),
       builder: (context, conversations, index) {
         return ConversationPreview(conversation: conversations[index]);
       },

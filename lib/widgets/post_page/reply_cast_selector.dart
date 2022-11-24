@@ -99,8 +99,10 @@ class SelectCastModal extends StatefulWidget {
 }
 
 class _SelectCastModalState extends State<SelectCastModal> {
-  final CastMeSearchListController<Cast> searchController =
-      CastMeSearchListController<Cast>();
+  final CastMeListController<Cast> searchController =
+      CastMeListController<Cast>(
+    searchTextController: TextEditingController(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +145,7 @@ class _CastSearchBar extends StatelessWidget {
     required this.searchController,
   }) : super(key: key);
 
-  final CastMeSearchListController<Cast> searchController;
+  final CastMeListController<Cast> searchController;
 
   @override
   Widget build(BuildContext context) {

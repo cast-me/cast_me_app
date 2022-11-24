@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -101,7 +102,7 @@ class ProfileView extends StatelessWidget {
             indentReplies: false,
             indicateNew: false,
             child: CastListView(
-              filterProfile: profile,
+              controller: CastMeListController(filterProfile: profile),
             ),
           ),
         ),

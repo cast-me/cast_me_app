@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -33,23 +35,48 @@ class ConversationPageView extends StatelessWidget {
           scrollable: false,
           headerText: conversation.rootCast.title,
           padding: EdgeInsets.zero,
-          child: CastViewTheme(
-            onTap: (cast) {
-              ListenBloc.instance.playConversation(
-                conversation,
-                startAtCast: cast,
-                // If we're starting at a specific cast, assume that we want to
-                // listen to everything.
-                skipViewed: false,
-              );
-            },
-            child: CastListView(
-              padding: EdgeInsets.zero,
-              getCasts: () => Stream.fromIterable(conversation.allCasts),
-            ),
-          ),
+          child: _LoadedPageContent(conversation: conversation),
         );
       },
+    );
+  }
+}
+
+class _LoadedPageContent extends StatefulWidget {
+  const _LoadedPageContent({
+    Key? key,
+    required this.conversation,
+  }) : super(key: key);
+
+  final Conversation conversation;
+
+  @override
+  State<_LoadedPageContent> createState() => _LoadedPageContentState();
+}
+
+class _LoadedPageContentState extends State<_LoadedPageContent> {
+  late final CastMeListController<Cast> controller = CastMeListController(
+    getStream: (_) => Stream.fromIterable(widget.conversation.allCasts),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return CastViewTheme(
+      onTap: (cast) {
+        ListenBloc.instance.playConversation(
+          widget.conversation,
+          startAtCast: cast,
+          // If we're starting at a specific cast, assume that we want to
+          // listen to everything.
+          skipViewed: false,
+        );
+      },
+      child: CastListView(
+        padding: EdgeInsets.zero,
+        controller: CastMeListController<Cast>(
+          getStream: (_) => Stream.fromIterable(widget.conversation.allCasts),
+        ),
+      ),
     );
   }
 }

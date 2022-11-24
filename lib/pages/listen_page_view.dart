@@ -8,11 +8,8 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
-import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/pages/conversation_page_view.dart';
-import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/listen_page/timeline_view.dart';
-import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class ListenPageView extends StatefulWidget {
   const ListenPageView({Key? key}) : super(key: key);
@@ -22,8 +19,6 @@ class ListenPageView extends StatefulWidget {
 }
 
 class _ListenPageViewState extends State<ListenPageView> {
-  final TopicsViewController topicsController = TopicsViewController();
-
   @override
   void initState() {
     if (ListenBloc.instance.currentCast.value == null) {
@@ -60,29 +55,10 @@ class _ListenPageViewState extends State<ListenPageView> {
             selectedConversation: selectedConversation,
           );
         }
-        return AdaptiveMaterial.background(
+        return const AdaptiveMaterial.background(
           child: SafeArea(
             bottom: false,
-            child: NotificationListener<
-                CastMeListRefreshNotification<Conversation>>(
-              onNotification: (_) {
-                topicsController.refresh();
-                return false;
-              },
-              child: Column(
-                children: [
-                  TopicSelector(
-                    interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
-                    controller: topicsController,
-                    selectedTopics: ListenBloc.instance.filteredTopics,
-                    onTap: ListenBloc.instance.onTopicToggled,
-                  ),
-                  const Expanded(
-                    child: TimelineView(),
-                  ),
-                ],
-              ),
-            ),
+            child: TimelineView(),
           ),
         );
       },

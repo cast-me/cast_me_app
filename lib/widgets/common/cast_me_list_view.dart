@@ -2,6 +2,11 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,11 +20,8 @@ class CastMeListView<T> extends StatefulWidget {
     Key? key,
     this.controller,
     required this.builder,
-    required this.getStream,
     this.padding,
   }) : super(key: key);
-
-  final Stream<T> Function() getStream;
 
   final Widget Function(BuildContext, List<T>, int) builder;
 
@@ -37,11 +39,11 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   // TODO(caseycrogers): this will cause a bug if a controller is added later,
   //   consider adding didUpdateWidget logic.
   late CastMeListController<T> controller;
-  late Stream<T> stream = widget.getStream();
+  late Stream<T> stream = controller.getStream();
 
-  void onRefresh() {
+  void onControllerUpdated() {
     setState(() {
-      stream = widget.getStream();
+      stream = controller.getStream();
     });
     CastMeListRefreshNotification<T>().dispatch(context);
   }
@@ -50,21 +52,21 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   void initState() {
     super.initState();
     controller = widget.controller ?? CastMeListController<T>();
-    controller.addListener(onRefresh);
+    controller.addListener(onControllerUpdated);
   }
 
   @override
   void dispose() {
-    controller.removeListener(onRefresh);
+    controller.removeListener(onControllerUpdated);
     super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant CastMeListView<T> oldWidget) {
     if (oldWidget.controller != widget.controller) {
-      controller.removeListener(onRefresh);
+      controller.removeListener(onControllerUpdated);
       controller = widget.controller ?? CastMeListController<T>();
-      controller.addListener(onRefresh);
+      controller.addListener(onControllerUpdated);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -74,7 +76,7 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
     return RefreshIndicator(
       color: Colors.white,
       onRefresh: () async {
-        onRefresh();
+        onControllerUpdated();
       },
       // Wrap in an animated builder so that the controller can force the list
       // view to rebuild.
@@ -114,14 +116,88 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   }
 }
 
-class CastMeListController<T> extends ChangeNotifier {
-  CastMeListController([this.searchTextController]) {
+class CastMeListController<T> extends TopicsViewController {
+  CastMeListController({
+    Profile? filterProfile,
+    Profile? filterOutProfile,
+    List<Topic>? filterTopics,
+    this.searchTextController,
+    Stream<T> Function(CastMeListController<T>)? getStream,
+  })  : _filterProfile = filterProfile,
+        _filterOutProfile = filterOutProfile,
+        _filterTopics = filterTopics ?? [],
+        _getStream = getStream {
     searchTextController?.addListener(_onTextChanged);
   }
 
-  final TextEditingController? searchTextController;
+  /// If non-null, fetch only casts authored by the specified user.
+  Profile? _filterProfile;
 
-  String? previousText;
+  Profile? get filterProfile => _filterProfile;
+
+  set filterProfile(Profile? value) {
+    _filterProfile = value;
+    notifyListeners();
+  }
+
+  /// If non-null, exclude casts by the specified user.
+  Profile? _filterOutProfile;
+
+  Profile? get filterOutProfile => _filterOutProfile;
+
+  set filterOutProfile(Profile? value) {
+    _filterOutProfile = value;
+    notifyListeners();
+  }
+
+  /// If non-null, restrict casts to the given topic.
+  List<Topic> _filterTopics;
+
+  @override
+  List<Topic> get filterTopics => _filterTopics;
+
+  set filterTopics(List<Topic> value) {
+    _filterTopics = value;
+    notifyListeners();
+  }
+
+  TextEditingController? searchTextController;
+
+  final Stream<T> Function(CastMeListController<T>)? _getStream;
+
+  String? _previousText;
+
+  Stream<T> getStream() {
+    return _internalGetStream().handleError(
+      (Object error, StackTrace stackTrace) {
+        FlutterError.onError!.call(
+          FlutterErrorDetails(exception: error, stack: stackTrace),
+        );
+      },
+    );
+  }
+
+  Stream<T> _internalGetStream() {
+    if (_getStream != null) {
+      return _getStream!(this);
+    }
+    if (T == Cast) {
+      return CastDatabase.instance.getCasts(
+        filterProfile: filterProfile,
+        filterOutProfile: filterOutProfile,
+        filterTopics: filterTopics,
+        searchTerm: searchTextController?.text,
+      ) as Stream<T>;
+    } else if (T == Conversation) {
+      return CastDatabase.instance.getConversations(
+        filterProfile: filterProfile,
+        filterOutProfile: filterOutProfile,
+        filterTopics: filterTopics,
+        searchTerm: searchTextController?.text,
+      ) as Stream<T>;
+    }
+    throw Exception('Unrecognized type `$T`.');
+  }
 
   void refresh() {
     assertAttached();
@@ -145,19 +221,12 @@ class CastMeListController<T> extends ChangeNotifier {
   }
 
   void _onTextChanged() {
-    if (previousText == null || searchTextController!.text == previousText) {
+    if (_previousText == null || searchTextController!.text == _previousText) {
       return;
     }
-    previousText = searchTextController!.text;
+    _previousText = searchTextController!.text;
     notifyListeners();
   }
-}
-
-class CastMeSearchListController<T> extends CastMeListController<T> {
-  CastMeSearchListController() : super(TextEditingController());
-
-  @override
-  TextEditingController get searchTextController => super.searchTextController!;
 }
 
 class CastMeListRefreshNotification<T> extends Notification {}
