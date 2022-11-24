@@ -29,10 +29,18 @@ class ExternalLinkButton extends StatelessWidget {
       ),
       onPressed: () async {
         if (onTap != null) {
-          onTap!(() => launchUrl(uri));
+          onTap!(
+            () => launchUrl(
+              uri,
+              mode: LaunchMode.externalApplication,
+            ),
+          );
           return;
         }
-        await launchUrl(uri);
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
       },
     );
   }

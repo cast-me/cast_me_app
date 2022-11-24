@@ -1,5 +1,8 @@
-import 'package:adaptive_material/adaptive_material.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UriButton extends StatelessWidget {
@@ -14,7 +17,10 @@ class UriButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        launchUrl(uri);
+        launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
       },
       child: Row(
         children: [

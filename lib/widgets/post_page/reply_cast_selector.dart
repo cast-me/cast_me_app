@@ -1,6 +1,8 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
@@ -58,6 +60,7 @@ class ReplyCastSelector extends StatelessWidget {
                                     showMenu: false,
                                     showLikes: false,
                                     indicateNew: false,
+                                    showLink: false,
                                     titleMaxLines: 1,
                                     child: CastPreview(cast: cast),
                                   ),
@@ -116,6 +119,7 @@ class _SelectCastModalState extends State<SelectCastModal> {
                   showMenu: false,
                   showLikes: false,
                   indicateNew: false,
+                  showLink: false,
                   onTap: (cast) {
                     Navigator.of(context).pop();
                     PostBloc.instance.replyCast.value = cast;

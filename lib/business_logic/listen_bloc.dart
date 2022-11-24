@@ -1,8 +1,7 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:async';
 
-import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -10,8 +9,10 @@ import 'package:flutter/widgets.dart';
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 
 /// Contains the state for the `ListenPage`.
 class ListenBloc {

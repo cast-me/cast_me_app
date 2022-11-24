@@ -1,9 +1,9 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:async_list_view/async_list_view.dart';
 
 // Project imports:

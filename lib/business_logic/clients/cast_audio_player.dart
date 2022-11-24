@@ -1,10 +1,11 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:async';
 
-import 'package:collection/collection.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';

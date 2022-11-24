@@ -1,9 +1,9 @@
 // Flutter imports:
-import 'package:boxy/flex.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:boxy/flex.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
@@ -17,6 +17,7 @@ import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/likes_view.dart';
+import 'package:cast_me_app/widgets/common/uri_button.dart';
 
 /// TODO(caseycrogers): do a pass over this class to clean it up and break out
 ///   logic into sub-widgets.
@@ -100,7 +101,8 @@ class CastPreview extends StatelessWidget {
                             // Else put it below in the row.
                             if ((theme?.showMenu ?? true) || showHowOld)
                               const _CastTitleView(),
-                            const SizedBox(height: 2),
+                            if (cast.externalUri != null)
+                              UriButton(uri: cast.externalUri!),
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,6 +442,7 @@ class CastViewTheme extends InheritedWidget {
     this.onTap,
     this.indentReplies,
     this.indicateNew,
+    this.showLink,
     this.titleMaxLines,
     this.imageLinkTapEnabled,
   }) : super(key: key, child: child);
@@ -461,11 +464,13 @@ class CastViewTheme extends InheritedWidget {
   /// Whether or not to visually indent replies.
   final bool? indentReplies;
 
-  /// Whether or not to dim the cast to indicate that it's been listened.
+  /// Whether or not to show a UI element indicating that a cast is new.
   ///
-  /// For the purposes of dimming, self-authored casts are considered to have
-  /// already been viewed.
+  /// Self-authored casts are not considered new.
   final bool? indicateNew;
+
+  /// Whether or not to show a link button if the cast has an external link.
+  final bool? showLink;
 
   /// How many lines of text the title should be truncated to-unlimited if null.
   final int? titleMaxLines;

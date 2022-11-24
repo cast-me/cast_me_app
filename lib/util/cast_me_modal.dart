@@ -1,6 +1,8 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 
 class CastMeModal extends StatelessWidget {
   const CastMeModal({
