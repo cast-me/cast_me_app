@@ -23,13 +23,17 @@ class CastMeNavigationBar extends StatelessWidget {
           Theme.of(context).textTheme.bodyText1,
         ),
       ),
-      child: NavigationBar(
-        height: kToolbarHeight,
-        selectedIndex: tab.index,
-        onDestinationSelected: (index) {
-          CastMeBloc.instance.onTabIndexChanged(index);
-        },
-        destinations: CastMeTabs.tabs.values.toList(),
+      child: MediaQuery(
+        data: MediaQuery.of(context)
+            .removeViewInsets(removeTop: true)
+            .removePadding(removeTop: true),
+        child: NavigationBar(
+          selectedIndex: tab.index,
+          onDestinationSelected: (index) {
+            CastMeBloc.instance.onTabIndexChanged(index);
+          },
+          destinations: CastMeTabs.tabs.values.toList(),
+        ),
       ),
     );
   }
