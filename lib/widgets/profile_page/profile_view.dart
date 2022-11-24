@@ -99,7 +99,7 @@ class ProfileView extends StatelessWidget {
           child: CastViewTheme(
             isInteractive: false,
             indentReplies: false,
-            dimIfListened: false,
+            indicateNew: false,
             child: CastListView(
               filterProfile: profile,
             ),

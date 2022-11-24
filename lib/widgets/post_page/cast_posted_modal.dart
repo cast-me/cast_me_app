@@ -39,7 +39,7 @@ class CastPostedModal extends StatelessWidget {
               child: CastViewTheme(
                 showLikes: false,
                 showMenu: false,
-                dimIfListened: false,
+                indicateNew: false,
                 onTap: (cast) {
                   Navigator.of(context).pop();
                   CastMeBloc.instance.onTabChanged(CastMeTab.listen);

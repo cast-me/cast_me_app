@@ -37,8 +37,8 @@ class CastPreview extends StatelessWidget {
 
   final bool isInTrackList;
 
-  bool shouldDim(BuildContext context) {
-    if (!(CastViewTheme.of(context)?.dimIfListened ?? true)) {
+  bool shouldIndicateNew(BuildContext context) {
+    if (CastViewTheme.of(context)?.indicateNew == false) {
       return false;
     }
     if (cast == ListenBloc.instance.currentCast.value) {
@@ -68,7 +68,7 @@ class CastPreview extends StatelessWidget {
           return InkWell(
             onTap: _getOnTap(context, nowPlaying),
             child: IndicateViewed(
-              showIndicator: shouldDim(context),
+              showIndicator: shouldIndicateNew(context),
               child: Container(
                 padding: EdgeInsets.only(
                   left: padding?.left ?? 4,
@@ -439,7 +439,7 @@ class CastViewTheme extends InheritedWidget {
     this.showLikes,
     this.onTap,
     this.indentReplies,
-    this.dimIfListened,
+    this.indicateNew,
     this.titleMaxLines,
     this.imageLinkTapEnabled,
   }) : super(key: key, child: child);
@@ -465,7 +465,7 @@ class CastViewTheme extends InheritedWidget {
   ///
   /// For the purposes of dimming, self-authored casts are considered to have
   /// already been viewed.
-  final bool? dimIfListened;
+  final bool? indicateNew;
 
   /// How many lines of text the title should be truncated to-unlimited if null.
   final int? titleMaxLines;

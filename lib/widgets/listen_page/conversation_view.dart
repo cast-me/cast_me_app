@@ -74,12 +74,19 @@ class ConversationPreview extends StatelessWidget {
                   children: [
                     if (rootCast.externalUri != null)
                       UriButton(uri: rootCast.externalUri!),
-                    Row(
-                      children: [
-                        Text(_repliesString(conversation.allCasts.length)),
-                        Text(' - ${conversation.newCastCount} new - '),
-                        HowOldLine(createdAt: rootCast.createdAtStamp),
-                      ],
+                    DefaultTextStyle(
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: AdaptiveMaterial.secondaryOnColorOf(context),
+                          ),
+                      child: Row(
+                        children: [
+                          Text(_repliesString(conversation.allCasts.length)),
+                          const Text(' - '),
+                          const NewCount(),
+                          const Text(' - '),
+                          HowOldLine(createdAt: rootCast.createdAtStamp),
+                        ],
+                      ),
                     ),
                     Row(
                       children: const [
@@ -108,6 +115,21 @@ class ConversationPreview extends StatelessWidget {
       return '1 cast';
     }
     return '$length casts';
+  }
+}
+
+class NewCount extends StatelessWidget {
+  const NewCount({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Conversation conversation = ConversationProvider.of(context);
+    return Text(
+      '${conversation.newCastCount} new',
+      style: conversation.newCastCount != 0
+          ? Theme.of(context).textTheme.bodyText1
+          : null,
+    );
   }
 }
 
