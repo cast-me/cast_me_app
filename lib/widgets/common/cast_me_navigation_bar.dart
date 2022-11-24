@@ -15,17 +15,22 @@ class CastMeNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tab.index,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      items: CastMeTabs.tabs.values.toList(),
-      selectedIconTheme: const IconThemeData(size: 36),
-      onTap: (tabIndex) {
-        CastMeBloc.instance.onTabIndexChanged(tabIndex);
-      },
-      elevation: 0,
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        indicatorColor: Colors.black54,
+        labelTextStyle: MaterialStateProperty.all(
+          Theme.of(context).textTheme.bodyText1,
+        ),
+      ),
+      child: NavigationBar(
+        height: kToolbarHeight,
+        selectedIndex: tab.index,
+        onDestinationSelected: (index) {
+          CastMeBloc.instance.onTabIndexChanged(index);
+        },
+        destinations: CastMeTabs.tabs.values.toList(),
+      ),
     );
   }
 }

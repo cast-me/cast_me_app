@@ -2,9 +2,11 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 
 class CopyToClipboardText extends StatefulWidget {
   const CopyToClipboardText({

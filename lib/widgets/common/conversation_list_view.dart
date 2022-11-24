@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +7,7 @@ import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
+import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 
 class ConversationListView extends StatelessWidget {
   const ConversationListView({

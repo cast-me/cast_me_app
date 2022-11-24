@@ -136,7 +136,10 @@ class WelcomeMessageContent extends StatelessWidget {
         Center(
           child: TextButton(
             onPressed: () {
-              launchUrl(discordUrl);
+              launchUrl(
+                discordUrl,
+                mode: LaunchMode.externalApplication,
+              );
             },
             child: const Text(
               'CastMe Discord Server',
@@ -176,7 +179,10 @@ class UpdateMessageContent extends StatelessWidget {
         Center(
           child: TextButton(
             onPressed: () {
-              launchUrl(discordUrl);
+              launchUrl(
+                discordUrl,
+                mode: LaunchMode.externalApplication,
+              );
             },
             child: const Text(
               'Provide Feedback (opens Discord)',

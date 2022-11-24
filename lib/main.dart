@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
-import 'package:cast_me_app/util/disable_analytics_if_test_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +25,7 @@ import 'package:cast_me_app/business_logic/handlers/deep_link_handler.dart';
 import 'package:cast_me_app/business_logic/handlers/share_handler.dart';
 import 'package:cast_me_app/changelog_messages.dart';
 import 'package:cast_me_app/firebase_options.dart';
+import 'package:cast_me_app/util/disable_analytics_if_test_device.dart';
 import 'package:cast_me_app/widgets/common/auth_gate.dart';
 import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';

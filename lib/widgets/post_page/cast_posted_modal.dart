@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
