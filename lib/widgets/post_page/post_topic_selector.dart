@@ -37,14 +37,7 @@ class PostTopicSelector extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: TopicSelector(
-                onTap: (topic) {
-                  if (bloc.topics.value.length == 3 &&
-                      !bloc.topics.value.contains(topic)) {
-                    // Only allow a max of 3 topics.
-                    return;
-                  }
-                  bloc.topics.toggle(topic, byKey: (t) => t.id);
-                },
+                controller: TopicSelectorController(),
                 max: 3,
               ),
             ),
