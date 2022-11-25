@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,15 +14,13 @@ import 'package:cast_me_app/util/listenable_utils.dart';
 class TopicSelector extends StatefulWidget {
   const TopicSelector({
     super.key,
+    required this.controller,
     this.interiorPadding,
-    this.controller,
-    required this.onTap,
     this.max,
   });
 
   final EdgeInsets? interiorPadding;
-  final TopicsViewController? controller;
-  final void Function(Topic) onTap;
+  final TopicSelectorController controller;
   final int? max;
 
   @override
@@ -46,12 +43,12 @@ class _TopicSelectorState extends State<TopicSelector> {
   @override
   void initState() {
     super.initState();
-    widget.controller?.addListener(_onRefresh);
+    widget.controller.addListener(_onRefresh);
   }
 
   @override
   void dispose() {
-    widget.controller?.removeListener(_onRefresh);
+    widget.controller.removeListener(_onRefresh);
     super.dispose();
   }
 
@@ -73,12 +70,11 @@ class _TopicSelectorState extends State<TopicSelector> {
         return ValueListenableBuilder<List<Topic>>(
           // We get the actual topic objects from all topics as it has fresh
           // view and cast counts.
-          valueListenable: widget.controller?.select(() {
-                return widget.controller!.filterTopics
-                    .map((f) => topics.singleWhere((t) => f.id == t.id))
-                    .toList();
-              }) ??
-              ValueNotifier([]),
+          valueListenable: widget.controller.select(() {
+            return widget.controller.filterTopics
+                .map((f) => topics.singleWhere((t) => f.id == t.id))
+                .toList();
+          }),
           builder: (context, selectedTopics, _) {
             final numTopics = selectedTopics.length;
             return Column(
@@ -90,7 +86,9 @@ class _TopicSelectorState extends State<TopicSelector> {
                       .sortedBy((t) => -t.newCastCount)
                       .where((t) => !selectedTopics.any((s) => s.id == t.id))
                       .toList(),
-                  onTap: widget.onTap,
+                  onTap: (topic) {
+                    widget.controller.toggle(topic);
+                  },
                   isSelected: (_) => false,
                   isEnabled: widget.max == null || numTopics < widget.max!,
                   interiorPadding: widget.interiorPadding,
@@ -98,7 +96,9 @@ class _TopicSelectorState extends State<TopicSelector> {
                 ),
                 TopicsView(
                   topics: selectedTopics,
-                  onTap: widget.onTap,
+                  onTap: (topic) {
+                    widget.controller.toggle(topic);
+                  },
                   isSelected: (_) => true,
                   interiorPadding: widget.interiorPadding,
                 ),
@@ -297,6 +297,18 @@ class TopicThemeData {
   final bool? showNewCastsCount;
 }
 
-abstract class TopicsViewController with ChangeNotifier {
-  List<Topic> get filterTopics;
+class TopicSelectorController with ChangeNotifier {
+  TopicSelectorController({
+    List<Topic>? filterTopics,
+  }) : _filterTopics = filterTopics ?? [];
+
+  /// If non-null, restrict casts to the given topic.
+  List<Topic> _filterTopics;
+
+  List<Topic> get filterTopics => _filterTopics;
+
+  void toggle(Topic topic) {
+    _filterTopics = _filterTopics.toggled(topic);
+    notifyListeners();
+  }
 }

@@ -17,7 +17,6 @@ class TimelineView extends StatelessWidget {
         TopicSelector(
           interiorPadding: const EdgeInsets.symmetric(horizontal: 4),
           controller: ListenBloc.instance.timelineListController,
-          onTap: ListenBloc.instance.onTopicToggled,
         ),
         Expanded(
           child: CastViewTheme(

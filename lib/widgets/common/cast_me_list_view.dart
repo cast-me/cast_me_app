@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/material.dart';
 
@@ -116,16 +115,15 @@ class _CastMeListViewState<T> extends State<CastMeListView<T>> {
   }
 }
 
-class CastMeListController<T> extends TopicsViewController {
+class CastMeListController<T> extends TopicSelectorController {
   CastMeListController({
+    super.filterTopics,
     Profile? filterProfile,
     Profile? filterOutProfile,
-    List<Topic>? filterTopics,
     this.searchTextController,
     Stream<T> Function(CastMeListController<T>)? getStream,
   })  : _filterProfile = filterProfile,
         _filterOutProfile = filterOutProfile,
-        _filterTopics = filterTopics ?? [],
         _getStream = getStream {
     searchTextController?.addListener(_onTextChanged);
   }
@@ -147,17 +145,6 @@ class CastMeListController<T> extends TopicsViewController {
 
   set filterOutProfile(Profile? value) {
     _filterOutProfile = value;
-    notifyListeners();
-  }
-
-  /// If non-null, restrict casts to the given topic.
-  List<Topic> _filterTopics;
-
-  @override
-  List<Topic> get filterTopics => _filterTopics;
-
-  set filterTopics(List<Topic> value) {
-    _filterTopics = value;
     notifyListeners();
   }
 

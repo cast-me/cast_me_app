@@ -141,14 +141,6 @@ class ListenBloc {
     _trackListIsDisplayed.value = !_trackListIsDisplayed.value;
   }
 
-  void onTopicToggled(Topic topic) {
-    timelineListController.filterTopics =
-        timelineListController.filterTopics.toggled(
-      topic,
-      byKey: (t) => t.name,
-    );
-  }
-
   void closeBottomSheet() {
     sheetController.animateTo(
       0,

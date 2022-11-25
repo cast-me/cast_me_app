@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +31,9 @@ class PostBloc {
   final ValueNotifier<List<Topic>> topics = ValueNotifier([]);
 
   final ValueNotifier<CastFile?> _castFile = ValueNotifier(null);
+
+  final TopicSelectorController topicSelectorController =
+      TopicSelectorController();
 
   // Used as a hack to force the title text field to rebuild.
   Key titleFieldKey = UniqueKey();
