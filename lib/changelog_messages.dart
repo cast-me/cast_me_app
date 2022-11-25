@@ -21,4 +21,11 @@ const Map<String, Widget> changelogMessages = {
     ''' - Made cast ordering stable and more intuitive
  - Fixed bug with pull-down-to-refresh''',
   ),
+  '0.2.0': Text(
+    ''' - Massively overhauled the UI to group conversations together
+ - Force screen to stay awake when recording (yw @drcookmfg :P)
+ - Fixed bug with topic filtering
+ - Fixed various bugs
+ - ...and way more!!!''',
+  ),
 };

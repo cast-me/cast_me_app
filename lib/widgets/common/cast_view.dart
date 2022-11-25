@@ -231,7 +231,16 @@ class CastView extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          const CastButtonRow(),
+          CastButtonRow(
+            onTap: () {
+              // Ensure the now playing sheet gets closed.
+              ListenBloc.instance.sheetController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 50),
+                curve: Curves.linear,
+              );
+            },
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: AspectRatio(

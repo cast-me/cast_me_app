@@ -110,30 +110,41 @@ class StackCastMenu extends StatelessWidget {
 }
 
 class CastButtonRow extends StatelessWidget {
-  const CastButtonRow({Key? key}) : super(key: key);
+  const CastButtonRow({
+    Key? key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: const [
-        ReplyButton(),
-        ShareButton(),
-        CastMenu(),
+      children: [
+        ReplyButton(onTap: onTap),
+        ShareButton(onTap: onTap),
+        CastMenu(onTap: onTap),
       ],
     );
   }
 }
 
 class ShareButton extends StatelessWidget {
-  const ShareButton({Key? key}) : super(key: key);
+  const ShareButton({
+    Key? key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Platform.isIOS ? Icons.ios_share : Icons.share),
       onPressed: () async {
+        onTap?.call();
         await ShareClient.instance.share(CastProvider.of(context).value);
       },
     );
@@ -141,13 +152,19 @@ class ShareButton extends StatelessWidget {
 }
 
 class ReplyButton extends StatelessWidget {
-  const ReplyButton({Key? key}) : super(key: key);
+  const ReplyButton({
+    Key? key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.reply),
       onPressed: () {
+        onTap?.call();
         PostBloc.instance.replyCast.value = CastProvider.of(context).value;
         CastMeBloc.instance.onTabChanged(CastMeTab.post);
       },

@@ -89,6 +89,8 @@ class ConversationPreview extends StatelessWidget {
                           const Text(' - '),
                           const NewCount(),
                           const Text(' - '),
+                          Text(_likesString(conversation.likeCount)),
+                          const Text(' - '),
                           HowOldLine(createdAt: rootCast.createdAtStamp),
                         ],
                       ),
@@ -120,6 +122,13 @@ class ConversationPreview extends StatelessWidget {
       return '1 cast';
     }
     return '$length casts';
+  }
+
+  String _likesString(int count) {
+    if (count == 1) {
+      return '1 like';
+    }
+    return '$count likes';
   }
 }
 

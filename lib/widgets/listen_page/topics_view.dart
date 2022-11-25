@@ -13,20 +13,16 @@ import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 
 class TopicSelector extends StatefulWidget {
-  TopicSelector({
-    Key? key,
+  const TopicSelector({
+    super.key,
     this.interiorPadding,
     this.controller,
-    required ValueListenable<List<Topic>> selectedTopics,
     required this.onTap,
     this.max,
-  })  : selectedTopicIds =
-            selectedTopics.map((topics) => topics.map((t) => t.id).toList()),
-        super(key: key);
+  });
 
   final EdgeInsets? interiorPadding;
   final TopicsViewController? controller;
-  final ValueListenable<List<String>> selectedTopicIds;
   final void Function(Topic) onTap;
   final int? max;
 
@@ -77,10 +73,12 @@ class _TopicSelectorState extends State<TopicSelector> {
         return ValueListenableBuilder<List<Topic>>(
           // We get the actual topic objects from all topics as it has fresh
           // view and cast counts.
-          valueListenable: widget.selectedTopicIds.map(
-            (ids) =>
-                ids.map((id) => topics.singleWhere((t) => t.id == id)).toList(),
-          ),
+          valueListenable: widget.controller?.select(() {
+                return widget.controller!.filterTopics
+                    .map((f) => topics.singleWhere((t) => f.id == t.id))
+                    .toList();
+              }) ??
+              ValueNotifier([]),
           builder: (context, selectedTopics, _) {
             final numTopics = selectedTopics.length;
             return Column(
@@ -153,26 +151,23 @@ class TopicsView extends StatelessWidget {
         ),
       );
     } else {
-      content = Wrap(
-        children: topics.asMap().mapDown((index, topic) {
-          return _ListTopic(
-            key: ValueKey(topic.name),
-            index: index,
-            topic: topic,
-            isSelected: isSelected(topic),
-            isEnabled: true,
-            onTap: onTap,
-          );
-        }).toList(),
+      content = Padding(
+        padding: interiorPadding ?? EdgeInsets.zero,
+        child: Wrap(
+          children: topics.asMap().mapDown((index, topic) {
+            return _ListTopic(
+              key: ValueKey(topic.name),
+              index: index,
+              topic: topic,
+              isSelected: isSelected(topic),
+              isEnabled: true,
+              onTap: onTap,
+            );
+          }).toList(),
+        ),
       );
     }
-    if (interiorPadding == null) {
-      return content;
-    }
-    return Padding(
-      padding: interiorPadding!,
-      child: content,
-    );
+    return content;
   }
 }
 
@@ -302,8 +297,6 @@ class TopicThemeData {
   final bool? showNewCastsCount;
 }
 
-class TopicsViewController extends ChangeNotifier {
-  void refresh() {
-    notifyListeners();
-  }
+abstract class TopicsViewController with ChangeNotifier {
+  List<Topic> get filterTopics;
 }
