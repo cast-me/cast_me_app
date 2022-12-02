@@ -2,6 +2,9 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/social_manager.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -79,6 +82,20 @@ class CastMenu extends StatelessWidget {
                   hideMenu();
                   onTap?.call();
                   ExternalLinkModal.showMessage(context, cast.externalUri!);
+                },
+              ),
+            if (cast.authorId != AuthManager.instance.profile.id)
+              _MenuButton(
+                icon: Icons.block,
+                text: 'block user',
+                onTap: () async {
+                  hideMenu();
+                  onTap?.call();
+                  CastMeModal.showMessage(
+                    context,
+                    _BlockUserModal(userId: cast.authorId),
+                  );
+                  listController?.refresh();
                 },
               ),
           ],
@@ -201,6 +218,44 @@ class _MenuButton extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _BlockUserModal extends StatelessWidget {
+  const _BlockUserModal({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
+
+  final String userId;
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncActionWrapper(
+      // Use the builder so that children can reference the action wrapper.
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Are you sure you want to block this user?\n'
+            'Blocking a user hide their casts from you and disallows them from '
+            'replying directly to your cast.\n'
+            'Users who you\'ve blocked can still use and post to CastMe. If '
+            'you believe this person is damaging the CastMe community, '
+            'please report them in addition to blocking them.',
+            textAlign: TextAlign.center,
+          ),
+          AsyncTextButton(
+            text: 'block user',
+            onTap: () async {
+              await SocialManager.instance.blockUser(id: userId);
+              Navigator.of(context).pop();
+            },
+          ),
+          const AsyncErrorView(),
+        ],
       ),
     );
   }

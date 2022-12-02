@@ -47,7 +47,11 @@ const String nameCol = 'name';
 
 const String topicsCol = 'topics';
 
+const String blockedUserIdCol = 'blocked_user_id';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
+
+SupabaseQueryBuilder get blockedUsersQuery => supabase.from('blocked_users');
 
 SupabaseQueryBuilder get fcmRegistrationTokensQuery =>
     supabase.from('fcm_registration_tokens');
