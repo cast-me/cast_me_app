@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:adaptive_material/adaptive_material.dart';
-import 'package:boxy/flex.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
@@ -11,6 +10,7 @@ import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
+import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/uri_button.dart';
 
 class ConversationPreview extends StatelessWidget {
@@ -39,67 +39,32 @@ class ConversationPreview extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                HideIfDeleted(
+                  isDeleted: rootCast.deleted,
+                  child: const CastConversationView(),
+                ),
+                const SizedBox(height: 4),
+                if (rootCast.externalUri != null)
+                  UriButton(uri: rootCast.externalUri!),
                 DefaultTextStyle(
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
                         color: AdaptiveMaterial.secondaryOnColorOf(context),
                       ),
-                  child: BoxyRow(
+                  child: Row(
                     children: [
-                      PreviewThumbnail(cast: rootCast),
-                      const SizedBox(width: 4),
-                      Dominant(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              rootCast.authorDisplayName,
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                            Text('@${rootCast.authorUsername}'),
-                            Text(
-                              _topicsToString(conversation.topics),
-                            ),
-                          ],
-                        ),
-                      ),
+                      Text(_repliesString(conversation.castCount)),
+                      const Text(' - '),
+                      const NewCount(),
+                      const Text(' - '),
+                      Text(_likesString(conversation.likeCount)),
+                      const Text(' - '),
+                      HowOldLine(createdAt: rootCast.createdAtStamp),
                     ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  rootCast.title,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                const SizedBox(height: 4),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (rootCast.externalUri != null)
-                      UriButton(uri: rootCast.externalUri!),
-                    DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: AdaptiveMaterial.secondaryOnColorOf(context),
-                          ),
-                      child: Row(
-                        children: [
-                          Text(_repliesString(conversation.allCasts.length)),
-                          const Text(' - '),
-                          const NewCount(),
-                          const Text(' - '),
-                          Text(_likesString(conversation.likeCount)),
-                          const Text(' - '),
-                          HowOldLine(createdAt: rootCast.createdAtStamp),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: const [
-                        PlayConversationButton(),
-                      ],
-                    ),
+                Row(
+                  children: const [
+                    PlayConversationButton(),
                   ],
                 ),
               ],
@@ -108,13 +73,6 @@ class ConversationPreview extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _topicsToString(List<String>? topics) {
-    if (topics == null) {
-      return '';
-    }
-    return '${topics.map((t) => '#$t').join(' ')}';
   }
 
   String _repliesString(int length) {

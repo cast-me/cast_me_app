@@ -18,10 +18,12 @@ part 'cast.g.dart';
 
 @freezed
 class Cast with _$Cast {
+  // flutter pub run build_runner build
   const factory Cast({
     // Server specified.
     required String id,
     required String createdAt,
+    required bool deleted,
 
     // Fetched on read via join.
     required String rootId,

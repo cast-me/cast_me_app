@@ -33,6 +33,8 @@ const String authorUsernameCol = 'author_username';
 
 const String idCol = 'id';
 
+const String deletedCol = 'deleted';
+
 const String rootIdCol = 'root_id';
 
 const String castIdCol = 'cast_id';

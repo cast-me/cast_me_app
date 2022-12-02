@@ -15,12 +15,14 @@ part 'profile.g.dart';
 
 @freezed
 class Profile with _$Profile {
+  // flutter pub run build_runner build
   const factory Profile({
     required String id,
     required String username,
     required String displayName,
     required String profilePictureUrl,
     required String? accentColorBase,
+    required bool deleted,
   }) = _Profile;
 
   const Profile._();

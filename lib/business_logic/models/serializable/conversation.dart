@@ -12,6 +12,7 @@ part 'conversation.g.dart';
 /// flutter pub run build_runner build
 @freezed
 class Conversation with _$Conversation {
+  // flutter pub run build_runner build
   const factory Conversation({
     // Server specified.
     required String rootId,
@@ -30,20 +31,29 @@ class Conversation with _$Conversation {
       .sortedBy((c) => c.createdAtStamp)
       .toList();
 
-  List<Cast> get newCasts => allCasts.where((c) => !c.hasViewed).toList();
+  List<Cast> get newCasts =>
+      allCasts.where((c) => !c.deleted).where((c) => !c.hasViewed).toList();
 
-  int get castCount => allCasts.length;
+  int get castCount => allCasts.where((c) => !c.deleted).length;
 
-  int get newCastCount => newCasts.length;
+  int get newCastCount => newCasts.where((c) => !c.deleted).length;
 
-  int get likeCount =>
-      allCasts.fold(0, (sum, c) => sum += c.likes?.length ?? 0);
+  int get likeCount => allCasts
+      .where((c) => !c.deleted)
+      .fold(0, (sum, c) => sum += c.likes?.length ?? 0);
 
-  Duration get contentLength =>
-      allCasts.fold<Duration>(Duration.zero, (sum, b) => sum + b.duration);
+  Duration get contentLength => allCasts
+      .where((c) => !c.deleted)
+      .fold<Duration>(Duration.zero, (sum, b) => sum + b.duration);
 
-  Duration get newContentLength =>
-      newCasts.fold<Duration>(Duration.zero, (sum, b) => sum + b.duration);
+  Duration get newContentLength => newCasts
+      .where((c) => !c.deleted)
+      .fold<Duration>(Duration.zero, (sum, b) => sum + b.duration);
 
   bool get hasNewCasts => newCasts.isNotEmpty;
+
+  // The root cast is the only cast and it has been deleted.
+  bool get isEmpty => rootCast.deleted && castCount == 0;
+
+  bool get isNotEmpty => !isEmpty;
 }

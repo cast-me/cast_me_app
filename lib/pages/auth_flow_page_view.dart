@@ -7,6 +7,7 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/deleted_account_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/register_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/reset_password_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/sign_in_view.dart';
@@ -47,6 +48,8 @@ class _AuthFlowPageViewState extends State<AuthFlowPageView> {
             return const VerifyEmailView();
           case SignInState.completingProfile:
             return const CompleteProfileView();
+          case SignInState.deletedAccount:
+             return const DeletedAccountView();
           case SignInState.signedIn:
             throw Exception('`SignedIn` sign in state should not be '
                 'reachable from the sign in flow widget.');

@@ -1,10 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+
 // Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class CastMeNavigationBar extends StatelessWidget {
   const CastMeNavigationBar({
@@ -31,8 +33,8 @@ class CastMeNavigationBar extends StatelessWidget {
             ),
           ),
           child: MediaQuery(
-            // NavigationBar wraps itself in `SafeArea` which accidentally applied
-            // top padding nonsense. Stop it from doing so.
+            // NavigationBar wraps itself in `SafeArea` which accidentally
+            // applied top padding nonsense. Stop it from doing so.
             data: MediaQuery.of(context)
                 .removeViewInsets(removeTop: true)
                 .removePadding(removeTop: true),

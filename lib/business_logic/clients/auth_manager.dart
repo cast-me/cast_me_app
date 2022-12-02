@@ -148,7 +148,7 @@ class AuthManager extends ChangeNotifier {
         // https://github.com/supabase-community/supabase-flutter/issues/213
         final String fileExt = profilePicture.path.split('.').last;
         final String fileName = '${supabase.auth.currentUser!.id}'
-             // Anonymize the file name so we don't get naming conflicts.
+            // Anonymize the file name so we don't get naming conflicts.
             '/${DateTime.now().toIso8601String()}.$fileExt';
         final Uint8List imageBytes = await profilePicture.readAsBytes();
         await profilePicturesBucket.uploadBinary(
@@ -168,6 +168,7 @@ class AuthManager extends ChangeNotifier {
           displayName: displayName,
           profilePictureUrl: profilePictureUrl,
           accentColorBase: paletteGenerator.vibrantColor?.color.serialize,
+          deleted: false,
         );
         await profilesQuery.upsert(completedProfile.toJson());
         _profile = completedProfile;
@@ -215,6 +216,8 @@ class AuthManager extends ChangeNotifier {
     _profile = await _fetchCurrentProfile();
     if (_profile == null) {
       _signInState = SignInState.completingProfile;
+    } else if (_profile!.deleted) {
+      _signInState = SignInState.deletedAccount;
     } else {
       _signInState = SignInState.signedIn;
     }
@@ -226,8 +229,8 @@ class AuthManager extends ChangeNotifier {
   ) async {
     if (supabase.auth.currentUser != null) {
       // If we were signed in, make sure we sign out first.
-      // This is really only applicable to the `CompletingProfile` and
-      // `SettingNewPassword` states.
+      // This is really only applicable to the `CompletingProfile`,
+      // `SettingNewPassword` and `DeletedAccount` states.
       return signOut(returnState: stateAfterPop);
     }
     _signInState = stateAfterPop;
@@ -249,6 +252,18 @@ class AuthManager extends ChangeNotifier {
     // Also reset the current tab so that the user goes back to home if they log
     // back in.
     CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+  }
+
+  Future<void> deleteAccount() async {
+    await _authActionWrapper(
+      'delete account',
+      () async {
+        await profilesQuery.update(
+          <String, dynamic>{deletedCol: true},
+        ).eq(idCol, profile.id);
+        await AuthManager.instance.signOut();
+      },
+    );
   }
 
   Future<void> setNewPassword({required String newPassword}) async {
@@ -280,6 +295,8 @@ class AuthManager extends ChangeNotifier {
         _signInState = SignInState.verifyingEmail;
       } else if (_profile == null) {
         _signInState = SignInState.completingProfile;
+      } else if (_profile!.deleted) {
+        _signInState = SignInState.deletedAccount;
       } else {
         _signInState = SignInState.signedIn;
       }
@@ -430,6 +447,7 @@ enum SignInState {
   completingProfile,
   signedIn,
   signingInThroughProvider,
+  deletedAccount,
 }
 
 class SignInBloc {

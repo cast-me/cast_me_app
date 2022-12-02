@@ -22,7 +22,8 @@ Cast _$CastFromJson(Map<String, dynamic> json) {
 mixin _$Cast {
 // Server specified.
   String get id => throw _privateConstructorUsedError;
-  String get createdAt =>
+  String get createdAt => throw _privateConstructorUsedError;
+  bool get deleted =>
       throw _privateConstructorUsedError; // Fetched on read via join.
   String get rootId => throw _privateConstructorUsedError;
   String get authorUsername => throw _privateConstructorUsedError;
@@ -58,6 +59,7 @@ abstract class $CastCopyWith<$Res> {
   $Res call(
       {String id,
       String createdAt,
+      bool deleted,
       String rootId,
       String authorUsername,
       String authorDisplayName,
@@ -92,6 +94,7 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
   $Res call({
     Object? id = null,
     Object? createdAt = null,
+    Object? deleted = null,
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
@@ -119,6 +122,10 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      deleted: null == deleted
+          ? _value.deleted
+          : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
       rootId: null == rootId
           ? _value.rootId
           : rootId // ignore: cast_nullable_to_non_nullable
@@ -200,6 +207,7 @@ abstract class _$$_CastCopyWith<$Res> implements $CastCopyWith<$Res> {
   $Res call(
       {String id,
       String createdAt,
+      bool deleted,
       String rootId,
       String authorUsername,
       String authorDisplayName,
@@ -230,6 +238,7 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
   $Res call({
     Object? id = null,
     Object? createdAt = null,
+    Object? deleted = null,
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
@@ -257,6 +266,10 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      deleted: null == deleted
+          ? _value.deleted
+          : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
       rootId: null == rootId
           ? _value.rootId
           : rootId // ignore: cast_nullable_to_non_nullable
@@ -335,6 +348,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   const _$_Cast(
       {required this.id,
       required this.createdAt,
+      required this.deleted,
       required this.rootId,
       required this.authorUsername,
       required this.authorDisplayName,
@@ -364,6 +378,8 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   final String id;
   @override
   final String createdAt;
+  @override
+  final bool deleted;
 // Fetched on read via join.
   @override
   final String rootId;
@@ -428,7 +444,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Cast(id: $id, createdAt: $createdAt, rootId: $rootId, authorUsername: $authorUsername, authorDisplayName: $authorDisplayName, imageUrl: $imageUrl, accentColorBase: $accentColorBase, viewCount: $viewCount, hasViewed: $hasViewed, treeHasNewCasts: $treeHasNewCasts, likes: $likes, topicNames: $topicNames, taggedUsernames: $taggedUsernames, authorId: $authorId, title: $title, durationMs: $durationMs, audioUrl: $audioUrl, replyTo: $replyTo, externalUrl: $externalUrl)';
+    return 'Cast(id: $id, createdAt: $createdAt, deleted: $deleted, rootId: $rootId, authorUsername: $authorUsername, authorDisplayName: $authorDisplayName, imageUrl: $imageUrl, accentColorBase: $accentColorBase, viewCount: $viewCount, hasViewed: $hasViewed, treeHasNewCasts: $treeHasNewCasts, likes: $likes, topicNames: $topicNames, taggedUsernames: $taggedUsernames, authorId: $authorId, title: $title, durationMs: $durationMs, audioUrl: $audioUrl, replyTo: $replyTo, externalUrl: $externalUrl)';
   }
 
   @override
@@ -438,6 +454,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('type', 'Cast'))
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('createdAt', createdAt))
+      ..add(DiagnosticsProperty('deleted', deleted))
       ..add(DiagnosticsProperty('rootId', rootId))
       ..add(DiagnosticsProperty('authorUsername', authorUsername))
       ..add(DiagnosticsProperty('authorDisplayName', authorDisplayName))
@@ -465,6 +482,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
+            (identical(other.deleted, deleted) || other.deleted == deleted) &&
             (identical(other.rootId, rootId) || other.rootId == rootId) &&
             (identical(other.authorUsername, authorUsername) ||
                 other.authorUsername == authorUsername) &&
@@ -503,6 +521,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
         runtimeType,
         id,
         createdAt,
+        deleted,
         rootId,
         authorUsername,
         authorDisplayName,
@@ -540,6 +559,7 @@ abstract class _Cast extends Cast {
   const factory _Cast(
       {required final String id,
       required final String createdAt,
+      required final bool deleted,
       required final String rootId,
       required final String authorUsername,
       required final String authorDisplayName,
@@ -565,6 +585,8 @@ abstract class _Cast extends Cast {
   String get id;
   @override
   String get createdAt;
+  @override
+  bool get deleted;
   @override // Fetched on read via join.
   String get rootId;
   @override

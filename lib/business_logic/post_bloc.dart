@@ -2,22 +2,22 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
-import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 
 // Package imports:
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class PostBloc {
   PostBloc._();

@@ -18,6 +18,7 @@ _$_Profile _$$_ProfileFromJson(Map<String, dynamic> json) => $checkedCreate(
               $checkedConvert('profile_picture_url', (v) => v as String),
           accentColorBase:
               $checkedConvert('accent_color_base', (v) => v as String?),
+          deleted: $checkedConvert('deleted', (v) => v as bool),
         );
         return val;
       },
@@ -35,4 +36,5 @@ Map<String, dynamic> _$$_ProfileToJson(_$_Profile instance) =>
       'display_name': instance.displayName,
       'profile_picture_url': instance.profilePictureUrl,
       'accent_color_base': instance.accentColorBase,
+      'deleted': instance.deleted,
     };

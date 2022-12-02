@@ -122,6 +122,16 @@ class CastMeApp extends StatelessWidget {
               shape: MaterialStateProperty.all(const StadiumBorder())),
         ),
         canvasColor: Color.lerp(Colors.white, castMeGrey, .95),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            textStyle: MaterialStateProperty.all(
+              const TextStyle(
+                color: Colors.white,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
         colorScheme: ColorScheme(
           brightness: Brightness.dark,
           primary: Colors.black,

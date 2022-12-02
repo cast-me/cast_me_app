@@ -2,17 +2,17 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:async_list_view/async_list_view.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class CastMeListView<T> extends StatefulWidget {
   const CastMeListView({
@@ -122,11 +122,15 @@ class CastMeListController<T> extends TopicSelectorController {
     Profile? filterOutProfile,
     this.searchTextController,
     Stream<T> Function(CastMeListController<T>)? getStream,
+    this.where,
   })  : _filterProfile = filterProfile,
         _filterOutProfile = filterOutProfile,
         _getStream = getStream {
     searchTextController?.addListener(_onTextChanged);
   }
+
+  /// Arbitrary filter to limit the results clientside.
+  bool Function(T)? where;
 
   /// If non-null, fetch only casts authored by the specified user.
   Profile? _filterProfile;
@@ -155,7 +159,9 @@ class CastMeListController<T> extends TopicSelectorController {
   String? _previousText;
 
   Stream<T> getStream() {
-    return _internalGetStream().handleError(
+    return _internalGetStream()
+        .where((element) => where?.call(element) ?? true)
+        .handleError(
       (Object error, StackTrace stackTrace) {
         FlutterError.onError!.call(
           FlutterErrorDetails(exception: error, stack: stackTrace),
