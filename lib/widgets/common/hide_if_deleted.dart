@@ -1,5 +1,7 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 
 class HideIfDeleted extends StatelessWidget {

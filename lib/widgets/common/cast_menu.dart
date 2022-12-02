@@ -2,9 +2,6 @@
 import 'dart:io' show Platform;
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/social_manager.dart';
-import 'package:cast_me_app/util/async_action_wrapper.dart';
-import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -13,11 +10,14 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/clients/share_client.dart';
+import 'package:cast_me_app/business_logic/clients/social_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';

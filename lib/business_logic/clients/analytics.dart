@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
