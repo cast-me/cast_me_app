@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/app_info.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
@@ -51,28 +52,25 @@ class _DeleteAccountModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Are you sure you want to delete your account?\n'
-          'This cannot be undone.',
-          textAlign: TextAlign.center,
-        ),
-        AuthSubmitButtonWrapper(
-          child: TextButton(
-            onPressed: () async {
+    return AsyncActionWrapper(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Are you sure you want to delete your account?\n'
+            'This cannot be undone.',
+            textAlign: TextAlign.center,
+          ),
+          AsyncTextButton(
+            text: 'delete account',
+            onTap: () async {
               await AuthManager.instance.deleteAccount();
               Navigator.of(context).pop();
             },
-            child: const Text(
-              'delete account',
-              style: TextStyle(color: Colors.white),
-            ),
           ),
-        ),
-        const AuthErrorView(),
-      ],
+          const AuthErrorView(),
+        ],
+      ),
     );
   }
 }

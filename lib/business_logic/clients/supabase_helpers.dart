@@ -39,6 +39,8 @@ const String rootIdCol = 'root_id';
 
 const String castIdCol = 'cast_id';
 
+const String reasonCol = 'reason';
+
 const String titleCol = 'title';
 
 const String topicIdCol = 'topic_id';
@@ -47,7 +49,13 @@ const String nameCol = 'name';
 
 const String topicsCol = 'topics';
 
+const String blockedUserIdCol = 'blocked_user_id';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
+
+SupabaseQueryBuilder get blockedUsersQuery => supabase.from('blocked_users');
+
+SupabaseQueryBuilder get reportedCastsQuery => supabase.from('reported_casts');
 
 SupabaseQueryBuilder get fcmRegistrationTokensQuery =>
     supabase.from('fcm_registration_tokens');

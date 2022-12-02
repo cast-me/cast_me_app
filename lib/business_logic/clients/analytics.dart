@@ -73,6 +73,24 @@ class Analytics {
     );
   }
 
+  void logReportCast({required Cast cast}) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'reportCast',
+      parameters: {
+        'castId': cast.id,
+      },
+    );
+  }
+
+  void logBlockUser({required String userId}) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'blockUser',
+      parameters: {
+        'blockedUserId': userId,
+      },
+    );
+  }
+
   // GENERAL UI
   void logTabSelect({
     required CastMeTab fromTab,

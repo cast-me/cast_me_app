@@ -10,11 +10,14 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/clients/share_client.dart';
+import 'package:cast_me_app/business_logic/clients/social_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
@@ -79,6 +82,34 @@ class CastMenu extends StatelessWidget {
                   hideMenu();
                   onTap?.call();
                   ExternalLinkModal.showMessage(context, cast.externalUri!);
+                },
+              ),
+            if (cast.authorId != AuthManager.instance.profile.id)
+              _MenuButton(
+                icon: Icons.block,
+                text: 'block user',
+                onTap: () async {
+                  hideMenu();
+                  onTap?.call();
+                  CastMeModal.showMessage(
+                    context,
+                    _BlockUserModal(userId: cast.authorId),
+                  );
+                  listController?.refresh();
+                },
+              ),
+            if (cast.authorId != AuthManager.instance.profile.id)
+              _MenuButton(
+                icon: Icons.report,
+                text: 'report cast',
+                onTap: () async {
+                  hideMenu();
+                  onTap?.call();
+                  CastMeModal.showMessage(
+                    context,
+                    _ReportCastModal(cast: cast),
+                  );
+                  listController?.refresh();
                 },
               ),
           ],
@@ -201,6 +232,97 @@ class _MenuButton extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _BlockUserModal extends StatelessWidget {
+  const _BlockUserModal({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
+
+  final String userId;
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncActionWrapper(
+      // Use the builder so that children can reference the action wrapper.
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Are you sure you want to block this user?\n\n'
+            'Blocking a user hide their casts from you and disallows them from '
+            'replying directly to your cast.\n'
+            'Users who you\'ve blocked can still use and post to CastMe. If '
+            'you believe this person is damaging the CastMe community, '
+            'please report them in addition to blocking them.',
+            textAlign: TextAlign.center,
+          ),
+          AsyncTextButton(
+            text: 'block user',
+            onTap: () async {
+              await SocialManager.instance.blockUser(id: userId);
+              Navigator.of(context).pop();
+            },
+          ),
+          const AsyncErrorView(),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReportCastModal extends StatefulWidget {
+  const _ReportCastModal({
+    Key? key,
+    required this.cast,
+  }) : super(key: key);
+
+  final Cast cast;
+
+  @override
+  State<_ReportCastModal> createState() => _ReportCastModalState();
+}
+
+class _ReportCastModalState extends State<_ReportCastModal> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncActionWrapper(
+      // Use the builder so that children can reference the action wrapper.
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Are you sure you want to report this cast?\n'
+            'You should report a cast if you think that it significantly '
+            'degrades the CastMe community.\n'
+            'Once you report a user CastMe staff will evaluate the content '
+            'and respond (delete the cast, warn/ban the user, etc).',
+            textAlign: TextAlign.center,
+          ),
+          TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              labelText: 'Reason for reporting',
+            ),
+          ),
+          AsyncTextButton(
+            text: 'report cast',
+            onTap: () async {
+              await SocialManager.instance.reportCast(
+                cast: widget.cast,
+                reason: controller.text,
+              );
+              Navigator.of(context).pop();
+            },
+          ),
+          const AsyncErrorView(),
+        ],
       ),
     );
   }

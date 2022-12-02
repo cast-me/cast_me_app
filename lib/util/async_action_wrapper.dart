@@ -165,10 +165,36 @@ class _ProcessingViewState extends State<ProcessingView> {
               box = context.findRenderObject() as RenderBox;
             });
             return child!;
-          }
+          },
         );
       },
       child: widget.child,
+    );
+  }
+}
+
+class AsyncTextButton extends StatelessWidget {
+  const AsyncTextButton({
+    Key? key,
+    required this.text,
+    required this.onTap,
+  }) : super(key: key);
+
+  final String text;
+  final AsyncCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProcessingView(
+      child: TextButton(
+        onPressed: () async {
+          await AsyncActionWrapper.of(context).wrap('text', onTap);
+        },
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 }
