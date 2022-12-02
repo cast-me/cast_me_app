@@ -38,6 +38,7 @@ class CastDatabase {
     bool skipViewed = false,
     String? searchTerm,
     bool single = false,
+    bool skipDeleted = true,
   }) async* {
     assert(
       T == Cast || T == Conversation,
@@ -60,6 +61,9 @@ class CastDatabase {
       }
       if (skipViewed) {
         queryBuilder = queryBuilder.eq(hasViewedCol, false);
+      }
+      if (skipDeleted && isCast) {
+        queryBuilder = queryBuilder.eq(deletedCol, false);
       }
       if (searchTerm != null && searchTerm.isNotEmpty) {
         queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
