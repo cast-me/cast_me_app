@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
@@ -69,6 +70,24 @@ class Analytics {
       name: 'resetPasswordEmail',
       parameters: {
         'email': email,
+      },
+    );
+  }
+
+  void logReportCast({required Cast cast}) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'reportCast',
+      parameters: {
+        'castId': cast.id,
+      },
+    );
+  }
+
+  void logBlockUser({required String userId}) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'blockUser',
+      parameters: {
+        'blockedUserId': userId,
       },
     );
   }
