@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
+import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/uri_button.dart';
 
 class ConversationPreview extends StatelessWidget {

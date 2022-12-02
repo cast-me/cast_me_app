@@ -1,4 +1,4 @@
-import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 class HideIfDeleted extends StatelessWidget {

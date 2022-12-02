@@ -1,12 +1,9 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
-import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
-import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:boxy/flex.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
@@ -16,12 +13,15 @@ import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
+import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/likes_view.dart';
 import 'package:cast_me_app/widgets/common/uri_button.dart';
+import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 
 /// TODO(caseycrogers): do a pass over this class to clean it up and break out
 ///   logic into sub-widgets.

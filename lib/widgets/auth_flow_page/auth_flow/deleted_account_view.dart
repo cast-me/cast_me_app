@@ -1,5 +1,8 @@
-import 'package:cast_me_app/widgets/common/cast_me_page.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
 class DeletedAccountView extends StatelessWidget {
   const DeletedAccountView({Key? key}) : super(key: key);
