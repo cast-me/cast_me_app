@@ -33,7 +33,6 @@ class ConversationPageView extends StatelessWidget {
         final Conversation conversation = snap.data!;
         return CastMePage(
           scrollable: false,
-          headerText: conversation.rootCast.title,
           padding: EdgeInsets.zero,
           child: _LoadedPageContent(conversation: conversation),
         );

@@ -249,21 +249,9 @@ class CastDatabase {
     required Cast cast,
   }) async {
     Analytics.instance.logDelete(cast: cast);
-    // TODO(caseycrogers): migrate listens to a table with cascading deletes so
-    //   that we don't have to issue a separate delete to it.
-    await listensQuery.delete().eq('cast_id', cast.id) as List<dynamic>;
-    final List<dynamic> rowResult =
-        await castsWriteQuery.delete().eq(idCol, cast.id) as List<dynamic>;
-    assert(
-      rowResult.isNotEmpty,
-      'Could not find a cast with id \'${cast.id}\'',
-    );
-    final List<FileObject> storageResult =
-        await castAudioFileBucket.remove([cast.audioPath]);
-    assert(
-      storageResult.isNotEmpty,
-      'Could not find a cast audio file at path \'${cast.audioPath}\'.',
-    );
+    await castsWriteQuery.update(
+      <String, dynamic>{deletedCol: true},
+    ).eq(idCol, cast.id);
   }
 
   Future<void> setListened({required Cast cast}) async {

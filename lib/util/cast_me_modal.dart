@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_material/adaptive_material.dart';
 
 class CastMeModal extends StatelessWidget {
-  const CastMeModal({
+  const CastMeModal._({
     Key? key,
     required this.child,
-    this.adaptiveMaterial,
   }) : super(key: key);
 
   final Widget child;
-  final AdaptiveMaterialType? adaptiveMaterial;
 
   static void showMessage(
     BuildContext context,
@@ -23,7 +21,7 @@ class CastMeModal extends StatelessWidget {
       showDialog<void>(
         context: context,
         builder: (context) {
-          return CastMeModal(child: child);
+          return CastMeModal._(child: child);
         },
       );
     }
@@ -49,7 +47,7 @@ class CastMeModal extends StatelessWidget {
         child: Container(
           width: double.infinity,
           child: AdaptiveMaterial(
-            material: adaptiveMaterial ?? AdaptiveMaterialType.surface,
+            material: AdaptiveMaterialType.surface,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: child,

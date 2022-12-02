@@ -31,7 +31,7 @@ class ListenBloc {
       ValueListenablePageController();
 
   final CastMeListController<Conversation> timelineListController =
-      CastMeListController();
+      CastMeListController(where: (c) => c.isNotEmpty);
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
@@ -115,7 +115,9 @@ class ListenBloc {
     Cast? startAtCast,
   }) async {
     final List<Cast> castsToPlay =
-        skipViewed ? conversation.newCasts : conversation.allCasts;
+        (skipViewed ? conversation.newCasts : conversation.allCasts)
+            .where((c) => !c.deleted)
+            .toList();
     final int startAtIndex =
         startAtCast == null ? 0 : castsToPlay.indexOf(startAtCast);
     await CastAudioPlayer.instance.load(castsToPlay[0],

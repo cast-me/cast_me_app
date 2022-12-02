@@ -50,6 +50,12 @@ class Analytics {
     );
   }
 
+  void logDeleteAccount() {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'deleteAccount',
+    );
+  }
+
   void logSetNewPassword() {
     FirebaseAnalytics.instance.logEvent(
       name: 'resetPasswordEmail',

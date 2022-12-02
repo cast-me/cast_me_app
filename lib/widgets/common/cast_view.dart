@@ -1,4 +1,8 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
+import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -66,84 +70,90 @@ class CastPreview extends StatelessWidget {
       child: ValueListenableBuilder<Cast?>(
         valueListenable: ListenBloc.instance.currentCast,
         builder: (context, nowPlaying, _) {
-          return InkWell(
-            onTap: _getOnTap(context, nowPlaying),
-            child: IndicateViewed(
-              showIndicator: shouldIndicateNew(context),
-              child: Container(
-                padding: EdgeInsets.only(
-                  left: padding?.left ?? 4,
-                  right: padding?.right ?? 4,
-                ),
-                color: _isTapToPlay(context) && nowPlaying == cast
-                    ? overlayColor(context)
-                    : null,
-                child: BoxyRow(
-                  children: [
-                    if ((theme?.indentReplies ?? true) && cast.replyTo != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Container(
-                          color: Colors.white.withAlpha(120),
-                          width: 2,
-                          // TODO(caseycrogers): make this programmatic.
-                          height: theme?.showLikes ?? true ? 89 : 63,
+          return HideIfDeleted(
+            isDeleted: cast.deleted,
+            child: InkWell(
+              onTap: _getOnTap(context, nowPlaying),
+              child: IndicateViewed(
+                showIndicator: shouldIndicateNew(context),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: padding?.left ?? 4,
+                    right: padding?.right ?? 4,
+                  ),
+                  color: _isTapToPlay(context) && nowPlaying == cast
+                      ? overlayColor(context)
+                      : null,
+                  child: BoxyRow(
+                    children: [
+                      if ((theme?.indentReplies ?? true) &&
+                          cast.replyTo != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Container(
+                            color: Colors.white.withAlpha(120),
+                            width: 2,
+                            // TODO(caseycrogers): make this programmatic.
+                            height: theme?.showLikes ?? true ? 89 : 63,
+                          ),
                         ),
-                      ),
-                    Dominant.expanded(
-                      child: StackCastMenu(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Put the title here if we're showing the menu or
-                            // showing how old.
-                            // Else put it below in the row.
-                            if ((theme?.showMenu ?? true) || showHowOld)
-                              const _CastTitleView(),
-                            if (cast.externalUri != null)
-                              UriButton(uri: cast.externalUri!),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    PreviewThumbnail(
-                                      cast: cast,
-                                      size: 50,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          if (!(theme?.showMenu ?? true) &&
-                                              !showHowOld)
-                                            const _CastTitleView(),
-                                          const AuthorLine(),
-                                          const _ListenCount(),
-                                          if (showHowOld)
-                                            HowOldLine(
-                                              createdAt: cast.createdAtStamp,
-                                            ),
-                                        ],
+                      Dominant.expanded(
+                        child: StackCastMenu(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Put the title here if we're showing the menu or
+                              // showing how old.
+                              // Else put it below in the row.
+                              if ((theme?.showMenu ?? true) || showHowOld)
+                                const _CastTitleView(),
+                              if (cast.externalUri != null)
+                                UriButton(uri: cast.externalUri!),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      PreviewThumbnail(
+                                        cast: cast,
+                                        size: 50,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                if (theme?.showLikes ?? true) const LikesView(),
-                              ],
-                            ),
-                          ],
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            if (!(theme?.showMenu ?? true) &&
+                                                !showHowOld)
+                                              const _CastTitleView(),
+                                            const AuthorLine(),
+                                            const _ListenCount(),
+                                            if (showHowOld)
+                                              HowOldLine(
+                                                createdAt: cast.createdAtStamp,
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (theme?.showLikes ?? true)
+                                    const LikesView(),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -503,5 +513,60 @@ class CastViewTheme extends InheritedWidget {
         taggedUsersAreTappable != oldWidget.taggedUsersAreTappable ||
         isInteractive != oldWidget.isInteractive ||
         onTap != oldWidget.onTap;
+  }
+}
+
+class CastConversationView extends StatelessWidget {
+  const CastConversationView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Cast rootCast = CastProvider.of(context).value;
+    final Conversation conversation = ConversationProvider.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                color: AdaptiveMaterial.secondaryOnColorOf(context),
+              ),
+          child: BoxyRow(
+            children: [
+              PreviewThumbnail(cast: rootCast),
+              const SizedBox(width: 4),
+              Dominant(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      rootCast.authorDisplayName,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    Text('@${rootCast.authorUsername}'),
+                    Text(
+                      _topicsToString(conversation.topics),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          rootCast.title,
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      ],
+    );
+  }
+
+  String _topicsToString(List<String>? topics) {
+    if (topics == null) {
+      return '';
+    }
+    return '${topics.map((t) => '#$t').join(' ')}';
   }
 }

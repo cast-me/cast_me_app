@@ -25,6 +25,7 @@ mixin _$Profile {
   String get displayName => throw _privateConstructorUsedError;
   String get profilePictureUrl => throw _privateConstructorUsedError;
   String? get accentColorBase => throw _privateConstructorUsedError;
+  bool get deleted => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,7 +42,8 @@ abstract class $ProfileCopyWith<$Res> {
       String username,
       String displayName,
       String profilePictureUrl,
-      String? accentColorBase});
+      String? accentColorBase,
+      bool deleted});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? displayName = null,
     Object? profilePictureUrl = null,
     Object? accentColorBase = freezed,
+    Object? deleted = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -84,6 +87,10 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
               as String?,
+      deleted: null == deleted
+          ? _value.deleted
+          : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -100,7 +107,8 @@ abstract class _$$_ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       String username,
       String displayName,
       String profilePictureUrl,
-      String? accentColorBase});
+      String? accentColorBase,
+      bool deleted});
 }
 
 /// @nodoc
@@ -118,6 +126,7 @@ class __$$_ProfileCopyWithImpl<$Res>
     Object? displayName = null,
     Object? profilePictureUrl = null,
     Object? accentColorBase = freezed,
+    Object? deleted = null,
   }) {
     return _then(_$_Profile(
       id: null == id
@@ -140,6 +149,10 @@ class __$$_ProfileCopyWithImpl<$Res>
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
               as String?,
+      deleted: null == deleted
+          ? _value.deleted
+          : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -152,7 +165,8 @@ class _$_Profile extends _Profile {
       required this.username,
       required this.displayName,
       required this.profilePictureUrl,
-      required this.accentColorBase})
+      required this.accentColorBase,
+      required this.deleted})
       : super._();
 
   factory _$_Profile.fromJson(Map<String, dynamic> json) =>
@@ -168,10 +182,12 @@ class _$_Profile extends _Profile {
   final String profilePictureUrl;
   @override
   final String? accentColorBase;
+  @override
+  final bool deleted;
 
   @override
   String toString() {
-    return 'Profile(id: $id, username: $username, displayName: $displayName, profilePictureUrl: $profilePictureUrl, accentColorBase: $accentColorBase)';
+    return 'Profile(id: $id, username: $username, displayName: $displayName, profilePictureUrl: $profilePictureUrl, accentColorBase: $accentColorBase, deleted: $deleted)';
   }
 
   @override
@@ -187,13 +203,14 @@ class _$_Profile extends _Profile {
             (identical(other.profilePictureUrl, profilePictureUrl) ||
                 other.profilePictureUrl == profilePictureUrl) &&
             (identical(other.accentColorBase, accentColorBase) ||
-                other.accentColorBase == accentColorBase));
+                other.accentColorBase == accentColorBase) &&
+            (identical(other.deleted, deleted) || other.deleted == deleted));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, username, displayName,
-      profilePictureUrl, accentColorBase);
+      profilePictureUrl, accentColorBase, deleted);
 
   @JsonKey(ignore: true)
   @override
@@ -215,7 +232,8 @@ abstract class _Profile extends Profile {
       required final String username,
       required final String displayName,
       required final String profilePictureUrl,
-      required final String? accentColorBase}) = _$_Profile;
+      required final String? accentColorBase,
+      required final bool deleted}) = _$_Profile;
   const _Profile._() : super._();
 
   factory _Profile.fromJson(Map<String, dynamic> json) = _$_Profile.fromJson;
@@ -230,6 +248,8 @@ abstract class _Profile extends Profile {
   String get profilePictureUrl;
   @override
   String? get accentColorBase;
+  @override
+  bool get deleted;
   @override
   @JsonKey(ignore: true)
   _$$_ProfileCopyWith<_$_Profile> get copyWith =>

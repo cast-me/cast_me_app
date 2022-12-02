@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -22,36 +23,39 @@ class ProfilePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap ?? () {
-        CastMeBloc.instance.onProfileSelected(profile);
-      },
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(2),
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(profile.profilePictureUrl),
+    return HideIfDeleted(
+      isDeleted: profile.deleted,
+      child: GestureDetector(
+        onTap: onTap ?? () {
+          CastMeBloc.instance.onProfileSelected(profile);
+        },
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(profile.profilePictureUrl),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('@${profile.username}'),
-                Text(profile.displayName),
-              ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('@${profile.username}'),
+                  Text(profile.displayName),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

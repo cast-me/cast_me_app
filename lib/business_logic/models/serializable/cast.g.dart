@@ -13,6 +13,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
         final val = _$_Cast(
           id: $checkedConvert('id', (v) => v as String),
           createdAt: $checkedConvert('created_at', (v) => v as String),
+          deleted: $checkedConvert('deleted', (v) => v as bool),
           rootId: $checkedConvert('root_id', (v) => v as String),
           authorUsername:
               $checkedConvert('author_username', (v) => v as String),
@@ -66,6 +67,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
 Map<String, dynamic> _$$_CastToJson(_$_Cast instance) => <String, dynamic>{
       'id': instance.id,
       'created_at': instance.createdAt,
+      'deleted': instance.deleted,
       'root_id': instance.rootId,
       'author_username': instance.authorUsername,
       'author_display_name': instance.authorDisplayName,
