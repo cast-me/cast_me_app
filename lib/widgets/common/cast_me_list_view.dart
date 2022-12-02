@@ -2,17 +2,17 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/cast_database.dart';
-import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:async_list_view/async_list_view.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class CastMeListView<T> extends StatefulWidget {
   const CastMeListView({

@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:intl/intl.dart';
-
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
@@ -16,7 +13,6 @@ class RecordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioRecorder recorder = AudioRecorder.instance;
     final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
     return ElevatedButton(
       style: ButtonStyle(
