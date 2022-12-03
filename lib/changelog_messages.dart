@@ -28,4 +28,8 @@ const Map<String, Widget> changelogMessages = {
  - Fixed various bugs
  - ...and way more!!!''',
   ),
+  '0.2.1': Text(
+    ''' - Added `report cast` and `block user` features
+ - fixed bug with selecting topics while posting''',
+  ),
 };
