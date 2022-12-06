@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 // Flutter imports:
@@ -8,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mime/mime.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -20,14 +18,20 @@ import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 
 /// Notifies when the Firebase auth state changes or the CastMe user changes.
-///
-/// TODO(caseycrogers): Refactor to use `AsyncActionWrapper`.
 class AuthManager extends ChangeNotifier {
   AuthManager._() {
     _setAndListenForRegistrationToken();
+    // Notify our listeners whenever actions complete with success or error.
+    asyncActionController.addListener(notifyListeners);
+
+    // Notify listeners whenever the external auth state changes. This is
+    // redundant with the above listener most of the time, but sometimes the
+    // external state changes without a local action, ie when the user verifies
+    // their email by clicking on a supabase link.
     supabase.auth.onAuthStateChange.listen((state) async {
       final AuthChangeEvent event = state.event;
       if (event == AuthChangeEvent.passwordRecovery &&
@@ -73,17 +77,11 @@ class AuthManager extends ChangeNotifier {
 
   bool get isInitialized => _isInitialized;
 
-  String? _currAction;
+  AsyncActionController asyncActionController = AsyncActionController();
 
-  // Whether or not we're processing info and waiting for an async callback.
-  // Submit buttons in sign up flow should be disabled while this is non null.
-  String? get currentAction => _currAction;
+  AsyncActionStatus get status => asyncActionController.status;
 
   bool get isFullySignedIn => _signInState == SignInState.signedIn;
-
-  Object? _authError;
-
-  Object? get authError => _authError;
 
   bool _hasRegisteredFcmToken = false;
 
@@ -356,28 +354,7 @@ class AuthManager extends ChangeNotifier {
     String action,
     AsyncCallback authAction,
   ) async {
-    _currAction = action;
-    notifyListeners();
-    await authAction().then(
-      (value) async {
-        // Action was successful, clear last error.
-        _authError = null;
-        return value;
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        FirebaseCrashlytics.instance.recordError(error, stackTrace);
-        log(
-          'Auth action failed.',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        _authError = error;
-        throw error;
-      },
-    ).whenComplete(() {
-      _currAction = null;
-      notifyListeners();
-    });
+    await asyncActionController.wrap(action, authAction);
   }
 
   Future<void> _setAndListenForRegistrationToken() async {

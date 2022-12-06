@@ -7,7 +7,6 @@ import 'package:cast_me_app/util/app_info.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/cast_me_modal.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 
@@ -21,13 +20,12 @@ class ProfilePageView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(child: ProfileView(profile: AuthManager.instance.profile)),
-          AuthSubmitButtonWrapper(
-            child: ElevatedButton(
-              onPressed: () async {
-                await AuthManager.instance.signOut();
-              },
-              child: const Text('Sign out'),
-            ),
+          AsyncElevatedButton(
+            action: 'Sign out',
+            child: const Text('Sign out'),
+            onTap: () async {
+              await AuthManager.instance.signOut();
+            },
           ),
           ElevatedButton(
             style: ButtonStyle(

@@ -11,10 +11,9 @@ import 'package:image_picker/image_picker.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
-import 'package:cast_me_app/widgets/common/async_submit_button.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 
@@ -39,21 +38,23 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
           _UsernamePicker(form: form),
           _DisplayNamePicker(form: form),
           _ProfilePicturePicker(form: form),
-          AuthSubmitButtonWrapper(
+          AsyncActionWrapper(
+            controller: AuthManager.instance.asyncActionController,
             child: AnimatedBuilder(
               animation: form,
               builder: (context, _) {
-                return ElevatedButton(
-                  onPressed: form.isValid()
-                      ? () async {
-                          await AuthManager.instance.completeUserProfile(
-                            username: form.usernameController.text,
-                            displayName: form.displayNameController.text,
-                            profilePicture: File(form.selectedPhoto!.path),
-                          );
-                        }
-                      : null,
+                return AsyncElevatedButton(
+                  action: 'complete profile',
                   child: const Text('Submit'),
+                  onTap: form.isValid()
+                      ? () async {
+                    await AuthManager.instance.completeUserProfile(
+                      username: form.usernameController.text,
+                      displayName: form.displayNameController.text,
+                      profilePicture: File(form.selectedPhoto!.path),
+                    );
+                  }
+                      : null,
                 );
               },
             ),
@@ -75,55 +76,58 @@ class _ProfilePicturePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<CroppedFile?>(
-      valueListenable: form.select(() => form.selectedPhoto),
-      builder: (context, photo, _) {
-        return Column(
-          children: [
-            if (photo != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: ProfilePictureBaseView(
-                  imageProvider: FileImage(
-                    File(photo.path),
+    return AsyncActionWrapper(
+      child: ValueListenableBuilder<CroppedFile?>(
+        valueListenable: form.select((f) => f.selectedPhoto),
+        builder: (context, photo, _) {
+          return Column(
+            children: [
+              if (photo != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ProfilePictureBaseView(
+                    imageProvider: FileImage(
+                      File(photo.path),
+                    ),
                   ),
                 ),
-              ),
-            AsyncSubmitButton(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.image),
-                  const SizedBox(width: 6),
-                  Text(
-                    photo == null
-                        ? 'Select profile picture'
-                        : 'Replace profile picture',
-                  ),
-                ],
-              ),
-              onPressed: () async {
-                final XFile? file =
-                    await ImagePicker().pickImage(source: ImageSource.gallery);
-                if (file == null) {
-                  return;
-                }
+              AsyncElevatedButton(
+                action: 'profile picture',
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.image),
+                    const SizedBox(width: 6),
+                    Text(
+                      photo == null
+                          ? 'Select profile picture'
+                          : 'Replace profile picture',
+                    ),
+                  ],
+                ),
+                onTap: () async {
+                  final XFile? file = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                  if (file == null) {
+                    return;
+                  }
 
-                final CroppedFile? croppedImage =
-                    await ImageCropper.platform.cropImage(
-                  sourcePath: file.path,
-                  aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-                  cropStyle: CropStyle.circle,
-                );
-                if (croppedImage == null) {
-                  return;
-                }
-                form.selectedPhoto = croppedImage;
-              },
-            ),
-          ],
-        );
-      },
+                  final CroppedFile? croppedImage =
+                      await ImageCropper.platform.cropImage(
+                    sourcePath: file.path,
+                    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+                    cropStyle: CropStyle.circle,
+                  );
+                  if (croppedImage == null) {
+                    return;
+                  }
+                  form.selectedPhoto = croppedImage;
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

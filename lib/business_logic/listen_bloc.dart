@@ -36,7 +36,7 @@ class ListenBloc {
   ValueListenable<double> get currentListenPage => listenPageController;
 
   ValueListenable<List<Topic>> get filteredTopics =>
-      timelineListController.select(() => timelineListController.filterTopics);
+      timelineListController.select((t) => t.filterTopics);
 
   final ValueNotifier<SelectedConversation?> _selectedConversation =
       ValueNotifier(null);

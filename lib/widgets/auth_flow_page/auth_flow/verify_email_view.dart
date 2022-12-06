@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
 class VerifyEmailView extends StatelessWidget {
@@ -27,36 +27,17 @@ class VerifyEmailView extends StatelessWidget {
               decoration: TextDecoration.underline,
             ),
           ),
-          const Text(
-            '\nCheck your email to verify your account!\n',
-          ),
-          AuthSubmitButtonWrapper(
-            child: TextButton(
-              onPressed: () async {
-                await authManager.signInEmail(
-                  email: authManager.signInBloc.emailController.text,
-                  password: authManager.signInBloc.passwordController.text,
-                );
-              },
-              child: const Text.rich(
-                TextSpan(
-                  text: 'If the link in your email does not redirect you '
-                      'successfully, close and re-open CastMe or\n',
-                  children: [
-                    TextSpan(
-                      text: 'tap here to refresh',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          const Text('\nCheck your email to verify your account!\n'),
+          const Text('If the link in your email does not redirect you '
+              'successfully, close and re-open CastMe or\n'),
+          AsyncTextButton(
+            text: 'tap here to refresh',
+            onTap: () async {
+              await authManager.signInEmail(
+                email: authManager.signInBloc.emailController.text,
+                password: authManager.signInBloc.passwordController.text,
+              );
+            },
           ),
           const AuthErrorView(),
         ],

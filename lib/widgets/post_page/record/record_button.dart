@@ -13,7 +13,7 @@ class RecordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
+    final AsyncActionController wrapper = AsyncActionWrapper.of(context);
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateColor.resolveWith(

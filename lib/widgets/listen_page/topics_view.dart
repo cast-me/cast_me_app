@@ -70,8 +70,8 @@ class _TopicSelectorState extends State<TopicSelector> {
         return ValueListenableBuilder<List<Topic>>(
           // We get the actual topic objects from all topics as it has fresh
           // view and cast counts.
-          valueListenable: widget.controller.select(() {
-            return widget.controller.filterTopics
+          valueListenable: widget.controller.select((c) {
+            return c.filterTopics
                 .map((f) => topics.singleWhere((t) => f.id == t.id))
                 .toList();
           }),
