@@ -44,6 +44,7 @@ class CastMePage extends StatelessWidget {
       material: material,
       child: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             IconTheme(
               data: IconThemeData(

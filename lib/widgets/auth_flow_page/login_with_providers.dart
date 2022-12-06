@@ -7,7 +7,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 
 class LoginWithProviders extends StatelessWidget {
   const LoginWithProviders({
@@ -19,6 +19,7 @@ class LoginWithProviders extends StatelessWidget {
     final AuthManager manager = AuthManager.instance;
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ProviderButton(
           provider: Buttons.Google,
@@ -55,8 +56,9 @@ class ProviderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthSubmitButtonWrapper(
+    return AsyncStatusBuilder(
       // TODO: make the sign in button styling match the native buttons.
+      action: provider.name,
       child: SignInButton(
         provider,
         text: text,

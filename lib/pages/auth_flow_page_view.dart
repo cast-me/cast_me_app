@@ -6,6 +6,7 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/deleted_account_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/register_view.dart';
@@ -23,39 +24,42 @@ class AuthFlowPageView extends StatefulWidget {
 class _AuthFlowPageViewState extends State<AuthFlowPageView> {
   @override
   Widget build(BuildContext context) {
-    return ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(
-      listenable: AuthManager.instance,
-      selector: () => AuthManager.instance.signInState,
-      initialHistory: [
-        // Ensures that there is always a base page that is not signed in.
-        const ValueHistoryEntry(0, SignInState.signingIn),
-      ],
-      transitionDuration: const Duration(milliseconds: 100),
-      onPop: AuthManager.instance.handlePop,
-      getDepth: (signInState) => SignInState.values.indexOf(signInState),
-      builder: (context, signInState, animation, secondaryAnimation) {
-        switch (signInState) {
-          case SignInState.signingIn:
-          case SignInState.signingInThroughProvider:
-            return const SignInView();
-          case SignInState.registering:
-            return const RegisterFormView();
-          case SignInState.resettingPassword:
-            return const ResetPasswordView();
-          case SignInState.settingNewPassword:
-            return const SetNewPasswordView();
-          case SignInState.verifyingEmail:
-            return const VerifyEmailView();
-          case SignInState.completingProfile:
-            return const CompleteProfileView();
-          case SignInState.deletedAccount:
-             return const DeletedAccountView();
-          case SignInState.signedIn:
-            throw Exception('`SignedIn` sign in state should not be '
-                'reachable from the sign in flow widget.');
-        }
-      },
-      transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
+    return AsyncActionWrapper(
+      controller: AuthManager.instance.asyncActionController,
+      child: ImplicitNavigator.selectFromListenable<AuthManager, SignInState>(
+        listenable: AuthManager.instance,
+        selector: () => AuthManager.instance.signInState,
+        initialHistory: [
+          // Ensures that there is always a base page that is not signed in.
+          const ValueHistoryEntry(0, SignInState.signingIn),
+        ],
+        transitionDuration: const Duration(milliseconds: 100),
+        onPop: AuthManager.instance.handlePop,
+        getDepth: (signInState) => SignInState.values.indexOf(signInState),
+        builder: (context, signInState, animation, secondaryAnimation) {
+          switch (signInState) {
+            case SignInState.signingIn:
+            case SignInState.signingInThroughProvider:
+              return const SignInView();
+            case SignInState.registering:
+              return const RegisterFormView();
+            case SignInState.resettingPassword:
+              return const ResetPasswordView();
+            case SignInState.settingNewPassword:
+              return const SetNewPasswordView();
+            case SignInState.verifyingEmail:
+              return const VerifyEmailView();
+            case SignInState.completingProfile:
+              return const CompleteProfileView();
+            case SignInState.deletedAccount:
+               return const DeletedAccountView();
+            case SignInState.signedIn:
+              throw Exception('`SignedIn` sign in state should not be '
+                  'reachable from the sign in flow widget.');
+          }
+        },
+        transitionsBuilder: ImplicitNavigator.materialRouteTransitionsBuilder,
+      ),
     );
   }
 }

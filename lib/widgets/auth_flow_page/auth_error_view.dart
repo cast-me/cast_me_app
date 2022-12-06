@@ -14,8 +14,8 @@ class AuthErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthFlowBuilder(
       builder: (context, authManager, _) {
-        if (AuthManager.instance.currentAction != null ||
-            AuthManager.instance.authError == null) {
+        if (AuthManager.instance.status.currentAction != null ||
+            AuthManager.instance.status.error == null) {
           return Container();
         }
         return Column(
@@ -26,7 +26,7 @@ class AuthErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             Text(
-              AuthManager.instance.authError.toString(),
+              AuthManager.instance.status.error.toString(),
               style: TextStyle(color: Theme.of(context).errorColor),
               textAlign: TextAlign.center,
             ),

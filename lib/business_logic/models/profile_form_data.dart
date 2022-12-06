@@ -45,11 +45,11 @@ class ProfileFormData extends ChangeNotifier {
 
   String? validateUsername() {
     final String username = usernameController.text;
-    if (username.length < 4) {
-      return 'Display name must be at least 4 characters.';
+    if (username.length < 3) {
+      return 'Username must be at least 3 characters.';
     }
     if (username.length > 50) {
-      return 'Display name must be less than 50 characters.';
+      return 'Username must be less than 50 characters.';
     }
     if (!RegExp(r'^[\p{Letter}0-9_]+$', unicode: true).hasMatch(username)) {
       return 'Usernames may only contain letters, numbers or underscores.';
@@ -59,8 +59,8 @@ class ProfileFormData extends ChangeNotifier {
 
   String? validateDisplayName() {
     final String displayName = displayNameController.text;
-    if (displayName.length < 4) {
-      return 'Display name must be at least 4 characters.';
+    if (displayName.length < 3) {
+      return 'Display name must be at least 3 characters.';
     }
     if (displayName.length > 50) {
       return 'Display name must be less than 50 characters.';

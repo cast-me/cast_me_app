@@ -113,30 +113,26 @@ class _DenoiseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
-    return ElevatedButton(
+    return AsyncElevatedButton(
+      action: 'denoise',
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ProcessingView(
-            child: ValueListenableBuilder<bool>(
-              valueListenable: PostBloc.instance.castFile.select(
-                  () => PostBloc.instance.castFile.value?.isDenoised ?? false),
-              builder: (context, value, _) {
-                if (value) {
-                  return const Icon(Icons.check_box);
-                }
-                return const Icon(Icons.check_box_outline_blank);
-              },
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable: PostBloc.instance.castFile
+                .select((f) => f.value?.isDenoised ?? false),
+            builder: (context, value, _) {
+              if (value) {
+                return const Icon(Icons.check_box);
+              }
+              return const Icon(Icons.check_box_outline_blank);
+            },
           ),
           const SizedBox(width: 4),
           const Text('denoise'),
         ],
       ),
-      onPressed: () async {
-        await wrapper.wrap('denoise', () async => _toggle());
-      },
+      onTap: _toggle,
     );
   }
 

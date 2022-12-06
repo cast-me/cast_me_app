@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
-import 'package:cast_me_app/widgets/auth_flow_page/auth_submit_button_wrapper.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/remember_me_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
@@ -71,25 +71,25 @@ class _AuthSignInFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return CastMePage(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           widget.body,
           ValueListenableBuilder<bool>(
             valueListenable: currentIsValid,
             builder: (context, isValid, _) {
-              return AuthSubmitButtonWrapper(
-                child: ElevatedButton(
-                  onPressed: isValid
-                      ? () async {
-                          await widget.onSubmit();
-                        }
-                      : null,
-                  child: Text(widget.submitText),
-                ),
+              return AsyncElevatedButton(
+                action: widget.submitText,
+                child: Text(widget.submitText),
+                onTap: isValid
+                    ? () async {
+                        await widget.onSubmit();
+                      }
+                    : null,
               );
             },
           ),
-          const AuthErrorView(),
           if (widget.trailing != null) widget.trailing!,
+          const AuthErrorView(),
         ],
       ),
     );

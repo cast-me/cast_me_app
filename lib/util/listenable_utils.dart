@@ -75,11 +75,11 @@ extension ListValueNotifier<K, V> on ValueNotifier<List<V>> {
   }
 }
 
-extension ListenableUtils on Listenable {
-  ValueListenable<T> select<T>(T Function() selector) {
-    final ValueNotifier<T> proxyListenable = ValueNotifier(selector());
+extension ListenableUtils<L extends Listenable> on L {
+  ValueListenable<T> select<T>(T Function(L) selectFrom) {
+    final ValueNotifier<T> proxyListenable = ValueNotifier(selectFrom(this));
     addListener(() {
-      proxyListenable.value = selector();
+      proxyListenable.value = selectFrom(this);
     });
     return proxyListenable;
   }

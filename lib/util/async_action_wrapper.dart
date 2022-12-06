@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:developer';
-
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,27 +9,78 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
-class AsyncActionWrapper extends InheritedWidget {
-  AsyncActionWrapper({
+class AsyncActionWrapper extends StatefulWidget {
+  const AsyncActionWrapper({
     Key? key,
+    this.controller,
+    required this.child,
+  }) : super(key: key);
+
+  final AsyncActionController? controller;
+  final Widget child;
+
+  static AsyncActionController of(BuildContext context) {
+    return context
+        .findAncestorWidgetOfExactType<_ControllerProvider>()!
+        .controller;
+  }
+
+  @override
+  State<AsyncActionWrapper> createState() => _AsyncActionWrapperState();
+}
+
+class _AsyncActionWrapperState extends State<AsyncActionWrapper> {
+  AsyncActionController? fallbackController;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.controller == null && fallbackController == null) {
+      fallbackController = AsyncActionController();
+    } else if (widget.controller != null && fallbackController != null) {
+      fallbackController = null;
+    }
+    return _ControllerProvider(
+      controller: widget.controller ?? fallbackController!,
+      child: widget.child,
+    );
+  }
+}
+
+class _ControllerProvider extends InheritedWidget {
+  const _ControllerProvider({
+    Key? key,
+    required this.controller,
     required Widget child,
   }) : super(key: key, child: child);
 
-  final ValueNotifier<AsyncActionStatus> status =
-      ValueNotifier(AsyncActionStatus.empty());
+  final AsyncActionController controller;
 
-  static AsyncActionWrapper of(BuildContext context) {
-    final AsyncActionWrapper? result =
-        context.findAncestorWidgetOfExactType<AsyncActionWrapper>();
-    assert(result != null, 'No AsyncActionWrapper found in context');
-    return result!;
+  @override
+  bool updateShouldNotify(_ControllerProvider oldWidget) {
+    return false;
+  }
+}
+
+class AsyncActionController extends ChangeNotifier {
+  AsyncActionStatus _status = AsyncActionStatus.empty();
+
+  AsyncActionStatus get status => _status;
+
+  void _start(String action) {
+    _status = AsyncActionStatus.start(action);
+    notifyListeners();
+  }
+
+  void _finish(Object? error) {
+    _status = AsyncActionStatus.finish(error);
+    notifyListeners();
   }
 
   Future<void> wrap(
     String label,
     AsyncCallback action,
   ) async {
-    _start();
+    _start(label);
     await action().then(
       (value) async {
         _finish(null);
@@ -40,49 +88,27 @@ class AsyncActionWrapper extends InheritedWidget {
       },
       onError: (Object error, StackTrace stackTrace) {
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
-        log(
-          '$label failed',
-          error: error,
-          stackTrace: stackTrace,
-        );
         _finish(error);
         throw error;
       },
     );
-  }
-
-  void _start() {
-    status.value = AsyncActionStatus(
-      isProcessing: true,
-      error: null,
-    );
-  }
-
-  void _finish(Object? error) {
-    status.value = AsyncActionStatus(
-      isProcessing: false,
-      error: error,
-    );
-  }
-
-  @override
-  bool updateShouldNotify(AsyncActionWrapper oldWidget) {
-    return false;
+    notifyListeners();
   }
 }
 
-class AsyncActionStatus extends ChangeNotifier {
-  AsyncActionStatus({
-    required this.isProcessing,
-    required this.error,
-  });
-
+class AsyncActionStatus {
   AsyncActionStatus.empty()
-      : isProcessing = false,
+      : currentAction = null,
         error = null;
 
+  AsyncActionStatus.start(this.currentAction) : error = null;
+
+  AsyncActionStatus.finish([this.error]) : currentAction = null;
+
+  final String? currentAction;
   final Object? error;
-  final bool isProcessing;
+
+  bool get isProcessing => currentAction != null;
 }
 
 class AsyncErrorView extends StatelessWidget {
@@ -95,10 +121,8 @@ class AsyncErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueListenable<AsyncActionStatus> currentStatus =
-        AsyncActionWrapper.of(context).status;
     return ValueListenableBuilder<AsyncActionStatus>(
-      valueListenable: currentStatus,
+      valueListenable: AsyncActionWrapper.of(context).select((w) => w.status),
       builder: (context, status, _) {
         if (status.isProcessing || status.error == null) {
           return Container();
@@ -123,38 +147,42 @@ class AsyncErrorView extends StatelessWidget {
   }
 }
 
-class ProcessingView extends StatefulWidget {
-  const ProcessingView({
+class AsyncStatusBuilder extends StatefulWidget {
+  const AsyncStatusBuilder({
     Key? key,
+    required this.action,
     required this.child,
   }) : super(key: key);
 
+  final String action;
   final Widget child;
 
   @override
-  State<ProcessingView> createState() => _ProcessingViewState();
+  State<AsyncStatusBuilder> createState() => _AsyncStatusBuilderState();
 }
 
-class _ProcessingViewState extends State<ProcessingView> {
+class _AsyncStatusBuilderState extends State<AsyncStatusBuilder> {
   RenderBox? box;
 
   @override
   Widget build(BuildContext context) {
-    final AsyncActionWrapper wrapper = AsyncActionWrapper.of(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: wrapper.status.map((status) => status.isProcessing),
-      builder: (context, isProcessing, child) {
-        if (isProcessing) {
-          return Container(
+    final AsyncActionController wrapper = AsyncActionWrapper.of(context);
+    return ValueListenableBuilder<AsyncActionStatus>(
+      valueListenable: wrapper.select((w) => w.status),
+      builder: (context, status, child) {
+        if (status.currentAction == widget.action) {
+          return SizedBox(
             height: box!.size.height,
             width: box!.size.width,
-            padding: const EdgeInsets.all(12),
-            alignment: Alignment.center,
-            child: const AspectRatio(
-              aspectRatio: 1,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 4,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              alignment: Alignment.center,
+              child: const AspectRatio(
+                aspectRatio: 1,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 4,
+                ),
               ),
             ),
           );
@@ -164,11 +192,19 @@ class _ProcessingViewState extends State<ProcessingView> {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
               box = context.findRenderObject() as RenderBox;
             });
-            return child!;
+            return IgnorePointer(
+              // Don't allow multi-presses.
+              ignoring: status.isProcessing,
+              child: Opacity(
+                // If another button under this wrapper is currently processing,
+                // then dim the child widget to indicate that it is not enabled.
+                opacity: status.isProcessing ? .5 : 1,
+                child: widget.child,
+              ),
+            );
           },
         );
       },
-      child: widget.child,
     );
   }
 }
@@ -185,15 +221,44 @@ class AsyncTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProcessingView(
+    return AsyncStatusBuilder(
+      action: text,
       child: TextButton(
         onPressed: () async {
-          await AsyncActionWrapper.of(context).wrap('text', onTap);
+          await AsyncActionWrapper.of(context).wrap(text, onTap);
         },
         child: Text(
           text,
           style: const TextStyle(color: Colors.white),
         ),
+      ),
+    );
+  }
+}
+
+class AsyncElevatedButton extends StatelessWidget {
+  const AsyncElevatedButton({
+    Key? key,
+    required this.action,
+    required this.child,
+    required this.onTap,
+  }) : super(key: key);
+
+  final String action;
+  final Widget child;
+  final AsyncCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncStatusBuilder(
+      action: action,
+      child: ElevatedButton(
+        onPressed: onTap == null
+            ? null
+            : () async {
+                await AsyncActionWrapper.of(context).wrap(action, onTap!);
+              },
+        child: child,
       ),
     );
   }
