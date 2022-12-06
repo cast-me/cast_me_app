@@ -87,7 +87,6 @@ class AsyncActionController extends ChangeNotifier {
         return value;
       },
       onError: (Object error, StackTrace stackTrace) {
-        FirebaseCrashlytics.instance.recordError(error, stackTrace);
         _finish(error);
         throw error;
       },
