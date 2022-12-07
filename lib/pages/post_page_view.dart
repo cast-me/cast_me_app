@@ -45,10 +45,10 @@ class _PostPageViewState extends State<PostPageView> {
       child: CastMePage(
         headerText: 'Post',
         scrollable: true,
-        child: ValueListenableBuilder<CastFile?>(
+        child: ValueListenableBuilder<Future<CastFile>?>(
           valueListenable: PostBloc.instance.castFile,
-          builder: (context, castFile, _) {
-            return _SubmitFormField(castFile: castFile);
+          builder: (context, fileFuture, _) {
+            return _SubmitFormField(fileFuture: fileFuture);
           },
         ),
         footer: SubmitCastButton(
@@ -66,10 +66,10 @@ class _PostPageViewState extends State<PostPageView> {
 class _SubmitFormField extends StatelessWidget {
   const _SubmitFormField({
     Key? key,
-    required this.castFile,
+    required this.fileFuture,
   }) : super(key: key);
 
-  final CastFile? castFile;
+  final Future<CastFile>? fileFuture;
 
   @override
   Widget build(BuildContext context) {
@@ -110,26 +110,45 @@ class _SubmitFormField extends StatelessWidget {
             ],
           ),
         ),
-        _SelectedAudioView(castFile: castFile),
-        const FileAudioPlayerControls(),
-        const AsyncErrorView(),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 4),
-            Text(
-              '3. Details',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            TitleField(key: bloc.titleFieldKey, titleText: bloc.titleText),
-            ExternalLinkField(
-              controller: bloc.externalLinkTextController,
-            ),
-            const SizedBox(height: 8),
-            const PostTopicSelector(),
-          ],
+        if (fileFuture != null)
+          FutureBuilder<CastFile>(
+            future: fileFuture,
+            builder: (context, snap) {
+              if (snap.hasError) {
+                return ErrorText(error: snap.error!);
+              }
+              if (!snap.hasData) {
+                return Container(
+                  alignment: Alignment.center,
+                  width: 50,
+                  height: 50,
+                  child: const CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 4,
+                  ),
+                );
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _SelectedAudioView(castFile: snap.data!),
+                  FileAudioPlayerControls(castFile: snap.data!),
+                ],
+              );
+            },
+          ),
+        const SizedBox(height: 4),
+        Text(
+          '3. Details',
+          style: Theme.of(context).textTheme.headline5,
         ),
+        TitleField(key: bloc.titleFieldKey, titleText: bloc.titleText),
+        ExternalLinkField(
+          controller: bloc.externalLinkTextController,
+        ),
+        const SizedBox(height: 8),
+        const PostTopicSelector(),
+        const AsyncErrorView(),
       ],
     );
   }

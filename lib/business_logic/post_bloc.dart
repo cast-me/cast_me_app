@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
@@ -24,13 +25,13 @@ class PostBloc {
 
   static final instance = PostBloc._();
 
-  ValueListenable<CastFile?> get castFile => _castFile;
+  ValueListenable<Future<CastFile>?> get castFile => _castFile;
 
   final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
 
   final ValueNotifier<List<Topic>> topics = ValueNotifier([]);
 
-  final ValueNotifier<CastFile?> _castFile = ValueNotifier(null);
+  final ValueNotifier<Future<CastFile>?> _castFile = ValueNotifier(null);
 
   final TopicSelectorController topicSelectorController =
       TopicSelectorController();
@@ -43,43 +44,50 @@ class PostBloc {
       TextEditingController();
 
   Future<void> _onTrimChanged() async {
-    final Trim trim = _castFile.value!.trim.value;
+    final Trim trim = (await _castFile.value!).trim.value;
     return ClipAudioPlayer.instance.setClip(
       start: trim.start,
       end: trim.end,
     );
   }
 
-  void clearFiles() {
-    _castFile.value!.trim.removeListener(_onTrimChanged);
+  Future<void> clearFiles() async {
+    (await _castFile.value!).trim.removeListener(_onTrimChanged);
     _castFile.value = null;
-    ClipAudioPlayer.instance.setFile(null);
+    await ClipAudioPlayer.instance.setFile(null);
   }
 
-  Future<void> onFileSelected(String path) async {
-    final Directory documentsDirectory =
-        await getApplicationDocumentsDirectory();
-    final String name = Uri(path: path).pathSegments.last;
-    await File(path).readAsBytes();
-    final File file = File(path).copySync(
-      join(documentsDirectory.path, name),
-    );
-    final Duration duration = (await ClipAudioPlayer.instance.setFile(file))!;
-    if (duration < const Duration(seconds: 5)) {
-      throw ArgumentError('Casts must be at least 5 seconds long!');
-    }
-    final CastFile castFile = await CastFile.initiallyDenoised(
-      file: file,
-      originalDuration: duration,
-    );
-    _castFile.value = castFile;
-    _castFile.value!.trim.addListener(_onTrimChanged);
+  void onFileSelected(Future<String> asyncPath) {
+    // Wrap in a sub-function to ensure that thrown errors are captured in the
+    // cast file future.
+    _castFile.value = () async {
+      final String path = await asyncPath;
+      final Directory documentsDirectory =
+          await getApplicationDocumentsDirectory();
+      final String name = Uri(path: path).pathSegments.last;
+      await File(path).readAsBytes();
+      final File file = File(path).copySync(
+        join(documentsDirectory.path, name),
+      );
+      final Duration duration = (await ClipAudioPlayer.instance.setFile(file))!;
+      if (duration < const Duration(seconds: 5)) {
+        throw ArgumentError('Casts must be at least 5 seconds long!');
+      }
+      final CastFile castFile = await CastFile.initiallyDenoised(
+        file: file,
+        originalDuration: duration,
+      );
+      castFile.trim.addListener(_onTrimChanged);
+      return castFile;
+    }();
   }
 
   Future<void> onFileUpdated(CastFile castFile) async {
     await ClipAudioPlayer.instance.setFile(castFile.file);
-    _castFile.value = castFile;
-    _castFile.value!.trim.addListener(_onTrimChanged);
+    // We're okay doing this synchronously instead of with a completer because
+    // displaying a spinner on every update would be annoying.
+    _castFile.value = Future.value(castFile);
+    (await _castFile.value!).trim.addListener(_onTrimChanged);
     // Force an immediate trim check in case the cast file has a trim.
     await _onTrimChanged();
   }
@@ -107,9 +115,8 @@ class PostBloc {
     return AudioRecorder.instance.startRecording(name: name);
   }
 
-  Future<void> stopRecording() async {
-    await PostBloc.instance
-        .onFileSelected(await AudioRecorder.instance.stopRecording());
+  void stopRecording() {
+    PostBloc.instance.onFileSelected(AudioRecorder.instance.stopRecording());
   }
 
   void reset() {

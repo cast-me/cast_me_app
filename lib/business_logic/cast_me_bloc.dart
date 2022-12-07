@@ -78,7 +78,7 @@ class CastMeBloc {
   }
 
   Future<void> onSharedFile(Iterable<String> filePaths) async {
-    await postBloc.onFileSelected(filePaths.first);
+    postBloc.onFileSelected(Future.value(filePaths.first));
     onTabChanged(_currentTab.value = CastMeTab.post);
   }
 

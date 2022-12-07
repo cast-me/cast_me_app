@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
-import 'package:cast_me_app/util/async_action_wrapper.dart';
 
 class RecordButton extends StatelessWidget {
   const RecordButton({
@@ -13,7 +12,6 @@ class RecordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncActionController wrapper = AsyncActionWrapper.of(context);
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateColor.resolveWith(
@@ -29,17 +27,12 @@ class RecordButton extends StatelessWidget {
           return const Text('record');
         },
       ),
-      onPressed: () {
-        wrapper.wrap(
-          'record',
-          () async {
-            if (!AudioRecorder.instance.isRecording.value) {
-              return PostBloc.instance.startRecording();
-            }
-            await PostBloc.instance.stopRecording();
-            return;
-          },
-        );
+      onPressed: () async {
+        if (!AudioRecorder.instance.isRecording.value) {
+          return PostBloc.instance.startRecording();
+        }
+        PostBloc.instance.stopRecording();
+        return;
       },
     );
   }
