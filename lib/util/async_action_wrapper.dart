@@ -123,22 +123,41 @@ class AsyncErrorView extends StatelessWidget {
         if (status.isProcessing || status.error == null) {
           return Container();
         }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (errorPrefix != null)
-              Text(
-                errorPrefix!,
-                textAlign: TextAlign.center,
-              ),
-            Text(
-              status.error.toString().truncate(80),
-              style: TextStyle(color: Theme.of(context).errorColor),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        return ErrorText(
+          errorPrefix: errorPrefix,
+          error: status.error!,
         );
       },
+    );
+  }
+}
+
+class ErrorText extends StatelessWidget {
+  const ErrorText({
+    Key? key,
+    this.errorPrefix,
+    required this.error,
+  }) : super(key: key);
+
+  final String? errorPrefix;
+  final Object error;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (errorPrefix != null)
+          Text(
+            errorPrefix!,
+            textAlign: TextAlign.center,
+          ),
+        Text(
+          error.toString().truncate(80),
+          style: TextStyle(color: Theme.of(context).errorColor),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

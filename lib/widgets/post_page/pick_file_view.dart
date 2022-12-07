@@ -18,14 +18,14 @@ class PickFileView extends StatelessWidget {
       child: const Text('Select a file'),
       onTap: () async {
         final FilePickerResult? pickerResult =
-        await FilePicker.platform.pickFiles(
+            await FilePicker.platform.pickFiles(
           dialogTitle: 'Select audio',
           type: FileType.custom,
           allowedExtensions: ['mp3', 'm4a'],
         );
         if (pickerResult != null && pickerResult.files.isNotEmpty) {
-          await PostBloc.instance
-              .onFileSelected(pickerResult.files.first.path!);
+          PostBloc.instance
+              .onFileSelected(Future.value(pickerResult.files.first.path!));
         }
       },
     );

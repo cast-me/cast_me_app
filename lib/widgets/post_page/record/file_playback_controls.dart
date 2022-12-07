@@ -9,30 +9,12 @@ import 'package:cast_me_app/business_logic/clients/clip_audio_player.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
-import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/widgets/listen_page/audio_playback_controls.dart';
 import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/post_page/trim_controls.dart';
 
 class FileAudioPlayerControls extends StatelessWidget {
-  const FileAudioPlayerControls({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<CastFile?>(
-      valueListenable: PostBloc.instance.castFile,
-      builder: (context, castFile, _) {
-        if (castFile == null) {
-          return Container();
-        }
-        return _BaseAudioControls(castFile: castFile);
-      },
-    );
-  }
-}
-
-class _BaseAudioControls extends StatelessWidget {
-  const _BaseAudioControls({
+  const FileAudioPlayerControls({
     Key? key,
     required this.castFile,
   }) : super(key: key);
@@ -118,16 +100,10 @@ class _DenoiseButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ValueListenableBuilder<bool>(
-            valueListenable: PostBloc.instance.castFile
-                .select((f) => f.value?.isDenoised ?? false),
-            builder: (context, value, _) {
-              if (value) {
-                return const Icon(Icons.check_box);
-              }
-              return const Icon(Icons.check_box_outline_blank);
-            },
-          ),
+          if (castFile.isDenoised)
+            const Icon(Icons.check_box)
+          else
+            const Icon(Icons.check_box_outline_blank),
           const SizedBox(width: 4),
           const Text('denoise'),
         ],
