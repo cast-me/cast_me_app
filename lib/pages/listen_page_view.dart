@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/listen_page/listen_sub_pages.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,7 +10,6 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/pages/conversation_page_view.dart';
-import 'package:cast_me_app/widgets/listen_page/timeline_view.dart';
 
 class ListenPageView extends StatefulWidget {
   const ListenPageView({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _ListenPageViewState extends State<ListenPageView> {
         return const AdaptiveMaterial.background(
           child: SafeArea(
             bottom: false,
-            child: TimelineView(),
+            child: ListenSubPages(),
           ),
         );
       },

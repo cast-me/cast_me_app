@@ -15,31 +15,33 @@ class ProfilePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CastMePage(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: ProfileView(profile: AuthManager.instance.profile)),
-          AsyncElevatedButton(
-            action: 'Sign out',
-            child: const Text('Sign out'),
-            onTap: () async {
-              await AuthManager.instance.signOut();
-            },
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateColor.resolveWith(
-                (states) => Color.lerp(Colors.red, Colors.black, .1)!,
-              ),
+    return AsyncActionWrapper(
+      child: CastMePage(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: ProfileView(profile: AuthManager.instance.profile)),
+            AsyncElevatedButton(
+              action: 'Sign out',
+              child: const Text('Sign out'),
+              onTap: () async {
+                await AuthManager.instance.signOut();
+              },
             ),
-            onPressed: () async {
-              CastMeModal.showMessage(context, const _DeleteAccountModal());
-            },
-            child: const Text('Delete account'),
-          ),
-          const AppInfo(showIcon: false),
-        ],
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith(
+                  (states) => Color.lerp(Colors.red, Colors.black, .1)!,
+                ),
+              ),
+              onPressed: () async {
+                CastMeModal.showMessage(context, const _DeleteAccountModal());
+              },
+              child: const Text('Delete account'),
+            ),
+            const AppInfo(showIcon: false),
+          ],
+        ),
       ),
     );
   }

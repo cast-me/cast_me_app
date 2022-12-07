@@ -131,10 +131,10 @@ class ListenBloc {
     await CastAudioPlayer.instance.seekToCast(cast);
   }
 
-  Future<void> onListenPageChanged(ListenPage newPage) async {
+  Future<void> onListenPageChanged(int pageIndex) async {
     await listenPageController.animateToPage(
-      ListenPage.values.indexOf(newPage),
-      duration: const Duration(milliseconds: 200),
+      pageIndex,
+      duration: const Duration(milliseconds: 100),
       curve: Curves.linear,
     );
   }
@@ -150,11 +150,6 @@ class ListenBloc {
       curve: Curves.linear,
     );
   }
-}
-
-enum ListenPage {
-  following,
-  trending,
 }
 
 class SelectedConversation {
