@@ -19,18 +19,36 @@ import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
+typedef _Row = Map<String, dynamic>;
+typedef _Rows = List<Map<String, dynamic>>;
+
 class CastDatabase {
   CastDatabase._();
 
   static final CastDatabase instance = CastDatabase._();
 
-  late final getConversations = getPaginatedAndFilteredContent<Conversation>;
+  Stream<Conversation> getConversations({
+    Profile? filterProfile,
+    Profile? filterOutProfile,
+    List<Topic>? filterTopics,
+    bool skipFullyViewed = false,
+    bool skipPartiallyViewed = false,
+  }) async* {
+    final PostgrestFilterBuilder<_Rows> filtered = _filterQuery(
+      conversationsReadQuery,
+      filterProfile: filterProfile,
+      filterOutProfile: filterOutProfile,
+      filterTopics: filterTopics,
+      skipViewed: false,
+    );
+    final PostgrestTransformBuilder ordered = _orderQuery(filtered);
+    yield* _paginated(
+      ordered,
+      chunkSize: 10,
+    ).map(_rowToConversation);
+  }
 
-  late final getCasts = getPaginatedAndFilteredContent<Cast>;
-
-  /// TODO(caseycrogers): The way we're avoiding code duplication across
-  ///   conversations and casts is a mess. Revisit this.
-  Stream<T> getPaginatedAndFilteredContent<T>({
+  Stream<Cast> getCasts({
     Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
@@ -40,64 +58,29 @@ class CastDatabase {
     bool single = false,
     bool skipDeleted = true,
   }) async* {
-    assert(
-      T == Cast || T == Conversation,
-      '$T was not Cast or Conversation.',
-    );
-    final bool isCast = T == Cast;
-    final tableQuery = isCast ? castsReadQuery : conversationsReadQuery;
     // This is here because we need two instances of the builder at the end to
     // run two separate queries because Supabase doesn't provide a copy method.
     // TODO: remove this function and use copy once it's available.
-    PostgrestFilterBuilder getBuilder() {
-      PostgrestFilterBuilder queryBuilder =
-          tableQuery.select<List<Map<String, dynamic>>>();
-      if (filterProfile != null) {
-        // Get only casts authored by the given profiles.
-        queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
-      }
-      if (filterOutProfile != null) {
-        queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
-      }
-      if (skipViewed) {
-        queryBuilder = queryBuilder.eq(hasViewedCol, false);
-      }
-      if (skipDeleted && isCast) {
-        queryBuilder = queryBuilder.eq(deletedCol, false);
-      }
-      if (searchTerm != null && searchTerm.isNotEmpty) {
-        queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
-            '$authorUsernameCol.ilike.$searchTerm%,'
-            '$authorDisplayNameCol.ilike.$searchTerm%');
-      }
-      if (filterTopics != null && filterTopics.isNotEmpty) {
-        queryBuilder = queryBuilder.overlaps(
-          topicsCol,
-          filterTopics.map((t) => t.name).toList(),
-        );
-      }
-      return queryBuilder;
+    PostgrestFilterBuilder<_Rows> getBuilder() {
+      return _filterQuery(
+        castsReadQuery,
+        seedCast: seedCast,
+        filterProfile: filterProfile,
+        filterOutProfile: filterOutProfile,
+        filterTopics: filterTopics,
+        skipViewed: skipViewed,
+        searchTerm: searchTerm,
+        single: single,
+        skipDeleted: skipDeleted,
+      );
     }
 
-    Stream<T> orderAndRun(PostgrestFilterBuilder query) {
-      final PostgrestTransformBuilder transformBuilder = query
-          // Play the freshest conversations first.
-          .order(treeUpdatedAtCol, ascending: false)
-          // Within a specific depth level, play the oldest content first as new
-          // content in a level might build on other content in that level.
-          .order(createdAtCol, ascending: true);
-      return paginated<T>(
-        transformBuilder,
+    Stream<Cast> paginateCasts(PostgrestFilterBuilder<_Rows> query) {
+      return _paginated(
+        _orderQuery(query),
         chunkSize: single ? 1 : 20,
         chunkLimit: single ? 1 : null,
-        convertRow: (Map<String, dynamic> row) {
-          if (isCast) {
-            return _rowToCast(row) as T;
-          } else {
-            return _rowToConversation(row) as T;
-          }
-        },
-      );
+      ).map(_rowToCast);
     }
 
     if (seedCast != null) {
@@ -105,25 +88,75 @@ class CastDatabase {
       // casts from outside the conversation.
       // This is to ensure that, when a user selects a cast, the whole
       // conversation is played through before casts form other conversations.
-      yield* orderAndRun(
+      yield* paginateCasts(
         getBuilder().neq(idCol, seedCast.id).eq(rootIdCol, seedCast.rootId),
       );
-      yield* orderAndRun(
+      yield* paginateCasts(
         getBuilder().neq(idCol, seedCast.id).neq(rootIdCol, seedCast.rootId),
       );
     } else {
-      yield* orderAndRun(getBuilder());
+      yield* paginateCasts(getBuilder());
     }
+  }
+
+  // Applies filters shared between casts and conversations.
+  PostgrestFilterBuilder<_Rows> _filterQuery(
+    SupabaseQueryBuilder tableQuery, {
+    Cast? seedCast,
+    Profile? filterProfile,
+    Profile? filterOutProfile,
+    List<Topic>? filterTopics,
+    bool skipViewed = false,
+    String? searchTerm,
+    bool single = false,
+    bool skipDeleted = true,
+  }) {
+    PostgrestFilterBuilder<_Rows> queryBuilder = tableQuery.select<_Rows>();
+    if (filterProfile != null) {
+      // Get only casts authored by the given profiles.
+      queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);
+    }
+    if (filterOutProfile != null) {
+      queryBuilder = queryBuilder.neq(authorIdCol, filterOutProfile.id);
+    }
+    if (skipViewed) {
+      queryBuilder = queryBuilder.eq(hasViewedCol, false);
+    }
+    if (skipDeleted) {
+      queryBuilder = queryBuilder.eq(deletedCol, false);
+    }
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      queryBuilder = queryBuilder.or('$titleCol.ilike.%$searchTerm%,'
+          '$authorUsernameCol.ilike.$searchTerm%,'
+          '$authorDisplayNameCol.ilike.$searchTerm%');
+    }
+    if (filterTopics != null && filterTopics.isNotEmpty) {
+      queryBuilder = queryBuilder.overlaps(
+        topicsCol,
+        filterTopics.map((t) => t.name).toList(),
+      );
+    }
+    return queryBuilder;
+  }
+
+  // Apply ordering shared between Casts and Conversations.
+  PostgrestTransformBuilder<_Rows> _orderQuery(
+      PostgrestFilterBuilder<_Rows> query) {
+    return query
+        // Play the freshest conversations first.
+        .order(treeUpdatedAtCol, ascending: false)
+        // Within a specific depth level, play the oldest content first as new
+        // content in a level might build on other content in that level.
+        .order(createdAtCol, ascending: true);
   }
 
   // TODO: This will return duplicative elements if casts were added between
   //  requests.
   // Consider client-side de-dup logic or migrating off `range` and onto
   // `gt/lt`.
-  Stream<T> paginated<T>(
+  Stream<_Row> _paginated(
     PostgrestTransformBuilder query, {
     required int chunkSize,
-    required T Function(Map<String, dynamic>) convertRow,
     int? chunkLimit,
   }) async* {
     int soFar = 0;
@@ -140,7 +173,7 @@ class CastDatabase {
         return;
       }
       for (final row in rows) {
-        yield convertRow(row);
+        yield row;
       }
     }
   }
@@ -295,13 +328,21 @@ class CastDatabase {
     });
   }
 
-  Future<List<Topic>> getAllTopics() async {
-    return await topicsReadQuery
-        .select<List<Map<String, dynamic>>>()
-        .order('cast_count')
-        .withConverter((data) {
+  Future<List<Topic>> getTopics({int? limit}) async {
+    PostgrestTransformBuilder<List<Map<String, dynamic>>> query =
+        topicsReadQuery
+            .select<List<Map<String, dynamic>>>()
+            .order('cast_count');
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    return await query.withConverter((data) {
       return data.map(_rowToTopic).toList();
     });
+  }
+
+  Future<List<Topic>> getForYouCards() {
+    return getTopics(limit: 3);
   }
 }
 

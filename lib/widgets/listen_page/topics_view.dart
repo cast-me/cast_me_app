@@ -31,7 +31,7 @@ class _TopicSelectorState extends State<TopicSelector> {
   Future<List<Topic>> allTopics = _getTopics();
 
   static Future<List<Topic>> _getTopics() async {
-    return CastDatabase.instance.getAllTopics();
+    return CastDatabase.instance.getTopics();
   }
 
   void _onRefresh() {

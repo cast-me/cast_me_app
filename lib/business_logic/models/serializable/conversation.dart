@@ -19,6 +19,8 @@ class Conversation with _$Conversation {
     required Cast rootCast,
     required List<Cast>? casts,
     required List<String>? topics,
+    required int castCount,
+    required int newCastCount,
   }) = _Conversation;
 
   // Required by freezed to support custom methods.
@@ -33,10 +35,6 @@ class Conversation with _$Conversation {
 
   List<Cast> get newCasts =>
       allCasts.where((c) => !c.deleted).where((c) => !c.hasViewed).toList();
-
-  int get castCount => allCasts.where((c) => !c.deleted).length;
-
-  int get newCastCount => newCasts.where((c) => !c.deleted).length;
 
   int get likeCount => allCasts
       .where((c) => !c.deleted)

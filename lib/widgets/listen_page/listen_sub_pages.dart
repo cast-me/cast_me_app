@@ -44,7 +44,7 @@ class _Selector extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: SizedBox(),
-              label: 'browse',
+              label: 'explore',
             ),
           ],
           onTap: ListenBloc.instance.onListenPageChanged,

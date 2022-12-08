@@ -22,8 +22,10 @@ Topic _$TopicFromJson(Map<String, dynamic> json) {
 mixin _$Topic {
   String get name => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
+  int get likeCount => throw _privateConstructorUsedError;
   int get castCount => throw _privateConstructorUsedError;
   int get newCastCount => throw _privateConstructorUsedError;
+  int get newConversationCastCount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +37,13 @@ abstract class $TopicCopyWith<$Res> {
   factory $TopicCopyWith(Topic value, $Res Function(Topic) then) =
       _$TopicCopyWithImpl<$Res, Topic>;
   @useResult
-  $Res call({String name, String id, int castCount, int newCastCount});
+  $Res call(
+      {String name,
+      String id,
+      int likeCount,
+      int castCount,
+      int newCastCount,
+      int newConversationCastCount});
 }
 
 /// @nodoc
@@ -53,8 +61,10 @@ class _$TopicCopyWithImpl<$Res, $Val extends Topic>
   $Res call({
     Object? name = null,
     Object? id = null,
+    Object? likeCount = null,
     Object? castCount = null,
     Object? newCastCount = null,
+    Object? newConversationCastCount = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -65,6 +75,10 @@ class _$TopicCopyWithImpl<$Res, $Val extends Topic>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      likeCount: null == likeCount
+          ? _value.likeCount
+          : likeCount // ignore: cast_nullable_to_non_nullable
+              as int,
       castCount: null == castCount
           ? _value.castCount
           : castCount // ignore: cast_nullable_to_non_nullable
@@ -72,6 +86,10 @@ class _$TopicCopyWithImpl<$Res, $Val extends Topic>
       newCastCount: null == newCastCount
           ? _value.newCastCount
           : newCastCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      newConversationCastCount: null == newConversationCastCount
+          ? _value.newConversationCastCount
+          : newConversationCastCount // ignore: cast_nullable_to_non_nullable
               as int,
     ) as $Val);
   }
@@ -83,7 +101,13 @@ abstract class _$$_TopicCopyWith<$Res> implements $TopicCopyWith<$Res> {
       __$$_TopicCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, String id, int castCount, int newCastCount});
+  $Res call(
+      {String name,
+      String id,
+      int likeCount,
+      int castCount,
+      int newCastCount,
+      int newConversationCastCount});
 }
 
 /// @nodoc
@@ -97,8 +121,10 @@ class __$$_TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res, _$_Topic>
   $Res call({
     Object? name = null,
     Object? id = null,
+    Object? likeCount = null,
     Object? castCount = null,
     Object? newCastCount = null,
+    Object? newConversationCastCount = null,
   }) {
     return _then(_$_Topic(
       name: null == name
@@ -109,6 +135,10 @@ class __$$_TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res, _$_Topic>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      likeCount: null == likeCount
+          ? _value.likeCount
+          : likeCount // ignore: cast_nullable_to_non_nullable
+              as int,
       castCount: null == castCount
           ? _value.castCount
           : castCount // ignore: cast_nullable_to_non_nullable
@@ -116,6 +146,10 @@ class __$$_TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res, _$_Topic>
       newCastCount: null == newCastCount
           ? _value.newCastCount
           : newCastCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      newConversationCastCount: null == newConversationCastCount
+          ? _value.newConversationCastCount
+          : newConversationCastCount // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -127,8 +161,10 @@ class _$_Topic extends _Topic {
   const _$_Topic(
       {required this.name,
       required this.id,
+      required this.likeCount,
       required this.castCount,
-      required this.newCastCount})
+      required this.newCastCount,
+      required this.newConversationCastCount})
       : super._();
 
   factory _$_Topic.fromJson(Map<String, dynamic> json) =>
@@ -139,13 +175,17 @@ class _$_Topic extends _Topic {
   @override
   final String id;
   @override
+  final int likeCount;
+  @override
   final int castCount;
   @override
   final int newCastCount;
+  @override
+  final int newConversationCastCount;
 
   @override
   String toString() {
-    return 'Topic(name: $name, id: $id, castCount: $castCount, newCastCount: $newCastCount)';
+    return 'Topic(name: $name, id: $id, likeCount: $likeCount, castCount: $castCount, newCastCount: $newCastCount, newConversationCastCount: $newConversationCastCount)';
   }
 
   @override
@@ -155,16 +195,21 @@ class _$_Topic extends _Topic {
             other is _$_Topic &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.likeCount, likeCount) ||
+                other.likeCount == likeCount) &&
             (identical(other.castCount, castCount) ||
                 other.castCount == castCount) &&
             (identical(other.newCastCount, newCastCount) ||
-                other.newCastCount == newCastCount));
+                other.newCastCount == newCastCount) &&
+            (identical(
+                    other.newConversationCastCount, newConversationCastCount) ||
+                other.newConversationCastCount == newConversationCastCount));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, id, castCount, newCastCount);
+  int get hashCode => Object.hash(runtimeType, name, id, likeCount, castCount,
+      newCastCount, newConversationCastCount);
 
   @JsonKey(ignore: true)
   @override
@@ -184,8 +229,10 @@ abstract class _Topic extends Topic {
   const factory _Topic(
       {required final String name,
       required final String id,
+      required final int likeCount,
       required final int castCount,
-      required final int newCastCount}) = _$_Topic;
+      required final int newCastCount,
+      required final int newConversationCastCount}) = _$_Topic;
   const _Topic._() : super._();
 
   factory _Topic.fromJson(Map<String, dynamic> json) = _$_Topic.fromJson;
@@ -195,9 +242,13 @@ abstract class _Topic extends Topic {
   @override
   String get id;
   @override
+  int get likeCount;
+  @override
   int get castCount;
   @override
   int get newCastCount;
+  @override
+  int get newConversationCastCount;
   @override
   @JsonKey(ignore: true)
   _$$_TopicCopyWith<_$_Topic> get copyWith =>

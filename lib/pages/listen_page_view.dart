@@ -6,33 +6,12 @@ import 'package:adaptive_material/adaptive_material.dart';
 import 'package:implicit_navigator/implicit_navigator.dart';
 
 // Project imports:
-import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/pages/conversation_page_view.dart';
 import 'package:cast_me_app/widgets/listen_page/listen_sub_pages.dart';
 
-class ListenPageView extends StatefulWidget {
+class ListenPageView extends StatelessWidget {
   const ListenPageView({Key? key}) : super(key: key);
-
-  @override
-  State<ListenPageView> createState() => _ListenPageViewState();
-}
-
-class _ListenPageViewState extends State<ListenPageView> {
-  @override
-  void initState() {
-    if (ListenBloc.instance.currentCast.value == null) {
-      CastDatabase.instance.getSeedCast().then((cast) {
-        // Seed the now playing cast with content on app launch.
-        // Check a second time just in case the user has selected a cast while
-        // we were getting the seed cast.
-        if (cast != null && ListenBloc.instance.currentCast.value == null) {
-          ListenBloc.instance.onCastSelected(cast, autoPlay: false);
-        }
-      });
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

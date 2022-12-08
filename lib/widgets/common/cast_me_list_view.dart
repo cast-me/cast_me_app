@@ -186,7 +186,6 @@ class CastMeListController<T> extends TopicSelectorController {
         filterProfile: filterProfile,
         filterOutProfile: filterOutProfile,
         filterTopics: filterTopics,
-        searchTerm: searchTextController?.text,
       ) as Stream<T>;
     }
     throw Exception('Unrecognized type `$T`.');
@@ -214,7 +213,7 @@ class CastMeListController<T> extends TopicSelectorController {
   }
 
   void _onTextChanged() {
-    if (_previousText == null || searchTextController!.text == _previousText) {
+    if (searchTextController!.text == _previousText) {
       return;
     }
     _previousText = searchTextController!.text;

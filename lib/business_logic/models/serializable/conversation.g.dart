@@ -22,10 +22,17 @@ _$_Conversation _$$_ConversationFromJson(Map<String, dynamic> json) =>
                   .toList()),
           topics: $checkedConvert('topics',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
+          castCount: $checkedConvert('cast_count', (v) => v as int),
+          newCastCount: $checkedConvert('new_cast_count', (v) => v as int),
         );
         return val;
       },
-      fieldKeyMap: const {'rootId': 'root_id', 'rootCast': 'root_cast'},
+      fieldKeyMap: const {
+        'rootId': 'root_id',
+        'rootCast': 'root_cast',
+        'castCount': 'cast_count',
+        'newCastCount': 'new_cast_count'
+      },
     );
 
 Map<String, dynamic> _$$_ConversationToJson(_$_Conversation instance) =>
@@ -34,4 +41,6 @@ Map<String, dynamic> _$$_ConversationToJson(_$_Conversation instance) =>
       'root_cast': instance.rootCast.toJson(),
       'casts': instance.casts?.map((e) => e.toJson()).toList(),
       'topics': instance.topics,
+      'cast_count': instance.castCount,
+      'new_cast_count': instance.newCastCount,
     };
