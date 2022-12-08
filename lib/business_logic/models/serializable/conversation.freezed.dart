@@ -25,6 +25,8 @@ mixin _$Conversation {
   Cast get rootCast => throw _privateConstructorUsedError;
   List<Cast>? get casts => throw _privateConstructorUsedError;
   List<String>? get topics => throw _privateConstructorUsedError;
+  int get castCount => throw _privateConstructorUsedError;
+  int get newCastCount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +41,12 @@ abstract class $ConversationCopyWith<$Res> {
       _$ConversationCopyWithImpl<$Res, Conversation>;
   @useResult
   $Res call(
-      {String rootId, Cast rootCast, List<Cast>? casts, List<String>? topics});
+      {String rootId,
+      Cast rootCast,
+      List<Cast>? casts,
+      List<String>? topics,
+      int castCount,
+      int newCastCount});
 
   $CastCopyWith<$Res> get rootCast;
 }
@@ -61,6 +68,8 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
     Object? rootCast = null,
     Object? casts = freezed,
     Object? topics = freezed,
+    Object? castCount = null,
+    Object? newCastCount = null,
   }) {
     return _then(_value.copyWith(
       rootId: null == rootId
@@ -79,6 +88,14 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
           ? _value.topics
           : topics // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      castCount: null == castCount
+          ? _value.castCount
+          : castCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      newCastCount: null == newCastCount
+          ? _value.newCastCount
+          : newCastCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 
@@ -100,7 +117,12 @@ abstract class _$$_ConversationCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String rootId, Cast rootCast, List<Cast>? casts, List<String>? topics});
+      {String rootId,
+      Cast rootCast,
+      List<Cast>? casts,
+      List<String>? topics,
+      int castCount,
+      int newCastCount});
 
   @override
   $CastCopyWith<$Res> get rootCast;
@@ -121,6 +143,8 @@ class __$$_ConversationCopyWithImpl<$Res>
     Object? rootCast = null,
     Object? casts = freezed,
     Object? topics = freezed,
+    Object? castCount = null,
+    Object? newCastCount = null,
   }) {
     return _then(_$_Conversation(
       rootId: null == rootId
@@ -139,6 +163,14 @@ class __$$_ConversationCopyWithImpl<$Res>
           ? _value._topics
           : topics // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      castCount: null == castCount
+          ? _value.castCount
+          : castCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      newCastCount: null == newCastCount
+          ? _value.newCastCount
+          : newCastCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -150,7 +182,9 @@ class _$_Conversation extends _Conversation {
       {required this.rootId,
       required this.rootCast,
       required final List<Cast>? casts,
-      required final List<String>? topics})
+      required final List<String>? topics,
+      required this.castCount,
+      required this.newCastCount})
       : _casts = casts,
         _topics = topics,
         super._();
@@ -182,8 +216,13 @@ class _$_Conversation extends _Conversation {
   }
 
   @override
+  final int castCount;
+  @override
+  final int newCastCount;
+
+  @override
   String toString() {
-    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts, topics: $topics)';
+    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts, topics: $topics, castCount: $castCount, newCastCount: $newCastCount)';
   }
 
   @override
@@ -195,7 +234,11 @@ class _$_Conversation extends _Conversation {
             (identical(other.rootCast, rootCast) ||
                 other.rootCast == rootCast) &&
             const DeepCollectionEquality().equals(other._casts, _casts) &&
-            const DeepCollectionEquality().equals(other._topics, _topics));
+            const DeepCollectionEquality().equals(other._topics, _topics) &&
+            (identical(other.castCount, castCount) ||
+                other.castCount == castCount) &&
+            (identical(other.newCastCount, newCastCount) ||
+                other.newCastCount == newCastCount));
   }
 
   @JsonKey(ignore: true)
@@ -205,7 +248,9 @@ class _$_Conversation extends _Conversation {
       rootId,
       rootCast,
       const DeepCollectionEquality().hash(_casts),
-      const DeepCollectionEquality().hash(_topics));
+      const DeepCollectionEquality().hash(_topics),
+      castCount,
+      newCastCount);
 
   @JsonKey(ignore: true)
   @override
@@ -226,7 +271,9 @@ abstract class _Conversation extends Conversation {
       {required final String rootId,
       required final Cast rootCast,
       required final List<Cast>? casts,
-      required final List<String>? topics}) = _$_Conversation;
+      required final List<String>? topics,
+      required final int castCount,
+      required final int newCastCount}) = _$_Conversation;
   const _Conversation._() : super._();
 
   factory _Conversation.fromJson(Map<String, dynamic> json) =
@@ -240,6 +287,10 @@ abstract class _Conversation extends Conversation {
   List<Cast>? get casts;
   @override
   List<String>? get topics;
+  @override
+  int get castCount;
+  @override
+  int get newCastCount;
   @override
   @JsonKey(ignore: true)
   _$$_ConversationCopyWith<_$_Conversation> get copyWith =>

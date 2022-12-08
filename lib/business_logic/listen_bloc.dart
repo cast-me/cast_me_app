@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,7 +36,7 @@ class ListenBloc {
 
   ValueListenable<double> get currentListenPage => listenPageController;
 
-  ValueListenable<List<Topic>> get filteredTopics =>
+  ValueListenable<List<Topic>> get timelineFilteredTopics =>
       timelineListController.select((t) => t.filterTopics);
 
   final ValueNotifier<SelectedConversation?> _selectedConversation =
@@ -80,8 +81,21 @@ class ListenBloc {
   Future<void> onCastSelected(Cast cast, {bool autoPlay = true}) async {
     await CastAudioPlayer.instance.load(
       cast,
-      filterTopics: filteredTopics.value,
+      filterTopics: timelineFilteredTopics.value,
       autoPlay: autoPlay,
+    );
+  }
+
+  Future<void> onForYouSelected(Topic forYou, {bool autoPlay = true}) async {
+    final Cast cast = await CastDatabase.instance.getCasts(
+      filterTopics: [forYou],
+      filterOutProfile: AuthManager.instance.profile,
+      skipViewed: true,
+      single: true,
+    ).single;
+    await CastAudioPlayer.instance.load(
+      cast,
+      filterTopics: [forYou],
     );
   }
 
