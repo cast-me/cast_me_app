@@ -12,20 +12,6 @@ class ForYouView extends StatelessWidget {
     return ListView(
       children: const [
         _TrendingView(),
-        _ListenHistory(),
-      ],
-    );
-  }
-}
-
-class _ListenHistory extends StatelessWidget {
-  const _ListenHistory({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(''),
       ],
     );
   }
@@ -59,7 +45,7 @@ class _TrendingViewState extends State<_TrendingView> {
           return Container();
         }
         final List<Topic> topics =
-            snap.data!.where((t) => true || t.newCastCount != 0).toList();
+            snap.data!.where((t) => t.newCastCount != 0).toList();
         if (topics.isEmpty) {
           return const Text(
             'No new content, try recording a new cast!',

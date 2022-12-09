@@ -241,7 +241,8 @@ class CastView extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          CastButtonRow(
+          CastMenu(
+            wide: true,
             onTap: () {
               // Ensure the now playing sheet gets closed.
               ListenBloc.instance.sheetController.animateTo(
