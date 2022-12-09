@@ -23,102 +23,6 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 
-class CastMenu extends StatelessWidget {
-  const CastMenu({
-    Key? key,
-    this.onTap,
-  }) : super(key: key);
-
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    // Fetch these here because we don't have a valid `context` from an
-    // onPressed callback.
-    final CastMeListController<Cast>? listController =
-        CastMeListController.of<Cast>(context);
-    final Cast cast = CastProvider.of(context).value;
-    return DropDownMenu(
-      child: const Icon(Icons.more_vert),
-      builder: (context, hideMenu) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _MenuButton(
-              icon: Icons.list,
-              text: 'view thread',
-              onTap: () async {
-                hideMenu();
-                onTap?.call();
-                CastMeBloc.instance.onTabChanged(CastMeTab.listen);
-                ListenBloc.instance.onConversationIdSelected(cast.rootId);
-              },
-            ),
-            _MenuButton(
-              icon: Icons.person,
-              text: 'view profile',
-              onTap: () async {
-                hideMenu();
-                onTap?.call();
-                CastMeBloc.instance.onUsernameSelected(cast.authorUsername);
-              },
-            ),
-            if (cast.authorId == AuthManager.instance.profile.id)
-              _MenuButton(
-                icon: Icons.delete,
-                text: 'delete cast',
-                onTap: () async {
-                  hideMenu();
-                  onTap?.call();
-                  await CastDatabase.instance.deleteCast(cast: cast);
-                  listController?.refresh();
-                },
-              ),
-            if (cast.externalUri != null)
-              _MenuButton(
-                icon: Icons.link,
-                text: 'visit link',
-                onTap: () async {
-                  hideMenu();
-                  onTap?.call();
-                  ExternalLinkModal.showMessage(context, cast.externalUri!);
-                },
-              ),
-            if (cast.authorId != AuthManager.instance.profile.id)
-              _MenuButton(
-                icon: Icons.block,
-                text: 'block user',
-                onTap: () async {
-                  hideMenu();
-                  onTap?.call();
-                  CastMeModal.showMessage(
-                    context,
-                    _BlockUserModal(userId: cast.authorId),
-                  );
-                  listController?.refresh();
-                },
-              ),
-            if (cast.authorId != AuthManager.instance.profile.id)
-              _MenuButton(
-                icon: Icons.report,
-                text: 'report cast',
-                onTap: () async {
-                  hideMenu();
-                  onTap?.call();
-                  CastMeModal.showMessage(
-                    context,
-                    _ReportCastModal(cast: cast),
-                  );
-                  listController?.refresh();
-                },
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
 class StackCastMenu extends StatelessWidget {
   const StackCastMenu({Key? key, required this.child}) : super(key: key);
 
@@ -133,50 +37,148 @@ class StackCastMenu extends StatelessWidget {
       children: [
         child,
         const Positioned.fill(
-          child: CastButtonRow(),
+          child: CastMenu(),
         ),
       ],
     );
   }
 }
 
-class CastButtonRow extends StatelessWidget {
-  const CastButtonRow({
+class CastMenu extends StatelessWidget {
+  const CastMenu({
     Key? key,
     this.onTap,
+    this.wide = false,
   }) : super(key: key);
 
   final VoidCallback? onTap;
+  final bool wide;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ReplyButton(onTap: onTap),
-        ShareButton(onTap: onTap),
-        CastMenu(onTap: onTap),
-      ],
+    // Fetch these here because we may not have a valid `context` from an
+    // onPressed callback.
+    final CastMeListController<Cast>? listController =
+        CastMeListController.of<Cast>(context);
+    final Cast cast = CastProvider.of(context).value;
+    final List<Widget> baseChildren = [
+      const ReplyButton(),
+      const ShareButton(),
+    ];
+    final List<Widget> wideChildren = [
+      _MenuButton(
+        icon: Icons.list,
+        text: 'view thread',
+        onTap: () async {
+          CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+          ListenBloc.instance.onConversationIdSelected(cast.rootId);
+        },
+      ),
+      _MenuButton(
+        icon: Icons.person,
+        text: 'view profile',
+        onTap: () async {
+          CastMeBloc.instance.onUsernameSelected(cast.authorUsername);
+        },
+      ),
+      if (cast.authorId == AuthManager.instance.profile.id)
+        _MenuButton(
+          icon: Icons.delete,
+          text: 'delete cast',
+          onTap: () async {
+            await CastDatabase.instance.deleteCast(cast: cast);
+            listController?.refresh();
+          },
+        ),
+      if (cast.externalUri != null)
+        _MenuButton(
+          icon: Icons.link,
+          text: 'visit link',
+          onTap: () async {
+            ExternalLinkModal.showMessage(context, cast.externalUri!);
+          },
+        ),
+    ];
+    return _MenuButtonTheme(
+      data: _MenuButtonThemeData(
+        onTapSideEffect: onTap,
+        showLabel: false,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ...baseChildren,
+          if (wide) ...wideChildren,
+          CastMenuDropDown(
+            children: [
+              if (!wide) ...wideChildren,
+              if (cast.authorId != AuthManager.instance.profile.id)
+                _MenuButton(
+                  icon: Icons.block,
+                  text: 'block user',
+                  onTap: () async {
+                    CastMeModal.showMessage(
+                      context,
+                      _BlockUserModal(userId: cast.authorId),
+                    );
+                    listController?.refresh();
+                  },
+                ),
+              if (cast.authorId != AuthManager.instance.profile.id)
+                _MenuButton(
+                  icon: Icons.report,
+                  text: 'report cast',
+                  onTap: () async {
+                    CastMeModal.showMessage(
+                      context,
+                      _ReportCastModal(cast: cast),
+                    );
+                    listController?.refresh();
+                  },
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-class ShareButton extends StatelessWidget {
-  const ShareButton({
+class CastMenuDropDown extends StatelessWidget {
+  const CastMenuDropDown({
     Key? key,
-    this.onTap,
+    required this.children,
   }) : super(key: key);
 
-  final VoidCallback? onTap;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Platform.isIOS ? Icons.ios_share : Icons.share),
-      onPressed: () async {
-        onTap?.call();
-        await ShareClient.instance.share(CastProvider.of(context).value);
+    // Fetch these here because we don't have a valid `context` from an
+    // onPressed callback.
+    final CastMeListController<Cast>? listController =
+        CastMeListController.of<Cast>(context);
+    final Cast cast = CastProvider.of(context).value;
+    final VoidCallback? parentSideEffect =
+        _MenuButtonTheme.of(context).onTapSideEffect;
+    return DropDownMenu(
+      child: const Icon(Icons.more_vert),
+      builder: (context, hideMenu) {
+        return _MenuButtonTheme(
+          data: _MenuButtonThemeData(
+            // Add an additional side effect.
+            onTapSideEffect: () {
+              hideMenu();
+              parentSideEffect?.call();
+            },
+            showLabel: true,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
+        );
       },
     );
   }
@@ -185,19 +187,33 @@ class ShareButton extends StatelessWidget {
 class ReplyButton extends StatelessWidget {
   const ReplyButton({
     Key? key,
-    this.onTap,
   }) : super(key: key);
-
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.reply),
-      onPressed: () {
-        onTap?.call();
+    return _MenuButton(
+      icon: Icons.reply,
+      text: 'reply',
+      onTap: () async {
         PostBloc.instance.replyCast.value = CastProvider.of(context).value;
         CastMeBloc.instance.onTabChanged(CastMeTab.post);
+      },
+    );
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  const ShareButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _MenuButton(
+      icon: Platform.isIOS ? Icons.ios_share : Icons.share,
+      text: 'share',
+      onTap: () async {
+        await ShareClient.instance.share(CastProvider.of(context).value);
       },
     );
   }
@@ -217,8 +233,21 @@ class _MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _MenuButtonThemeData theme = _MenuButtonTheme.of(context);
+    if (!theme.showLabel) {
+      return IconButton(
+        icon: Icon(icon),
+        onPressed: () {
+          theme.onTapSideEffect?.call();
+          onTap();
+        },
+      );
+    }
     return TextButton(
-      onPressed: onTap,
+      onPressed: () {
+        theme.onTapSideEffect?.call();
+        onTap();
+      },
       // Don't let text button inject it's own theme.
       child: IconTheme(
         data: IconTheme.of(context),
@@ -325,5 +354,39 @@ class _ReportCastModalState extends State<_ReportCastModal> {
         ],
       ),
     );
+  }
+}
+
+class _MenuButtonThemeData {
+  _MenuButtonThemeData({
+    required this.showLabel,
+    this.onTapSideEffect,
+  });
+
+  final bool showLabel;
+
+  /// Function to be called in addition to the button's on tap.
+  final VoidCallback? onTapSideEffect;
+}
+
+class _MenuButtonTheme extends InheritedWidget {
+  const _MenuButtonTheme({
+    required super.child,
+    required this.data,
+  });
+
+  final _MenuButtonThemeData data;
+
+  static _MenuButtonThemeData of(BuildContext context) {
+    final _MenuButtonTheme? result =
+        context.dependOnInheritedWidgetOfExactType<_MenuButtonTheme>();
+    assert(result != null, 'No _OnTapProvider found in context');
+    return result!.data;
+  }
+
+  @override
+  bool updateShouldNotify(_MenuButtonTheme old) {
+    return data.showLabel != old.data.showLabel ||
+        data.onTapSideEffect != old.data.onTapSideEffect;
   }
 }
