@@ -112,8 +112,7 @@ class CastMenu extends StatelessWidget {
           if (wide) ...wideChildren,
           CastMenuDropDown(
             children: [
-              ...baseChildren,
-              ...wideChildren,
+              if (!wide) ...wideChildren,
               if (cast.authorId != AuthManager.instance.profile.id)
                 _MenuButton(
                   icon: Icons.block,
