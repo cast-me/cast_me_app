@@ -79,7 +79,10 @@ class _DiscordView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: AdaptiveMaterial.surface(
+      color: AdaptiveMaterialType.surface.colorOf(context),
+      child: AdaptiveMaterial(
+        material: AdaptiveMaterialType.surface,
+        shouldDraw: false,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
