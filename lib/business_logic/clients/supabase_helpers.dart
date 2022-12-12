@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -50,6 +50,10 @@ const String nameCol = 'name';
 const String topicsCol = 'topics';
 
 const String blockedUserIdCol = 'blocked_user_id';
+
+const String allNewCol = 'all_new';
+
+const String newCastCountCol = 'new_cast_count';
 
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 

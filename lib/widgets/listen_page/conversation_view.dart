@@ -17,9 +17,13 @@ class ConversationPreview extends StatelessWidget {
   const ConversationPreview({
     super.key,
     required this.conversation,
+    this.margin,
+    this.padding,
   });
 
   final Conversation conversation;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +37,11 @@ class ConversationPreview extends StatelessWidget {
         child: CastProvider(
           initialCast: rootCast,
           child: Container(
-            margin: const EdgeInsets.all(4),
-            padding: const EdgeInsets.all(4),
+            margin: margin ?? const EdgeInsets.all(4),
+            padding: padding ?? const EdgeInsets.all(4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HideIfDeleted(
                   isDeleted: rootCast.deleted,
@@ -62,11 +66,7 @@ class ConversationPreview extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
-                  children: const [
-                    PlayConversationButton(),
-                  ],
-                ),
+                const PlayConversationButton(),
               ],
             ),
           ),

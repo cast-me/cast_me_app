@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Package imports:
@@ -31,8 +32,9 @@ class CastDatabase {
     Profile? filterProfile,
     Profile? filterOutProfile,
     List<Topic>? filterTopics,
-    bool skipFullyViewed = false,
-    bool skipPartiallyViewed = false,
+    // Only fetch conversations that have updates since last listen.
+    bool onlyUpdates = false,
+    int? limit,
   }) async* {
     final PostgrestFilterBuilder<_Rows> filtered = _filterQuery(
       conversationsReadQuery,
@@ -41,10 +43,16 @@ class CastDatabase {
       filterTopics: filterTopics,
       skipViewed: false,
     );
+    if (onlyUpdates) {
+      // If the conversation isn't all new but there's at least one new cast,
+      // then there's at least one update.
+      unawaited(filtered.eq(allNewCol, false).gt(newCastCountCol, 0));
+    }
     final PostgrestTransformBuilder ordered = _orderQuery(filtered);
     yield* _paginated(
       ordered,
       chunkSize: 10,
+      chunkLimit: limit != null ? limit ~/ 10 : null,
     ).map(_rowToConversation);
   }
 

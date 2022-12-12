@@ -60,7 +60,7 @@ class CastPostedModal extends StatelessWidget {
                   ShareClient.instance.shareToTwitter(cast);
                 },
               ),
-              const ShareButton(),
+              const ShareButton(showLabel: false),
             ],
           ),
         ],
