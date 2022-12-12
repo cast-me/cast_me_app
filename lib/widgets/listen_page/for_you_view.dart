@@ -1,6 +1,9 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
+import 'package:cast_me_app/widgets/common/external_link_button.dart';
+import 'package:cast_me_app/widgets/common/update_message.dart';
 import 'package:cast_me_app/widgets/listen_page/for_you_card.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +13,10 @@ class ForYouView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       children: const [
         _TrendingView(),
+        _DiscordView(),
       ],
     );
   }
@@ -64,6 +69,39 @@ class _TrendingViewState extends State<_TrendingView> {
               .toList(),
         );
       },
+    );
+  }
+}
+
+class _DiscordView extends StatelessWidget {
+  const _DiscordView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: AdaptiveMaterial.surface(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: const [
+                  Icon(Icons.discord),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Join our discord to chat with the developers and other '
+                      'power users!',
+                    ),
+                  ),
+                ],
+              ),
+              ExternalLinkButton(uri: discordUrl),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
