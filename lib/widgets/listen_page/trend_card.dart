@@ -3,8 +3,8 @@ import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:flutter/material.dart';
 
-class ForYouCard extends StatelessWidget {
-  const ForYouCard({
+class TrendCard extends StatelessWidget {
+  const TrendCard({
     super.key,
     required this.topic,
   });
@@ -17,15 +17,13 @@ class ForYouCard extends StatelessWidget {
       child: BoxyRow(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Icon(
-                Icons.play_arrow,
-                size: constraints.maxHeight,
-                color: Colors.white,
-              );
-            }
-          ),
+          LayoutBuilder(builder: (context, constraints) {
+            return Icon(
+              Icons.play_arrow,
+              size: constraints.maxHeight,
+              color: Colors.white,
+            );
+          }),
           const SizedBox(width: 4),
           Dominant(
             child: Column(

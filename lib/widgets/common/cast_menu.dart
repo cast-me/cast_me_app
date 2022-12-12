@@ -156,7 +156,7 @@ class CastMenuDropDown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final VoidCallback? parentSideEffect =
-        _MenuButtonTheme.of(context).onTapSideEffect;
+        _MenuButtonTheme.of(context)?.onTapSideEffect;
     return DropDownMenu(
       child: const Icon(Icons.more_vert),
       builder: (context, hideMenu) {
@@ -200,11 +200,15 @@ class ReplyButton extends StatelessWidget {
 class ShareButton extends StatelessWidget {
   const ShareButton({
     super.key,
+    this.showLabel,
   });
+
+  final bool? showLabel;
 
   @override
   Widget build(BuildContext context) {
     return _MenuButton(
+      showLabel: showLabel,
       icon: Platform.isIOS ? Icons.ios_share : Icons.share,
       text: 'share',
       onTap: () async {
@@ -216,30 +220,32 @@ class ShareButton extends StatelessWidget {
 
 class _MenuButton extends StatelessWidget {
   const _MenuButton({
+    this.showLabel,
     required this.icon,
     required this.text,
     required this.onTap,
   });
 
+  final bool? showLabel;
   final IconData icon;
   final String text;
   final AsyncCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final _MenuButtonThemeData theme = _MenuButtonTheme.of(context);
-    if (!theme.showLabel) {
+    final _MenuButtonThemeData? theme = _MenuButtonTheme.of(context);
+    if (showLabel == false || theme?.showLabel == false) {
       return IconButton(
         icon: Icon(icon),
         onPressed: () {
-          theme.onTapSideEffect?.call();
+          theme?.onTapSideEffect?.call();
           onTap();
         },
       );
     }
     return TextButton(
       onPressed: () {
-        theme.onTapSideEffect?.call();
+        theme?.onTapSideEffect?.call();
         onTap();
       },
       // Don't let text button inject it's own theme.
@@ -369,11 +375,8 @@ class _MenuButtonTheme extends InheritedWidget {
 
   final _MenuButtonThemeData data;
 
-  static _MenuButtonThemeData of(BuildContext context) {
-    final _MenuButtonTheme? result =
-        context.dependOnInheritedWidgetOfExactType<_MenuButtonTheme>();
-    assert(result != null, 'No _OnTapProvider found in context');
-    return result!.data;
+  static _MenuButtonThemeData? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_MenuButtonTheme>()?.data;
   }
 
   @override

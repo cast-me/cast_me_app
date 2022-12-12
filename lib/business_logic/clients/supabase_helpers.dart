@@ -51,6 +51,10 @@ const String topicsCol = 'topics';
 
 const String blockedUserIdCol = 'blocked_user_id';
 
+const String allNewCol = 'all_new';
+
+const String newCastCountCol = 'new_cast_count';
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
 SupabaseQueryBuilder get blockedUsersQuery => supabase.from('blocked_users');

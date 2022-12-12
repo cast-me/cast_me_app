@@ -4,8 +4,11 @@ import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
-import 'package:cast_me_app/widgets/listen_page/for_you_card.dart';
+import 'package:cast_me_app/widgets/listen_page/catch_up_card.dart';
+import 'package:cast_me_app/widgets/listen_page/trend_card.dart';
 import 'package:flutter/material.dart';
+
+const EdgeInsets _padding = EdgeInsets.symmetric(horizontal: 12);
 
 class ForYouView extends StatelessWidget {
   const ForYouView({super.key});
@@ -13,10 +16,18 @@ class ForYouView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
       children: const [
-        _TrendingView(),
-        _DiscordView(),
+        Padding(
+          padding: _padding,
+          child: _TrendingView(),
+        ),
+        CatchUpCard(
+          pagePadding: _padding,
+        ),
+        Padding(
+          padding: _padding,
+          child: _DiscordView(),
+        ),
       ],
     );
   }
@@ -63,7 +74,7 @@ class _TrendingViewState extends State<_TrendingView> {
               .map(
                 (c) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: ForYouCard(topic: c),
+                  child: TrendCard(topic: c),
                 ),
               )
               .toList(),
@@ -80,6 +91,7 @@ class _DiscordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: AdaptiveMaterialType.surface.colorOf(context),
+      margin: EdgeInsets.zero,
       child: AdaptiveMaterial(
         material: AdaptiveMaterialType.surface,
         shouldDraw: false,
