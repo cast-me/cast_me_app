@@ -11,7 +11,7 @@ import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 
 class ProfilePageView extends StatelessWidget {
-  const ProfilePageView({Key? key}) : super(key: key);
+  const ProfilePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class ProfilePageView extends StatelessWidget {
 }
 
 class _DeleteAccountModal extends StatelessWidget {
-  const _DeleteAccountModal({Key? key}) : super(key: key);
+  const _DeleteAccountModal();
 
   @override
   Widget build(BuildContext context) {

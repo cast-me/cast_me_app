@@ -7,7 +7,7 @@ import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class PostTopicSelector extends StatelessWidget {
-  const PostTopicSelector({Key? key}) : super(key: key);
+  const PostTopicSelector({super.key});
 
   @override
   Widget build(BuildContext context) {

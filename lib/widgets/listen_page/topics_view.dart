@@ -113,14 +113,14 @@ class _TopicSelectorState extends State<TopicSelector> {
 
 class TopicsView extends StatelessWidget {
   const TopicsView({
-    Key? key,
+    super.key,
     required this.topics,
     required this.onTap,
     required this.isSelected,
     this.isEnabled = true,
     this.interiorPadding,
     this.scrollable = false,
-  }) : super(key: key);
+  });
 
   final List<Topic> topics;
   final void Function(Topic) onTap;
@@ -209,12 +209,12 @@ class _ListTopic extends StatelessWidget {
 
 class TopicChip extends StatelessWidget {
   const TopicChip({
-    Key? key,
+    super.key,
     required this.topic,
     required this.isSelected,
     required this.onTap,
     this.isEnabled = true,
-  }) : super(key: key);
+  });
 
   final Topic topic;
   final bool isSelected;
@@ -272,10 +272,10 @@ class TopicChip extends StatelessWidget {
 
 class TopicViewTheme extends InheritedWidget {
   const TopicViewTheme({
-    Key? key,
-    required Widget child,
+    super.key,
+    required super.child,
     required this.data,
-  }) : super(key: key, child: child);
+  });
 
   final TopicThemeData data;
 

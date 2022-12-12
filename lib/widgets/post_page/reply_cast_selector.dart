@@ -12,9 +12,7 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 
 class ReplyCastSelector extends StatelessWidget {
-  const ReplyCastSelector({
-    Key? key,
-  }) : super(key: key);
+  const ReplyCastSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +86,9 @@ class ReplyCastSelector extends StatelessWidget {
 
 class SelectCastModal extends StatefulWidget {
   const SelectCastModal({
-    Key? key,
+    super.key,
     this.adaptiveColor,
-  }) : super(key: key);
+  });
 
   final AdaptiveMaterialType? adaptiveColor;
 
@@ -141,9 +139,8 @@ class _SelectCastModalState extends State<SelectCastModal> {
 
 class _CastSearchBar extends StatelessWidget {
   const _CastSearchBar({
-    Key? key,
     required this.searchController,
-  }) : super(key: key);
+  });
 
   final CastMeListController<Cast> searchController;
 

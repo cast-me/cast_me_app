@@ -13,10 +13,10 @@ import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 
 class ProfilePreview extends StatelessWidget {
   const ProfilePreview({
-    Key? key,
+    super.key,
     required this.profile,
     this.onTap
-  }) : super(key: key);
+  });
 
   final Profile profile;
   final VoidCallback? onTap;
@@ -63,9 +63,9 @@ class ProfilePreview extends StatelessWidget {
 
 class ProfileView extends StatelessWidget {
   const ProfileView({
-    Key? key,
+    super.key,
     required this.profile,
-  }) : super(key: key);
+  });
 
   final Profile profile;
 

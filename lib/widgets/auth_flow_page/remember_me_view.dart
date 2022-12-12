@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Project imports:
 
 class RememberMeView extends StatefulWidget {
-  const RememberMeView({Key? key}) : super(key: key);
+  const RememberMeView({super.key});
 
   static const toggleKeyString = 'remember_me';
   static const emailKeyString = 'remembered_email';

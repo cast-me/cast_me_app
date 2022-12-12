@@ -86,7 +86,7 @@ extension ListenableUtils<L extends Listenable> on L {
 }
 
 class HistoryValueNotifier<T> extends ValueNotifier<T> {
-  HistoryValueNotifier(T value) : super(value);
+  HistoryValueNotifier(super.value);
 
   final List<T> _history = [];
 

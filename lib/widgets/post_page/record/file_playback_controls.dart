@@ -15,9 +15,9 @@ import 'package:cast_me_app/widgets/post_page/trim_controls.dart';
 
 class FileAudioPlayerControls extends StatelessWidget {
   const FileAudioPlayerControls({
-    Key? key,
+    super.key,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final CastFile castFile;
 
@@ -87,9 +87,8 @@ class FileAudioPlayerControls extends StatelessWidget {
 
 class _DenoiseButton extends StatelessWidget {
   const _DenoiseButton({
-    Key? key,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final CastFile castFile;
 
@@ -119,8 +118,10 @@ class _DenoiseButton extends StatelessWidget {
 }
 
 class _PlayButton extends StatelessWidget {
-  const _PlayButton({Key? key, required this.isPlaying, this.path})
-      : super(key: key);
+  const _PlayButton({
+    required this.isPlaying,
+    this.path,
+  });
 
   final bool isPlaying;
   final String? path;
@@ -153,10 +154,7 @@ class _PlayButton extends StatelessWidget {
 }
 
 class _Undo extends StatelessWidget {
-  const _Undo({
-    Key? key,
-    required this.castFile,
-  }) : super(key: key);
+  const _Undo({required this.castFile});
 
   final CastFile castFile;
 

@@ -10,9 +10,9 @@ import 'package:adaptive_material/adaptive_material.dart';
 
 class CopyToClipboardText extends StatefulWidget {
   const CopyToClipboardText({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   final String text;
 
@@ -71,7 +71,7 @@ class _CopyToClipboardTextState extends State<CopyToClipboardText> {
 }
 
 class _CopiedMessage extends StatelessWidget {
-  const _CopiedMessage({Key? key}) : super(key: key);
+  const _CopiedMessage();
 
   @override
   Widget build(BuildContext context) {

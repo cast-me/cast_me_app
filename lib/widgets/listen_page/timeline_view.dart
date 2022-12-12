@@ -8,7 +8,7 @@ import 'package:cast_me_app/widgets/common/conversation_list_view.dart';
 import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class TimelineView extends StatelessWidget {
-  const TimelineView({Key? key}) : super(key: key);
+  const TimelineView({super.key});
 
   @override
   Widget build(BuildContext context) {

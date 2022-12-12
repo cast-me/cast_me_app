@@ -21,7 +21,7 @@ import 'package:cast_me_app/widgets/post_page/submit_cast_button.dart';
 import 'package:cast_me_app/widgets/post_page/title_field.dart';
 
 class PostPageView extends StatefulWidget {
-  const PostPageView({Key? key}) : super(key: key);
+  const PostPageView({super.key});
 
   @override
   State<PostPageView> createState() => _PostPageViewState();
@@ -65,9 +65,8 @@ class _PostPageViewState extends State<PostPageView> {
 
 class _SubmitFormField extends StatelessWidget {
   const _SubmitFormField({
-    Key? key,
     required this.fileFuture,
-  }) : super(key: key);
+  });
 
   final Future<CastFile>? fileFuture;
 
@@ -156,9 +155,8 @@ class _SubmitFormField extends StatelessWidget {
 
 class _SelectedAudioView extends StatelessWidget {
   const _SelectedAudioView({
-    Key? key,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final CastFile? castFile;
 

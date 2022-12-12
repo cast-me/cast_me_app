@@ -11,7 +11,7 @@ import 'package:cast_me_app/pages/conversation_page_view.dart';
 import 'package:cast_me_app/widgets/listen_page/listen_sub_pages.dart';
 
 class ListenPageView extends StatelessWidget {
-  const ListenPageView({Key? key}) : super(key: key);
+  const ListenPageView({super.key});
 
   @override
   Widget build(BuildContext context) {

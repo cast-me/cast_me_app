@@ -8,7 +8,7 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:cast_me_app/widgets/post_page/audio_recorder_recommender.dart';
 
 class PostHelpTooltip extends StatelessWidget {
-  const PostHelpTooltip({Key? key}) : super(key: key);
+  const PostHelpTooltip({super.key});
 
   @override
   Widget build(BuildContext context) {

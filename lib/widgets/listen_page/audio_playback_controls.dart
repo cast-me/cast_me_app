@@ -11,8 +11,8 @@ import 'package:cast_me_app/business_logic/listen_bloc.dart';
 
 class AudioPlaybackControls extends StatelessWidget {
   const AudioPlaybackControls({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class AudioPlaybackControls extends StatelessWidget {
 }
 
 class PreviousCast extends StatelessWidget {
-  const PreviousCast({Key? key}) : super(key: key);
+  const PreviousCast({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class PreviousCast extends StatelessWidget {
 }
 
 class SkipCast extends StatelessWidget {
-  const SkipCast({Key? key}) : super(key: key);
+  const SkipCast({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class SkipCast extends StatelessWidget {
 }
 
 class ForwardTen extends StatelessWidget {
-  const ForwardTen({Key? key}) : super(key: key);
+  const ForwardTen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class ForwardTen extends StatelessWidget {
 }
 
 class BackTen extends StatelessWidget {
-  const BackTen({Key? key}) : super(key: key);
+  const BackTen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class BackTen extends StatelessWidget {
 }
 
 class PlayButton extends StatelessWidget {
-  const PlayButton({Key? key, this.isCircle = false}) : super(key: key);
+  const PlayButton({super.key, this.isCircle = false});
 
   final bool isCircle;
 
@@ -129,12 +129,12 @@ class PlayButton extends StatelessWidget {
 
 class PlayWrapper extends StatelessWidget {
   const PlayWrapper({
-    Key? key,
+    super.key,
     required this.onPlay,
     required this.onPause,
     required this.builder,
     this.iconSize,
-  }) : super(key: key);
+  });
 
   final AsyncCallback onPlay;
   final AsyncCallback onPause;
@@ -165,10 +165,10 @@ class PlayWrapper extends StatelessWidget {
 
 class PlaybackSpeedButton extends StatefulWidget {
   const PlaybackSpeedButton({
-    Key? key,
+    super.key,
     required this.currentSpeed,
     required this.setSpeed,
-  }) : super(key: key);
+  });
 
   final ValueListenable<double> currentSpeed;
   final Future<void> Function(double) setSpeed;
@@ -214,7 +214,7 @@ class _PlaybackSpeedButtonState extends State<PlaybackSpeedButton> {
 }
 
 class TrackListButton extends StatelessWidget {
-  const TrackListButton({Key? key}) : super(key: key);
+  const TrackListButton({super.key});
 
   @override
   Widget build(BuildContext context) {

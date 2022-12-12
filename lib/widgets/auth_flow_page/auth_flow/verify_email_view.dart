@@ -8,7 +8,7 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
 class VerifyEmailView extends StatelessWidget {
-  const VerifyEmailView({Key? key}) : super(key: key);
+  const VerifyEmailView({super.key});
 
   @override
   Widget build(BuildContext context) {

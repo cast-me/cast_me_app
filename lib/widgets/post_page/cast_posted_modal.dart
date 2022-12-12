@@ -17,7 +17,7 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/copy_to_clipboard_text.dart';
 
 class CastPostedModal extends StatelessWidget {
-  const CastPostedModal({Key? key, required this.cast}) : super(key: key);
+  const CastPostedModal({super.key, required this.cast});
 
   final Cast cast;
 

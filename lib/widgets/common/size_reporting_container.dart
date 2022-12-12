@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 /// A container that reports it's height when it changes after builds.
 class SizeReportingContainer extends StatefulWidget {
   const SizeReportingContainer({
-    Key? key,
+    super.key,
     required this.child,
     required this.sizeCallback,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final ValueChanged<Size> sizeCallback;

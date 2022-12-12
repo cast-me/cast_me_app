@@ -7,8 +7,8 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_flow_builder.d
 
 class AuthErrorView extends StatelessWidget {
   const AuthErrorView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

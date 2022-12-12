@@ -6,9 +6,7 @@ import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 
 class RecordButton extends StatelessWidget {
-  const RecordButton({
-    Key? key,
-  }) : super(key: key);
+  const RecordButton({super.key});
 
   @override
   Widget build(BuildContext context) {

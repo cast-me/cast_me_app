@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 
 class AudioRecorderRecommender extends StatelessWidget {
-  const AudioRecorderRecommender({Key? key}) : super(key: key);
+  const AudioRecorderRecommender({super.key});
 
   @override
   Widget build(BuildContext context) {

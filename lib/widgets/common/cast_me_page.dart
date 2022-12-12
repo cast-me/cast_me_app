@@ -7,7 +7,7 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 
 class CastMePage extends StatelessWidget {
   const CastMePage({
-    Key? key,
+    super.key,
     this.headerText,
     this.trailingIcon,
     required this.child,
@@ -16,7 +16,7 @@ class CastMePage extends StatelessWidget {
     this.scrollable = false,
     this.material = AdaptiveMaterialType.surface,
     this.padding,
-  }) : super(key: key);
+  });
 
   final String? headerText;
   final Widget? trailingIcon;

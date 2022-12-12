@@ -9,7 +9,7 @@ import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
 final SignInBloc bloc = AuthManager.instance.signInBloc;
 
 class RegisterFormView extends StatelessWidget {
-  const RegisterFormView({Key? key}) : super(key: key);
+  const RegisterFormView({super.key});
 
   SignInBloc get bloc => AuthManager.instance.signInBloc;
 

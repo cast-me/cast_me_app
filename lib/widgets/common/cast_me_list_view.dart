@@ -16,11 +16,11 @@ import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 
 class CastMeListView<T> extends StatefulWidget {
   const CastMeListView({
-    Key? key,
+    super.key,
     this.controller,
     required this.builder,
     this.padding,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext, List<T>, int) builder;
 

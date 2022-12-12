@@ -12,7 +12,7 @@ import 'package:cast_me_app/widgets/auth_flow_page/register_switcher.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/remember_me_view.dart';
 
 class SignInView extends StatelessWidget {
-  const SignInView({Key? key}) : super(key: key);
+  const SignInView({super.key});
 
   SignInBloc get bloc => AuthManager.instance.signInBloc;
 

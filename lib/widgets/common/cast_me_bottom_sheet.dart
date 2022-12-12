@@ -17,7 +17,7 @@ import 'package:cast_me_app/widgets/common/size_reporting_container.dart';
 import 'package:cast_me_app/widgets/listen_page/now_playing_view.dart';
 
 class CastMeBottomSheet extends StatefulWidget {
-  const CastMeBottomSheet({Key? key}) : super(key: key);
+  const CastMeBottomSheet({super.key});
 
   @override
   State<CastMeBottomSheet> createState() => _CastMeBottomSheetState();
@@ -105,11 +105,10 @@ class _CastMeBottomSheetState extends State<CastMeBottomSheet> {
 
 class _Sheet extends StatefulWidget {
   const _Sheet({
-    Key? key,
     required this.sheetProgress,
     required this.sheetController,
     required this.tab,
-  }) : super(key: key);
+  });
 
   final ValueNotifier<SheetProgress> sheetProgress;
   final DraggableScrollableController sheetController;
@@ -264,7 +263,7 @@ class _SheetState extends State<_Sheet> {
 }
 
 class _DragHandle extends StatelessWidget {
-  const _DragHandle({Key? key}) : super(key: key);
+  const _DragHandle();
 
   @override
   Widget build(BuildContext context) {

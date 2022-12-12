@@ -6,9 +6,9 @@ import 'package:cast_me_app/util/uri_utils.dart';
 
 class ExternalLinkField extends StatelessWidget {
   const ExternalLinkField({
-    Key? key,
+    super.key,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
 

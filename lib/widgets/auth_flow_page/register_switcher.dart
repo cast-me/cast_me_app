@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 
 class RegisterSwitcher extends StatelessWidget {
-  const RegisterSwitcher({
-    Key? key,
-  }) : super(key: key);
+  const RegisterSwitcher({super.key});
 
   @override
   Widget build(BuildContext context) {

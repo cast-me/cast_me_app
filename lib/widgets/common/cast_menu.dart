@@ -24,7 +24,7 @@ import 'package:cast_me_app/widgets/common/drop_down_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_modal.dart';
 
 class StackCastMenu extends StatelessWidget {
-  const StackCastMenu({Key? key, required this.child}) : super(key: key);
+  const StackCastMenu({super.key, required this.child});
 
   final Widget child;
 
@@ -46,10 +46,10 @@ class StackCastMenu extends StatelessWidget {
 
 class CastMenu extends StatelessWidget {
   const CastMenu({
-    Key? key,
+    super.key,
     this.onTap,
     this.wide = false,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onTap;
   final bool wide;
@@ -147,19 +147,14 @@ class CastMenu extends StatelessWidget {
 
 class CastMenuDropDown extends StatelessWidget {
   const CastMenuDropDown({
-    Key? key,
+    super.key,
     required this.children,
-  }) : super(key: key);
+  });
 
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    // Fetch these here because we don't have a valid `context` from an
-    // onPressed callback.
-    final CastMeListController<Cast>? listController =
-        CastMeListController.of<Cast>(context);
-    final Cast cast = CastProvider.of(context).value;
     final VoidCallback? parentSideEffect =
         _MenuButtonTheme.of(context).onTapSideEffect;
     return DropDownMenu(
@@ -186,8 +181,8 @@ class CastMenuDropDown extends StatelessWidget {
 
 class ReplyButton extends StatelessWidget {
   const ReplyButton({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -204,8 +199,8 @@ class ReplyButton extends StatelessWidget {
 
 class ShareButton extends StatelessWidget {
   const ShareButton({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -221,11 +216,10 @@ class ShareButton extends StatelessWidget {
 
 class _MenuButton extends StatelessWidget {
   const _MenuButton({
-    Key? key,
     required this.icon,
     required this.text,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final String text;
@@ -268,9 +262,8 @@ class _MenuButton extends StatelessWidget {
 
 class _BlockUserModal extends StatelessWidget {
   const _BlockUserModal({
-    Key? key,
     required this.userId,
-  }) : super(key: key);
+  });
 
   final String userId;
 
@@ -306,9 +299,8 @@ class _BlockUserModal extends StatelessWidget {
 
 class _ReportCastModal extends StatefulWidget {
   const _ReportCastModal({
-    Key? key,
     required this.cast,
-  }) : super(key: key);
+  });
 
   final Cast cast;
 

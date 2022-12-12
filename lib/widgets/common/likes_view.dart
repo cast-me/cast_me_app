@@ -15,7 +15,7 @@ import 'package:cast_me_app/providers/cast_provider.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 
 class LikesView extends StatefulWidget {
-  const LikesView({Key? key}) : super(key: key);
+  const LikesView({super.key});
 
   @override
   State<LikesView> createState() => _LikesViewState();
@@ -111,13 +111,12 @@ class _LikesViewState extends State<LikesView> {
 
 class _LikeView extends StatelessWidget {
   const _LikeView({
-    Key? key,
     required this.icon,
     required this.label,
     required this.onTap,
     required this.border,
     required this.onLongTap,
-  }) : super(key: key);
+  });
 
   final Widget icon;
   final Widget label;

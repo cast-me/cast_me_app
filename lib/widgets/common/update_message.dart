@@ -26,10 +26,10 @@ import 'package:cast_me_app/util/cast_me_modal.dart';
 /// [updateMessages], no message will be displayed at all.
 class UpdateMessage extends StatelessWidget {
   const UpdateMessage({
-    Key? key,
+    super.key,
     required this.updateMessages,
     required this.child,
-  }) : super(key: key);
+  });
 
   /// A mapping of version numbers (ie '1.1.5') to message widgets to be
   /// displayed for that version.
@@ -91,9 +91,9 @@ class UpdateMessage extends StatelessWidget {
 
 class CastMeUpdates extends StatelessWidget {
   const CastMeUpdates({
-    Key? key,
+    super.key,
     required this.updates,
-  }) : super(key: key);
+  });
 
   final List<String> updates;
 
@@ -118,7 +118,7 @@ class CastMeUpdates extends StatelessWidget {
 final discordUrl = Uri.parse('https://discord.gg/uGRN9hBbnv');
 
 class WelcomeMessageContent extends StatelessWidget {
-  const WelcomeMessageContent({Key? key}) : super(key: key);
+  const WelcomeMessageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -158,9 +158,9 @@ class WelcomeMessageContent extends StatelessWidget {
 
 class UpdateMessageContent extends StatelessWidget {
   const UpdateMessageContent({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

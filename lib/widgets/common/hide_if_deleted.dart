@@ -6,10 +6,10 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 
 class HideIfDeleted extends StatelessWidget {
   const HideIfDeleted({
-    Key? key,
+    super.key,
     required this.child,
     required this.isDeleted,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final bool isDeleted;

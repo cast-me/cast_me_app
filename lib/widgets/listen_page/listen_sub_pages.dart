@@ -7,7 +7,7 @@ import 'package:cast_me_app/widgets/listen_page/for_you_view.dart';
 import 'package:cast_me_app/widgets/listen_page/timeline_view.dart';
 
 class ListenSubPages extends StatelessWidget {
-  const ListenSubPages({Key? key}) : super(key: key);
+  const ListenSubPages({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ListenSubPages extends StatelessWidget {
 }
 
 class _Selector extends StatelessWidget {
-  const _Selector({Key? key}) : super(key: key);
+  const _Selector();
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _Selector extends StatelessWidget {
 }
 
 class _Pages extends StatelessWidget {
-  const _Pages({Key? key}) : super(key: key);
+  const _Pages();
 
   @override
   Widget build(BuildContext context) {

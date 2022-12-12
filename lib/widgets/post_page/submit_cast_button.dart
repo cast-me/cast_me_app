@@ -14,9 +14,9 @@ import 'package:cast_me_app/widgets/post_page/external_link_field.dart';
 
 class SubmitCastButton extends StatelessWidget {
   const SubmitCastButton({
-    Key? key,
+    super.key,
     required this.reset,
-  }) : super(key: key);
+  });
 
   final VoidCallback reset;
 

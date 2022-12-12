@@ -6,10 +6,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseMessageHandler extends StatefulWidget {
   const FirebaseMessageHandler({
-    Key? key,
+    super.key,
     required this.child,
     required this.onMessage,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final Function(Map<String, dynamic>) onMessage;

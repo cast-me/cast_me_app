@@ -9,9 +9,9 @@ import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({
-    Key? key,
+    super.key,
     required this.profile,
-  }) : super(key: key);
+  });
 
   final Profile profile;
 
@@ -25,9 +25,9 @@ class ProfilePictureView extends StatelessWidget {
 
 class ProfilePictureBaseView extends StatelessWidget {
   const ProfilePictureBaseView({
-    Key? key,
+    super.key,
     required this.imageProvider,
-  }) : super(key: key);
+  });
 
   final ImageProvider imageProvider;
 

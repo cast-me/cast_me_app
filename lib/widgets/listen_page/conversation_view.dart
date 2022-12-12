@@ -15,9 +15,9 @@ import 'package:cast_me_app/widgets/common/uri_button.dart';
 
 class ConversationPreview extends StatelessWidget {
   const ConversationPreview({
-    Key? key,
+    super.key,
     required this.conversation,
-  }) : super(key: key);
+  });
 
   final Conversation conversation;
 
@@ -91,7 +91,7 @@ class ConversationPreview extends StatelessWidget {
 }
 
 class NewCount extends StatelessWidget {
-  const NewCount({Key? key}) : super(key: key);
+  const NewCount({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ class ConversationProvider extends InheritedWidget {
 }
 
 class PlayConversationButton extends StatelessWidget {
-  const PlayConversationButton({Key? key}) : super(key: key);
+  const PlayConversationButton({super.key});
 
   @override
   Widget build(BuildContext context) {

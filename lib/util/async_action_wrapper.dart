@@ -8,10 +8,10 @@ import 'package:cast_me_app/util/string_utils.dart';
 
 class AsyncActionWrapper extends StatefulWidget {
   const AsyncActionWrapper({
-    Key? key,
+    super.key,
     this.controller,
     required this.child,
-  }) : super(key: key);
+  });
 
   final AsyncActionController? controller;
   final Widget child;
@@ -45,10 +45,9 @@ class _AsyncActionWrapperState extends State<AsyncActionWrapper> {
 
 class _ControllerProvider extends InheritedWidget {
   const _ControllerProvider({
-    Key? key,
     required this.controller,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   final AsyncActionController controller;
 
@@ -109,9 +108,9 @@ class AsyncActionStatus {
 
 class AsyncErrorView extends StatelessWidget {
   const AsyncErrorView({
-    Key? key,
+    super.key,
     this.errorPrefix,
-  }) : super(key: key);
+  });
 
   final String? errorPrefix;
 
@@ -134,10 +133,10 @@ class AsyncErrorView extends StatelessWidget {
 
 class ErrorText extends StatelessWidget {
   const ErrorText({
-    Key? key,
+    super.key,
     this.errorPrefix,
     required this.error,
-  }) : super(key: key);
+  });
 
   final String? errorPrefix;
   final Object error;
@@ -164,10 +163,10 @@ class ErrorText extends StatelessWidget {
 
 class AsyncStatusBuilder extends StatefulWidget {
   const AsyncStatusBuilder({
-    Key? key,
+    super.key,
     required this.action,
     required this.child,
-  }) : super(key: key);
+  });
 
   final String action;
   final Widget child;
@@ -226,10 +225,10 @@ class _AsyncStatusBuilderState extends State<AsyncStatusBuilder> {
 
 class AsyncTextButton extends StatelessWidget {
   const AsyncTextButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final String text;
   final AsyncCallback onTap;
@@ -253,11 +252,11 @@ class AsyncTextButton extends StatelessWidget {
 
 class AsyncElevatedButton extends StatelessWidget {
   const AsyncElevatedButton({
-    Key? key,
+    super.key,
     required this.action,
     required this.child,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final String action;
   final Widget child;

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
 class DeletedAccountView extends StatelessWidget {
-  const DeletedAccountView({Key? key}) : super(key: key);
+  const DeletedAccountView({super.key});
 
   @override
   Widget build(BuildContext context) {

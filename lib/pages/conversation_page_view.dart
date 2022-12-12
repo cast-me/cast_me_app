@@ -12,9 +12,9 @@ import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 
 class ConversationPageView extends StatelessWidget {
   const ConversationPageView({
-    Key? key,
+    super.key,
     required this.selectedConversation,
-  }) : super(key: key);
+  });
 
   final SelectedConversation selectedConversation;
 
@@ -43,9 +43,8 @@ class ConversationPageView extends StatelessWidget {
 
 class _LoadedPageContent extends StatefulWidget {
   const _LoadedPageContent({
-    Key? key,
     required this.conversation,
-  }) : super(key: key);
+  });
 
   final Conversation conversation;
 

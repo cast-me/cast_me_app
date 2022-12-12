@@ -10,9 +10,9 @@ import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 
 class CastMeNavigationBar extends StatelessWidget {
   const CastMeNavigationBar({
-    Key? key,
+    super.key,
     required this.tab,
-  }) : super(key: key);
+  });
 
   final CastMeTab tab;
 

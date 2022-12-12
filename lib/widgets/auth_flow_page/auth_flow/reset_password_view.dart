@@ -7,7 +7,7 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_flow_builder.d
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/auth_form.dart';
 
 class ResetPasswordView extends StatefulWidget {
-  const ResetPasswordView({Key? key}) : super(key: key);
+  const ResetPasswordView({super.key});
 
   @override
   State<ResetPasswordView> createState() => _ResetPasswordViewState();
@@ -64,7 +64,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
 }
 
 class SetNewPasswordView extends StatelessWidget {
-  const SetNewPasswordView({Key? key}) : super(key: key);
+  const SetNewPasswordView({super.key});
 
   SignInBloc get bloc => AuthManager.instance.signInBloc;
 

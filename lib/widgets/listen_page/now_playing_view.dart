@@ -13,7 +13,7 @@ import 'package:cast_me_app/widgets/listen_page/seek_bar.dart';
 import 'package:cast_me_app/widgets/listen_page/track_list_view.dart';
 
 class NowPlayingCollapsedView extends StatelessWidget {
-  const NowPlayingCollapsedView({Key? key}) : super(key: key);
+  const NowPlayingCollapsedView({super.key});
 
   ListenBloc get model => CastMeBloc.instance.listenBloc;
 
@@ -74,7 +74,7 @@ class NowPlayingCollapsedView extends StatelessWidget {
 }
 
 class _NonInteractiveSeekBar extends StatelessWidget {
-  const _NonInteractiveSeekBar({Key? key}) : super(key: key);
+  const _NonInteractiveSeekBar();
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class _NonInteractiveSeekBar extends StatelessWidget {
 }
 
 class NowPlayingExpandedView extends StatelessWidget {
-  const NowPlayingExpandedView({Key? key}) : super(key: key);
+  const NowPlayingExpandedView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,9 +10,9 @@ import 'package:cast_me_app/util/custom_icons.dart';
 
 class AppInfo extends StatefulWidget {
   const AppInfo({
-    Key? key,
+    super.key,
     this.showIcon = true,
-  }) : super(key: key);
+  });
 
   final bool showIcon;
 

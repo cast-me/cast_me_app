@@ -17,7 +17,7 @@ import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
 
 class CastMeView extends StatelessWidget {
-  const CastMeView({Key? key}) : super(key: key);
+  const CastMeView({super.key});
 
   @override
   Widget build(BuildContext context) {

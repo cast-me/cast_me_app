@@ -11,8 +11,8 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 class TrackListView extends StatelessWidget {
   const TrackListView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
 
   @override

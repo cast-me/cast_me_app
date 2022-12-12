@@ -20,7 +20,7 @@ import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 /// TODO(caseycrogers): Consider migrating this mess to Flutter's shitty built
 ///   form system.
 class CompleteProfileView extends StatefulWidget {
-  const CompleteProfileView({Key? key}) : super(key: key);
+  const CompleteProfileView({super.key});
 
   @override
   State<CompleteProfileView> createState() => _CompleteProfileViewState();
@@ -68,9 +68,8 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
 
 class _ProfilePicturePicker extends StatelessWidget {
   const _ProfilePicturePicker({
-    Key? key,
     required this.form,
-  }) : super(key: key);
+  });
 
   final ProfileFormData form;
 
@@ -134,9 +133,8 @@ class _ProfilePicturePicker extends StatelessWidget {
 
 class _DisplayNamePicker extends StatelessWidget {
   _DisplayNamePicker({
-    Key? key,
     required this.form,
-  }) : super(key: key);
+  });
 
   final ProfileFormData form;
   final ValueNotifier<String?> errorMessage = ValueNotifier(null);
@@ -163,9 +161,8 @@ class _DisplayNamePicker extends StatelessWidget {
 
 class _UsernamePicker extends StatelessWidget {
   _UsernamePicker({
-    Key? key,
     required this.form,
-  }) : super(key: key);
+  });
 
   final ProfileFormData form;
   final ValueNotifier<String?> errorMessage = ValueNotifier(null);

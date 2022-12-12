@@ -8,7 +8,7 @@ import 'package:record/record.dart';
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
 
 class RecordingBar extends StatefulWidget {
-  const RecordingBar({Key? key}) : super(key: key);
+  const RecordingBar({super.key});
 
   @override
   State<RecordingBar> createState() => _RecordingBarState();

@@ -7,7 +7,10 @@ import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/widgets/post_page/partial_auto_complete.dart';
 
 class TitleField extends StatelessWidget {
-  const TitleField({Key? key, required this.titleText}) : super(key: key);
+  const TitleField({
+    super.key,
+    required this.titleText,
+  });
 
   final ValueNotifier<String> titleText;
 

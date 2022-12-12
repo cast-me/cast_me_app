@@ -27,12 +27,12 @@ import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 ///   logic into sub-widgets.
 class CastPreview extends StatelessWidget {
   const CastPreview({
-    Key? key,
+    super.key,
     required this.cast,
     this.padding,
     this.showHowOld = true,
     this.isInTrackList = false,
-  }) : super(key: key);
+  });
 
   final Cast cast;
 
@@ -191,10 +191,10 @@ class CastPreview extends StatelessWidget {
 
 class IndicateViewed extends StatelessWidget {
   const IndicateViewed({
-    Key? key,
+    super.key,
     required this.showIndicator,
     required this.child,
-  }) : super(key: key);
+  });
 
   final bool showIndicator;
   final Widget child;
@@ -230,7 +230,7 @@ bool _isTapToPlay(BuildContext context) =>
     CastViewTheme.of(context)?.onTap == null;
 
 class CastView extends StatelessWidget {
-  const CastView({Key? key, required this.cast}) : super(key: key);
+  const CastView({super.key, required this.cast});
 
   final Cast cast;
 
@@ -292,7 +292,7 @@ extension FormattedDuration on Duration {
 }
 
 class _ListenCount extends StatelessWidget {
-  const _ListenCount({Key? key}) : super(key: key);
+  const _ListenCount();
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +305,7 @@ class _ListenCount extends StatelessWidget {
 }
 
 class _CastTitleView extends StatelessWidget {
-  const _CastTitleView({Key? key}) : super(key: key);
+  const _CastTitleView();
 
   @override
   Widget build(BuildContext context) {
@@ -369,8 +369,8 @@ class _CastTitleView extends StatelessWidget {
 
 class AuthorLine extends StatelessWidget {
   const AuthorLine({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -383,9 +383,9 @@ class AuthorLine extends StatelessWidget {
 
 class HowOldLine extends StatelessWidget {
   const HowOldLine({
-    Key? key,
+    super.key,
     required this.createdAt,
-  }) : super(key: key);
+  });
 
   final DateTime createdAt;
 
@@ -416,10 +416,10 @@ class HowOldLine extends StatelessWidget {
 
 class PreviewThumbnail extends StatelessWidget {
   const PreviewThumbnail({
-    Key? key,
+    super.key,
     required this.cast,
     this.size,
-  }) : super(key: key);
+  });
 
   final Cast cast;
   final double? size;
@@ -453,8 +453,8 @@ class PreviewThumbnail extends StatelessWidget {
 /// enclosing cast view theme-themes do not inherit from each other.
 class CastViewTheme extends InheritedWidget {
   const CastViewTheme({
-    Key? key,
-    required Widget child,
+    super.key,
+    required super.child,
     this.showMenu,
     this.taggedUsersAreTappable,
     this.isInteractive,
@@ -465,7 +465,7 @@ class CastViewTheme extends InheritedWidget {
     this.showLink,
     this.titleMaxLines,
     this.imageLinkTapEnabled,
-  }) : super(key: key, child: child);
+  });
 
   /// Whether or not to show the three dots menu.
   final bool? showMenu;
@@ -518,7 +518,7 @@ class CastViewTheme extends InheritedWidget {
 }
 
 class CastConversationView extends StatelessWidget {
-  const CastConversationView({Key? key}) : super(key: key);
+  const CastConversationView({super.key});
 
   @override
   Widget build(BuildContext context) {

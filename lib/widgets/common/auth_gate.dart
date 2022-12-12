@@ -13,9 +13,9 @@ import 'package:cast_me_app/pages/auth_flow_page_view.dart';
 /// an internet connection or aren't logged in.
 class AuthGate extends StatelessWidget {
   const AuthGate({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

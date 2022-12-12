@@ -14,14 +14,14 @@ import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({
-    Key? key,
+    super.key,
     required this.headerText,
     required this.body,
     required this.validate,
     required this.onSubmit,
     required this.submitText,
     this.trailing,
-  }) : super(key: key);
+  });
 
   final String headerText;
   final Widget body;
@@ -98,10 +98,10 @@ class _AuthSignInFormState extends State<AuthForm> {
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.labelText,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final String labelText;

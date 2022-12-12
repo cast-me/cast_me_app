@@ -14,7 +14,7 @@ class ExternalLinkModal {
 }
 
 class _ModalContent extends StatelessWidget {
-  const _ModalContent({Key? key, required this.uri}) : super(key: key);
+  const _ModalContent({required this.uri});
 
   final Uri uri;
 

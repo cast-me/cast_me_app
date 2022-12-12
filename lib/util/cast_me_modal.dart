@@ -6,9 +6,8 @@ import 'package:adaptive_material/adaptive_material.dart';
 
 class CastMeModal extends StatelessWidget {
   const CastMeModal._({
-    Key? key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

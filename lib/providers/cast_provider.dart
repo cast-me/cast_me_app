@@ -9,11 +9,10 @@ import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 
 class CastProvider extends InheritedWidget {
   CastProvider({
-    Key? key,
-    required Widget child,
+    super.key,
+    required super.child,
     required this.initialCast,
-  })  : currentCast = CastProviderData(initialCast),
-        super(key: key, child: child);
+  })  : currentCast = CastProviderData(initialCast);
 
   final Cast initialCast;
   final CastProviderData currentCast;
@@ -32,7 +31,7 @@ class CastProvider extends InheritedWidget {
 }
 
 class CastProviderData extends ValueNotifier<Cast> {
-  CastProviderData(Cast initialCast) : super(initialCast);
+  CastProviderData(super.initialCast);
 
   Future<void> setLiked(bool newIsLiked) async {
     final Profile profile = AuthManager.instance.profile;

@@ -10,9 +10,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 
 class LoginWithProviders extends StatelessWidget {
-  const LoginWithProviders({
-    Key? key,
-  }) : super(key: key);
+  const LoginWithProviders({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +42,11 @@ class LoginWithProviders extends StatelessWidget {
 
 class ProviderButton extends StatelessWidget {
   const ProviderButton({
-    Key? key,
+    super.key,
     required this.provider,
     required this.text,
     required this.signIn,
-  }) : super(key: key);
+  });
 
   final Buttons provider;
   final String text;

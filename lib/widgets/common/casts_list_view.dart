@@ -8,10 +8,10 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 class CastListView extends StatelessWidget {
   const CastListView({
-    Key? key,
+    super.key,
     this.padding,
     this.controller,
-  }) : super(key: key);
+  });
 
   final EdgeInsets? padding;
 

@@ -15,7 +15,7 @@ import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/sign_in_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/verify_email_view.dart';
 
 class AuthFlowPageView extends StatefulWidget {
-  const AuthFlowPageView({Key? key}) : super(key: key);
+  const AuthFlowPageView({super.key});
 
   @override
   State<AuthFlowPageView> createState() => _AuthFlowPageViewState();

@@ -7,9 +7,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UriButton extends StatelessWidget {
   const UriButton({
-    Key? key,
+    super.key,
     required this.uri,
-  }) : super(key: key);
+  });
 
   final Uri uri;
 

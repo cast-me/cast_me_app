@@ -6,10 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ExternalLinkButton extends StatelessWidget {
   const ExternalLinkButton({
-    Key? key,
+    super.key,
     required this.uri,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final Uri uri;
 

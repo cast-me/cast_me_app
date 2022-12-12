@@ -11,9 +11,9 @@ import 'package:cast_me_app/business_logic/models/cast_file.dart';
 
 class CutFromStart extends StatelessWidget {
   const CutFromStart({
-    Key? key,
+    super.key,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final CastFile castFile;
 
@@ -28,9 +28,9 @@ class CutFromStart extends StatelessWidget {
 
 class CutFromEnd extends StatelessWidget {
   const CutFromEnd({
-    Key? key,
+    super.key,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final CastFile castFile;
 
@@ -44,7 +44,7 @@ class CutFromEnd extends StatelessWidget {
 }
 
 class TickForward extends StatelessWidget {
-  const TickForward({Key? key}) : super(key: key);
+  const TickForward({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class TickForward extends StatelessWidget {
 }
 
 class TickBackward extends StatelessWidget {
-  const TickBackward({Key? key}) : super(key: key);
+  const TickBackward({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +89,9 @@ class TickBackward extends StatelessWidget {
 
 class _Cut extends StatelessWidget {
   const _Cut({
-    Key? key,
     required this.cutFromStart,
     required this.castFile,
-  }) : super(key: key);
+  });
 
   final bool cutFromStart;
   final CastFile castFile;
@@ -138,11 +137,10 @@ class _Cut extends StatelessWidget {
 
 class _PositionDependentButton extends StatelessWidget {
   const _PositionDependentButton({
-    Key? key,
     required this.builder,
     this.disableAtEnd = false,
     this.disableAtStart = false,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext, Duration?, bool) builder;
   final bool disableAtEnd;

@@ -9,11 +9,11 @@ import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 
 class ConversationListView extends StatelessWidget {
   const ConversationListView({
-    Key? key,
+    super.key,
     this.filterTopics,
     this.padding,
     this.controller,
-  }) : super(key: key);
+  });
 
   /// If non-null, restrict conversations to the given topic.
   final List<Topic>? filterTopics;

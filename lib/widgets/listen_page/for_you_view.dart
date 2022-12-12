@@ -8,7 +8,7 @@ import 'package:cast_me_app/widgets/listen_page/for_you_card.dart';
 import 'package:flutter/material.dart';
 
 class ForYouView extends StatelessWidget {
-  const ForYouView({Key? key}) : super(key: key);
+  const ForYouView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ForYouView extends StatelessWidget {
 }
 
 class _TrendingView extends StatefulWidget {
-  const _TrendingView({Key? key}) : super(key: key);
+  const _TrendingView();
 
   @override
   State<_TrendingView> createState() => _TrendingViewState();
@@ -74,7 +74,7 @@ class _TrendingViewState extends State<_TrendingView> {
 }
 
 class _DiscordView extends StatelessWidget {
-  const _DiscordView({Key? key}) : super(key: key);
+  const _DiscordView();
 
   @override
   Widget build(BuildContext context) {

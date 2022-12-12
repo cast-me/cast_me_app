@@ -10,10 +10,10 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 
 class SeekBar extends StatefulWidget {
   const SeekBar({
-    Key? key,
+    super.key,
     required this.positionDataStream,
     required this.seekTo,
-  }) : super(key: key);
+  });
 
   final Stream<PositionData> positionDataStream;
   final Future<void> Function(Duration) seekTo;

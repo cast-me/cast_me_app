@@ -9,7 +9,7 @@ import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 
 class PickFileView extends StatelessWidget {
-  const PickFileView({Key? key}) : super(key: key);
+  const PickFileView({super.key});
 
   @override
   Widget build(BuildContext context) {
