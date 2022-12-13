@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Package imports:
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
@@ -56,15 +57,18 @@ class CastDatabase {
     ).map(_rowToConversation);
   }
 
+  // TODO(caseycrogers): replace a bunch of these bools with enums.
   Stream<Cast> getCasts({
     Cast? seedCast,
     Profile? filterProfile,
     Profile? filterOutProfile,
     List<Topic>? filterTopics,
     bool skipViewed = false,
+    bool onlyViewed = false,
     String? searchTerm,
     bool single = false,
     bool skipDeleted = true,
+    int? limit,
   }) async* {
     // This is here because we need two instances of the builder at the end to
     // run two separate queries because Supabase doesn't provide a copy method.
@@ -77,6 +81,7 @@ class CastDatabase {
         filterOutProfile: filterOutProfile,
         filterTopics: filterTopics,
         skipViewed: skipViewed,
+        onlyViewed: onlyViewed,
         searchTerm: searchTerm,
         single: single,
         skipDeleted: skipDeleted,
@@ -86,8 +91,8 @@ class CastDatabase {
     Stream<Cast> paginateCasts(PostgrestFilterBuilder<_Rows> query) {
       return _paginated(
         _orderQuery(query),
-        chunkSize: single ? 1 : 20,
-        chunkLimit: single ? 1 : null,
+        chunkSize: single ? 1 : 10,
+        chunkLimit: single ? 1 : limit?.apply((l) => l ~/ 10),
       ).map(_rowToCast);
     }
 
@@ -115,6 +120,7 @@ class CastDatabase {
     Profile? filterOutProfile,
     List<Topic>? filterTopics,
     bool skipViewed = false,
+    bool onlyViewed = false,
     String? searchTerm,
     bool single = false,
     bool skipDeleted = true,
@@ -129,6 +135,9 @@ class CastDatabase {
     }
     if (skipViewed) {
       queryBuilder = queryBuilder.eq(hasViewedCol, false);
+    }
+    if (onlyViewed) {
+      queryBuilder = queryBuilder.eq(hasViewedCol, true);
     }
     if (skipDeleted) {
       queryBuilder = queryBuilder.eq(deletedCol, false);
