@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:rxdart/rxdart.dart';
+
 // Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
@@ -20,8 +23,10 @@ class ConversationPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Conversation?>(
-      future: selectedConversation.conversation,
+    return FutureBuilder<Conversation>(
+      // We don't need to wrap this in a value listenable builder because
+      // the cast list view will handle fetching internally.
+      future: selectedConversation.conversation.value,
       builder: (context, snap) {
         if (!snap.hasData) {
           return const Center(
@@ -72,7 +77,21 @@ class _LoadedPageContentState extends State<_LoadedPageContent> {
       child: CastListView(
         padding: EdgeInsets.zero,
         controller: CastMeListController<Cast>(
-          getStream: (_) => Stream.fromIterable(widget.conversation.allCasts),
+          // TODO(caseycrogers): This is really messy, considering migrating
+          // `getStream` to just a `stream` and an `onRefresh` callback.
+          getStream: (_) {
+            return ListenBloc.instance.selectedConversation.value!
+                .refresh()
+                .asStream()
+                .flatMap(
+              (_) {
+                return ListenBloc
+                    .instance.selectedConversation.value!.conversation.value
+                    .asStream()
+                    .flatMap((c) => Stream.fromIterable(c.allCasts));
+              },
+            );
+          },
         ),
       ),
     );

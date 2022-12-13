@@ -2,11 +2,11 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
@@ -170,12 +170,24 @@ class SelectedConversation {
   SelectedConversation(
     this.id, {
     Future<Conversation>? conversation,
-  }) : conversation = conversation ?? CastDatabase.instance.getConversation(id);
+  }) : _conversation = ValueNotifier(conversation ?? _getConversation(id));
 
   SelectedConversation.fromConversation(Conversation syncConversation)
       : id = syncConversation.rootId,
-        conversation = Future.value(syncConversation);
+        _conversation = ValueNotifier(Future.value(syncConversation));
 
   final String id;
-  final Future<Conversation> conversation;
+
+  ValueListenable<Future<Conversation>> get conversation => _conversation;
+
+  final ValueNotifier<Future<Conversation>> _conversation;
+
+  Future<void> refresh() async {
+    _conversation.value = _getConversation(id);
+    await _conversation.value;
+  }
+
+  static Future<Conversation> _getConversation(String id) {
+    return CastDatabase.instance.getConversation(id);
+  }
 }

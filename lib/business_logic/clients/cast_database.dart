@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:io';
 
 // Package imports:
-import 'package:cast_me_app/util/object_utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
@@ -19,6 +18,7 @@ import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 typedef _Row = Map<String, dynamic>;
@@ -356,10 +356,6 @@ class CastDatabase {
     return await query.withConverter((data) {
       return data.map(_rowToTopic).toList();
     });
-  }
-
-  Future<List<Topic>> getForYouCards() {
-    return getTopics(limit: 3);
   }
 }
 

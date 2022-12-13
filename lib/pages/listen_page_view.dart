@@ -22,7 +22,7 @@ class ListenPageView extends StatelessWidget {
       onPop: (poppedValue, valueAfterPop) {
         ListenBloc.instance.onConversationIdSelected(
           valueAfterPop?.id,
-          conversation: valueAfterPop?.conversation,
+          conversation: valueAfterPop?.conversation.value,
         );
       },
       getDepth: (selection) => selection == null ? 0 : 1,
