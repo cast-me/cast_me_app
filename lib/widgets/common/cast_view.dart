@@ -110,44 +110,36 @@ class CastPreview extends StatelessWidget {
                                 const _CastTitleView(),
                               if (cast.externalUri != null)
                                 UriButton(uri: cast.externalUri!),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      PreviewThumbnail(
-                                        cast: cast,
-                                        size: 50,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            if (!(theme?.showMenu ?? true) &&
-                                                !showHowOld)
-                                              const _CastTitleView(),
-                                            const AuthorLine(),
-                                            const _ListenCount(),
-                                            if (showHowOld)
-                                              HowOldLine(
-                                                createdAt: cast.createdAtStamp,
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                  PreviewThumbnail(
+                                    cast: cast,
+                                    size: 50,
                                   ),
-                                  if (theme?.showLikes ?? true)
-                                    const LikesView(),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        if (!(theme?.showMenu ?? true) &&
+                                            !showHowOld)
+                                          const _CastTitleView(),
+                                        const AuthorLine(),
+                                        const _ListenCount(),
+                                        if (showHowOld)
+                                          HowOldLine(
+                                            createdAt: cast.createdAtStamp,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
+                              if (theme?.showLikes ?? true) const LikesView(),
                             ],
                           ),
                         ),
@@ -299,7 +291,9 @@ class _ListenCount extends StatelessWidget {
     final Cast cast = CastProvider.of(context).value;
     return Text(
       '${cast.viewCount} listen${cast.viewCount == 1 ? '' : 's'}',
-      style: TextStyle(color: Colors.grey.shade400),
+      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+            color: AdaptiveMaterial.secondaryOnColorOf(context),
+          ),
     );
   }
 }
@@ -393,6 +387,9 @@ class HowOldLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       oldString(),
+      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+        color: AdaptiveMaterial.secondaryOnColorOf(context),
+      ),
     );
   }
 

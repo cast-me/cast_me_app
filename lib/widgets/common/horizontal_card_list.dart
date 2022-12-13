@@ -5,11 +5,17 @@ class HorizontalCardList extends StatefulWidget {
   const HorizontalCardList({
     super.key,
     this.padding,
+    this.pagePadding,
     required this.headerText,
     required this.pages,
   });
 
   final EdgeInsets? padding;
+
+  /// Padding only to be applied internally to the page.
+  ///
+  /// Overrides `padding` for page contents.
+  final EdgeInsets? pagePadding;
   final String headerText;
   final List<Widget> pages;
 
@@ -29,9 +35,11 @@ class _HorizontalCardListState extends State<HorizontalCardList> {
           padding: widget.padding ?? EdgeInsets.zero,
           child: Row(
             children: [
-              Text(
-                widget.headerText,
-                style: Theme.of(context).textTheme.headline5,
+              Expanded(
+                child: Text(
+                  widget.headerText,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
               AnimatedBuilder(
                 animation: controller,
@@ -74,7 +82,8 @@ class _HorizontalCardListState extends State<HorizontalCardList> {
           children: widget.pages
               .map(
                 (w) => Padding(
-                  padding: widget.padding ?? EdgeInsets.zero,
+                  padding:
+                      widget.pagePadding ?? widget.padding ?? EdgeInsets.zero,
                   child: w,
                 ),
               )

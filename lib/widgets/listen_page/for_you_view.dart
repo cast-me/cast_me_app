@@ -1,11 +1,10 @@
 // Flutter imports:
-import 'package:adaptive_material/adaptive_material.dart';
-import 'package:cast_me_app/business_logic/clients/cast_database.dart';
+import 'package:cast_me_app/business_logic/for_you_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
-import 'package:cast_me_app/widgets/listen_page/catch_up_card.dart';
-import 'package:cast_me_app/widgets/listen_page/share_card.dart';
+import 'package:cast_me_app/widgets/listen_page/continue_listening_card.dart';
+import 'package:cast_me_app/widgets/listen_page/follow_up_card.dart';
 import 'package:cast_me_app/widgets/listen_page/trend_card.dart';
 import 'package:flutter/material.dart';
 
@@ -16,72 +15,64 @@ class ForYouView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        Padding(
-          padding: _padding,
-          child: _TrendingView(),
-        ),
-        CatchUpCard(
-          pagePadding: _padding,
-        ),
-        ShareCard(
-          pagePadding: _padding,
-        ),
-        Padding(
-          padding: _padding,
-          child: _DiscordView(),
-        ),
-      ],
+    return RefreshIndicator(
+      color: Colors.white,
+      onRefresh: () async {
+        await ForYouBloc.instance.onRefresh();
+      },
+      child: ListView(
+        children: const [
+          Padding(
+            padding: _padding,
+            child: _TrendingView(),
+          ),
+          ContinueListeningCard(pagePadding: _padding),
+          FollowUpCard(padding: _padding),
+          Padding(
+            padding: _padding,
+            child: _DiscordView(),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _TrendingView extends StatefulWidget {
+class _TrendingView extends StatelessWidget {
   const _TrendingView();
 
   @override
-  State<_TrendingView> createState() => _TrendingViewState();
-}
-
-class _TrendingViewState extends State<_TrendingView> {
-  // TODO(caseycrogers): make `ForYou` it's own class instead of just using
-  //   topic.
-  Future<List<Topic>> cardsFuture = _getCards();
-
-  static Future<List<Topic>> _getCards() async {
-    return CastDatabase.instance.getForYouCards();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Topic>>(
-      future: cardsFuture,
-      builder: (context, snap) {
-        if (snap.hasError) {
-          return ErrorWidget(snap.error!);
-        }
-        if (!snap.hasData) {
-          return Container();
-        }
-        final List<Topic> topics =
-            snap.data!.where((t) => t.newCastCount != 0).toList();
-        if (topics.isEmpty) {
-          return const Text(
-            'No new content, try recording a new cast!',
-            textAlign: TextAlign.center,
-          );
-        }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: topics
-              .map(
-                (c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: TrendCard(topic: c),
-                ),
-              )
-              .toList(),
+    return ValueListenableBuilder<Future<List<Topic>>>(
+      valueListenable: ForYouBloc.instance.trending,
+      builder: (context, trending, child) {
+        return FutureBuilder<List<Topic>>(
+          future: trending,
+          builder: (context, snap) {
+            if (snap.hasError) {
+              return ErrorWidget(snap.error!);
+            }
+            if (!snap.hasData) {
+              return Container();
+            }
+            final List<Topic> topics =
+                snap.data!.where((t) => t.newCastCount != 0).toList();
+            if (topics.isEmpty) {
+              return Container();
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: topics
+                  .map(
+                    (c) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: TrendCard(topic: c),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
         );
       },
     );
@@ -93,32 +84,27 @@ class _DiscordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AdaptiveMaterialType.surface.colorOf(context),
+    return Container(
       margin: EdgeInsets.zero,
-      child: AdaptiveMaterial(
-        material: AdaptiveMaterialType.surface,
-        shouldDraw: false,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: const [
-                  Icon(Icons.discord),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Join our discord to chat with the developers and other '
-                      'power users!',
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: const [
+                Icon(Icons.discord),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Join our discord to chat with the developers and other '
+                    'power users!',
                   ),
-                ],
-              ),
-              ExternalLinkButton(uri: discordUrl),
-            ],
-          ),
+                ),
+              ],
+            ),
+            ExternalLinkButton(uri: discordUrl),
+          ],
         ),
       ),
     );

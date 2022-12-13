@@ -357,10 +357,6 @@ class CastDatabase {
       return data.map(_rowToTopic).toList();
     });
   }
-
-  Future<List<Topic>> getForYouCards() {
-    return getTopics(limit: 3);
-  }
 }
 
 enum SkippedReason {

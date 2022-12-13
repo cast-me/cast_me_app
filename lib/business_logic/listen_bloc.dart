@@ -170,12 +170,24 @@ class SelectedConversation {
   SelectedConversation(
     this.id, {
     Future<Conversation>? conversation,
-  }) : conversation = conversation ?? CastDatabase.instance.getConversation(id);
+  }) : _conversation = ValueNotifier(conversation ?? _getConversation(id));
 
   SelectedConversation.fromConversation(Conversation syncConversation)
       : id = syncConversation.rootId,
-        conversation = Future.value(syncConversation);
+        _conversation = ValueNotifier(Future.value(syncConversation));
 
   final String id;
-  final Future<Conversation> conversation;
+
+  ValueListenable<Future<Conversation>> get conversation => _conversation;
+
+  final ValueNotifier<Future<Conversation>> _conversation;
+
+  Future<void> refresh() async {
+    _conversation.value = _getConversation(id);
+    await _conversation.value;
+  }
+
+  static Future<Conversation> _getConversation(String id) {
+    return CastDatabase.instance.getConversation(id);
+  }
 }
