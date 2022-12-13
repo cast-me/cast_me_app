@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:rxdart/rxdart.dart';
+
 // Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
@@ -9,7 +12,6 @@ import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ConversationPageView extends StatelessWidget {
   const ConversationPageView({

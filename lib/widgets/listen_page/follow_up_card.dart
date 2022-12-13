@@ -1,9 +1,12 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/for_you_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/horizontal_card_list.dart';
-import 'package:flutter/material.dart';
 
 class FollowUpCard extends StatelessWidget {
   const FollowUpCard({

@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:expandable_page_view/expandable_page_view.dart';
 
 class HorizontalCardList extends StatefulWidget {

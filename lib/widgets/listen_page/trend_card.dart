@@ -1,6 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
-import 'package:flutter/material.dart';
 
 class TrendCard extends StatelessWidget {
   const TrendCard({
