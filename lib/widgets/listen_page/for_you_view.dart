@@ -5,6 +5,7 @@ import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 import 'package:cast_me_app/widgets/listen_page/catch_up_card.dart';
+import 'package:cast_me_app/widgets/listen_page/share_card.dart';
 import 'package:cast_me_app/widgets/listen_page/trend_card.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,9 @@ class ForYouView extends StatelessWidget {
           child: _TrendingView(),
         ),
         CatchUpCard(
+          pagePadding: _padding,
+        ),
+        ShareCard(
           pagePadding: _padding,
         ),
         Padding(

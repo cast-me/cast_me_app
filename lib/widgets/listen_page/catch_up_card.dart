@@ -36,29 +36,17 @@ class _CatchUpCardState extends State<CatchUpCard> {
         if (!snap.hasData || snap.data!.isEmpty) {
           return Container();
         }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: widget.pagePadding ?? EdgeInsets.zero,
-              child: Text(
-                'Continue listening:',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            HorizontalCardList(
-              pages: snap.data!.map(
-                (c) {
-                  return ConversationPreview(
-                    conversation: c,
-                    margin: EdgeInsets.zero,
-                    padding: widget.pagePadding,
-                  );
-                },
-              ).toList(),
-            ),
-          ],
+        return HorizontalCardList(
+          padding: widget.pagePadding,
+          headerText: 'Continue listening',
+          pages: snap.data!.map(
+            (c) {
+              return ConversationPreview(
+                conversation: c,
+                margin: EdgeInsets.zero,
+              );
+            },
+          ).toList(),
         );
       },
     );
