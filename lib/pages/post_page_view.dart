@@ -43,7 +43,6 @@ class _PostPageViewState extends State<PostPageView> {
   Widget build(BuildContext context) {
     return AsyncActionWrapper(
       child: CastMePage(
-        headerText: 'Post',
         scrollable: true,
         child: ValueListenableBuilder<Future<CastFile>?>(
           valueListenable: PostBloc.instance.castFile,

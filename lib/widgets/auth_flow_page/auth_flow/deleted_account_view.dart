@@ -10,7 +10,6 @@ class DeletedAccountView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CastMePage(
-      headerText: 'Deleted account',
       child: Column(
         children: const [
           Text(

@@ -33,11 +33,7 @@ class CastMePage extends StatelessWidget {
     // separately so that the scrollable content, if applicable, is padded
     // internally not externally.
     final Widget paddedChild = Padding(
-      padding: padding ?? EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: headerText == null ? 24 : 0,
-      ),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
       child: child,
     );
     return AdaptiveMaterial(

@@ -32,7 +32,6 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
   @override
   Widget build(BuildContext context) {
     return CastMePage(
-      headerText: 'Profile',
       child: Column(
         children: [
           _UsernamePicker(form: form),
