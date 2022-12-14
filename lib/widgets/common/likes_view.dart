@@ -142,7 +142,7 @@ class _LikeView extends StatelessWidget {
             color: actualMaterial.onColorOf(context),
           ),
           child: Container(
-            margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 2),
+            margin: const EdgeInsets.only(top: 4, right: 4, bottom: 2),
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: actualMaterial.colorOf(context),
