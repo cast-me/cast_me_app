@@ -23,6 +23,7 @@ class ForYouView extends StatelessWidget {
         await ForYouBloc.instance.onRefresh();
       },
       child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
         children: const [
           Padding(
             padding: _padding,
@@ -58,7 +59,7 @@ class _TrendingView extends StatelessWidget {
               return Container();
             }
             final List<Topic> topics =
-                snap.data!.where((t) => t.newCastCount != 0).toList();
+                snap.data!.where((t) => true || t.newCastCount != 0).toList();
             if (topics.isEmpty) {
               return Container();
             }
@@ -93,17 +94,9 @@ class _DiscordView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: const [
-                Icon(Icons.discord),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Join our discord to chat with the developers and other '
-                    'power users!',
-                  ),
-                ),
-              ],
+            const Text(
+              'Join our discord to chat with the developers and other '
+              'power users!',
             ),
             ExternalLinkButton(uri: discordUrl),
           ],

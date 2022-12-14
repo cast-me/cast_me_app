@@ -26,6 +26,7 @@ class ConversationListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CastMeListView<Conversation>(
       controller: controller,
+      padding: padding,
       builder: (context, conversations, index) {
         return ConversationPreview(conversation: conversations[index]);
       },

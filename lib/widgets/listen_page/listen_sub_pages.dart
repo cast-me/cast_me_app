@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -13,7 +15,9 @@ class ListenSubPages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: const [
-        _Selector(),
+        AdaptiveMaterial.surface(
+          child: _Selector(),
+        ),
         Expanded(child: _Pages()),
       ],
     );
@@ -25,31 +29,91 @@ class _Selector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ValueListenablePageController controller =
+        ListenBloc.instance.listenPageController;
     return ValueListenableBuilder<double>(
-      valueListenable: ListenBloc.instance.listenPageController,
+      valueListenable: controller,
       builder: (context, pageIndex, _) {
-        final TextStyle labelStyle = Theme.of(context).textTheme.headline5!;
-        return BottomNavigationBar(
-          backgroundColor: Colors.transparent,
-          currentIndex: pageIndex.round(),
-          selectedLabelStyle:
-              labelStyle.copyWith(fontSize: labelStyle.fontSize! + 2),
-          unselectedLabelStyle:
-              labelStyle.copyWith(fontSize: labelStyle.fontSize! - 2),
-          iconSize: 0,
-          items: const [
-            BottomNavigationBarItem(
-              icon: SizedBox(),
-              label: 'for you',
-            ),
-            BottomNavigationBarItem(
-              icon: SizedBox(),
-              label: 'explore',
-            ),
-          ],
-          onTap: ListenBloc.instance.onListenPageChanged,
+        return DefaultTextStyle(
+          style: Theme.of(context)
+              .textTheme
+              .headline4!
+              .copyWith(color: AdaptiveMaterial.onColorOf(context)),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: _TabButton(
+                  value: 0,
+                  child: const Text('for you'),
+                  isSelected: 0 == controller.value,
+                  onTap: () {
+                    controller.animateToPage(
+                      0,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.linear,
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                child: _TabButton(
+                  value: 1,
+                  child: const Text('explore'),
+                  isSelected: 1 == controller.value,
+                  onTap: () {
+                    controller.animateToPage(
+                      1,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.linear,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         );
       },
+    );
+  }
+}
+
+class _TabButton<T> extends StatelessWidget {
+  const _TabButton({
+    required this.isSelected,
+    required this.value,
+    required this.child,
+    required this.onTap,
+  });
+
+  final bool isSelected;
+  final T value;
+  final Widget child;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle labelStyle = DefaultTextStyle.of(context).style;
+    return InkWell(
+      onTap: onTap,
+      child: SafeArea(
+        bottom: false,
+        child: Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(bottom: 12),
+          height: labelStyle.fontSize! + 12,
+          child: AnimatedDefaultTextStyle(
+            child: child,
+            style: labelStyle.copyWith(
+              color: isSelected
+                  ? labelStyle.color
+                  : AdaptiveMaterial.secondaryOnColorOf(context),
+              fontSize: labelStyle.fontSize! + (isSelected ? 2 : -2),
+            ),
+            duration: const Duration(milliseconds: 100),
+          ),
+        ),
+      ),
     );
   }
 }
