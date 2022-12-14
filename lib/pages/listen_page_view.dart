@@ -35,10 +35,7 @@ class ListenPageView extends StatelessWidget {
           );
         }
         return const AdaptiveMaterial.background(
-          child: SafeArea(
-            bottom: false,
-            child: ListenSubPages(),
-          ),
+          child: ListenSubPages(),
         );
       },
     );

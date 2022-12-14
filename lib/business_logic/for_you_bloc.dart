@@ -19,7 +19,8 @@ class ForYouBloc {
       _continueListeningConversations =
       ValueNotifier(_getContinueListeningConversations());
 
-  final ValueNotifier<Future<List<Cast>>> _followUpCasts =
+  // Make this late so that we don't issue a DB request at launch.
+  late final ValueNotifier<Future<List<Cast>>> _followUpCasts =
       ValueNotifier(_getFollowUpCasts());
 
   ValueListenable<Future<List<Topic>>> get trending => _trending;
