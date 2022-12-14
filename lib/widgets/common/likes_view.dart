@@ -35,15 +35,14 @@ class _LikesViewState extends State<LikesView> {
             likes.any((like) => like.userId == AuthManager.instance.profile.id);
         final int likeCount = likes.length;
         return _LikeView(
-          icon: const Icon(
-            Icons.thumb_up,
-            size: size,
+          icon: Icon(
+            userLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
+            size: size + 2,
           ),
           label: Text(
             likes.length.toString(),
             style: const TextStyle(fontSize: size),
           ),
-          border: userLiked,
           onTap: () async {
             await currentCast.setLiked(!userLiked);
           },
@@ -114,13 +113,11 @@ class _LikeView extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    required this.border,
     required this.onLongTap,
   });
 
   final Widget icon;
   final Widget label;
-  final bool border;
   final AsyncCallback? onTap;
   final VoidCallback? onLongTap;
 
@@ -143,13 +140,9 @@ class _LikeView extends StatelessWidget {
           ),
           child: Container(
             margin: const EdgeInsets.only(top: 4, right: 4, bottom: 2),
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: actualMaterial.colorOf(context),
-              border: Border.all(
-                color: border ? Colors.white : Colors.transparent,
-                width: 1,
-              ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
