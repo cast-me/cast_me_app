@@ -98,30 +98,43 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle activeTextStyle = DefaultTextStyle.of(context).style;
+    final Color animatedColor = Color.lerp(
+      activeTextStyle.color,
+      AdaptiveMaterial.secondaryOnColorOf(context),
+      relativeDistance.abs(),
+    )!;
     return InkWell(
       onTap: onTap,
       child: SafeArea(
         bottom: false,
-        child: Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(bottom: 12),
-          height: activeTextStyle.fontSize! + 12,
-          child: DefaultTextStyle(
-            child: child,
-            style: activeTextStyle.copyWith(
-              color: Color.lerp(
-                activeTextStyle.color,
-                AdaptiveMaterial.secondaryOnColorOf(context),
-                relativeDistance.abs(),
-              )!,
-              fontSize: activeTextStyle.fontSize! +
-                  lerpDouble(
-                    2,
-                    -2,
-                    relativeDistance.abs(),
-                  )!,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              bottom: 6,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 4,
+                  width: 40 * (1 - 2*relativeDistance.abs()).clamp(0, 1),
+                  decoration: BoxDecoration(
+                    color: animatedColor,
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                ),
+              ),
             ),
-          ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(bottom: 12),
+              height: activeTextStyle.fontSize! + 12,
+              child: DefaultTextStyle(
+                child: child,
+                style: activeTextStyle.copyWith(
+                  color: animatedColor,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
