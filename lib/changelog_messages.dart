@@ -32,4 +32,8 @@ const Map<String, Widget> changelogMessages = {
     ''' - Added `report cast` and `block user` features
  - fixed bug with selecting topics while posting''',
   ),
+  '0.2.2': Text(
+    ''' - Rebuilt the home page to include a `for you` sub-tab
+ - Allow users to delete their account''',
+  ),
 };
