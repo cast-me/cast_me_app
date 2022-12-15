@@ -112,8 +112,9 @@ class _TabButton extends StatelessWidget {
                   height: 4,
                   width: 40 * (1 - 2 * relativeDistance.abs()).clamp(0, 1),
                   decoration: BoxDecoration(
-                      color: activeTextStyle.color,
-                      borderRadius: BorderRadius.circular(5)),
+                    color: activeTextStyle.color,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                 ),
               ),
             ),
