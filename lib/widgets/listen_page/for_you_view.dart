@@ -59,7 +59,7 @@ class _TrendingView extends StatelessWidget {
               return Container();
             }
             final List<Topic> topics =
-                snap.data!.where((t) => true || t.newCastCount != 0).toList();
+                snap.data!.where((t) => t.newCastCount != 0).toList();
             if (topics.isEmpty) {
               return Container();
             }
