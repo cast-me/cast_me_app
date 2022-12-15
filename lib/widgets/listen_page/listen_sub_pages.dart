@@ -98,11 +98,6 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle activeTextStyle = DefaultTextStyle.of(context).style;
-    final Color animatedColor = Color.lerp(
-      activeTextStyle.color,
-      AdaptiveMaterial.secondaryOnColorOf(context),
-      relativeDistance.abs(),
-    )!;
     return InkWell(
       onTap: onTap,
       child: SafeArea(
@@ -115,11 +110,10 @@ class _TabButton extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 4,
-                  width: 40 * (1 - 2*relativeDistance.abs()).clamp(0, 1),
+                  width: 40 * (1 - 2 * relativeDistance.abs()).clamp(0, 1),
                   decoration: BoxDecoration(
-                    color: animatedColor,
-                    borderRadius: BorderRadius.circular(5)
-                  ),
+                      color: activeTextStyle.color,
+                      borderRadius: BorderRadius.circular(5)),
                 ),
               ),
             ),
@@ -127,12 +121,7 @@ class _TabButton extends StatelessWidget {
               alignment: Alignment.center,
               margin: const EdgeInsets.only(bottom: 12),
               height: activeTextStyle.fontSize! + 12,
-              child: DefaultTextStyle(
-                child: child,
-                style: activeTextStyle.copyWith(
-                  color: animatedColor,
-                ),
-              ),
+              child: child,
             ),
           ],
         ),
