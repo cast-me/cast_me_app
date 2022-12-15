@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -17,9 +19,7 @@ class ListenSubPages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: const [
-        AdaptiveMaterial.surface(
-          child: _Selector(),
-        ),
+        _Selector(),
         Expanded(child: _Pages()),
       ],
     );
@@ -46,9 +46,9 @@ class _Selector extends StatelessWidget {
             children: [
               Expanded(
                 child: _TabButton(
-                  value: 0,
+                  index: 0,
                   child: const Text('for you'),
-                  isSelected: 0 == controller.value,
+                  currentIndex: controller.value,
                   onTap: () {
                     controller.animateToPage(
                       0,
@@ -60,9 +60,9 @@ class _Selector extends StatelessWidget {
               ),
               Expanded(
                 child: _TabButton(
-                  value: 1,
+                  index: 1,
                   child: const Text('explore'),
-                  isSelected: 1 == controller.value,
+                  currentIndex: controller.value,
                   onTap: () {
                     controller.animateToPage(
                       1,
@@ -80,40 +80,61 @@ class _Selector extends StatelessWidget {
   }
 }
 
-class _TabButton<T> extends StatelessWidget {
-  const _TabButton({
-    required this.isSelected,
-    required this.value,
+class _TabButton extends StatelessWidget {
+  _TabButton({
+    required double currentIndex,
+    required this.index,
     required this.child,
     required this.onTap,
-  });
+  }) : relativeDistance = (currentIndex - index).clamp(-1, 1);
 
-  final bool isSelected;
-  final T value;
+  // How close this tab is to being selected, 1, -1 meaning not at all, 0
+  // meaning selected.
+  final double relativeDistance;
+  final double index;
   final Widget child;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle labelStyle = DefaultTextStyle.of(context).style;
+    final TextStyle activeTextStyle = DefaultTextStyle.of(context).style;
+    final Color animatedColor = Color.lerp(
+      activeTextStyle.color,
+      AdaptiveMaterial.secondaryOnColorOf(context),
+      relativeDistance.abs(),
+    )!;
     return InkWell(
       onTap: onTap,
       child: SafeArea(
         bottom: false,
-        child: Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(bottom: 12),
-          height: labelStyle.fontSize! + 12,
-          child: AnimatedDefaultTextStyle(
-            child: child,
-            style: labelStyle.copyWith(
-              color: isSelected
-                  ? labelStyle.color
-                  : AdaptiveMaterial.secondaryOnColorOf(context),
-              fontSize: labelStyle.fontSize! + (isSelected ? 2 : -2),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              bottom: 6,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 4,
+                  width: 40 * (1 - 2*relativeDistance.abs()).clamp(0, 1),
+                  decoration: BoxDecoration(
+                    color: animatedColor,
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                ),
+              ),
             ),
-            duration: const Duration(milliseconds: 100),
-          ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(bottom: 12),
+              height: activeTextStyle.fontSize! + 12,
+              child: DefaultTextStyle(
+                child: child,
+                style: activeTextStyle.copyWith(
+                  color: animatedColor,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
