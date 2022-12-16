@@ -39,6 +39,12 @@ extension ValueNotifierUtils<T> on ValueNotifier<T> {
   }
 }
 
+extension NullableValueListenable<T> on ValueListenable<T?> {
+  bool get isEmpty => value == null;
+
+  bool get isNotEmpty => value != null;
+}
+
 extension ValueListenableUtils<T> on ValueListenable<T> {
   ValueListenable<R> map<R>(
     R Function(T value) mapper,

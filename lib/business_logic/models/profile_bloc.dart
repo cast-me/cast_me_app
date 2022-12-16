@@ -1,0 +1,42 @@
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:flutter/foundation.dart';
+
+class ProfileBloc {
+  ProfileBloc._();
+
+  static final ProfileBloc instance = ProfileBloc._();
+
+  Profile get profile => AuthManager.instance.profile;
+
+  final ValueNotifier<ProfileFormData?> _form = ValueNotifier(null);
+
+  ValueListenable<ProfileFormData?> get form => _form;
+
+  Future<void> onEditProfile() async {
+    assert(_form.value == null);
+    _form.value = ProfileFormData(initialDisplayName: profile.displayName);
+  }
+
+  Future<void> onSubmit() async {
+    assert(_form.value != null);
+    final ProfileFormData form = _form.value!;
+    await AuthManager.instance.updateFields(
+      displayName: form.displayNameChanged ? form.currentDisplayName : null,
+      profilePicture: form.selectedPhoto?.file,
+    );
+    _form.value = null;
+  }
+
+  Future<void> onCancel() async {
+    assert(_form.value != null);
+    _form.value = null;
+  }
+
+  void onEditProfileImage() {
+    _form.value = ProfileFormData(
+      initialDisplayName: profile.displayName,
+    );
+  }
+}

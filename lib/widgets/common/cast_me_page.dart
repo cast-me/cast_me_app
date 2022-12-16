@@ -9,7 +9,7 @@ class CastMePage extends StatelessWidget {
   const CastMePage({
     super.key,
     this.headerText,
-    this.trailingIcon,
+    this.trailing,
     required this.child,
     this.footer,
     this.showBackButton = true,
@@ -19,7 +19,7 @@ class CastMePage extends StatelessWidget {
   });
 
   final String? headerText;
-  final Widget? trailingIcon;
+  final Widget? trailing;
   final Widget child;
   final Widget? footer;
   final bool showBackButton;
@@ -59,22 +59,21 @@ class CastMePage extends StatelessWidget {
                       child: Text(
                         headerText!,
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.headline3!.copyWith(
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
                               color: Colors.white,
                               overflow: TextOverflow.ellipsis,
                             ),
                       ),
                     ),
                   if (headerText == null) const Spacer(),
-                  if (trailingIcon != null)
+                  if (trailing != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: IconTheme(
-                        data: IconThemeData(
-                          size: Theme.of(context).textTheme.headline3!.fontSize,
+                        data: const IconThemeData(
                           color: Colors.white,
                         ),
-                        child: trailingIcon!,
+                        child: trailing!,
                       ),
                     ),
                 ],

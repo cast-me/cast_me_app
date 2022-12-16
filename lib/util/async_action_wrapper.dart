@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -72,12 +73,12 @@ class AsyncActionController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> wrap(
+  Future<T> wrap<T>(
     String label,
-    AsyncCallback action,
-  ) async {
+    Future<T> Function() action,
+  ) {
     _start(label);
-    await action().then(
+    return action().then(
       (value) async {
         _finish(null);
         return value;
@@ -86,8 +87,9 @@ class AsyncActionController extends ChangeNotifier {
         _finish(error);
         throw error;
       },
+    ).whenComplete(
+      () => notifyListeners(),
     );
-    notifyListeners();
   }
 }
 
@@ -245,6 +247,34 @@ class AsyncTextButton extends StatelessWidget {
           text,
           style: const TextStyle(color: Colors.white),
         ),
+      ),
+    );
+  }
+}
+
+class AsyncMenuButton extends StatelessWidget {
+  const AsyncMenuButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+    this.isEnabled = true,
+  });
+
+  final IconData icon;
+  final String text;
+  final AsyncCallback onTap;
+  final bool isEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncStatusBuilder(
+      action: text,
+      child: MenuButton(
+        icon: icon,
+        text: text,
+        onTap: onTap,
+        isEnabled: isEnabled,
       ),
     );
   }
