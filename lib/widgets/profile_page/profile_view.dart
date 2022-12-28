@@ -115,7 +115,10 @@ class ProfileHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ProfilePictureView(profile: profile),
+        ProfilePictureView(
+          profile: profile,
+          form: form,
+        ),
         const SizedBox(width: 8),
         DefaultTextStyle(
           style: Theme.of(context).textTheme.headline6!,
@@ -169,24 +172,34 @@ class _EditProfileButton extends StatelessWidget {
       );
     }
     return ValueListenableBuilder<bool>(
-        valueListenable: form!.select(
-          (f) =>
-              (form!.displayNameChanged || form!.selectedPhoto != null) &&
-              form!.validateDisplayName() == null,
-        ),
-        builder: (context, isEnabled, _) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AsyncMenuButton(
-                isEnabled: isEnabled,
-                icon: Icons.check,
-                text: 'save',
-                onTap: ProfileBloc.instance.onSubmit,
-              ),
-              const AuthErrorView(),
-            ],
-          );
-        });
+      valueListenable: form!.select(
+        (f) =>
+            (form!.displayNameChanged || form!.selectedPhoto != null) &&
+            form!.validateDisplayName() == null,
+      ),
+      builder: (context, isEnabled, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                AsyncMenuButton(
+                  isEnabled: isEnabled,
+                  icon: Icons.check,
+                  text: 'save',
+                  onTap: ProfileBloc.instance.onSubmit,
+                ),
+                AsyncMenuButton(
+                  icon: Icons.close,
+                  text: 'cancel',
+                  onTap: ProfileBloc.instance.onCancel,
+                ),
+              ],
+            ),
+            const AuthErrorView(),
+          ],
+        );
+      },
+    );
   }
 }

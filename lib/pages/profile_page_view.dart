@@ -22,6 +22,7 @@ class ProfilePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImplicitNavigator.fromValueListenable<ProfileFormData?>(
+      transitionDuration: const Duration(milliseconds: 100),
       valueListenable: ProfileBloc.instance.form,
       onPop: (poppedValue, valueAfterPop) {
         assert(valueAfterPop == null);
@@ -33,6 +34,7 @@ class ProfilePageView extends StatelessWidget {
         }
         return 1;
       },
+      transitionsBuilder: subPageTransition,
       maintainHistory: true,
       builder: (context, form, animation, secondaryAnimation) {
         return CastMePage(

@@ -106,24 +106,7 @@ class _ProfilePicturePicker extends StatelessWidget {
                     ),
                   ],
                 ),
-                onTap: () async {
-                  final XFile? file = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (file == null) {
-                    return;
-                  }
-
-                  final CroppedFile? croppedImage =
-                      await ImageCropper.platform.cropImage(
-                    sourcePath: file.path,
-                    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-                    cropStyle: CropStyle.circle,
-                  );
-                  if (croppedImage == null) {
-                    return;
-                  }
-                  form.selectedPhoto = croppedImage;
-                },
+                onTap: () => onProfilePictureSelected(form),
               ),
             ],
           );
@@ -189,4 +172,23 @@ class _UsernamePicker extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> onProfilePictureSelected(ProfileFormData form) async {
+  final XFile? file = await ImagePicker()
+      .pickImage(source: ImageSource.gallery);
+  if (file == null) {
+    return;
+  }
+
+  final CroppedFile? croppedImage =
+  await ImageCropper.platform.cropImage(
+    sourcePath: file.path,
+    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+    cropStyle: CropStyle.circle,
+  );
+  if (croppedImage == null) {
+    return;
+  }
+  form.selectedPhoto = croppedImage;
 }
