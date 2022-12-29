@@ -1,9 +1,15 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/profile_bloc.dart';
+import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
+import 'package:cast_me_app/util/async_action_wrapper.dart';
+import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
+import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
@@ -12,11 +18,7 @@ import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 
 class ProfilePreview extends StatelessWidget {
-  const ProfilePreview({
-    super.key,
-    required this.profile,
-    this.onTap
-  });
+  const ProfilePreview({super.key, required this.profile, this.onTap});
 
   final Profile profile;
   final VoidCallback? onTap;
@@ -26,9 +28,10 @@ class ProfilePreview extends StatelessWidget {
     return HideIfDeleted(
       isDeleted: profile.deleted,
       child: GestureDetector(
-        onTap: onTap ?? () {
-          CastMeBloc.instance.onProfileSelected(profile);
-        },
+        onTap: onTap ??
+            () {
+              CastMeBloc.instance.onProfileSelected(profile);
+            },
         child: Row(
           children: [
             ClipRRect(
@@ -69,29 +72,11 @@ class ProfileView extends StatelessWidget {
 
   final Profile profile;
 
-  bool get isSelf => profile.username == AuthManager.instance.profile.username;
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Center(
-              child: ProfilePictureView(profile: profile),
-            ),
-            const SizedBox(width: 8),
-            DefaultTextStyle(
-              style: Theme.of(context).textTheme.headline6!,
-              child: Column(
-                children: [
-                  Center(child: Text('@${profile.username}')),
-                  Center(child: Text(profile.displayName)),
-                ],
-              ),
-            ),
-          ],
-        ),
+        ProfileHeader(profile: profile),
         const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerLeft,
@@ -111,6 +96,110 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({
+    super.key,
+    required this.profile,
+    this.form,
+  });
+
+  final Profile profile;
+  final ProfileFormData? form;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ProfilePictureView(
+          profile: profile,
+          form: form,
+        ),
+        const SizedBox(width: 8),
+        DefaultTextStyle(
+          style: Theme.of(context).textTheme.headline6!,
+          child: Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Dumb hack to keep the username centered.
+                if (profile.isSelf)
+                  IgnorePointer(
+                    child: Opacity(
+                      opacity: 0,
+                      child: AsyncMenuButton(
+                        icon: Icons.add,
+                        text: '',
+                        onTap: () async {},
+                      ),
+                    ),
+                  ),
+                Text('@${profile.username}'),
+                if (form == null)
+                  Text(profile.displayName)
+                else
+                  DisplayNamePicker(
+                    controller: form!.displayNameController,
+                    validate: form!.validateDisplayName,
+                  ),
+                if (profile.isSelf) _EditProfileButton(form: form),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EditProfileButton extends StatelessWidget {
+  const _EditProfileButton({required this.form});
+
+  final ProfileFormData? form;
+
+  @override
+  Widget build(BuildContext context) {
+    if (form == null) {
+      return MenuButton(
+        icon: Icons.edit,
+        text: 'edit profile',
+        onTap: ProfileBloc.instance.onEditProfile,
+      );
+    }
+    return ValueListenableBuilder<bool>(
+      valueListenable: form!.select(
+        (f) =>
+            (form!.displayNameChanged || form!.selectedPhoto != null) &&
+            form!.validateDisplayName() == null,
+      ),
+      builder: (context, isEnabled, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                AsyncMenuButton(
+                  isEnabled: isEnabled,
+                  icon: Icons.check,
+                  text: 'save',
+                  onTap: ProfileBloc.instance.onSubmit,
+                ),
+                AsyncMenuButton(
+                  icon: Icons.close,
+                  text: 'cancel',
+                  onTap: ProfileBloc.instance.onCancel,
+                ),
+              ],
+            ),
+            const AuthErrorView(),
+          ],
+        );
+      },
     );
   }
 }

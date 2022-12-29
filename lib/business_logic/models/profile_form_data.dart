@@ -1,14 +1,28 @@
 // Flutter imports:
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfileFormData extends ChangeNotifier {
+  ProfileFormData({
+    this.initialDisplayName = '',
+  });
+
+  final String initialDisplayName;
+
+  String get currentDisplayName => displayNameController.text;
+
+  bool get displayNameChanged =>
+      displayNameController.text != initialDisplayName;
+
   late final TextEditingController usernameController = TextEditingController()
     ..addListener(notifyListeners);
   late final TextEditingController displayNameController =
-      TextEditingController()..addListener(notifyListeners);
+      TextEditingController(text: initialDisplayName)
+        ..addListener(notifyListeners);
 
   CroppedFile? _selectedPhoto;
 
@@ -74,4 +88,8 @@ class ProfileFormData extends ChangeNotifier {
     displayNameController.removeListener(notifyListeners);
     super.dispose();
   }
+}
+
+extension CroppedFileUtils on CroppedFile {
+  File get file => File(path);
 }

@@ -44,6 +44,18 @@ class Analytics {
     );
   }
 
+  void logUpdateDisplayName() {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'logUpdateDisplayName',
+    );
+  }
+
+  void logUpdateProfilePicture() {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'logUpdateProfilePicture',
+    );
+  }
+
   void logLogout() {
     FirebaseAnalytics.instance.logEvent(
       name: 'signOut',

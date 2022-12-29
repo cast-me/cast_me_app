@@ -27,6 +27,10 @@ const String usernameCol = 'username';
 
 const String displayNameCol = 'display_name';
 
+const String profilePictureUrlCol = 'profile_picture_url';
+
+const String accentColorBaseCol = 'accent_color_base';
+
 const String authorDisplayNameCol = 'author_display_name';
 
 const String authorUsernameCol = 'author_username';

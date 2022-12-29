@@ -142,35 +142,83 @@ class AuthManager extends ChangeNotifier {
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
         );
-        // There's a bug in supabase storage where it only understands jpeg.
-        // https://github.com/supabase-community/supabase-flutter/issues/213
-        final String fileExt = profilePicture.path.split('.').last;
-        final String fileName = '${supabase.auth.currentUser!.id}'
-            // Anonymize the file name so we don't get naming conflicts.
-            '/${DateTime.now().toIso8601String()}.$fileExt';
-        final Uint8List imageBytes = await profilePicture.readAsBytes();
-        await profilePicturesBucket.uploadBinary(
-          fileName,
-          imageBytes,
-          fileOptions: FileOptions(
-            contentType: lookupMimeType(profilePicture.path),
-          ),
-        );
-        final String profilePictureUrl =
-            profilePicturesBucket.getPublicUrl(fileName);
-        final PaletteGenerator paletteGenerator =
-            await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
+        final _ProfilePictureUploadResult uploadResult =
+            await _uploadProfilePicture(profilePicture);
         final Profile completedProfile = Profile(
           id: supabase.auth.currentUser!.id,
           username: username,
           displayName: displayName,
-          profilePictureUrl: profilePictureUrl,
-          accentColorBase: paletteGenerator.vibrantColor?.color.serialize,
+          profilePictureUrl: uploadResult.profilePictureUrl,
+          accentColorBase: uploadResult.accentColor?.serialize,
           deleted: false,
         );
         await profilesQuery.upsert(completedProfile.toJson());
         _profile = completedProfile;
         _signInState = SignInState.signedIn;
+      },
+    );
+  }
+
+  Future<_ProfilePictureUploadResult> _uploadProfilePicture(
+    File profilePicture,
+  ) async {
+    final String fileExt = profilePicture.path.split('.').last;
+    final String fileName = '${supabase.auth.currentUser!.id}'
+        // Anonymize the file name so we don't get naming conflicts.
+        '/${DateTime.now().toIso8601String()}.$fileExt';
+    final Uint8List imageBytes = await profilePicture.readAsBytes();
+    await profilePicturesBucket.uploadBinary(
+      fileName,
+      imageBytes,
+      fileOptions: FileOptions(
+        contentType: lookupMimeType(profilePicture.path),
+      ),
+    );
+    final String profilePictureUrl =
+        profilePicturesBucket.getPublicUrl(fileName);
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(MemoryImage(imageBytes));
+    return _ProfilePictureUploadResult(
+      profilePictureUrl,
+      paletteGenerator.vibrantColor?.color,
+    );
+  }
+
+  Future<Profile> updateFields({
+    String? displayName,
+    File? profilePicture,
+  }) {
+    return _authActionWrapper(
+      'updateUserProfile',
+      () async {
+        assert(
+          supabase.auth.currentUser != null,
+          'You are not properly logged in, please report this error.',
+        );
+        assert(displayName != null || profilePicture != null);
+        _ProfilePictureUploadResult? uploadResult;
+        Profile completedProfile = profile.copyWith();
+        if (displayName != null) {
+          Analytics.instance.logUpdateDisplayName();
+          completedProfile =
+              completedProfile.copyWith(displayName: displayName);
+        }
+        if (profilePicture != null) {
+          Analytics.instance.logUpdateProfilePicture();
+          uploadResult = await _uploadProfilePicture(profilePicture);
+          completedProfile = completedProfile.copyWith(
+            profilePictureUrl: uploadResult.profilePictureUrl,
+            accentColorBase: uploadResult.accentColor?.serialize,
+          );
+        }
+        await profilesQuery.update(<String, dynamic>{
+          displayNameCol: completedProfile.displayName,
+          profilePictureUrlCol: completedProfile.profilePictureUrl,
+          accentColorBaseCol: completedProfile.accentColorBase,
+        }).eq(idCol, profile.id);
+        _profile = completedProfile;
+        _signInState = SignInState.signedIn;
+        return completedProfile;
       },
     );
   }
@@ -350,11 +398,11 @@ class AuthManager extends ChangeNotifier {
   }
 
   // Wrap around any auth action to update Auth Manager state on finish.
-  Future<void> _authActionWrapper(
+  Future<T> _authActionWrapper<T>(
     String action,
-    AsyncCallback authAction,
-  ) async {
-    await asyncActionController.wrap(action, authAction);
+    Future<T> Function() authAction,
+  ) {
+    return asyncActionController.wrap(action, authAction);
   }
 
   Future<void> _setAndListenForRegistrationToken() async {
@@ -435,4 +483,11 @@ class SignInBloc {
   final passwordController = TextEditingController();
 
   final confirmPasswordController = TextEditingController();
+}
+
+class _ProfilePictureUploadResult {
+  _ProfilePictureUploadResult(this.profilePictureUrl, this.accentColor);
+
+  final String profilePictureUrl;
+  final Color? accentColor;
 }

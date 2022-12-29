@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/util/animation_utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -26,7 +27,7 @@ class ListenPageView extends StatelessWidget {
         );
       },
       getDepth: (selection) => selection == null ? 0 : 1,
-      transitionsBuilder: transition,
+      transitionsBuilder: subPageTransition,
       transitionDuration: const Duration(milliseconds: 100),
       builder: (context, selectedConversation, animation, secondaryAnimation) {
         if (selectedConversation != null) {
@@ -40,25 +41,4 @@ class ListenPageView extends StatelessWidget {
       },
     );
   }
-}
-
-Widget transition(
-  BuildContext context,
-  Animation<double> animation,
-  Animation<double> secondaryAnimation,
-  Widget child,
-) {
-  return SlideTransition(
-    position: Tween(
-      begin: const Offset(1, 0),
-      end: Offset.zero,
-    ).animate(animation),
-    child: SlideTransition(
-      position: Tween(
-        begin: Offset.zero,
-        end: const Offset(-.5, 0),
-      ).animate(secondaryAnimation),
-      child: child,
-    ),
-  );
 }

@@ -35,7 +35,10 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
       child: Column(
         children: [
           _UsernamePicker(form: form),
-          _DisplayNamePicker(form: form),
+          DisplayNamePicker(
+            controller: form.displayNameController,
+            validate: form.validateDisplayName,
+          ),
           _ProfilePicturePicker(form: form),
           AsyncActionWrapper(
             controller: AuthManager.instance.asyncActionController,
@@ -47,12 +50,12 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   child: const Text('Submit'),
                   onTap: form.isValid()
                       ? () async {
-                    await AuthManager.instance.completeUserProfile(
-                      username: form.usernameController.text,
-                      displayName: form.displayNameController.text,
-                      profilePicture: File(form.selectedPhoto!.path),
-                    );
-                  }
+                          await AuthManager.instance.completeUserProfile(
+                            username: form.usernameController.text,
+                            displayName: form.displayNameController.text,
+                            profilePicture: File(form.selectedPhoto!.path),
+                          );
+                        }
                       : null,
                 );
               },
@@ -103,24 +106,7 @@ class _ProfilePicturePicker extends StatelessWidget {
                     ),
                   ],
                 ),
-                onTap: () async {
-                  final XFile? file = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (file == null) {
-                    return;
-                  }
-
-                  final CroppedFile? croppedImage =
-                      await ImageCropper.platform.cropImage(
-                    sourcePath: file.path,
-                    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-                    cropStyle: CropStyle.circle,
-                  );
-                  if (croppedImage == null) {
-                    return;
-                  }
-                  form.selectedPhoto = croppedImage;
-                },
+                onTap: () => onProfilePictureSelected(form),
               ),
             ],
           );
@@ -130,12 +116,14 @@ class _ProfilePicturePicker extends StatelessWidget {
   }
 }
 
-class _DisplayNamePicker extends StatelessWidget {
-  _DisplayNamePicker({
-    required this.form,
+class DisplayNamePicker extends StatelessWidget {
+  DisplayNamePicker({
+    required this.controller,
+    required this.validate,
   });
 
-  final ProfileFormData form;
+  final TextEditingController controller;
+  final String? Function() validate;
   final ValueNotifier<String?> errorMessage = ValueNotifier(null);
 
   @override
@@ -144,9 +132,9 @@ class _DisplayNamePicker extends StatelessWidget {
       valueListenable: errorMessage,
       builder: (context, message, _) {
         return TextField(
-          controller: form.displayNameController,
+          controller: controller,
           onChanged: (displayName) {
-            errorMessage.value = form.validateDisplayName();
+            errorMessage.value = validate();
           },
           decoration: InputDecoration(
             labelText: 'display name',
@@ -184,4 +172,23 @@ class _UsernamePicker extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> onProfilePictureSelected(ProfileFormData form) async {
+  final XFile? file = await ImagePicker()
+      .pickImage(source: ImageSource.gallery);
+  if (file == null) {
+    return;
+  }
+
+  final CroppedFile? croppedImage =
+  await ImageCropper.platform.cropImage(
+    sourcePath: file.path,
+    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+    cropStyle: CropStyle.circle,
+  );
+  if (croppedImage == null) {
+    return;
+  }
+  form.selectedPhoto = croppedImage;
 }

@@ -66,7 +66,7 @@ class CastMenu extends StatelessWidget {
       const ShareButton(),
     ];
     final List<Widget> wideChildren = [
-      _MenuButton(
+      MenuButton(
         icon: Icons.list,
         text: 'view thread',
         onTap: () async {
@@ -74,7 +74,7 @@ class CastMenu extends StatelessWidget {
           ListenBloc.instance.onConversationIdSelected(cast.rootId);
         },
       ),
-      _MenuButton(
+      MenuButton(
         icon: Icons.person,
         text: 'view profile',
         onTap: () async {
@@ -82,7 +82,7 @@ class CastMenu extends StatelessWidget {
         },
       ),
       if (cast.authorId == AuthManager.instance.profile.id)
-        _MenuButton(
+        MenuButton(
           icon: Icons.delete,
           text: 'delete cast',
           onTap: () async {
@@ -91,7 +91,7 @@ class CastMenu extends StatelessWidget {
           },
         ),
       if (cast.externalUri != null)
-        _MenuButton(
+        MenuButton(
           icon: Icons.link,
           text: 'visit link',
           onTap: () async {
@@ -114,7 +114,7 @@ class CastMenu extends StatelessWidget {
             children: [
               if (!wide) ...wideChildren,
               if (cast.authorId != AuthManager.instance.profile.id)
-                _MenuButton(
+                MenuButton(
                   icon: Icons.block,
                   text: 'block user',
                   onTap: () async {
@@ -126,7 +126,7 @@ class CastMenu extends StatelessWidget {
                   },
                 ),
               if (cast.authorId != AuthManager.instance.profile.id)
-                _MenuButton(
+                MenuButton(
                   icon: Icons.report,
                   text: 'report cast',
                   onTap: () async {
@@ -186,7 +186,7 @@ class ReplyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _MenuButton(
+    return MenuButton(
       icon: Icons.reply,
       text: 'reply',
       onTap: () async {
@@ -207,7 +207,7 @@ class ShareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _MenuButton(
+    return MenuButton(
       showLabel: showLabel,
       icon: Platform.isIOS ? Icons.ios_share : Icons.share,
       text: 'share',
@@ -218,18 +218,20 @@ class ShareButton extends StatelessWidget {
   }
 }
 
-class _MenuButton extends StatelessWidget {
-  const _MenuButton({
+class MenuButton extends StatelessWidget {
+  const MenuButton({
     this.showLabel,
     required this.icon,
     required this.text,
     required this.onTap,
+    this.isEnabled = true,
   });
 
   final bool? showLabel;
   final IconData icon;
   final String text;
   final AsyncCallback onTap;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -237,28 +239,35 @@ class _MenuButton extends StatelessWidget {
     if (showLabel == false || theme?.showLabel == false) {
       return IconButton(
         icon: Icon(icon),
-        onPressed: () {
-          theme?.onTapSideEffect?.call();
-          onTap();
-        },
+        onPressed: !isEnabled
+            ? null
+            : () {
+                theme?.onTapSideEffect?.call();
+                onTap();
+              },
       );
     }
-    return TextButton(
-      onPressed: () {
-        theme?.onTapSideEffect?.call();
-        onTap();
-      },
-      // Don't let text button inject it's own theme.
-      child: IconTheme(
-        data: IconTheme.of(context),
-        child: DefaultTextStyle(
-          style: DefaultTextStyle.of(context).style,
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.white),
-              const SizedBox(width: 4),
-              Text(text),
-            ],
+    return Opacity(
+      opacity: isEnabled ? 1 : .5,
+      child: TextButton(
+        onPressed: !isEnabled
+            ? null
+            : () {
+                theme?.onTapSideEffect?.call();
+                onTap();
+              },
+        // Don't let text button inject it's own theme.
+        child: IconTheme(
+          data: IconTheme.of(context),
+          child: DefaultTextStyle(
+            style: DefaultTextStyle.of(context).style,
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 4),
+                Text(text),
+              ],
+            ),
           ),
         ),
       ),
