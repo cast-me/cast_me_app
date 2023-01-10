@@ -23,7 +23,7 @@ import 'package:cast_me_app/widgets/listen_page/topics_view.dart';
 class PostBloc {
   PostBloc._();
 
-  static final instance = PostBloc._();
+  static PostBloc instance = PostBloc._();
 
   ValueListenable<Future<CastFile>?> get castFile => _castFile;
 
@@ -52,6 +52,9 @@ class PostBloc {
   }
 
   Future<void> clearFiles() async {
+    if (castFile.value == null) {
+      return;
+    }
     (await _castFile.value!).trim.removeListener(_onTrimChanged);
     _castFile.value = null;
     await ClipAudioPlayer.instance.setFile(null);
@@ -127,5 +130,10 @@ class PostBloc {
     titleText.value = '';
     // Gross hack to force the title field to rebuild from scratch.
     titleFieldKey = UniqueKey();
+  }
+
+  @visibleForTesting
+  void overrideCastFile(CastFile castFile) {
+    _castFile.value = Future.value(castFile);
   }
 }

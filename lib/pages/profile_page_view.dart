@@ -38,7 +38,7 @@ class ProfilePageView extends StatelessWidget {
       maintainHistory: true,
       builder: (context, form, animation, secondaryAnimation) {
         return CastMePage(
-          headerText: form?.apply((_) => 'Edit Profile'),
+          headerText: form.apply((_) => 'Edit Profile'),
           child: form == null
               ? const _ProfilePageBase()
               : EditProfileView(form: form),

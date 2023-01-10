@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:adaptive_material/adaptive_material.dart';
-import 'package:badges/badges.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
@@ -227,43 +226,26 @@ class TopicChip extends StatelessWidget {
         AdaptiveMaterial.of(context) == AdaptiveMaterialType.background
             ? AdaptiveMaterialType.surface.colorOf(context)
             : AdaptiveMaterialType.background.colorOf(context);
-    final TopicThemeData? theme = TopicViewTheme.of(context);
     return DefaultTextStyle(
       style: const TextStyle(color: Colors.white),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: Badge(
-          // TODO: this should be automatically refreshed when casts are
-          //   listened to or added.
-          badgeContent: Text(
-            topic.newCastCount.toString(),
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+        child: FilterChip(
+          showCheckmark: false,
+          label: Text(
+            topic.name,
+            style: TextStyle(
+              fontWeight: isSelected ? FontWeight.bold : null,
             ),
           ),
-          showBadge:
-              theme?.showNewCastsCount != false && topic.newCastCount != 0,
-          position: const BadgePosition(top: 0, end: -7),
-          badgeColor: Colors.white,
-          toAnimate: false,
-          child: FilterChip(
-            showCheckmark: false,
-            label: Text(
-              topic.name,
-              style: TextStyle(
-                fontWeight: isSelected ? FontWeight.bold : null,
-              ),
-            ),
-            backgroundColor: color,
-            selectedColor: color,
-            side: BorderSide(
-              width: 1,
-              color: isSelected ? Colors.white : Colors.transparent,
-            ),
-            selected: isSelected,
-            onSelected: isSelected || isEnabled ? (_) => onTap() : null,
+          backgroundColor: color,
+          selectedColor: color,
+          side: BorderSide(
+            width: 1,
+            color: isSelected ? Colors.white : Colors.transparent,
           ),
+          selected: isSelected,
+          onSelected: isSelected || isEnabled ? (_) => onTap() : null,
         ),
       ),
     );

@@ -22,7 +22,7 @@ import 'package:cast_me_app/business_logic/post_bloc.dart';
 class CastMeBloc {
   CastMeBloc._();
 
-  static final instance = CastMeBloc._();
+  static CastMeBloc instance = CastMeBloc._();
 
   final ValueNotifier<SelectedProfile?> _selectedProfile = ValueNotifier(null);
 
@@ -118,6 +118,11 @@ class CastMeBloc {
         autoplay: true,
       );
     }
+  }
+
+  @visibleForTesting
+  static void reset() {
+    CastMeBloc.instance = CastMeBloc._();
   }
 }
 

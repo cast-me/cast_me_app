@@ -19,7 +19,7 @@ import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
 class ListenBloc {
   ListenBloc._();
 
-  static final instance = ListenBloc._();
+  static ListenBloc instance = ListenBloc._();
 
   ValueListenable<Cast?> get currentCast =>
       CastAudioPlayer.instance.currentCast;
@@ -163,6 +163,11 @@ class ListenBloc {
       duration: const Duration(milliseconds: 50),
       curve: Curves.linear,
     );
+  }
+
+  @visibleForTesting
+  static void reset() {
+    ListenBloc.instance = ListenBloc._();
   }
 }
 

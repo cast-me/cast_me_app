@@ -48,11 +48,7 @@ class _Selector extends StatelessWidget {
                   child: const Text('for you'),
                   currentIndex: controller.value,
                   onTap: () {
-                    controller.animateToPage(
-                      0,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.linear,
-                    );
+                    ListenBloc.instance.onListenPageChanged(0);
                   },
                 ),
               ),
@@ -62,11 +58,7 @@ class _Selector extends StatelessWidget {
                   child: const Text('explore'),
                   currentIndex: controller.value,
                   onTap: () {
-                    controller.animateToPage(
-                      1,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.linear,
-                    );
+                    ListenBloc.instance.onListenPageChanged(1);
                   },
                 ),
               ),

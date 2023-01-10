@@ -47,7 +47,7 @@ class CastAudioPlayer {
     });
   }
 
-  static final CastAudioPlayer instance = CastAudioPlayer._();
+  static CastAudioPlayer instance = CastAudioPlayer._();
 
   static const _playbackSpeedKey = 'playback_speed';
 
@@ -247,6 +247,12 @@ class CastAudioPlayer {
           _player.durationStream,
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
+
+  @visibleForTesting
+  static void reset() {
+    instance._player.dispose();
+    instance = CastAudioPlayer._();
+  }
 }
 
 class PositionData {

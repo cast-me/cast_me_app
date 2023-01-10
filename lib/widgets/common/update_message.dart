@@ -38,6 +38,8 @@ class UpdateMessage extends StatelessWidget {
 
   static const _firstOpenStr = 'update_message_first_open';
 
+  static bool _isEnabled = true;
+
   static String get _hasDisplayedStr => 'update_message_v$_installedVersion';
 
   /// Whether or not this is the first ever open of the app, in which case we
@@ -58,34 +60,41 @@ class UpdateMessage extends StatelessWidget {
     _hasDisplayed = preferences.getBool(_hasDisplayedStr) ?? false;
   }
 
+  @visibleForTesting
+  static void disable() {
+    _isEnabled = false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_displayFirstOpenMsg) {
-      _displayFirstOpenMsg = false;
-      CastMeModal.showMessage(
-        context,
-        const WelcomeMessageContent(),
-        postFrame: true,
-      );
-    } else if (!_hasDisplayed && !_displayFirstOpenMsg) {
-      final Widget? messageForVersion = updateMessages[_installedVersion];
-      if (messageForVersion != null) {
+    if (_isEnabled) {
+      if (_displayFirstOpenMsg) {
+        _displayFirstOpenMsg = false;
         CastMeModal.showMessage(
           context,
-          UpdateMessageContent(child: messageForVersion),
+          const WelcomeMessageContent(),
           postFrame: true,
         );
+      } else if (!_hasDisplayed && !_displayFirstOpenMsg) {
+        final Widget? messageForVersion = updateMessages[_installedVersion];
+        if (messageForVersion != null) {
+          CastMeModal.showMessage(
+            context,
+            UpdateMessageContent(child: messageForVersion),
+            postFrame: true,
+          );
+        }
+      }
+      if (_displayFirstOpenMsg || !_hasDisplayed) {
+        SharedPreferences.getInstance().then((p) {
+          p.setBool(_firstOpenStr, false);
+          p.setBool(_hasDisplayedStr, true);
+        });
+        // Override locally too so that we don't re-display during this session.
+        _hasDisplayed = true;
       }
     }
-    if (_displayFirstOpenMsg || !_hasDisplayed) {
-      SharedPreferences.getInstance().then((p) {
-        p.setBool(_firstOpenStr, false);
-        p.setBool(_hasDisplayedStr, true);
-      });
-      // Override locally too so that we don't re-display during this session.
-      _hasDisplayed = true;
-    }
-    return Container(child: child);
+    return child;
   }
 }
 
