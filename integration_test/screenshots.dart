@@ -42,7 +42,7 @@ Future<void> main() async {
     return isInitialized;
   });
 
-  tearDownAll(() {
+  tearDown(() {
     CastAudioPlayer.reset();
     CastMeBloc.reset();
     ListenBloc.reset();
@@ -61,48 +61,47 @@ Future<void> main() async {
         outputWidth: 1284,
         outputHeight: 2778,
       ),
-      //ScreenshotConfig(
-      //  category: '5.8',
-      //  device: Devices.ios.iPhone13,
-      //  outputWidth: 1170,
-      //  outputHeight: 2532,
-      //),
-      //ScreenshotConfig(
-      //  category: '5.5',
-      //  // Technically not the correct device but it's the same aspect ratio.
-      //  device: Devices.ios.iPhoneSE,
-      //  outputWidth: 1242,
-      //  outputHeight: 2208,
-      //),
-      //ScreenshotConfig(
-      //  category: '12.9 gen2',
-      //  device: Devices.ios.iPad12InchesGen2,
-      //  outputHeight: 2732,
-      //  outputWidth: 2048,
-      //),
-      //ScreenshotConfig(
-      //  category: '12.9 gen4',
-      //  device: Devices.ios.iPad12InchesGen4,
-      //  outputHeight: 2732,
-      //  outputWidth: 2048,
-      //),
+      ScreenshotConfig(
+        category: '5.8',
+        device: Devices.ios.iPhone13,
+        outputWidth: 1170,
+        outputHeight: 2532,
+      ),
+      ScreenshotConfig(
+        category: '5.5',
+        // Technically not the correct device but it's the same aspect ratio.
+        device: Devices.ios.iPhoneSE,
+        outputWidth: 1242,
+        outputHeight: 2208,
+      ),
+      ScreenshotConfig(
+        category: '12.9 gen2',
+        device: Devices.ios.iPad12InchesGen2,
+        outputHeight: 2732,
+        outputWidth: 2048,
+      ),
+      ScreenshotConfig(
+        category: '12.9 gen4',
+        device: Devices.ios.iPad12InchesGen4,
+        outputHeight: 2732,
+        outputWidth: 2048,
+      ),
       // Android.
-      //ScreenshotConfig(
-      //  category: '',
-      //  device: Devices.android.onePlus8Pro,
-      //  outputHeight: 3168,
-      //  outputWidth: 1440,
-      //),
-      //ScreenshotConfig(
-      //  category: '10',
-      //  device: Devices.android.largeTablet,
-      //),
-      //ScreenshotConfig(
-      //  category: '7',
-      //  device: Devices.android.mediumTablet,
-      //),
+      ScreenshotConfig(
+        category: '',
+        device: Devices.android.onePlus8Pro,
+        outputHeight: 3168,
+        outputWidth: 1440,
+      ),
+      ScreenshotConfig(
+        category: '10',
+        device: Devices.android.largeTablet,
+      ),
+      ScreenshotConfig(
+        category: '7',
+        device: Devices.android.mediumTablet,
+      ),
     ]) {
-      int testIndex = 0;
       String screenshotName(String suffix) {
         return jsonEncode(
           ScreenshotIdentifier(
@@ -120,7 +119,7 @@ Future<void> main() async {
         );
       }
 
-      void takeScreenshot(String name, WidgetTesterCallback callback) {
+      void takeScreenshot(int i, String name, WidgetTesterCallback callback) {
         testWidgets(
           '($locale) (${config.device.name}) - $name.',
           (tester) async {
@@ -129,17 +128,17 @@ Future<void> main() async {
                 name.toLowerCase().replaceAll(' ', '_');
             await tester.pump(const Duration(milliseconds: 1000));
             await binding.takeScreenshot(
-              screenshotName('${++testIndex}-$sanitizedName'),
+              screenshotName('$i-$sanitizedName'),
             );
           },
         );
       }
 
-      takeScreenshot('for_you', (WidgetTester tester) async {
+      takeScreenshot(0, 'for_you', (WidgetTester tester) async {
         // English search page.
         await tester.pumpWidget(
           CastMeScreenshotTemplate(
-            headerText: 'Listen to audio content personalized for you! S',
+            headerText: 'Listen to audio content personalized for you!',
             config: config,
             locale: locale,
           ),
@@ -148,7 +147,7 @@ Future<void> main() async {
         await tester.pumpAndSettle();
       });
 
-      takeScreenshot('explore', (WidgetTester tester) async {
+      takeScreenshot(1, 'explore', (WidgetTester tester) async {
         // English search page.
         await tester.pumpWidget(
           CastMeScreenshotTemplate(
@@ -165,7 +164,7 @@ Future<void> main() async {
         await tester.pumpAndSettle();
       });
 
-      takeScreenshot('post', (WidgetTester tester) async {
+      takeScreenshot(2, 'post', (WidgetTester tester) async {
         // English search page.
         await tester.pumpWidget(
           CastMeScreenshotTemplate(
