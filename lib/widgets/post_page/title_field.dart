@@ -17,6 +17,7 @@ class TitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PartialAutocomplete<Profile>(
+      initialValue: TextEditingValue(text: titleText.value),
       optionsBuilder: (value) async {
         titleText.value = value.text;
         // TODO(caseycrogers): support auto complete within a string

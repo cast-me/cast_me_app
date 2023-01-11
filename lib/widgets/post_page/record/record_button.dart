@@ -22,6 +22,9 @@ class RecordButton extends StatelessWidget {
           if (recording) {
             return const Text('Stop');
           }
+          if (PostBloc.instance.castFile.value != null) {
+            return const Text('re-record');
+          }
           return const Text('record');
         },
       ),

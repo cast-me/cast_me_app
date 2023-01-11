@@ -35,55 +35,7 @@ const Color castMeGrey = Color.fromARGB(255, 25, 25, 31);
 Future<void> main() async {
   await runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      if (Platform.isIOS &&
-          (await FirebaseMessaging.instance.getNotificationSettings())
-                  .authorizationStatus ==
-              AuthorizationStatus.notDetermined) {
-        await FirebaseMessaging.instance.requestPermission();
-      }
-      await Supabase.initialize(
-        url: 'https://magmdywarmnzoatbuesp.supabase.co',
-        anonKey:
-            // ignore: lines_longer_than_80_chars
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZ21keXdhcm1uem9hdGJ1ZXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk3MjQwODIsImV4cCI6MTk3NTMwMDA4Mn0.oclwgOig1Vz8rDDdmf5Is3-ln2ijvfPdkYvUyIA2ZKU',
-      );
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
-        ),
-      );
-      await SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top],
-      );
-      await AuthManager.instance.initialize();
-      // Ensure analytics has the user id set.
-      await Analytics.instance.setUserId(AuthManager.instance.user?.id);
-      AuthManager.instance.addListener(() {
-        Analytics.instance.setUserId(AuthManager.instance.user?.id);
-      });
-
-      await AudioService.init(
-        builder: () => BackgroundAudioHandler.instance,
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.cast.me.app.channel.audio',
-          androidNotificationChannelName: 'Cast playback',
-        ),
-      );
-      await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
-      await DeepLinkHandler.register(CastMeBloc.instance.onLinkPath);
-      await UpdateMessage.register(PackageInfo.fromPlatform());
-      await disableAnalyticsIfTestDevice();
+      await initialize();
       runApp(const CastMeApp());
     },
     (error, stack) {
@@ -91,6 +43,20 @@ Future<void> main() async {
     },
   );
 }
+
+final ColorScheme kColorScheme =  ColorScheme(
+  brightness: Brightness.dark,
+  primary: Colors.black,
+  onPrimary: Colors.white,
+  secondary: Colors.white,
+  onSecondary: Colors.grey.shade700,
+  surface: castMeGrey,
+  onSurface: Colors.white,
+  background: Colors.black,
+  onBackground: Colors.white,
+  error: Colors.red.shade200,
+  onError: Colors.red.shade900,
+);
 
 class CastMeApp extends StatelessWidget {
   const CastMeApp({super.key});
@@ -132,19 +98,7 @@ class CastMeApp extends StatelessWidget {
             ),
           ),
         ),
-        colorScheme: ColorScheme(
-          brightness: Brightness.dark,
-          primary: Colors.black,
-          onPrimary: Colors.white,
-          secondary: Colors.white,
-          onSecondary: Colors.grey.shade700,
-          surface: castMeGrey,
-          onSurface: Colors.white,
-          background: Colors.black,
-          onBackground: Colors.white,
-          error: Colors.red.shade200,
-          onError: Colors.red.shade900,
-        ),
+        colorScheme: kColorScheme,
       ),
       home: FirebaseMessageHandler(
         onMessage: CastMeBloc.instance.onFirebaseMessage,
@@ -157,4 +111,56 @@ class CastMeApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> initialize() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  if (Platform.isIOS &&
+      (await FirebaseMessaging.instance.getNotificationSettings())
+              .authorizationStatus ==
+          AuthorizationStatus.notDetermined) {
+    await FirebaseMessaging.instance.requestPermission();
+  }
+  await Supabase.initialize(
+    url: 'https://magmdywarmnzoatbuesp.supabase.co',
+    anonKey:
+        // ignore: lines_longer_than_80_chars
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZ21keXdhcm1uem9hdGJ1ZXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk3MjQwODIsImV4cCI6MTk3NTMwMDA4Mn0.oclwgOig1Vz8rDDdmf5Is3-ln2ijvfPdkYvUyIA2ZKU',
+  );
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ),
+  );
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top],
+  );
+  await AuthManager.instance.initialize();
+// Ensure analytics has the user id set.
+  await Analytics.instance.setUserId(AuthManager.instance.user?.id);
+  AuthManager.instance.addListener(() {
+    Analytics.instance.setUserId(AuthManager.instance.user?.id);
+  });
+
+  await AudioService.init(
+    builder: () => BackgroundAudioHandler.instance,
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.cast.me.app.channel.audio',
+      androidNotificationChannelName: 'Cast playback',
+    ),
+  );
+  await SharedMediaHandler.register(CastMeBloc.instance.onSharedFile);
+  await DeepLinkHandler.register(CastMeBloc.instance.onLinkPath);
+  await UpdateMessage.register(PackageInfo.fromPlatform());
+  await disableAnalyticsIfTestDevice();
 }
