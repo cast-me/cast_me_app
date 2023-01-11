@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/util/animation_utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/pages/conversation_page_view.dart';
+import 'package:cast_me_app/util/animation_utils.dart';
 import 'package:cast_me_app/widgets/listen_page/listen_sub_pages.dart';
 
 class ListenPageView extends StatelessWidget {

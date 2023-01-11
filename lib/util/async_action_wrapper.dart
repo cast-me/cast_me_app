@@ -1,11 +1,11 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/util/listenable_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
+import 'package:cast_me_app/widgets/common/cast_menu.dart';
 
 class AsyncActionWrapper extends StatefulWidget {
   const AsyncActionWrapper({

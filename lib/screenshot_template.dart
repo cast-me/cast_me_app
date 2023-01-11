@@ -1,16 +1,19 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/main.dart';
-import 'package:cast_me_app/widgets/common/update_message.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:device_frame/device_frame.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
+import 'package:cast_me_app/main.dart';
+import 'package:cast_me_app/widgets/common/update_message.dart';
 
 Future<void> main() async {
   WidgetsApp.debugAllowBannerOverride = false;
   WidgetsFlutterBinding.ensureInitialized();
+  // ignore: invalid_use_of_visible_for_testing_member
   UpdateMessage.disable();
   await initialize();
   await initializeAuth();
@@ -58,7 +61,7 @@ class ScreenshotTemplate extends StatelessWidget {
                 MediaQuery.of(context).devicePixelRatio,
             child: Transform.scale(
               alignment: Alignment.topLeft,
-              // Separate x and y because the two may be off by a rounding error.
+              // Separate x and y because they may be off by a rounding error.
               scaleX: (outputWidth / device.screenSize.width) /
                   MediaQuery.of(context).devicePixelRatio,
               scaleY: (outputHeight / device.screenSize.height) /

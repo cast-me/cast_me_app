@@ -2,11 +2,11 @@
 import 'dart:ui';
 
 // Package imports:
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 
