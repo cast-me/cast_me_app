@@ -1,7 +1,10 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:flutter/foundation.dart';
 
 class ProfileBloc {
   ProfileBloc._();
