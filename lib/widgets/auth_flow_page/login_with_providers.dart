@@ -24,6 +24,11 @@ class LoginWithProviders extends StatelessWidget {
           text: 'Login with Google',
           signIn: manager.googleSignIn,
         ),
+        ProviderButton(
+          provider: Buttons.Apple,
+          text: 'Login with Apple',
+          signIn: manager.appleSignIn,
+        ),
         // Temporarily disabled because they're not working.
         //ProviderButton(
         //  provider: Buttons.FacebookNew,

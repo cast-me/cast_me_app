@@ -439,6 +439,10 @@ class AuthManager extends ChangeNotifier {
     await _signInWithProvider(provider: Provider.twitter);
   }
 
+  Future<void> appleSignIn() async {
+    await _signInWithProvider(provider: Provider.apple);
+  }
+
   Future<void> _signInWithProvider({required Provider provider}) async {
     await _authActionWrapper(
       'signIn',
