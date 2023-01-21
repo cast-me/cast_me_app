@@ -436,7 +436,7 @@ class PreviewThumbnail extends StatelessWidget {
         aspectRatio: 1,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(2),
-          child: cast.imageUrl != null && false
+          child: cast.imageUrl != null
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
