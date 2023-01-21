@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -251,12 +252,17 @@ class CastView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 alignment: Alignment.topRight,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(cast.imageUrl),
-                  ),
-                ),
+                decoration: cast.imageUrl != null
+                    ? BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(cast.imageUrl!),
+                        ),
+                      )
+                    : null,
+                child: cast.imageUrl == null
+                    ? DefaultPicture(displayName: cast.authorDisplayName)
+                    : null,
               ),
             ),
           ),
@@ -388,8 +394,8 @@ class HowOldLine extends StatelessWidget {
     return Text(
       oldString(),
       style: Theme.of(context).textTheme.bodyText2!.copyWith(
-        color: AdaptiveMaterial.secondaryOnColorOf(context),
-      ),
+            color: AdaptiveMaterial.secondaryOnColorOf(context),
+          ),
     );
   }
 
@@ -430,14 +436,16 @@ class PreviewThumbnail extends StatelessWidget {
         aspectRatio: 1,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(2),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(cast.imageUrl),
-              ),
-            ),
-          ),
+          child: cast.imageUrl != null && false
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(cast.imageUrl!),
+                    ),
+                  ),
+                )
+              : DefaultPicture(displayName: cast.authorDisplayName),
         ),
       ),
     );

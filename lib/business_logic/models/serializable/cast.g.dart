@@ -19,7 +19,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
               $checkedConvert('author_username', (v) => v as String),
           authorDisplayName:
               $checkedConvert('author_display_name', (v) => v as String),
-          imageUrl: $checkedConvert('image_url', (v) => v as String),
+          imageUrl: $checkedConvert('image_url', (v) => v as String?),
           accentColorBase:
               $checkedConvert('accent_color_base', (v) => v as String?),
           viewCount: $checkedConvert('view_count', (v) => v as int),

@@ -41,9 +41,6 @@ class ProfileFormData extends ChangeNotifier {
     if (validateDisplayName() != null) {
       return false;
     }
-    if (selectedPhoto == null) {
-      return false;
-    }
     return true;
   }
 

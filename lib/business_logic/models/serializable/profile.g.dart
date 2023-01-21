@@ -15,7 +15,7 @@ _$_Profile _$$_ProfileFromJson(Map<String, dynamic> json) => $checkedCreate(
           username: $checkedConvert('username', (v) => v as String),
           displayName: $checkedConvert('display_name', (v) => v as String),
           profilePictureUrl:
-              $checkedConvert('profile_picture_url', (v) => v as String),
+              $checkedConvert('profile_picture_url', (v) => v as String?),
           accentColorBase:
               $checkedConvert('accent_color_base', (v) => v as String?),
           deleted: $checkedConvert('deleted', (v) => v as bool),

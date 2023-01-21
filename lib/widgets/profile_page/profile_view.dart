@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/util/object_utils.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -18,7 +20,11 @@ import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
 
 class ProfilePreview extends StatelessWidget {
-  const ProfilePreview({super.key, required this.profile, this.onTap});
+  const ProfilePreview({
+    super.key,
+    required this.profile,
+    this.onTap,
+  });
 
   final Profile profile;
   final VoidCallback? onTap;
@@ -39,10 +45,15 @@ class ProfilePreview extends StatelessWidget {
               child: Container(
                 height: 50,
                 width: 50,
+                child: profile.profilePictureUrl == null
+                    ? DefaultPicture(displayName: profile.displayName)
+                    : null,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(profile.profilePictureUrl),
+                  image: profile.profilePictureUrl.apply(
+                    (url) => DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(url),
+                    ),
                   ),
                 ),
               ),

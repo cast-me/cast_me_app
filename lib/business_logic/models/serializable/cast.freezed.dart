@@ -28,7 +28,7 @@ mixin _$Cast {
   String get rootId => throw _privateConstructorUsedError;
   String get authorUsername => throw _privateConstructorUsedError;
   String get authorDisplayName => throw _privateConstructorUsedError;
-  String get imageUrl => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
   String? get accentColorBase => throw _privateConstructorUsedError;
   int get viewCount => throw _privateConstructorUsedError;
   bool get hasViewed => throw _privateConstructorUsedError;
@@ -63,7 +63,7 @@ abstract class $CastCopyWith<$Res> {
       String rootId,
       String authorUsername,
       String authorDisplayName,
-      String imageUrl,
+      String? imageUrl,
       String? accentColorBase,
       int viewCount,
       bool hasViewed,
@@ -98,7 +98,7 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? accentColorBase = freezed,
     Object? viewCount = null,
     Object? hasViewed = null,
@@ -138,10 +138,10 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
           ? _value.authorDisplayName
           : authorDisplayName // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       accentColorBase: freezed == accentColorBase
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
@@ -211,7 +211,7 @@ abstract class _$$_CastCopyWith<$Res> implements $CastCopyWith<$Res> {
       String rootId,
       String authorUsername,
       String authorDisplayName,
-      String imageUrl,
+      String? imageUrl,
       String? accentColorBase,
       int viewCount,
       bool hasViewed,
@@ -242,7 +242,7 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? accentColorBase = freezed,
     Object? viewCount = null,
     Object? hasViewed = null,
@@ -282,10 +282,10 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
           ? _value.authorDisplayName
           : authorDisplayName // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       accentColorBase: freezed == accentColorBase
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
@@ -388,7 +388,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   @override
   final String authorDisplayName;
   @override
-  final String imageUrl;
+  final String? imageUrl;
   @override
   final String? accentColorBase;
   @override
@@ -563,7 +563,7 @@ abstract class _Cast extends Cast {
       required final String rootId,
       required final String authorUsername,
       required final String authorDisplayName,
-      required final String imageUrl,
+      required final String? imageUrl,
       required final String? accentColorBase,
       required final int viewCount,
       required final bool hasViewed,
@@ -594,7 +594,7 @@ abstract class _Cast extends Cast {
   @override
   String get authorDisplayName;
   @override
-  String get imageUrl;
+  String? get imageUrl;
   @override
   String? get accentColorBase;
   @override

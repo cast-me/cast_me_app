@@ -132,7 +132,7 @@ class AuthManager extends ChangeNotifier {
   Future<void> completeUserProfile({
     required String username,
     required String displayName,
-    required File profilePicture,
+    required File? profilePicture,
   }) async {
     await _authActionWrapper(
       'completeUserProfile',
@@ -142,14 +142,15 @@ class AuthManager extends ChangeNotifier {
           supabase.auth.currentUser != null,
           'You are not properly logged in, please report this error.',
         );
-        final _ProfilePictureUploadResult uploadResult =
-            await _uploadProfilePicture(profilePicture);
+        final _ProfilePictureUploadResult? uploadResult = profilePicture != null
+            ? await _uploadProfilePicture(profilePicture)
+            : null;
         final Profile completedProfile = Profile(
           id: supabase.auth.currentUser!.id,
           username: username,
           displayName: displayName,
-          profilePictureUrl: uploadResult.profilePictureUrl,
-          accentColorBase: uploadResult.accentColor?.serialize,
+          profilePictureUrl: uploadResult?.profilePictureUrl,
+          accentColorBase: uploadResult?.accentColor?.serialize,
           deleted: false,
         );
         await profilesQuery.upsert(completedProfile.toJson());
