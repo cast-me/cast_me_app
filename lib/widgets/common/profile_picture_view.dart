@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/util/object_utils.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -28,10 +30,26 @@ class ProfilePictureView extends StatelessWidget {
           ? ValueNotifier<CroppedFile?>(null)
           : form!.select((f) => f.selectedPhoto),
       builder: (context, selectedPhoto, child) {
-        final ImageProvider<Object> imageProvider = form?.selectedPhoto != null
-        // Not sure why this cast is necessary but it barfs without it.
-            ? FileImage(form!.selectedPhoto!.file) as ImageProvider<Object>
-            : CachedNetworkImageProvider(profile.profilePictureUrl);
+        final ImageProvider<Object>? imageProvider = form?.selectedPhoto != null
+            ? FileImage(form!.selectedPhoto!.file)
+            : profile.profilePictureUrl.apply(
+                (url) => CachedNetworkImageProvider(url),
+              );
+        if (imageProvider == null) {
+          return _ProfilePictureWrapper(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: DefaultPicture(displayName: profile.displayName),
+                ),
+                if (form != null)
+                  Positioned.fill(
+                    child: _PictureEditButton(form: form!),
+                  ),
+              ],
+            ),
+          );
+        }
         return ProfilePictureBaseView(
           imageProvider: imageProvider,
           child: form != null ? _PictureEditButton(form: form!) : null,
@@ -41,26 +59,48 @@ class ProfilePictureView extends StatelessWidget {
   }
 }
 
+class _ProfilePictureWrapper extends StatelessWidget {
+  const _ProfilePictureWrapper({
+    this.child,
+    this.decoration,
+  });
+
+  final Widget? child;
+  final Decoration? decoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(75),
+      child: Container(
+        height: 150,
+        width: 150,
+        child: child,
+      ),
+    );
+  }
+}
+
 class ProfilePictureBaseView extends StatelessWidget {
   const ProfilePictureBaseView({
     super.key,
-    required this.imageProvider,
+    this.imageProvider,
     this.child,
   });
 
-  final ImageProvider imageProvider;
+  final ImageProvider? imageProvider;
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: Container(
-        height: 150,
-        width: 150,
+      child: _ProfilePictureWrapper(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: imageProvider,
+          image: imageProvider.apply(
+            (i) => DecorationImage(
+              fit: BoxFit.cover,
+              image: i,
+            ),
           ),
         ),
         child: child,
@@ -81,7 +121,10 @@ class _PictureEditButton extends StatelessWidget {
       onTap: () => onProfilePictureSelected(form),
       child: Container(
         color: Colors.black54,
-        child: const Icon(Icons.image_search),
+        child: const Icon(
+          Icons.image_search,
+          size: 40,
+        ),
       ),
     );
   }

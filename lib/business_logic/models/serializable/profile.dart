@@ -21,7 +21,7 @@ class Profile with _$Profile {
     required String id,
     required String username,
     required String displayName,
-    required String profilePictureUrl,
+    required String? profilePictureUrl,
     required String? accentColorBase,
     required bool deleted,
   }) = _Profile;
@@ -34,7 +34,7 @@ extension ProfileUtils on Profile {
   Color get accentColor =>
       ColorUtils.deserialize(accentColorBase ?? 'FFFFFFFF');
 
-  bool get isComplete => displayName.isNotEmpty && profilePictureUrl.isNotEmpty;
+  bool get isComplete => displayName.isNotEmpty;
 
   // The auth-specific user data.
   User get authUser => supabase.auth.currentUser!;

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -53,7 +54,8 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           await AuthManager.instance.completeUserProfile(
                             username: form.usernameController.text,
                             displayName: form.displayNameController.text,
-                            profilePicture: File(form.selectedPhoto!.path),
+                            profilePicture:
+                                form.selectedPhoto.apply((p) => File(p.path)),
                           );
                         }
                       : null,
@@ -101,7 +103,7 @@ class _ProfilePicturePicker extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       photo == null
-                          ? 'Select profile picture'
+                          ? 'Select profile picture (optional)'
                           : 'Replace profile picture',
                     ),
                   ],
@@ -175,14 +177,13 @@ class _UsernamePicker extends StatelessWidget {
 }
 
 Future<void> onProfilePictureSelected(ProfileFormData form) async {
-  final XFile? file = await ImagePicker()
-      .pickImage(source: ImageSource.gallery);
+  final XFile? file =
+      await ImagePicker().pickImage(source: ImageSource.gallery);
   if (file == null) {
     return;
   }
 
-  final CroppedFile? croppedImage =
-  await ImageCropper.platform.cropImage(
+  final CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
     sourcePath: file.path,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
     cropStyle: CropStyle.circle,

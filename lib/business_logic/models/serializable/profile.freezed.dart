@@ -23,7 +23,7 @@ mixin _$Profile {
   String get id => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
   String get displayName => throw _privateConstructorUsedError;
-  String get profilePictureUrl => throw _privateConstructorUsedError;
+  String? get profilePictureUrl => throw _privateConstructorUsedError;
   String? get accentColorBase => throw _privateConstructorUsedError;
   bool get deleted => throw _privateConstructorUsedError;
 
@@ -41,7 +41,7 @@ abstract class $ProfileCopyWith<$Res> {
       {String id,
       String username,
       String displayName,
-      String profilePictureUrl,
+      String? profilePictureUrl,
       String? accentColorBase,
       bool deleted});
 }
@@ -62,7 +62,7 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? id = null,
     Object? username = null,
     Object? displayName = null,
-    Object? profilePictureUrl = null,
+    Object? profilePictureUrl = freezed,
     Object? accentColorBase = freezed,
     Object? deleted = null,
   }) {
@@ -79,10 +79,10 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      profilePictureUrl: null == profilePictureUrl
+      profilePictureUrl: freezed == profilePictureUrl
           ? _value.profilePictureUrl
           : profilePictureUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       accentColorBase: freezed == accentColorBase
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
@@ -106,7 +106,7 @@ abstract class _$$_ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       {String id,
       String username,
       String displayName,
-      String profilePictureUrl,
+      String? profilePictureUrl,
       String? accentColorBase,
       bool deleted});
 }
@@ -124,7 +124,7 @@ class __$$_ProfileCopyWithImpl<$Res>
     Object? id = null,
     Object? username = null,
     Object? displayName = null,
-    Object? profilePictureUrl = null,
+    Object? profilePictureUrl = freezed,
     Object? accentColorBase = freezed,
     Object? deleted = null,
   }) {
@@ -141,10 +141,10 @@ class __$$_ProfileCopyWithImpl<$Res>
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      profilePictureUrl: null == profilePictureUrl
+      profilePictureUrl: freezed == profilePictureUrl
           ? _value.profilePictureUrl
           : profilePictureUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       accentColorBase: freezed == accentColorBase
           ? _value.accentColorBase
           : accentColorBase // ignore: cast_nullable_to_non_nullable
@@ -178,7 +178,7 @@ class _$_Profile implements _Profile {
   @override
   final String displayName;
   @override
-  final String profilePictureUrl;
+  final String? profilePictureUrl;
   @override
   final String? accentColorBase;
   @override
@@ -230,7 +230,7 @@ abstract class _Profile implements Profile {
       {required final String id,
       required final String username,
       required final String displayName,
-      required final String profilePictureUrl,
+      required final String? profilePictureUrl,
       required final String? accentColorBase,
       required final bool deleted}) = _$_Profile;
 
@@ -243,7 +243,7 @@ abstract class _Profile implements Profile {
   @override
   String get displayName;
   @override
-  String get profilePictureUrl;
+  String? get profilePictureUrl;
   @override
   String? get accentColorBase;
   @override

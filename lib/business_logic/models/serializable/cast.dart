@@ -11,6 +11,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/color_utils.dart';
 import 'package:cast_me_app/util/uri_utils.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 
 part 'cast.freezed.dart';
 
@@ -29,7 +30,7 @@ class Cast with _$Cast {
     required String rootId,
     required String authorUsername,
     required String authorDisplayName,
-    required String imageUrl,
+    required String? imageUrl,
     required String? accentColorBase,
     required int viewCount,
     required bool hasViewed,
@@ -55,7 +56,7 @@ class Cast with _$Cast {
   factory Cast.fromJson(Map<String, Object?> json) => _$CastFromJson(json);
 
   /// Helpers.
-  Uri get imageUri => Uri.parse(imageUrl);
+  Uri? get imageUri => imageUrl.apply((url) => Uri.parse(url));
 
   Uri get audioUri => Uri.parse(audioUrl);
 
