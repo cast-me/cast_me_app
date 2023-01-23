@@ -55,7 +55,7 @@ class SignInView extends StatelessWidget {
           bloc.emailController.text,
         );
       },
-      submitText: 'Login with email',
+      submitText: 'Sign in with email',
       trailing: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
