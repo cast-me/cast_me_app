@@ -161,7 +161,9 @@ class CastDatabase {
       PostgrestFilterBuilder<_Rows> query) {
     return query
         // Play the freshest conversations first.
-        .order(treeUpdatedAtCol, ascending: false)
+        // We're using promoted date which is the time the tree was last updated
+        // plus any manual or algorithmic boosts to it's "freshness".
+        .order(promotedDateCol, ascending: false)
         // Within a specific depth level, play the oldest content first as new
         // content in a level might build on other content in that level.
         .order(createdAtCol, ascending: true);

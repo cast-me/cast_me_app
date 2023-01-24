@@ -293,4 +293,9 @@ class TopicSelectorController with ChangeNotifier {
     _filterTopics = _filterTopics.toggled(topic);
     notifyListeners();
   }
+
+  void reset() {
+    _filterTopics = [];
+    notifyListeners();
+  }
 }

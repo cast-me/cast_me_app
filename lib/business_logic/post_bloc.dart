@@ -29,7 +29,7 @@ class PostBloc {
 
   final ValueNotifier<Cast?> replyCast = ValueNotifier(null);
 
-  final ValueNotifier<List<Topic>> topics = ValueNotifier([]);
+  List<Topic> get topics => topicSelectorController.filterTopics;
 
   final ValueNotifier<Future<CastFile>?> _castFile = ValueNotifier(null);
 
@@ -106,7 +106,7 @@ class PostBloc {
       castFile: await castFile.applyTrim(),
       replyTo: replyCast.value,
       url: url,
-      topics: replyCast.value == null ? topics.value : [],
+      topics: replyCast.value == null ? topics : [],
     );
     return castId;
   }
@@ -125,7 +125,7 @@ class PostBloc {
   void reset() {
     clearFiles();
     replyCast.value = null;
-    topics.value = [];
+    topicSelectorController.reset();
     externalLinkTextController.text = '';
     titleText.value = '';
     // Gross hack to force the title field to rebuild from scratch.

@@ -36,7 +36,7 @@ class FollowUpCard extends StatelessWidget {
                 padding: padding,
                 // Force the cast to handle it's padding internally.
                 pagePadding: EdgeInsets.zero,
-                headerText: 'Share or reply',
+                headerText: 'Listen history',
                 pages: snap.data!.map(
                   (c) {
                     return CastViewTheme(

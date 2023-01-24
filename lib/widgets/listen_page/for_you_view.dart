@@ -6,7 +6,6 @@ import 'package:cast_me_app/business_logic/for_you_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
-import 'package:cast_me_app/widgets/listen_page/continue_listening_card.dart';
 import 'package:cast_me_app/widgets/listen_page/follow_up_card.dart';
 import 'package:cast_me_app/widgets/listen_page/trend_card.dart';
 
@@ -29,7 +28,6 @@ class ForYouView extends StatelessWidget {
             padding: _padding,
             child: _TrendingView(),
           ),
-          ContinueListeningCard(pagePadding: _padding),
           FollowUpCard(padding: _padding),
           Padding(
             padding: _padding,
