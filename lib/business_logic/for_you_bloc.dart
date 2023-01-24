@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';

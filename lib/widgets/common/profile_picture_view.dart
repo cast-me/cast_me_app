@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/util/object_utils.dart';
-import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +9,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({

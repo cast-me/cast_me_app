@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/util/object_utils.dart';
-import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -10,6 +8,7 @@ import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_list_view.dart';
@@ -18,6 +17,7 @@ import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/casts_list_view.dart';
 import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 
 class ProfilePreview extends StatelessWidget {
   const ProfilePreview({

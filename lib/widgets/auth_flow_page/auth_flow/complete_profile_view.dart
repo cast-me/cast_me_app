@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:cast_me_app/util/object_utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,6 +13,7 @@ import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/util/async_action_wrapper.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_error_view.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/common/profile_picture_view.dart';

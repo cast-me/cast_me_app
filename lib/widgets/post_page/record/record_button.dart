@@ -1,9 +1,9 @@
 // Flutter imports:
-import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/audio_recorder.dart';
+import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 
 class RecordButton extends StatelessWidget {
