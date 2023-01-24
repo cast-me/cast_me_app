@@ -138,18 +138,6 @@ class ProfileHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Dumb hack to keep the username centered.
-                if (profile.isSelf)
-                  IgnorePointer(
-                    child: Opacity(
-                      opacity: 0,
-                      child: AsyncMenuButton(
-                        icon: Icons.add,
-                        text: '',
-                        onTap: () async {},
-                      ),
-                    ),
-                  ),
                 Text('@${profile.username}'),
                 if (form == null)
                   Text(profile.displayName)
