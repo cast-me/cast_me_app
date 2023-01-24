@@ -277,7 +277,7 @@ class _DragHandle extends StatelessWidget {
           width: 30,
           decoration: BoxDecoration(
             color: Theme.of(context).iconTheme.color,
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),

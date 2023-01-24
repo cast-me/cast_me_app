@@ -86,6 +86,13 @@ class ListenBloc {
     );
   }
 
+  Future<void> onPlayAll({required Cast seedCast, bool autoPlay = true}) async {
+    await CastAudioPlayer.instance.load(
+      seedCast,
+      filterTopics: [],
+    );
+  }
+
   Future<void> onForYouSelected(Topic forYou, {bool autoPlay = true}) async {
     final Cast cast = await CastDatabase.instance.getCasts(
       filterTopics: [forYou],

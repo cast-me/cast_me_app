@@ -71,10 +71,11 @@ class _ProfilePictureWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(75),
+      borderRadius: BorderRadius.circular(4),
       child: Container(
         height: 150,
         width: 150,
+        decoration: decoration,
         child: child,
       ),
     );
@@ -93,7 +94,8 @@ class ProfilePictureBaseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
       child: _ProfilePictureWrapper(
         decoration: BoxDecoration(
           image: imageProvider.apply(
@@ -117,7 +119,7 @@ class _PictureEditButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(100),
+      borderRadius: BorderRadius.circular(4),
       onTap: () => onProfilePictureSelected(form),
       child: Container(
         color: Colors.black54,

@@ -186,7 +186,7 @@ Future<void> onProfilePictureSelected(ProfileFormData form) async {
   final CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
     sourcePath: file.path,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-    cropStyle: CropStyle.circle,
+    cropStyle: CropStyle.rectangle,
   );
   if (croppedImage == null) {
     return;

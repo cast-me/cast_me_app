@@ -45,7 +45,7 @@ class _Selector extends StatelessWidget {
               Expanded(
                 child: _TabButton(
                   index: 0,
-                  child: const Text('for you'),
+                  child: const Text('home'),
                   currentIndex: controller.value,
                   onTap: () {
                     ListenBloc.instance.onListenPageChanged(0);
@@ -55,7 +55,7 @@ class _Selector extends StatelessWidget {
               Expanded(
                 child: _TabButton(
                   index: 1,
-                  child: const Text('explore'),
+                  child: const Text('browse'),
                   currentIndex: controller.value,
                   onTap: () {
                     ListenBloc.instance.onListenPageChanged(1);

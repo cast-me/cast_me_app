@@ -1,13 +1,13 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
+import 'package:cast_me_app/widgets/listen_page/play_new_card.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:cast_me_app/business_logic/for_you_bloc.dart';
-import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 import 'package:cast_me_app/widgets/listen_page/follow_up_card.dart';
-import 'package:cast_me_app/widgets/listen_page/trend_card.dart';
 
 const EdgeInsets _padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -26,7 +26,7 @@ class ForYouView extends StatelessWidget {
         children: const [
           Padding(
             padding: _padding,
-            child: _TrendingView(),
+            child: PlayNowView(),
           ),
           FollowUpCard(padding: _padding),
           Padding(
@@ -39,40 +39,28 @@ class ForYouView extends StatelessWidget {
   }
 }
 
-class _TrendingView extends StatelessWidget {
-  const _TrendingView();
+class PlayNowView extends StatelessWidget {
+  const PlayNowView();
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Future<List<Topic>>>(
-      valueListenable: ForYouBloc.instance.trending,
-      builder: (context, trending, child) {
-        return FutureBuilder<List<Topic>>(
-          future: trending,
+    return ValueListenableBuilder<Future<Cast?>>(
+      valueListenable: ForYouBloc.instance.seedCast,
+      builder: (context, seedCast, child) {
+        return FutureBuilder<Cast?>(
+          future: seedCast,
           builder: (context, snap) {
             if (snap.hasError) {
               return ErrorWidget(snap.error!);
             }
             if (!snap.hasData) {
-              return Container();
+              return const Text(
+                'There are no new casts at the moment. To kickstart the '
+                'conversation post a new cast or ask a friend to join in!',
+                textAlign: TextAlign.center,
+              );
             }
-            final List<Topic> topics =
-                snap.data!.where((t) => t.newCastCount != 0).toList();
-            if (topics.isEmpty) {
-              return Container();
-            }
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: topics
-                  .map(
-                    (c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: TrendCard(topic: c),
-                    ),
-                  )
-                  .toList(),
-            );
+            return PlayNewCard(seedCast: snap.data!);
           },
         );
       },
