@@ -155,7 +155,7 @@ class ErrorText extends StatelessWidget {
           ),
         Text(
           error.toString().truncate(80),
-          style: TextStyle(color: Theme.of(context).errorColor),
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
           textAlign: TextAlign.center,
         ),
       ],

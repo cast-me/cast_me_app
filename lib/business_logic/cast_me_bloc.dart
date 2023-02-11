@@ -99,7 +99,7 @@ class CastMeBloc {
       await listenBloc.onTruncatedCastIdSelected(
         authorUsername: authorUsername,
         truncId: truncId,
-        autoPlay: true,
+        startPlaying: true,
       );
     } else if (pathSegments.length == 2 && pathSegments[0] == 'casts') {
       final String castId = pathSegments[1];

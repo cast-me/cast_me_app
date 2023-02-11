@@ -53,13 +53,13 @@ class ListenBloc {
     bool autoplay = true,
   }) async {
     final Cast newCast = await CastDatabase.instance.getCast(castId: castId);
-    await onCastSelected(newCast, autoPlay: autoplay);
+    await onCastSelected(newCast, startPlaying: autoplay);
   }
 
   Future<void> onTruncatedCastIdSelected({
     required String authorUsername,
     required String truncId,
-    bool autoPlay = true,
+    bool startPlaying = true,
   }) async {
     // Truncated cast ids are used in share links. They're only 8 characters
     // long to make them more user friendly.
@@ -74,26 +74,27 @@ class ListenBloc {
     await CastAudioPlayer.instance.load(
       newCast,
       filterTopics: [],
-      autoPlay: autoPlay,
+      startPlaying: startPlaying,
     );
   }
 
-  Future<void> onCastSelected(Cast cast, {bool autoPlay = true}) async {
+  Future<void> onCastSelected(Cast cast, {bool startPlaying = true}) async {
     await CastAudioPlayer.instance.load(
       cast,
       filterTopics: timelineFilteredTopics.value,
-      autoPlay: autoPlay,
+      startPlaying: startPlaying,
     );
   }
 
-  Future<void> onPlayAll({required Cast seedCast, bool autoPlay = true}) async {
-    await CastAudioPlayer.instance.load(
-      seedCast,
-      filterTopics: [],
-    );
+  Future<void> onPlayAll({
+    required Cast seedCast,
+    bool startPlaying = true,
+  }) async {
+    await CastAudioPlayer.instance
+        .load(seedCast, filterTopics: [], startPlaying: startPlaying);
   }
 
-  Future<void> onForYouSelected(Topic forYou, {bool autoPlay = true}) async {
+  Future<void> onForYouSelected(Topic forYou, {bool startPlaying = true}) async {
     final Cast cast = await CastDatabase.instance.getCasts(
       filterTopics: [forYou],
       filterOutProfile: AuthManager.instance.profile,
@@ -103,6 +104,7 @@ class ListenBloc {
     await CastAudioPlayer.instance.load(
       cast,
       filterTopics: [forYou],
+      startPlaying: startPlaying,
     );
   }
 
@@ -145,6 +147,7 @@ class ListenBloc {
       castsToPlay.first,
       // Provide empty list, not relevant.
       filterTopics: [],
+      playQueue: castsToPlay.sublist(1),
       startAt: startAtIndex,
     );
   }
