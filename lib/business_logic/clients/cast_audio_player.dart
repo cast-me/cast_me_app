@@ -63,16 +63,12 @@ class CastAudioPlayer {
   List<Cast> get castQueue => queue.value.map((s) => s.cast).toList();
 
   late final ValueListenable<Cast?> currentCast =
-      Rx.combineLatest2<int?, List<IndexedAudioSource>?, Cast?>(
-    _player.currentIndexStream,
-    _player.sequenceStream,
-    (index, sequence) {
-      if (index == null || sequence == null) {
-        return null;
-      }
-      return sequence[index].cast;
-    },
-  ).toListenable();
+      _player.sequenceStateStream.map((state) {
+    if (state == null) {
+      return null;
+    }
+    return state.sequence[state.currentIndex].cast;
+  }).toListenable();
 
   late final ValueListenable<int?> currentIndex =
       _player.currentIndexStream.toListenable();
@@ -91,6 +87,7 @@ class CastAudioPlayer {
     Cast cast, {
     required List<Topic> filterTopics,
     List<Cast>? playQueue,
+    bool startPlaying = true,
     bool autoPlay = true,
     int startAt = 0,
   }) async {
@@ -109,13 +106,23 @@ class CastAudioPlayer {
         ),
       ],
     );
-    if (playQueue == null) {
+    if (playQueue != null) {
+      await queue.addAll(
+        playQueue.map((c) => AudioSource.uri(c.audioUri, tag: c)).toList(),
+      );
+    }
+    if (autoPlay) {
       CastDatabase.instance
           .getPlayQueue(
         seedCast: cast,
         filterTopics: filterTopics,
       )
           .listen((cast) {
+        if ((playQueue ?? []).contains(cast)) {
+          // Don't add duplicate casts.
+          // todo(caseycrogers): Filter this out server side.
+          return;
+        }
         // Use a locally scoped variable so that we don't accidentally add to a
         // later queue.
         queue.add(
@@ -125,14 +132,10 @@ class CastAudioPlayer {
           ),
         );
       });
-    } else {
-      await queue.addAll(
-        playQueue.map((c) => AudioSource.uri(c.audioUri, tag: c)).toList(),
-      );
     }
     _sourceQueue = queue;
     await _player.setAudioSource(_sourceQueue!, initialIndex: startAt);
-    if (autoPlay) {
+    if (startPlaying) {
       await _player.play();
     }
   }

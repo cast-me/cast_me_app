@@ -27,7 +27,7 @@ class AuthErrorView extends StatelessWidget {
             ),
             Text(
               AuthManager.instance.status.error.toString(),
-              style: TextStyle(color: Theme.of(context).errorColor),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
               textAlign: TextAlign.center,
             ),
           ],

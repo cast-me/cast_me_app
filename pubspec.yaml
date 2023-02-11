@@ -12,7 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   path: ^1.8.0
   protobuf: ^2.1.0
-  just_audio: ^0.9.29
+  just_audio: ^0.9.31
   audio_session: ^0.1.9
   rxdart: ^0.27.4
   async_list_view: ^1.0.1

@@ -59,7 +59,7 @@ class _TopicSelectorState extends State<TopicSelector> {
         if (snap.hasError) {
           return Text(
             snap.error.toString(),
-            style: TextStyle(color: Theme.of(context).errorColor),
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
           );
         }
         if (!snap.hasData) {
