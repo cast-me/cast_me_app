@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -288,6 +289,8 @@ class AuthManager extends ChangeNotifier {
     SignInState returnState = SignInState.signingIn,
   }) async {
     Analytics.instance.logLogout();
+    // Clear now playing when we change accounts.
+    await CastAudioPlayer.instance.stop();
     await _authActionWrapper(
       'signOut',
       () async {
