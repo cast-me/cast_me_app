@@ -123,7 +123,10 @@ class _PasswordFieldState extends State<PasswordField> {
       decoration: InputDecoration(
         labelText: widget.labelText,
         suffixIcon: GestureDetector(
-          child: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+          child: Icon(
+            obscureText ? Icons.visibility : Icons.visibility_off,
+            color: Colors.white,
+          ),
           onTap: () {
             setState(() {
               obscureText = !obscureText;

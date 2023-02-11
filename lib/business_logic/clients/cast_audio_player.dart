@@ -64,7 +64,7 @@ class CastAudioPlayer {
 
   late final ValueListenable<Cast?> currentCast =
       _player.sequenceStateStream.map((state) {
-    if (state == null) {
+    if (state == null || state.sequence.isEmpty) {
       return null;
     }
     return state.sequence[state.currentIndex].cast;
@@ -207,6 +207,12 @@ class CastAudioPlayer {
       unPausedAt: _player.position,
     );
     await _player.play();
+  }
+
+  Future<void> stop() async {
+    await _player.stop();
+    // Set an empty audio source to clear the current one.
+    await _player.setAudioSource(ConcatenatingAudioSource(children: []));
   }
 
   Future<void> seekTo(Duration duration) async {
