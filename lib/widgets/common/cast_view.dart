@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +22,7 @@ import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/likes_view.dart';
 import 'package:cast_me_app/widgets/common/uri_button.dart';
 import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 
 /// TODO(caseycrogers): do a pass over this class to clean it up and break out
 ///   logic into sub-widgets.

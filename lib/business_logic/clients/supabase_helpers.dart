@@ -13,6 +13,8 @@ const String createdAtCol = 'created_at';
 
 const String treeUpdatedAtCol = 'tree_updated_at';
 
+const String promotedDateCol = 'promoted_date';
+
 const String depthCol = 'depth';
 
 const String treeHasNewCastsCol = 'tree_has_new_casts';

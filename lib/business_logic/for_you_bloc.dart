@@ -2,18 +2,18 @@
 import 'package:flutter/foundation.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 
 class ForYouBloc {
   ForYouBloc._();
 
   static ForYouBloc instance = ForYouBloc._();
 
-  final ValueNotifier<Future<List<Topic>>> _trending =
-      ValueNotifier(_getTrendingTopics());
+  final ValueNotifier<Future<Cast?>> _seedCast =
+      ValueNotifier(_getSeedCast());
 
   final ValueNotifier<Future<List<Conversation>>>
       _continueListeningConversations =
@@ -23,7 +23,7 @@ class ForYouBloc {
   late final ValueNotifier<Future<List<Cast>>> _followUpCasts =
       ValueNotifier(_getFollowUpCasts());
 
-  ValueListenable<Future<List<Topic>>> get trending => _trending;
+  ValueListenable<Future<Cast?>> get seedCast => _seedCast;
 
   ValueListenable<Future<List<Conversation>>>
       get continueListeningConversations => _continueListeningConversations;
@@ -31,21 +31,30 @@ class ForYouBloc {
   ValueListenable<Future<List<Cast>>> get followUpCasts => _followUpCasts;
 
   Future<void> onRefresh() async {
-    _trending.value = _getTrendingTopics();
+    _seedCast.value = _getSeedCast();
     _continueListeningConversations.value =
         _getContinueListeningConversations();
     _followUpCasts.value = _getFollowUpCasts();
     await Future.wait(
       [
-        _trending.value,
+        _seedCast.value,
         _continueListeningConversations.value,
         _followUpCasts.value,
       ],
     );
   }
 
-  static Future<List<Topic>> _getTrendingTopics() {
-    return CastDatabase.instance.getTopics(limit: 3);
+  static Future<Cast?> _getSeedCast() {
+    return CastDatabase.instance.getCasts(
+      filterOutProfile: AuthManager.instance.profile,
+      skipViewed: true,
+      single: true,
+    ).toList().then((casts) {
+      if (casts.isEmpty) {
+        return null;
+      }
+      return casts.single;
+    });
   }
 
   static Future<List<Conversation>> _getContinueListeningConversations() {

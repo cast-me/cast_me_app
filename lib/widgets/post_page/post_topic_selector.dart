@@ -36,7 +36,7 @@ class PostTopicSelector extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: TopicSelector(
-                controller: TopicSelectorController(),
+                controller: PostBloc.instance.topicSelectorController,
                 max: 3,
               ),
             ),

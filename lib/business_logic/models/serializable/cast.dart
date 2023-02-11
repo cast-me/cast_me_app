@@ -10,8 +10,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/util/color_utils.dart';
-import 'package:cast_me_app/util/uri_utils.dart';
 import 'package:cast_me_app/util/object_utils.dart';
+import 'package:cast_me_app/util/uri_utils.dart';
 
 part 'cast.freezed.dart';
 

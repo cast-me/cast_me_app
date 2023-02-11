@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/util/object_utils.dart';
-import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +9,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
 import 'package:cast_me_app/util/listenable_utils.dart';
+import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/widgets/auth_flow_page/auth_flow/complete_profile_view.dart';
+import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
 
 class ProfilePictureView extends StatelessWidget {
   const ProfilePictureView({
@@ -71,10 +71,11 @@ class _ProfilePictureWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(75),
+      borderRadius: BorderRadius.circular(4),
       child: Container(
         height: 150,
         width: 150,
+        decoration: decoration,
         child: child,
       ),
     );
@@ -93,7 +94,8 @@ class ProfilePictureBaseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
       child: _ProfilePictureWrapper(
         decoration: BoxDecoration(
           image: imageProvider.apply(
@@ -117,7 +119,7 @@ class _PictureEditButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(100),
+      borderRadius: BorderRadius.circular(4),
       onTap: () => onProfilePictureSelected(form),
       child: Container(
         color: Colors.black54,

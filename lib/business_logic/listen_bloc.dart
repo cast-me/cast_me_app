@@ -86,6 +86,13 @@ class ListenBloc {
     );
   }
 
+  Future<void> onPlayAll({required Cast seedCast, bool autoPlay = true}) async {
+    await CastAudioPlayer.instance.load(
+      seedCast,
+      filterTopics: [],
+    );
+  }
+
   Future<void> onForYouSelected(Topic forYou, {bool autoPlay = true}) async {
     final Cast cast = await CastDatabase.instance.getCasts(
       filterTopics: [forYou],
@@ -134,11 +141,12 @@ class ListenBloc {
             .toList();
     final int startAtIndex =
         startAtCast == null ? 0 : castsToPlay.indexOf(startAtCast);
-    await CastAudioPlayer.instance.load(castsToPlay[0],
-        // Provide empty list, not relevant.
-        filterTopics: [],
-        playQueue: castsToPlay.sublist(1),
-        startAt: startAtIndex);
+    await CastAudioPlayer.instance.load(
+      castsToPlay.first,
+      // Provide empty list, not relevant.
+      filterTopics: [],
+      startAt: startAtIndex,
+    );
   }
 
   Future<void> onCastInTrackListSelected(Cast cast) async {

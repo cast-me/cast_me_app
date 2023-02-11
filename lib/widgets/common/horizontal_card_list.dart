@@ -81,6 +81,7 @@ class _HorizontalCardListState extends State<HorizontalCardList> {
           ),
         ),
         ExpandablePageView(
+          physics: const NeverScrollableScrollPhysics(),
           controller: controller,
           children: widget.pages
               .map(

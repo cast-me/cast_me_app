@@ -1,4 +1,4 @@
-import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 class DefaultPicture extends StatelessWidget {
