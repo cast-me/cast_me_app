@@ -82,7 +82,7 @@ class _SubmitFormField extends StatelessWidget {
           children: [
             Text(
               '2. Audio',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(width: 4),
             const PostHelpTooltip(),
@@ -138,7 +138,7 @@ class _SubmitFormField extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           '3. Details',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         TitleField(key: bloc.titleFieldKey, titleText: bloc.titleText),
         ExternalLinkField(

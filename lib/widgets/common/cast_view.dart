@@ -297,7 +297,7 @@ class _ListenCount extends StatelessWidget {
     final Cast cast = CastProvider.of(context).value;
     return Text(
       '${cast.viewCount} listen${cast.viewCount == 1 ? '' : 's'}',
-      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AdaptiveMaterial.secondaryOnColorOf(context),
           ),
     );
@@ -393,7 +393,7 @@ class HowOldLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       oldString(),
-      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AdaptiveMaterial.secondaryOnColorOf(context),
           ),
     );
@@ -533,7 +533,7 @@ class CastConversationView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AdaptiveMaterial.secondaryOnColorOf(context),
               ),
           child: BoxyRow(
@@ -548,7 +548,7 @@ class CastConversationView extends StatelessWidget {
                   children: [
                     Text(
                       rootCast.authorDisplayName,
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text('@${rootCast.authorUsername}'),
                     Text(
@@ -563,7 +563,7 @@ class CastConversationView extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           rootCast.title,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );

@@ -93,7 +93,7 @@ class ProfileView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             'Casts:',
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),
         Expanded(
@@ -132,7 +132,7 @@ class ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.headline6!,
+          style: Theme.of(context).textTheme.titleLarge!,
           child: Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,

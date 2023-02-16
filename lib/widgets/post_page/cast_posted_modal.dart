@@ -30,7 +30,7 @@ class CastPostedModal extends StatelessWidget {
         children: [
           Text(
             'Cast posted!',
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
           ClipRRect(

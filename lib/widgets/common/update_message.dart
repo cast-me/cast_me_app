@@ -137,7 +137,7 @@ class WelcomeMessageContent extends StatelessWidget {
       children: [
         Text(
           'Welcome to CastMe!',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         const Text('\nThank you for being an early adopter.\n'),
         const Text('Please join our discord server to provide feedback and '
@@ -181,7 +181,7 @@ class UpdateMessageContent extends StatelessWidget {
       children: [
         Text(
           'Welcome to version ${UpdateMessage._installedVersion}!',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         const Text('\nNew features:'),
         child,

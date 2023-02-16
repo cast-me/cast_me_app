@@ -37,7 +37,7 @@ class _Selector extends StatelessWidget {
         return DefaultTextStyle(
           style: Theme.of(context)
               .textTheme
-              .headline4!
+              .headlineMedium!
               .copyWith(color: AdaptiveMaterial.onColorOf(context)),
           child: Row(
             mainAxisSize: MainAxisSize.max,

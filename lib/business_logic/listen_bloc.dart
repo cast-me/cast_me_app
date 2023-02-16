@@ -94,7 +94,10 @@ class ListenBloc {
         .load(seedCast, filterTopics: [], startPlaying: startPlaying);
   }
 
-  Future<void> onForYouSelected(Topic forYou, {bool startPlaying = true}) async {
+  Future<void> onForYouSelected(
+    Topic forYou, {
+    bool startPlaying = true,
+  }) async {
     final Cast cast = await CastDatabase.instance.getCasts(
       filterTopics: [forYou],
       filterOutProfile: AuthManager.instance.profile,

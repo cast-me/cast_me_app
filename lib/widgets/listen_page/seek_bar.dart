@@ -96,14 +96,14 @@ class _SeekBarState extends State<SeekBar> {
                   left: 16,
                   bottom: 0,
                   child: Text(data.position.toFormattedString(),
-                      style: Theme.of(context).textTheme.caption),
+                      style: Theme.of(context).textTheme.bodySmall),
                 ),
                 Positioned(
                   right: 16,
                   bottom: 0,
                   child: Text(
                       (data.duration! - data.position).toFormattedString(),
-                      style: Theme.of(context).textTheme.caption),
+                      style: Theme.of(context).textTheme.bodySmall),
                 ),
               ],
             );

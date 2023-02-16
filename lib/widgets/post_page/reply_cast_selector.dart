@@ -22,7 +22,7 @@ class ReplyCastSelector extends StatelessWidget {
       children: [
         Text(
           '1. Reply to',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: 8),
         ValueListenableBuilder<Cast?>(

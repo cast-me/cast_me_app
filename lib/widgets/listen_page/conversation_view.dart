@@ -51,7 +51,7 @@ class ConversationPreview extends StatelessWidget {
                 if (rootCast.externalUri != null)
                   UriButton(uri: rootCast.externalUri!),
                 DefaultTextStyle(
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AdaptiveMaterial.secondaryOnColorOf(context),
                       ),
                   child: Row(
@@ -99,7 +99,7 @@ class NewCount extends StatelessWidget {
     return Text(
       '${conversation.newCastCount} new',
       style: conversation.newCastCount != 0
-          ? Theme.of(context).textTheme.bodyText1
+          ? Theme.of(context).textTheme.bodyLarge
           : null,
     );
   }

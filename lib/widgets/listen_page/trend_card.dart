@@ -30,7 +30,7 @@ class TrendCard extends StatelessWidget {
                 '#',
                 style: Theme.of(context)
                     .textTheme
-                    .headline4!
+                    .headlineMedium!
                     .copyWith(color: Colors.white),
               ),
               const SizedBox(width: 2),
@@ -38,7 +38,7 @@ class TrendCard extends StatelessWidget {
                 topic.name,
                 style: Theme.of(context)
                     .textTheme
-                    .headline4!
+                    .headlineMedium!
                     .copyWith(color: Colors.white),
               ),
             ],

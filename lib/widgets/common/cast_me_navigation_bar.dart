@@ -29,7 +29,7 @@ class CastMeNavigationBar extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.surface,
             indicatorColor: Colors.black54,
             labelTextStyle: MaterialStateProperty.all(
-              Theme.of(context).textTheme.bodyText1,
+              Theme.of(context).textTheme.bodyLarge,
             ),
           ),
           child: MediaQuery(

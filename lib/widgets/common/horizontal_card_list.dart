@@ -41,7 +41,7 @@ class _HorizontalCardListState extends State<HorizontalCardList> {
               Expanded(
                 child: Text(
                   widget.headerText,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
               AnimatedBuilder(
