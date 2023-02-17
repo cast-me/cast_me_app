@@ -5,21 +5,26 @@ class DefaultPicture extends StatelessWidget {
   const DefaultPicture({
     super.key,
     required this.displayName,
+    this.padding,
   });
 
   final String displayName;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.fill,
+    return AspectRatio(
+      aspectRatio: 1,
       child: ColoredBox(
         color: _defaultColors[displayName.hashCode % _defaultColors.length],
         child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Text(
-            displayName.substring(0, 2),
-            style: const TextStyle(color: Colors.white),
+          padding: padding ?? const EdgeInsets.all(4),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Text(
+              displayName.substring(0, 2),
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
       ),

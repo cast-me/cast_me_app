@@ -168,7 +168,7 @@ class Analytics {
       name: 'seek',
       parameters: {
         'cast_id': targetCast.id,
-        'skipped_cast_id': skippedCast,
+        'skipped_cast_id': skippedCast?.id ?? '',
         'skipped_at_ms': skippedAt?.inMilliseconds,
       },
     );

@@ -245,24 +245,30 @@ class CastView extends StatelessWidget {
               );
             },
           ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+          Expanded(
             child: AspectRatio(
               aspectRatio: 1,
-              child: Container(
+              child: Padding(
                 padding: const EdgeInsets.all(8),
-                alignment: Alignment.topRight,
-                decoration: cast.imageUrl != null
-                    ? BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(cast.imageUrl!),
-                        ),
-                      )
-                    : null,
-                child: cast.imageUrl == null
-                    ? DefaultPicture(displayName: cast.authorDisplayName)
-                    : null,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    decoration: cast.imageUrl != null
+                        ? BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.contain,
+                              image: CachedNetworkImageProvider(cast.imageUrl!),
+                            ),
+                          )
+                        : null,
+                    child: cast.imageUrl == null
+                        ? DefaultPicture(
+                            padding: EdgeInsets.zero,
+                            displayName: cast.authorDisplayName,
+                          )
+                        : null,
+                  ),
+                ),
               ),
             ),
           ),
@@ -270,7 +276,7 @@ class CastView extends StatelessWidget {
             ExternalLinkButton(uri: cast.externalUri!)
           else
             const SizedBox(height: 8),
-          const _CastTitleView(),
+          const _CastTitleView(textAlign: TextAlign.center),
           DefaultTextStyle(
             style: TextStyle(color: Colors.grey.shade400),
             child: const AuthorLine(),
@@ -305,7 +311,9 @@ class _ListenCount extends StatelessWidget {
 }
 
 class _CastTitleView extends StatelessWidget {
-  const _CastTitleView();
+  const _CastTitleView({this.textAlign});
+
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -314,6 +322,7 @@ class _CastTitleView extends StatelessWidget {
     final bool tappable = theme?.taggedUsersAreTappable ?? true;
     return Text.rich(
       _constructSpan(cast.title, cast.taggedUsernames ?? [], tappable),
+      textAlign: textAlign,
       style: const TextStyle(color: Colors.white),
       maxLines: theme?.titleMaxLines,
       overflow: theme?.titleMaxLines != null ? TextOverflow.ellipsis : null,
@@ -440,7 +449,7 @@ class PreviewThumbnail extends StatelessWidget {
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       image: CachedNetworkImageProvider(cast.imageUrl!),
                     ),
                   ),
