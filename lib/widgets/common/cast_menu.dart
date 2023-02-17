@@ -37,7 +37,10 @@ class StackCastMenu extends StatelessWidget {
       children: [
         child,
         const Positioned.fill(
-          child: CastMenu(),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: CastMenu(),
+          ),
         ),
       ],
     );
@@ -105,7 +108,7 @@ class CastMenu extends StatelessWidget {
         showLabel: false,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ...baseChildren,
