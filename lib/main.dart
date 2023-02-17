@@ -54,8 +54,8 @@ final ColorScheme kColorScheme =  ColorScheme(
   onSurface: Colors.white,
   background: Colors.black,
   onBackground: Colors.white,
-  error: Colors.red.shade200,
-  onError: Colors.red.shade900,
+  error: Color.lerp(Colors.red, Colors.black, .75)!,
+  onError: Colors.white,
 );
 
 class CastMeApp extends StatelessWidget {

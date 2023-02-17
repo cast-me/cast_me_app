@@ -14,6 +14,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
           id: $checkedConvert('id', (v) => v as String),
           createdAt: $checkedConvert('created_at', (v) => v as String),
           deleted: $checkedConvert('deleted', (v) => v as bool),
+          isPrivate: $checkedConvert('is_private', (v) => v as bool),
           rootId: $checkedConvert('root_id', (v) => v as String),
           authorUsername:
               $checkedConvert('author_username', (v) => v as String),
@@ -31,6 +32,8 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => Like.fromJson(e as Map<String, dynamic>))
                   .toList()),
+          visibleTo: $checkedConvert('visible_to',
+              (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
           topicNames: $checkedConvert('topic_names',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
           taggedUsernames: $checkedConvert('tagged_usernames',
@@ -46,6 +49,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
       },
       fieldKeyMap: const {
         'createdAt': 'created_at',
+        'isPrivate': 'is_private',
         'rootId': 'root_id',
         'authorUsername': 'author_username',
         'authorDisplayName': 'author_display_name',
@@ -54,6 +58,7 @@ _$_Cast _$$_CastFromJson(Map<String, dynamic> json) => $checkedCreate(
         'viewCount': 'view_count',
         'hasViewed': 'has_viewed',
         'treeHasNewCasts': 'tree_has_new_casts',
+        'visibleTo': 'visible_to',
         'topicNames': 'topic_names',
         'taggedUsernames': 'tagged_usernames',
         'authorId': 'author_id',
@@ -68,6 +73,7 @@ Map<String, dynamic> _$$_CastToJson(_$_Cast instance) => <String, dynamic>{
       'id': instance.id,
       'created_at': instance.createdAt,
       'deleted': instance.deleted,
+      'is_private': instance.isPrivate,
       'root_id': instance.rootId,
       'author_username': instance.authorUsername,
       'author_display_name': instance.authorDisplayName,
@@ -77,6 +83,7 @@ Map<String, dynamic> _$$_CastToJson(_$_Cast instance) => <String, dynamic>{
       'has_viewed': instance.hasViewed,
       'tree_has_new_casts': instance.treeHasNewCasts,
       'likes': instance.likes?.map((e) => e.toJson()).toList(),
+      'visible_to': instance.visibleTo,
       'topic_names': instance.topicNames,
       'tagged_usernames': instance.taggedUsernames,
       'author_id': instance.authorId,

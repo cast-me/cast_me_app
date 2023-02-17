@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:adaptive_material/adaptive_material.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -74,26 +75,76 @@ class _LoadedPageContentState extends State<_LoadedPageContent> {
           skipViewed: false,
         );
       },
-      child: CastListView(
-        padding: EdgeInsets.zero,
-        controller: CastMeListController<Cast>(
-          // TODO(caseycrogers): This is really messy, considering migrating
-          // `getStream` to just a `stream` and an `onRefresh` callback.
-          getStream: (_) {
-            return ListenBloc.instance.selectedConversation.value!
-                .refresh()
-                .asStream()
-                .flatMap(
-              (_) {
-                return ListenBloc
-                    .instance.selectedConversation.value!.conversation.value
-                    .asStream()
-                    .flatMap((c) => Stream.fromIterable(c.allCasts));
-              },
-            );
-          },
-        ),
+      child: Column(
+        children: [
+          if (widget.conversation.isPrivate)
+            _PrivateHeaderView(conversation: widget.conversation),
+          Expanded(
+            child: CastListView(
+              padding: EdgeInsets.zero,
+              controller: CastMeListController<Cast>(
+                // TODO(caseycrogers): This is really messy, considering migrating
+                // `getStream` to just a `stream` and an `onRefresh` callback.
+                getStream: (_) {
+                  return ListenBloc.instance.selectedConversation.value!
+                      .refresh()
+                      .asStream()
+                      .flatMap(
+                    (_) {
+                      return ListenBloc.instance.selectedConversation.value!
+                          .conversation.value
+                          .asStream()
+                          .flatMap((c) => Stream.fromIterable(c.allCasts));
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _PrivateHeaderView extends StatelessWidget {
+  const _PrivateHeaderView({
+    required this.conversation,
+  });
+
+  final Conversation conversation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: AdaptiveMaterial.error(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Icon(Icons.info),
+                    SizedBox(height: 8),
+                    Text(
+                      'This conversation is currently set to private. It will '
+                      'only be visible to the participants until the original '
+                      'poster publishes it.',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+      ],
     );
   }
 }

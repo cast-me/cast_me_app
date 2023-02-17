@@ -21,6 +21,8 @@ class Conversation with _$Conversation {
     required List<String>? topics,
     required int castCount,
     required int newCastCount,
+    required bool isPrivate,
+    required List<String>? visibleTo,
   }) = _Conversation;
 
   // Required by freezed to support custom methods.

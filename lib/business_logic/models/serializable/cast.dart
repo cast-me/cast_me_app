@@ -25,6 +25,7 @@ class Cast with _$Cast {
     required String id,
     required String createdAt,
     required bool deleted,
+    required bool isPrivate,
 
     // Fetched on read via join.
     required String rootId,
@@ -36,6 +37,7 @@ class Cast with _$Cast {
     required bool hasViewed,
     required bool treeHasNewCasts,
     required List<Like>? likes,
+    required List<String>? visibleTo,
     // We use names instead of a topic data model because we need to perform an
     // array agg to filter and that only works with raw text values.
     required List<String>? topicNames,

@@ -126,6 +126,11 @@ class CastDatabase {
     bool skipDeleted = true,
   }) {
     PostgrestFilterBuilder<_Rows> queryBuilder = tableQuery.select<_Rows>();
+    // Always filter by cast privacy.
+    // TODO(caseycrogers): Move this server side?
+    queryBuilder = queryBuilder.or('$isPrivateCol.eq.false,'
+        '$authorIdCol.eq.${AuthManager.instance.user!.id},'
+        '$visibleToCol.cs.{"${AuthManager.instance.user!.id}"}');
     if (filterProfile != null) {
       // Get only casts authored by the given profiles.
       queryBuilder = queryBuilder.eq(authorIdCol, filterProfile.id);

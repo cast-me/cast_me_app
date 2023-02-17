@@ -63,7 +63,7 @@ class CastMenu extends StatelessWidget {
     final Cast cast = CastProvider.of(context).value;
     final List<Widget> baseChildren = [
       const ReplyButton(),
-      const ShareButton(),
+      if (!cast.isPrivate) const ShareButton(),
     ];
     final List<Widget> wideChildren = [
       MenuButton(
