@@ -24,6 +24,9 @@ _$_Conversation _$$_ConversationFromJson(Map<String, dynamic> json) =>
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
           castCount: $checkedConvert('cast_count', (v) => v as int),
           newCastCount: $checkedConvert('new_cast_count', (v) => v as int),
+          isPrivate: $checkedConvert('is_private', (v) => v as bool),
+          visibleTo: $checkedConvert('visible_to',
+              (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
         );
         return val;
       },
@@ -31,7 +34,9 @@ _$_Conversation _$$_ConversationFromJson(Map<String, dynamic> json) =>
         'rootId': 'root_id',
         'rootCast': 'root_cast',
         'castCount': 'cast_count',
-        'newCastCount': 'new_cast_count'
+        'newCastCount': 'new_cast_count',
+        'isPrivate': 'is_private',
+        'visibleTo': 'visible_to'
       },
     );
 
@@ -43,4 +48,6 @@ Map<String, dynamic> _$$_ConversationToJson(_$_Conversation instance) =>
       'topics': instance.topics,
       'cast_count': instance.castCount,
       'new_cast_count': instance.newCastCount,
+      'is_private': instance.isPrivate,
+      'visible_to': instance.visibleTo,
     };

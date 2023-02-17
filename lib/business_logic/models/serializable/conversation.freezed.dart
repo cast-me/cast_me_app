@@ -27,6 +27,8 @@ mixin _$Conversation {
   List<String>? get topics => throw _privateConstructorUsedError;
   int get castCount => throw _privateConstructorUsedError;
   int get newCastCount => throw _privateConstructorUsedError;
+  bool get isPrivate => throw _privateConstructorUsedError;
+  List<String>? get visibleTo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,7 +48,9 @@ abstract class $ConversationCopyWith<$Res> {
       List<Cast>? casts,
       List<String>? topics,
       int castCount,
-      int newCastCount});
+      int newCastCount,
+      bool isPrivate,
+      List<String>? visibleTo});
 
   $CastCopyWith<$Res> get rootCast;
 }
@@ -70,6 +74,8 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
     Object? topics = freezed,
     Object? castCount = null,
     Object? newCastCount = null,
+    Object? isPrivate = null,
+    Object? visibleTo = freezed,
   }) {
     return _then(_value.copyWith(
       rootId: null == rootId
@@ -96,6 +102,14 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
           ? _value.newCastCount
           : newCastCount // ignore: cast_nullable_to_non_nullable
               as int,
+      isPrivate: null == isPrivate
+          ? _value.isPrivate
+          : isPrivate // ignore: cast_nullable_to_non_nullable
+              as bool,
+      visibleTo: freezed == visibleTo
+          ? _value.visibleTo
+          : visibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 
@@ -122,7 +136,9 @@ abstract class _$$_ConversationCopyWith<$Res>
       List<Cast>? casts,
       List<String>? topics,
       int castCount,
-      int newCastCount});
+      int newCastCount,
+      bool isPrivate,
+      List<String>? visibleTo});
 
   @override
   $CastCopyWith<$Res> get rootCast;
@@ -145,6 +161,8 @@ class __$$_ConversationCopyWithImpl<$Res>
     Object? topics = freezed,
     Object? castCount = null,
     Object? newCastCount = null,
+    Object? isPrivate = null,
+    Object? visibleTo = freezed,
   }) {
     return _then(_$_Conversation(
       rootId: null == rootId
@@ -171,6 +189,14 @@ class __$$_ConversationCopyWithImpl<$Res>
           ? _value.newCastCount
           : newCastCount // ignore: cast_nullable_to_non_nullable
               as int,
+      isPrivate: null == isPrivate
+          ? _value.isPrivate
+          : isPrivate // ignore: cast_nullable_to_non_nullable
+              as bool,
+      visibleTo: freezed == visibleTo
+          ? _value._visibleTo
+          : visibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -184,9 +210,12 @@ class _$_Conversation extends _Conversation {
       required final List<Cast>? casts,
       required final List<String>? topics,
       required this.castCount,
-      required this.newCastCount})
+      required this.newCastCount,
+      required this.isPrivate,
+      required final List<String>? visibleTo})
       : _casts = casts,
         _topics = topics,
+        _visibleTo = visibleTo,
         super._();
 
   factory _$_Conversation.fromJson(Map<String, dynamic> json) =>
@@ -219,10 +248,20 @@ class _$_Conversation extends _Conversation {
   final int castCount;
   @override
   final int newCastCount;
+  @override
+  final bool isPrivate;
+  final List<String>? _visibleTo;
+  @override
+  List<String>? get visibleTo {
+    final value = _visibleTo;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts, topics: $topics, castCount: $castCount, newCastCount: $newCastCount)';
+    return 'Conversation(rootId: $rootId, rootCast: $rootCast, casts: $casts, topics: $topics, castCount: $castCount, newCastCount: $newCastCount, isPrivate: $isPrivate, visibleTo: $visibleTo)';
   }
 
   @override
@@ -238,7 +277,11 @@ class _$_Conversation extends _Conversation {
             (identical(other.castCount, castCount) ||
                 other.castCount == castCount) &&
             (identical(other.newCastCount, newCastCount) ||
-                other.newCastCount == newCastCount));
+                other.newCastCount == newCastCount) &&
+            (identical(other.isPrivate, isPrivate) ||
+                other.isPrivate == isPrivate) &&
+            const DeepCollectionEquality()
+                .equals(other._visibleTo, _visibleTo));
   }
 
   @JsonKey(ignore: true)
@@ -250,7 +293,9 @@ class _$_Conversation extends _Conversation {
       const DeepCollectionEquality().hash(_casts),
       const DeepCollectionEquality().hash(_topics),
       castCount,
-      newCastCount);
+      newCastCount,
+      isPrivate,
+      const DeepCollectionEquality().hash(_visibleTo));
 
   @JsonKey(ignore: true)
   @override
@@ -273,7 +318,9 @@ abstract class _Conversation extends Conversation {
       required final List<Cast>? casts,
       required final List<String>? topics,
       required final int castCount,
-      required final int newCastCount}) = _$_Conversation;
+      required final int newCastCount,
+      required final bool isPrivate,
+      required final List<String>? visibleTo}) = _$_Conversation;
   const _Conversation._() : super._();
 
   factory _Conversation.fromJson(Map<String, dynamic> json) =
@@ -291,6 +338,10 @@ abstract class _Conversation extends Conversation {
   int get castCount;
   @override
   int get newCastCount;
+  @override
+  bool get isPrivate;
+  @override
+  List<String>? get visibleTo;
   @override
   @JsonKey(ignore: true)
   _$$_ConversationCopyWith<_$_Conversation> get copyWith =>

@@ -3,13 +3,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = true;
+const bool isStaging = false;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
 final castAudioFileBucket = supabase.storage.from('cast-audio-files');
 
 const String createdAtCol = 'created_at';
+
+const String isPrivateCol = 'is_private';
+
+const String visibleToCol = 'visible_to';
 
 const String treeUpdatedAtCol = 'tree_updated_at';
 

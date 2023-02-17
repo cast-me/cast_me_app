@@ -23,7 +23,8 @@ mixin _$Cast {
 // Server specified.
   String get id => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
-  bool get deleted =>
+  bool get deleted => throw _privateConstructorUsedError;
+  bool get isPrivate =>
       throw _privateConstructorUsedError; // Fetched on read via join.
   String get rootId => throw _privateConstructorUsedError;
   String get authorUsername => throw _privateConstructorUsedError;
@@ -33,7 +34,8 @@ mixin _$Cast {
   int get viewCount => throw _privateConstructorUsedError;
   bool get hasViewed => throw _privateConstructorUsedError;
   bool get treeHasNewCasts => throw _privateConstructorUsedError;
-  List<Like>? get likes =>
+  List<Like>? get likes => throw _privateConstructorUsedError;
+  List<String>? get visibleTo =>
       throw _privateConstructorUsedError; // We use names instead of a topic data model because we need to perform an
 // array agg to filter and that only works with raw text values.
   List<String>? get topicNames => throw _privateConstructorUsedError;
@@ -60,6 +62,7 @@ abstract class $CastCopyWith<$Res> {
       {String id,
       String createdAt,
       bool deleted,
+      bool isPrivate,
       String rootId,
       String authorUsername,
       String authorDisplayName,
@@ -69,6 +72,7 @@ abstract class $CastCopyWith<$Res> {
       bool hasViewed,
       bool treeHasNewCasts,
       List<Like>? likes,
+      List<String>? visibleTo,
       List<String>? topicNames,
       List<String>? taggedUsernames,
       String authorId,
@@ -95,6 +99,7 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
     Object? id = null,
     Object? createdAt = null,
     Object? deleted = null,
+    Object? isPrivate = null,
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
@@ -104,6 +109,7 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
     Object? hasViewed = null,
     Object? treeHasNewCasts = null,
     Object? likes = freezed,
+    Object? visibleTo = freezed,
     Object? topicNames = freezed,
     Object? taggedUsernames = freezed,
     Object? authorId = null,
@@ -125,6 +131,10 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
       deleted: null == deleted
           ? _value.deleted
           : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPrivate: null == isPrivate
+          ? _value.isPrivate
+          : isPrivate // ignore: cast_nullable_to_non_nullable
               as bool,
       rootId: null == rootId
           ? _value.rootId
@@ -162,6 +172,10 @@ class _$CastCopyWithImpl<$Res, $Val extends Cast>
           ? _value.likes
           : likes // ignore: cast_nullable_to_non_nullable
               as List<Like>?,
+      visibleTo: freezed == visibleTo
+          ? _value.visibleTo
+          : visibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       topicNames: freezed == topicNames
           ? _value.topicNames
           : topicNames // ignore: cast_nullable_to_non_nullable
@@ -208,6 +222,7 @@ abstract class _$$_CastCopyWith<$Res> implements $CastCopyWith<$Res> {
       {String id,
       String createdAt,
       bool deleted,
+      bool isPrivate,
       String rootId,
       String authorUsername,
       String authorDisplayName,
@@ -217,6 +232,7 @@ abstract class _$$_CastCopyWith<$Res> implements $CastCopyWith<$Res> {
       bool hasViewed,
       bool treeHasNewCasts,
       List<Like>? likes,
+      List<String>? visibleTo,
       List<String>? topicNames,
       List<String>? taggedUsernames,
       String authorId,
@@ -239,6 +255,7 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
     Object? id = null,
     Object? createdAt = null,
     Object? deleted = null,
+    Object? isPrivate = null,
     Object? rootId = null,
     Object? authorUsername = null,
     Object? authorDisplayName = null,
@@ -248,6 +265,7 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
     Object? hasViewed = null,
     Object? treeHasNewCasts = null,
     Object? likes = freezed,
+    Object? visibleTo = freezed,
     Object? topicNames = freezed,
     Object? taggedUsernames = freezed,
     Object? authorId = null,
@@ -269,6 +287,10 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
       deleted: null == deleted
           ? _value.deleted
           : deleted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPrivate: null == isPrivate
+          ? _value.isPrivate
+          : isPrivate // ignore: cast_nullable_to_non_nullable
               as bool,
       rootId: null == rootId
           ? _value.rootId
@@ -306,6 +328,10 @@ class __$$_CastCopyWithImpl<$Res> extends _$CastCopyWithImpl<$Res, _$_Cast>
           ? _value._likes
           : likes // ignore: cast_nullable_to_non_nullable
               as List<Like>?,
+      visibleTo: freezed == visibleTo
+          ? _value._visibleTo
+          : visibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       topicNames: freezed == topicNames
           ? _value._topicNames
           : topicNames // ignore: cast_nullable_to_non_nullable
@@ -349,6 +375,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       {required this.id,
       required this.createdAt,
       required this.deleted,
+      required this.isPrivate,
       required this.rootId,
       required this.authorUsername,
       required this.authorDisplayName,
@@ -358,6 +385,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       required this.hasViewed,
       required this.treeHasNewCasts,
       required final List<Like>? likes,
+      required final List<String>? visibleTo,
       required final List<String>? topicNames,
       required final List<String>? taggedUsernames,
       required this.authorId,
@@ -367,6 +395,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       required this.replyTo,
       required this.externalUrl})
       : _likes = likes,
+        _visibleTo = visibleTo,
         _topicNames = topicNames,
         _taggedUsernames = taggedUsernames,
         super._();
@@ -380,6 +409,8 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   final String createdAt;
   @override
   final bool deleted;
+  @override
+  final bool isPrivate;
 // Fetched on read via join.
   @override
   final String rootId;
@@ -401,6 +432,15 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   @override
   List<Like>? get likes {
     final value = _likes;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _visibleTo;
+  @override
+  List<String>? get visibleTo {
+    final value = _visibleTo;
     if (value == null) return null;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
@@ -444,7 +484,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Cast(id: $id, createdAt: $createdAt, deleted: $deleted, rootId: $rootId, authorUsername: $authorUsername, authorDisplayName: $authorDisplayName, imageUrl: $imageUrl, accentColorBase: $accentColorBase, viewCount: $viewCount, hasViewed: $hasViewed, treeHasNewCasts: $treeHasNewCasts, likes: $likes, topicNames: $topicNames, taggedUsernames: $taggedUsernames, authorId: $authorId, title: $title, durationMs: $durationMs, audioUrl: $audioUrl, replyTo: $replyTo, externalUrl: $externalUrl)';
+    return 'Cast(id: $id, createdAt: $createdAt, deleted: $deleted, isPrivate: $isPrivate, rootId: $rootId, authorUsername: $authorUsername, authorDisplayName: $authorDisplayName, imageUrl: $imageUrl, accentColorBase: $accentColorBase, viewCount: $viewCount, hasViewed: $hasViewed, treeHasNewCasts: $treeHasNewCasts, likes: $likes, visibleTo: $visibleTo, topicNames: $topicNames, taggedUsernames: $taggedUsernames, authorId: $authorId, title: $title, durationMs: $durationMs, audioUrl: $audioUrl, replyTo: $replyTo, externalUrl: $externalUrl)';
   }
 
   @override
@@ -455,6 +495,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('createdAt', createdAt))
       ..add(DiagnosticsProperty('deleted', deleted))
+      ..add(DiagnosticsProperty('isPrivate', isPrivate))
       ..add(DiagnosticsProperty('rootId', rootId))
       ..add(DiagnosticsProperty('authorUsername', authorUsername))
       ..add(DiagnosticsProperty('authorDisplayName', authorDisplayName))
@@ -464,6 +505,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('hasViewed', hasViewed))
       ..add(DiagnosticsProperty('treeHasNewCasts', treeHasNewCasts))
       ..add(DiagnosticsProperty('likes', likes))
+      ..add(DiagnosticsProperty('visibleTo', visibleTo))
       ..add(DiagnosticsProperty('topicNames', topicNames))
       ..add(DiagnosticsProperty('taggedUsernames', taggedUsernames))
       ..add(DiagnosticsProperty('authorId', authorId))
@@ -483,6 +525,8 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.deleted, deleted) || other.deleted == deleted) &&
+            (identical(other.isPrivate, isPrivate) ||
+                other.isPrivate == isPrivate) &&
             (identical(other.rootId, rootId) || other.rootId == rootId) &&
             (identical(other.authorUsername, authorUsername) ||
                 other.authorUsername == authorUsername) &&
@@ -499,6 +543,8 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
             (identical(other.treeHasNewCasts, treeHasNewCasts) ||
                 other.treeHasNewCasts == treeHasNewCasts) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
+            const DeepCollectionEquality()
+                .equals(other._visibleTo, _visibleTo) &&
             const DeepCollectionEquality()
                 .equals(other._topicNames, _topicNames) &&
             const DeepCollectionEquality()
@@ -522,6 +568,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
         id,
         createdAt,
         deleted,
+        isPrivate,
         rootId,
         authorUsername,
         authorDisplayName,
@@ -531,6 +578,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
         hasViewed,
         treeHasNewCasts,
         const DeepCollectionEquality().hash(_likes),
+        const DeepCollectionEquality().hash(_visibleTo),
         const DeepCollectionEquality().hash(_topicNames),
         const DeepCollectionEquality().hash(_taggedUsernames),
         authorId,
@@ -560,6 +608,7 @@ abstract class _Cast extends Cast {
       {required final String id,
       required final String createdAt,
       required final bool deleted,
+      required final bool isPrivate,
       required final String rootId,
       required final String authorUsername,
       required final String authorDisplayName,
@@ -569,6 +618,7 @@ abstract class _Cast extends Cast {
       required final bool hasViewed,
       required final bool treeHasNewCasts,
       required final List<Like>? likes,
+      required final List<String>? visibleTo,
       required final List<String>? topicNames,
       required final List<String>? taggedUsernames,
       required final String authorId,
@@ -587,6 +637,8 @@ abstract class _Cast extends Cast {
   String get createdAt;
   @override
   bool get deleted;
+  @override
+  bool get isPrivate;
   @override // Fetched on read via join.
   String get rootId;
   @override
@@ -605,6 +657,8 @@ abstract class _Cast extends Cast {
   bool get treeHasNewCasts;
   @override
   List<Like>? get likes;
+  @override
+  List<String>? get visibleTo;
   @override // We use names instead of a topic data model because we need to perform an
 // array agg to filter and that only works with raw text values.
   List<String>? get topicNames;
