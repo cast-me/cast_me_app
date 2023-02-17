@@ -4,6 +4,8 @@ publish_to: 'none'
 
 version: 0.2.5+35
 
+# flutter pub run pubspec_dependency_sorter
+
 environment:
   sdk: ">=2.17.1 <3.0.0"
 dependencies:
@@ -21,7 +23,7 @@ dependencies:
   palette_generator: ^0.3.3+1
   shared_preferences: ^2.0.15
   connectivity_plus: ^3.0.2
-  supabase_flutter: ^1.2.0
+  supabase_flutter: ^1.4.0
   basic_utils: ^5.4.2
   ffmpeg_kit_flutter_audio: ^5.1.0
   crypto: ^3.0.2
@@ -34,20 +36,19 @@ dependencies:
   launch_review: ^3.0.1
   implicit_navigator:
     path: ../implicit_navigator
-  intl: ^0.17.0
+  intl: ^0.18.0
   image_cropper: ^3.0.0
   mime: ^1.0.2
   share_handler: ^0.0.16
   record: ^4.4.0
   just_the_tooltip: ^0.0.12
-  flutter_audio_waveforms: ^1.2.1+6
   path_provider: ^2.0.11
   cached_network_image: ^3.2.2
   share_plus: ^6.0.0
   flutter_signin_button: ^2.0.0
   uni_links: ^0.5.1
   collection: ^1.16.0
-  badges: ^2.0.3
+  badges: ^3.0.2
   social_share: ^2.2.1
   font_awesome_flutter: ^9.2.0
   freezed_annotation: ^2.2.0

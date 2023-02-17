@@ -83,8 +83,9 @@ class _LoadedPageContentState extends State<_LoadedPageContent> {
             child: CastListView(
               padding: EdgeInsets.zero,
               controller: CastMeListController<Cast>(
-                // TODO(caseycrogers): This is really messy, considering migrating
-                // `getStream` to just a `stream` and an `onRefresh` callback.
+                // TODO(caseycrogers): This is really messy, considering
+                //  migrating getStream` to just a `stream` and an `onRefresh`
+                //  callback.
                 getStream: (_) {
                   return ListenBloc.instance.selectedConversation.value!
                       .refresh()
