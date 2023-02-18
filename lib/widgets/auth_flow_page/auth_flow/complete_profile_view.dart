@@ -167,7 +167,7 @@ class _UsernamePicker extends StatelessWidget {
             errorMessage.value = form.validateUsername();
           },
           decoration: InputDecoration(
-            labelText: 'username',
+            labelText: 'username (must be unique)',
             errorText: message,
           ),
         );
