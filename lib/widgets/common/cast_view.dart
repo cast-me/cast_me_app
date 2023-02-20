@@ -449,7 +449,7 @@ class PreviewThumbnail extends StatelessWidget {
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.contain,
+                      fit: BoxFit.fill,
                       image: CachedNetworkImageProvider(cast.imageUrl!),
                     ),
                   ),

@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final SupabaseClient supabase = Supabase.instance.client;
 
-const bool isStaging = false;
+const bool isStaging = true;
 
 final profilePicturesBucket = supabase.storage.from('profile_pictures');
 
@@ -65,6 +65,10 @@ const String allNewCol = 'all_new';
 
 const String newCastCountCol = 'new_cast_count';
 
+typedef Row = Map<String, dynamic>;
+
+typedef Rows = List<Map<String, dynamic>>;
+
 SupabaseQueryBuilder get profilesQuery => supabase.from('profiles');
 
 SupabaseQueryBuilder get blockedUsersQuery => supabase.from('blocked_users');
@@ -94,3 +98,31 @@ SupabaseQueryBuilder get topicsReadQuery =>
 
 SupabaseQueryBuilder get castsToTopicWriteQuery =>
     supabase.from(isStaging ? 'staging_casts_to_topics' : 'casts_to_topics');
+
+// TODO: This will return duplicative elements if casts were added between
+//  requests.
+// Consider client-side de-dup logic or migrating off `range` and onto
+// `gt/lt`.
+Stream<Row> paginated(
+  PostgrestTransformBuilder query, {
+  required int chunkSize,
+  int? chunkLimit,
+}) async* {
+  int soFar = 0;
+  while (chunkLimit == null || soFar < chunkLimit * chunkSize) {
+    final int upper = soFar + chunkSize;
+    // `upper - 1` because range is bad and should feel bad and is inclusive.
+    // I mean seriously, what asshole decides a range should have an inclusive
+    // upper bound?
+    final Iterable<Map<String, dynamic>> rows =
+        await query.range(soFar, upper - 1) as Iterable<Map<String, dynamic>>;
+    soFar += chunkSize;
+    if (rows.isEmpty) {
+      // We've run out of casts.
+      return;
+    }
+    for (final row in rows) {
+      yield row;
+    }
+  }
+}

@@ -28,9 +28,7 @@ class CastMeNavigationBar extends StatelessWidget {
           data: NavigationBarThemeData(
             backgroundColor: Theme.of(context).colorScheme.surface,
             indicatorColor: Colors.black54,
-            labelTextStyle: MaterialStateProperty.all(
-              Theme.of(context).textTheme.bodyLarge,
-            ),
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           ),
           child: MediaQuery(
             // NavigationBar wraps itself in `SafeArea` which accidentally

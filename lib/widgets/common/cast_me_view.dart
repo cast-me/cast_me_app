@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/notifications_page/notifications_page_view.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -70,6 +71,8 @@ class CastMeView extends StatelessWidget {
                                 return const ListenPageView();
                               case CastMeTab.post:
                                 return const PostPageView();
+                              case CastMeTab.notifications:
+                                return const NotificationsPageView();
                               case CastMeTab.profile:
                                 return const ProfilePageView();
                             }

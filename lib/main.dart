@@ -54,7 +54,7 @@ final ColorScheme kColorScheme =  ColorScheme(
   onSurface: Colors.white,
   background: Colors.black,
   onBackground: Colors.white,
-  error: Color.lerp(Colors.red, Colors.black, .75)!,
+  error: Colors.red,
   onError: Colors.white,
 );
 
@@ -69,6 +69,10 @@ class CastMeApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         textTheme: const TextTheme(),
+        iconTheme: const IconThemeData(
+          // Set the default manually so that other elements can reference it.
+          size: 24,
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           labelStyle: TextStyle(color: Colors.white60),
           floatingLabelStyle: TextStyle(color: Colors.white),

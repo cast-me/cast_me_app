@@ -29,6 +29,13 @@ class CastMeTabs {
       ),
     ),
     const MapEntry(
+      CastMeTab.notifications,
+      NavigationDestination(
+        icon: Icon(Icons.notifications),
+        label: 'notifications',
+      ),
+    ),
+    const MapEntry(
       CastMeTab.profile,
       NavigationDestination(
         icon: Icon(Icons.person),
@@ -41,6 +48,7 @@ class CastMeTabs {
 enum CastMeTab {
   listen,
   post,
+  notifications,
   profile,
 }
 
