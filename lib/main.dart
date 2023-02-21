@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -44,7 +42,7 @@ Future<void> main() async {
   );
 }
 
-final ColorScheme kColorScheme =  ColorScheme(
+final ColorScheme kColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Colors.black,
   onPrimary: Colors.white,
@@ -124,12 +122,6 @@ Future<void> initialize() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  if (Platform.isIOS &&
-      (await FirebaseMessaging.instance.getNotificationSettings())
-              .authorizationStatus ==
-          AuthorizationStatus.notDetermined) {
-    await FirebaseMessaging.instance.requestPermission();
-  }
   await Supabase.initialize(
     url: 'https://magmdywarmnzoatbuesp.supabase.co',
     anonKey:

@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/gestures.dart';
+import 'package:cast_me_app/widgets/common/text_with_tappable_usernames.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,13 +9,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 import 'package:cast_me_app/providers/cast_provider.dart';
-import 'package:cast_me_app/util/collection_utils.dart';
 import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
@@ -115,7 +113,8 @@ class CastPreview extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   PreviewThumbnail(
-                                    cast: cast,
+                                    imageUrl: cast.imageUrl,
+                                    username: cast.authorUsername,
                                     size: 50,
                                   ),
                                   const SizedBox(width: 8),
@@ -320,58 +319,21 @@ class _CastTitleView extends StatelessWidget {
     final Cast cast = CastProvider.of(context).value;
     final CastViewTheme? theme = CastViewTheme.of(context);
     final bool tappable = theme?.taggedUsersAreTappable ?? true;
-    return Text.rich(
-      _constructSpan(cast.title, cast.taggedUsernames ?? [], tappable),
+    if (!tappable) {
+      return Text(
+        cast.title,
+        textAlign: textAlign,
+        style: const TextStyle(color: Colors.white),
+        maxLines: theme?.titleMaxLines,
+        overflow: theme?.titleMaxLines != null ? TextOverflow.ellipsis : null,
+      );
+    }
+    return TappableUsernameText(
+      cast.title,
       textAlign: textAlign,
       style: const TextStyle(color: Colors.white),
       maxLines: theme?.titleMaxLines,
       overflow: theme?.titleMaxLines != null ? TextOverflow.ellipsis : null,
-    );
-  }
-
-  // Parse the title into a list of spans where valid usernames are underlined
-  // and everything else is normal.
-  TextSpan _constructSpan(
-    String title,
-    List<String> taggedUsernames,
-    bool tappable,
-  ) {
-    if (taggedUsernames.isEmpty) {
-      return TextSpan(text: title);
-    }
-    // Code golf! :D
-    // Try to improve, I'm sure there's lots of low hanging fruit on mine.
-    // This is also a brittle poor readability nightmare, maybe consider giving
-    // up on code golf and making it readable instead.
-    int i = 0;
-    return TextSpan(
-      children: [
-        ...(taggedUsernames
-                .expand((username) => '@$username'.allMatches(title))
-                .toList()
-              ..sortBy((m) => m.start))
-            .expand((m) {
-          final List<TextSpan> spans = [
-            if (m.start > i) TextSpan(text: title.substring(i, m.start)),
-            // Underline the username.
-            TextSpan(
-              text: title.substring(m.start, m.end),
-              style: const TextStyle(decoration: TextDecoration.underline),
-              recognizer: tappable
-                  ? (TapGestureRecognizer()
-                    ..onTap = () {
-                      // Add 1 to snip the `@` from the start.
-                      CastMeBloc.instance.onUsernameSelected(
-                          title.substring(m.start + 1, m.end));
-                    })
-                  : null,
-            ),
-          ];
-          i = m.end;
-          return spans;
-        }),
-        if (i < title.length) TextSpan(text: title.substring(i)),
-      ],
     );
   }
 }
@@ -410,7 +372,7 @@ class HowOldLine extends StatelessWidget {
 
   String oldString() {
     final Duration howOld = DateTime.now().difference(createdAt);
-    if (howOld.inDays > 31) {
+    if (howOld.inDays > 6) {
       return DateFormat('MMM d').format(createdAt);
     }
     if (howOld.inHours > 24) {
@@ -429,11 +391,13 @@ class HowOldLine extends StatelessWidget {
 class PreviewThumbnail extends StatelessWidget {
   const PreviewThumbnail({
     super.key,
-    required this.cast,
+    required this.imageUrl,
+    required this.username,
     this.size,
   });
 
-  final Cast cast;
+  final String? imageUrl;
+  final String username;
   final double? size;
 
   @override
@@ -445,16 +409,16 @@ class PreviewThumbnail extends StatelessWidget {
         aspectRatio: 1,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(2),
-          child: cast.imageUrl != null
+          child: imageUrl != null
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: CachedNetworkImageProvider(cast.imageUrl!),
+                      image: CachedNetworkImageProvider(imageUrl!),
                     ),
                   ),
                 )
-              : DefaultPicture(displayName: cast.authorDisplayName),
+              : DefaultPicture(displayName: username),
         ),
       ),
     );
@@ -547,7 +511,10 @@ class CastConversationView extends StatelessWidget {
               ),
           child: BoxyRow(
             children: [
-              PreviewThumbnail(cast: rootCast),
+              PreviewThumbnail(
+                imageUrl: rootCast.imageUrl,
+                username: rootCast.authorUsername,
+              ),
               const SizedBox(width: 4),
               Dominant(
                 child: Column(

@@ -111,6 +111,7 @@ class CastMeBloc {
   }
 
   Future<void> onFirebaseMessage(Map<String, dynamic> messageData) async {
+    // Legacy. Delete after a couple weeks.
     final String? castId = messageData[castIdCol] as String?;
     if (castId != null) {
       await listenBloc.onCastIdSelected(

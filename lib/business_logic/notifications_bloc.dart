@@ -52,7 +52,7 @@ class NotificationController {
       );
     }
     return paginated(
-      builder,
+      builder.order(createdAtCol, ascending: false),
       chunkSize: 10,
     ).map(CastMeNotification.fromJson).handleError(
       (Object error, StackTrace stackTrace) {
