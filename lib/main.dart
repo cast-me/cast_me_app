@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,11 +29,13 @@ import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 
 const Color castMeGrey = Color.fromARGB(255, 25, 25, 31);
+const Color castMeBlue = Color.fromARGB(255, 22, 22, 45);
 
 Future<void> main() async {
   await runZonedGuarded(
     () async {
       await initialize();
+
       runApp(const CastMeApp());
     },
     (error, stack) {
@@ -44,17 +44,17 @@ Future<void> main() async {
   );
 }
 
-final ColorScheme kColorScheme =  ColorScheme(
+const ColorScheme kColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Colors.black,
   onPrimary: Colors.white,
-  secondary: Colors.white,
-  onSecondary: Colors.grey.shade700,
+  secondary: castMeBlue,
+  onSecondary: Colors.white,
   surface: castMeGrey,
   onSurface: Colors.white,
   background: Colors.black,
   onBackground: Colors.white,
-  error: Color.lerp(Colors.red, Colors.black, .75)!,
+  error: Colors.red,
   onError: Colors.white,
 );
 
@@ -68,7 +68,14 @@ class CastMeApp extends StatelessWidget {
       debugShowCheckedModeBanner: isStaging,
       title: 'Flutter Demo',
       theme: ThemeData(
+        dividerTheme: const DividerThemeData(
+          thickness: 1,
+        ),
         textTheme: const TextTheme(),
+        iconTheme: const IconThemeData(
+          // Set the default manually so that other elements can reference it.
+          size: 24,
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           labelStyle: TextStyle(color: Colors.white60),
           floatingLabelStyle: TextStyle(color: Colors.white),
@@ -100,9 +107,8 @@ class CastMeApp extends StatelessWidget {
         ),
         colorScheme: kColorScheme,
       ),
-      home: FirebaseMessageHandler(
-        onMessage: CastMeBloc.instance.onFirebaseMessage,
-        child: const AuthGate(
+      home: const FirebaseMessageHandler(
+        child: AuthGate(
           child: UpdateMessage(
             updateMessages: changelogMessages,
             child: CastMeView(),
@@ -120,12 +126,6 @@ Future<void> initialize() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  if (Platform.isIOS &&
-      (await FirebaseMessaging.instance.getNotificationSettings())
-              .authorizationStatus ==
-          AuthorizationStatus.notDetermined) {
-    await FirebaseMessaging.instance.requestPermission();
-  }
   await Supabase.initialize(
     url: 'https://magmdywarmnzoatbuesp.supabase.co',
     anonKey:

@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/analytics.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
@@ -103,16 +102,6 @@ class CastMeBloc {
       );
     } else if (pathSegments.length == 2 && pathSegments[0] == 'casts') {
       final String castId = pathSegments[1];
-      await listenBloc.onCastIdSelected(
-        castId: castId,
-        autoplay: true,
-      );
-    }
-  }
-
-  Future<void> onFirebaseMessage(Map<String, dynamic> messageData) async {
-    final String? castId = messageData[castIdCol] as String?;
-    if (castId != null) {
       await listenBloc.onCastIdSelected(
         castId: castId,
         autoplay: true,

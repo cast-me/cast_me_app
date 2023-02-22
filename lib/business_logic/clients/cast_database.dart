@@ -21,9 +21,6 @@ import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
-typedef _Row = Map<String, dynamic>;
-typedef _Rows = List<Map<String, dynamic>>;
-
 class CastDatabase {
   CastDatabase._();
 
@@ -37,7 +34,7 @@ class CastDatabase {
     bool onlyUpdates = false,
     int? limit,
   }) async* {
-    final PostgrestFilterBuilder<_Rows> filtered = _filterQuery(
+    final PostgrestFilterBuilder<Rows> filtered = _filterQuery(
       conversationsReadQuery,
       filterProfile: filterProfile,
       filterOutProfile: filterOutProfile,
@@ -50,7 +47,7 @@ class CastDatabase {
       unawaited(filtered.eq(allNewCol, false).gt(newCastCountCol, 0));
     }
     final PostgrestTransformBuilder ordered = _orderQuery(filtered);
-    yield* _paginated(
+    yield* paginated(
       ordered,
       chunkSize: 10,
       chunkLimit: limit != null ? limit ~/ 10 : null,
@@ -73,7 +70,7 @@ class CastDatabase {
     // This is here because we need two instances of the builder at the end to
     // run two separate queries because Supabase doesn't provide a copy method.
     // TODO: remove this function and use copy once it's available.
-    PostgrestFilterBuilder<_Rows> getBuilder() {
+    PostgrestFilterBuilder<Rows> getBuilder() {
       return _filterQuery(
         castsReadQuery,
         seedCast: seedCast,
@@ -88,8 +85,8 @@ class CastDatabase {
       );
     }
 
-    Stream<Cast> paginateCasts(PostgrestFilterBuilder<_Rows> query) {
-      return _paginated(
+    Stream<Cast> paginateCasts(PostgrestFilterBuilder<Rows> query) {
+      return paginated(
         _orderQuery(query),
         chunkSize: single ? 1 : 10,
         chunkLimit: single ? 1 : limit?.apply((l) => l ~/ 10),
@@ -113,7 +110,7 @@ class CastDatabase {
   }
 
   // Applies filters shared between casts and conversations.
-  PostgrestFilterBuilder<_Rows> _filterQuery(
+  PostgrestFilterBuilder<Rows> _filterQuery(
     SupabaseQueryBuilder tableQuery, {
     Cast? seedCast,
     Profile? filterProfile,
@@ -125,7 +122,7 @@ class CastDatabase {
     bool single = false,
     bool skipDeleted = true,
   }) {
-    PostgrestFilterBuilder<_Rows> queryBuilder = tableQuery.select<_Rows>();
+    PostgrestFilterBuilder<Rows> queryBuilder = tableQuery.select<Rows>();
     // Always filter by cast privacy.
     // TODO(caseycrogers): Move this server side?
     queryBuilder = queryBuilder.or('$isPrivateCol.eq.false,'
@@ -162,8 +159,8 @@ class CastDatabase {
   }
 
   // Apply ordering shared between Casts and Conversations.
-  PostgrestTransformBuilder<_Rows> _orderQuery(
-      PostgrestFilterBuilder<_Rows> query) {
+  PostgrestTransformBuilder<Rows> _orderQuery(
+      PostgrestFilterBuilder<Rows> query) {
     return query
         // Play the freshest conversations first.
         // We're using promoted date which is the time the tree was last updated
@@ -172,34 +169,6 @@ class CastDatabase {
         // Within a specific depth level, play the oldest content first as new
         // content in a level might build on other content in that level.
         .order(createdAtCol, ascending: true);
-  }
-
-  // TODO: This will return duplicative elements if casts were added between
-  //  requests.
-  // Consider client-side de-dup logic or migrating off `range` and onto
-  // `gt/lt`.
-  Stream<_Row> _paginated(
-    PostgrestTransformBuilder query, {
-    required int chunkSize,
-    int? chunkLimit,
-  }) async* {
-    int soFar = 0;
-    while (chunkLimit == null || soFar < chunkLimit * chunkSize) {
-      final int upper = soFar + chunkSize;
-      // `upper - 1` because range is bad and should feel bad and is inclusive.
-      // I mean seriously, what asshole decides a range should have an inclusive
-      // upper bound?
-      final Iterable<Map<String, dynamic>> rows =
-          await query.range(soFar, upper - 1) as Iterable<Map<String, dynamic>>;
-      soFar += chunkSize;
-      if (rows.isEmpty) {
-        // We've run out of casts.
-        return;
-      }
-      for (final row in rows) {
-        yield row;
-      }
-    }
   }
 
   Future<Cast> getCast({required String castId}) async {

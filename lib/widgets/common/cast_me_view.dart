@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/notifications_page/notifications_page_view.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,9 +17,38 @@ import 'package:cast_me_app/widgets/common/cast_me_bottom_sheet.dart';
 import 'package:cast_me_app/widgets/common/cast_me_navigation_bar.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/profile_page/profile_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CastMeView extends StatelessWidget {
+class CastMeView extends StatefulWidget {
   const CastMeView({super.key});
+
+  @override
+  State<CastMeView> createState() => _CastMeViewState();
+}
+
+class _CastMeViewState extends State<CastMeView> {
+  @override
+  void initState() {
+    super.initState();
+    const String opensSinceLastRequestKey = 'opens';
+    // Put this here so that we only ask after the user has logged in.
+    FirebaseMessaging.instance.getNotificationSettings().then((settings) async {
+      if (settings.authorizationStatus == AuthorizationStatus.notDetermined ||
+          settings.authorizationStatus == AuthorizationStatus.denied) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final int opensSinceLastRequest =
+            prefs.getInt(opensSinceLastRequestKey) ?? 0;
+        // Only ask once every ten opens so as not to spam users.
+        if (opensSinceLastRequest % 10 == 0) {
+          await prefs.setInt(
+            opensSinceLastRequestKey,
+            opensSinceLastRequest + 1,
+          );
+          await FirebaseMessaging.instance.requestPermission();
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +101,8 @@ class CastMeView extends StatelessWidget {
                                 return const ListenPageView();
                               case CastMeTab.post:
                                 return const PostPageView();
+                              case CastMeTab.notifications:
+                                return const NotificationsPageView();
                               case CastMeTab.profile:
                                 return const ProfilePageView();
                             }

@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'cast.dart';
 
@@ -433,6 +433,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   List<Like>? get likes {
     final value = _likes;
     if (value == null) return null;
+    if (_likes is EqualUnmodifiableListView) return _likes;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -442,6 +443,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   List<String>? get visibleTo {
     final value = _visibleTo;
     if (value == null) return null;
+    if (_visibleTo is EqualUnmodifiableListView) return _visibleTo;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -455,6 +457,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   List<String>? get topicNames {
     final value = _topicNames;
     if (value == null) return null;
+    if (_topicNames is EqualUnmodifiableListView) return _topicNames;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -464,6 +467,7 @@ class _$_Cast extends _Cast with DiagnosticableTreeMixin {
   List<String>? get taggedUsernames {
     final value = _taggedUsernames;
     if (value == null) return null;
+    if (_taggedUsernames is EqualUnmodifiableListView) return _taggedUsernames;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
