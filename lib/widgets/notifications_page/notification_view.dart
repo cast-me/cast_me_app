@@ -143,68 +143,71 @@ class _BaseNotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use this toggleable solution so only unread notifications check their
     // visibility.
-    return _ToggleVisibilityDetector(
-      visibilityKey: ValueKey(notification.base.id),
-      isEnabled: !notification.base.read,
-      onVisibilityChanged: (visibility) async {
-        // Count the notification as read if more than 75% of it is visible.
-        if (visibility.visibleFraction > .75) {
-          await NotificationDatabase.instance.markAsRead(notification.base.id);
-        }
-      },
-      child: CastViewTheme(
-        isInteractive: false,
-        indentReplies: false,
-        indicateNew: false,
-        child: InkWell(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 7.5, bottom: 2),
-                  child:
-                      HowOldLine(createdAt: notification.base.createdAtStamp),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: icon,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: Theme.of(context).iconTheme.size,
-                                width: Theme.of(context).iconTheme.size,
-                                child: image,
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(child: title),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          body,
-                        ],
+    return IndicateViewed(
+      isUnread: !notification.base.read,
+      child: _ToggleVisibilityDetector(
+        visibilityKey: ValueKey(notification.base.id),
+        isEnabled: !notification.base.read,
+        onVisibilityChanged: (visibility) async {
+          // Count the notification as read if more than 75% of it is visible.
+          if (visibility.visibleFraction > .75) {
+            await NotificationDatabase.instance.markAsRead(notification.base.id);
+          }
+        },
+        child: CastViewTheme(
+          isInteractive: false,
+          indentReplies: false,
+          indicateNew: false,
+          child: InkWell(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 7.5, bottom: 2),
+                    child:
+                        HowOldLine(createdAt: notification.base.createdAtStamp),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: icon,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: Theme.of(context).iconTheme.size,
+                                  width: Theme.of(context).iconTheme.size,
+                                  child: image,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(child: title),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            body,
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
+            onTap: () {
+              NotificationBloc.instance.onNotificationTapped(notification);
+            },
           ),
-          onTap: () {
-            NotificationBloc.instance.onNotificationTapped(notification);
-          },
         ),
       ),
     );

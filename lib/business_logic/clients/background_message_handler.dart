@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'dart:convert';
 
+import 'package:cast_me_app/business_logic/clients/notification_database.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
@@ -80,6 +81,8 @@ class _FirebaseMessageHandlerState extends State<FirebaseMessageHandler> {
       final CastMeNotification notification =
           CastMeNotification.fromJson(messageData);
       await NotificationBloc.instance.onNotificationTapped(notification);
+      // Since we just opened the notification, mark it as read.
+      await NotificationDatabase.instance.markAsRead(notification.base.id);
     }
     // Legacy. Delete after a couple weeks.
     final String? castId = messageData[castIdCol] as String?;

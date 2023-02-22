@@ -74,7 +74,7 @@ class CastPreview extends StatelessWidget {
             child: InkWell(
               onTap: _getOnTap(context, nowPlaying),
               child: IndicateViewed(
-                showIndicator: shouldIndicateNew(context),
+                isUnread: shouldIndicateNew(context),
                 child: Container(
                   padding: EdgeInsets.only(
                     left: padding?.left ?? 4,
@@ -184,16 +184,16 @@ class CastPreview extends StatelessWidget {
 class IndicateViewed extends StatelessWidget {
   const IndicateViewed({
     super.key,
-    required this.showIndicator,
+    required this.isUnread,
     required this.child,
   });
 
-  final bool showIndicator;
+  final bool isUnread;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    if (!showIndicator) {
+    if (!isUnread) {
       return child;
     }
     return Stack(

@@ -29,7 +29,7 @@ import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 
 const Color castMeGrey = Color.fromARGB(255, 25, 25, 31);
-const Color castMeBlue = Color.fromARGB(255, 18, 18, 31);
+const Color castMeBlue = Color.fromARGB(255, 22, 22, 45);
 
 Future<void> main() async {
   await runZonedGuarded(
