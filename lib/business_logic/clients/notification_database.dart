@@ -35,7 +35,7 @@ class NotificationDatabase {
   ValueNotifier<List<CastMeNotification>> realtimeNotifications() {
     final ValueNotifier<List<CastMeNotification>> notifications =
         ValueNotifier([]);
-    supabase.channel('public:$_tableName').on(
+    supabase.channel('public:notification_list').on(
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(
         event: 'INSERT',
@@ -54,6 +54,25 @@ class NotificationDatabase {
     return notifications;
   }
 
+  ValueNotifier<int> unreadNotificationCount() {
+    final ValueNotifier<int> notificationCount = ValueNotifier(0);
+    getUnreadNotificationCount()
+        .then((count) => notificationCount.value = count);
+    supabase.channel('public:notification_count').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: '*',
+        schema: 'public',
+        table: _tableName,
+        filter: '$userIdCol=eq.${AuthManager.instance.user!.id}',
+      ),
+      (dynamic payload, [dynamic ref]) async {
+        notificationCount.value = await getUnreadNotificationCount();
+      },
+    ).subscribe();
+    return notificationCount;
+  }
+
   @visibleForTesting
   static void reset() {
     instance = NotificationDatabase._();
@@ -64,6 +83,17 @@ class NotificationDatabase {
         .from(_tableName)
         .update(<String, dynamic>{readCol: true}).eq(idCol, notificationId);
   }
+
+  Future<int> getUnreadNotificationCount() async {
+    return (await supabase
+            .from(_countTableName)
+            .select<PostgrestMap>('unread_notifications')
+            .eq(idCol, AuthManager.instance.profile.id)
+            .single())
+        .values
+        .single as int;
+  }
 }
 
 const String _tableName = isStaging ? 'staging_notifications' : 'notifications';
+const String _countTableName = '${_tableName}_count';

@@ -13,9 +13,12 @@ class NotificationBloc {
 
   static final NotificationBloc instance = NotificationBloc._();
 
+  late final ValueNotifier<int> unreadNotificationCount = NotificationDatabase
+      .instance.unreadNotificationCount();
+
   // Late to ensure that this gets initialized after supabase.
   late final ValueNotifier<List<CastMeNotification>> realtimeNotifications =
-      NotificationDatabase.instance.realtimeNotifications();
+  NotificationDatabase.instance.realtimeNotifications();
 
   Future<void> onNotificationTapped(CastMeNotification notification) async {
     switch (notification.base.type) {
