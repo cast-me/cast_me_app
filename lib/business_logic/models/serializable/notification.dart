@@ -27,9 +27,7 @@ class BaseNotification with _$BaseNotification {
       _$BaseNotificationFromJson(json);
 
   DateTime get createdAtStamp => DateTime.parse(createdAt);
-}
 
-extension BaseNotificationUtils on BaseNotification {
   NotificationType get type =>
       NotificationType.values.singleWhere((type) => type.id == typeId);
 }
@@ -56,7 +54,6 @@ extension Ids on NotificationType {
 @freezed
 class ReplyNotificationData with _$ReplyNotificationData {
   const factory ReplyNotificationData({
-    required Cast originalCast,
     required Cast replyCast,
   }) = _ReplyNotificationData;
 

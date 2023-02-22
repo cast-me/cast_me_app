@@ -1,67 +1,47 @@
 import 'dart:async';
 
-import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
-import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
+import 'package:cast_me_app/business_logic/clients/notification_database.dart';
+import 'package:cast_me_app/business_logic/listen_bloc.dart';
+import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
-import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cast_me_app/business_logic/models/serializable/notification.dart';
+import 'package:flutter/cupertino.dart';
 
 class NotificationBloc {
   NotificationBloc._();
 
   static final NotificationBloc instance = NotificationBloc._();
 
-  late final NotificationController controller = NotificationController._();
-}
+  // Late to ensure that this gets initialized after supabase.
+  late final ValueNotifier<List<CastMeNotification>> realtimeNotifications =
+      NotificationDatabase.instance.realtimeNotifications();
 
-/// This class holds the forward looking subscription stream and the backward
-/// looking paginated stream.
-class NotificationController {
-  NotificationController._() {
-    supabase.channel('public:$_tableName').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(
-        event: 'INSERT',
-        schema: 'public',
-        table: _tableName,
-        filter: '$userIdCol=eq.${AuthManager.instance.user!.id}',
-      ),
-      (dynamic payload, [dynamic ref]) {
-        realtimeNotifications.value = <CastMeNotification>[
-          CastMeNotification.fromJson(
-              (payload as Map<String, dynamic>)['new'] as Row),
-          ...realtimeNotifications.value,
-        ];
-      },
-    ).subscribe();
-  }
-
-  ValueNotifier<List<CastMeNotification>> realtimeNotifications =
-      ValueNotifier([]);
-
-  Stream<CastMeNotification> oldNotificationStream() {
-    PostgrestFilterBuilder builder = supabase
-        .from(_tableName)
-        .select<Rows>()
-        .eq(userIdCol, AuthManager.instance.user!.id);
-    if (realtimeNotifications.value.isNotEmpty) {
-      // Ensure we don't get any duplicate notifications.
-      builder = builder.lt(
-        createdAtCol,
-        realtimeNotifications.value.last.baseNotification.createdAt,
-      );
-    }
-    return paginated(
-      builder.order(createdAtCol, ascending: false),
-      chunkSize: 10,
-    ).map(CastMeNotification.fromJson).handleError(
-      (Object error, StackTrace stackTrace) {
-        FlutterError.onError!.call(
-          FlutterErrorDetails(exception: error, stack: stackTrace),
+  Future<void> onNotificationTapped(CastMeNotification notification) async {
+    switch (notification.base.type) {
+      case NotificationType.reply:
+        notification as ReplyNotification;
+        ListenBloc.instance.onConversationIdSelected(
+          notification.data.replyCast.rootId,
         );
-      },
-    );
+        CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+        await ListenBloc.instance.onCastSelected(notification.data.replyCast);
+        break;
+      case NotificationType.like:
+        notification as LikeNotification;
+        ListenBloc.instance.onConversationIdSelected(
+          notification.data.cast.rootId,
+        );
+        CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+        break;
+      case NotificationType.tag:
+        notification as TagNotification;
+        ListenBloc.instance.onConversationIdSelected(
+          notification.data.cast.rootId,
+        );
+        CastMeBloc.instance.onTabChanged(CastMeTab.listen);
+        await ListenBloc.instance.onCastSelected(notification.data.cast);
+        break;
+    }
   }
 }
-
-const String _tableName = isStaging ? 'staging_notifications' : 'notifications';

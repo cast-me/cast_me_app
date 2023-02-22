@@ -1,7 +1,7 @@
 import 'package:cast_me_app/business_logic/models/serializable/notification.dart';
 
 abstract class CastMeNotification {
-  CastMeNotification(this.baseNotification);
+  CastMeNotification(this.base);
 
   factory CastMeNotification.fromJson(Map<String, Object?> json) {
     final BaseNotification baseNotification = BaseNotification.fromJson(json);
@@ -24,23 +24,23 @@ abstract class CastMeNotification {
     }
   }
 
-  final BaseNotification baseNotification;
+  final BaseNotification base;
 }
 
 class ReplyNotification extends CastMeNotification {
-  ReplyNotification(super.baseNotification, this.data);
+  ReplyNotification(super.base, this.data);
 
   final ReplyNotificationData data;
 }
 
 class LikeNotification extends CastMeNotification {
-  LikeNotification(super.baseNotification, this.data);
+  LikeNotification(super.base, this.data);
 
   final LikeNotificationData data;
 }
 
 class TagNotification extends CastMeNotification {
-  TagNotification(super.baseNotification, this.data);
+  TagNotification(super.base, this.data);
 
   final TagNotificationData data;
 }

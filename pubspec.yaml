@@ -62,6 +62,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.0
   expandable_page_view: ^1.0.17
   device_frame: ^1.1.0
+  visibility_detector: ^0.3.3
 
 dev_dependencies:
   flutter_test:

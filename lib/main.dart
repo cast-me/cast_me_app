@@ -29,11 +29,13 @@ import 'package:cast_me_app/widgets/common/cast_me_view.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
 
 const Color castMeGrey = Color.fromARGB(255, 25, 25, 31);
+const Color castMeBlue = Color.fromARGB(255, 18, 18, 31);
 
 Future<void> main() async {
   await runZonedGuarded(
     () async {
       await initialize();
+
       runApp(const CastMeApp());
     },
     (error, stack) {
@@ -42,12 +44,12 @@ Future<void> main() async {
   );
 }
 
-final ColorScheme kColorScheme = ColorScheme(
+const ColorScheme kColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Colors.black,
   onPrimary: Colors.white,
-  secondary: Colors.white,
-  onSecondary: Colors.grey.shade700,
+  secondary: castMeBlue,
+  onSecondary: Colors.white,
   surface: castMeGrey,
   onSurface: Colors.white,
   background: Colors.black,
@@ -66,6 +68,9 @@ class CastMeApp extends StatelessWidget {
       debugShowCheckedModeBanner: isStaging,
       title: 'Flutter Demo',
       theme: ThemeData(
+        dividerTheme: const DividerThemeData(
+          thickness: 1,
+        ),
         textTheme: const TextTheme(),
         iconTheme: const IconThemeData(
           // Set the default manually so that other elements can reference it.
@@ -102,9 +107,8 @@ class CastMeApp extends StatelessWidget {
         ),
         colorScheme: kColorScheme,
       ),
-      home: FirebaseMessageHandler(
-        onMessage: CastMeBloc.instance.onFirebaseMessage,
-        child: const AuthGate(
+      home: const FirebaseMessageHandler(
+        child: AuthGate(
           child: UpdateMessage(
             updateMessages: changelogMessages,
             child: CastMeView(),

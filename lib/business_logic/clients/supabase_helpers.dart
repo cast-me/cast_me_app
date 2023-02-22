@@ -65,6 +65,10 @@ const String allNewCol = 'all_new';
 
 const String newCastCountCol = 'new_cast_count';
 
+const String typeCol = 'type_id';
+
+const String readCol = 'read';
+
 typedef Row = Map<String, dynamic>;
 
 typedef Rows = List<Map<String, dynamic>>;
