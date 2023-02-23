@@ -73,7 +73,7 @@ class NotificationsIcon extends StatelessWidget {
               return const SizedBox();
             }
             return Positioned(
-              right: 0,
+              right: .5,
               top: 0,
               height: 14,
               width: 14,

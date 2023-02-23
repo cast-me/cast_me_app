@@ -56,7 +56,7 @@ class NotificationDatabase {
           ...notifications.value,
         ];
       },
-    ).subscribe();
+    ).subscribe((status, [_]) => print('notification_list:$status'));
     return notifications;
   }
 
@@ -75,7 +75,7 @@ class NotificationDatabase {
       (dynamic payload, [dynamic ref]) async {
         notificationCount.value = await getUnreadNotificationCount();
       },
-    ).subscribe();
+    ).subscribe((status, [_]) => print('notification_count:$status'));
     return notificationCount;
   }
 
