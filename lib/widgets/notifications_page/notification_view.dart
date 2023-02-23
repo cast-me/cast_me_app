@@ -151,7 +151,8 @@ class _BaseNotificationView extends StatelessWidget {
         onVisibilityChanged: (visibility) async {
           // Count the notification as read if more than 75% of it is visible.
           if (visibility.visibleFraction > .75) {
-            await NotificationDatabase.instance.markAsRead(notification.base.id);
+            await NotificationDatabase.instance
+                .markAsRead(notification.base.id);
           }
         },
         child: CastViewTheme(

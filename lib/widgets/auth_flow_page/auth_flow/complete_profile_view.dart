@@ -35,11 +35,23 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
     return CastMePage(
       child: Column(
         children: [
+          Text(
+            'Welcome to CastMe!',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const Text(
+            '\nLets finish your profile.\n\n'
+            'Please enter a username. All other fields are optional and can be '
+            'changed later.\n',
+            textAlign: TextAlign.center,
+          ),
           _UsernamePicker(form: form),
           DisplayNamePicker(
             controller: form.displayNameController,
             validate: form.validateDisplayName,
           ),
+          const SizedBox(height: 8),
           _ProfilePicturePicker(form: form),
           AsyncActionWrapper(
             controller: AuthManager.instance.asyncActionController,
@@ -139,7 +151,7 @@ class DisplayNamePicker extends StatelessWidget {
             errorMessage.value = validate();
           },
           decoration: InputDecoration(
-            labelText: 'display name',
+            labelText: 'display name (optional)',
             errorText: message,
           ),
         );

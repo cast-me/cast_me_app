@@ -8,10 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfileFormData extends ChangeNotifier {
-  ProfileFormData({
-    this.initialDisplayName = '',
+  // A new form for a brand new account.
+  ProfileFormData()
+      : initialDisplayName = '',
+        initialUsername = '';
+
+  // An editing form for an existing account.
+  ProfileFormData.forEditing({
+    required this.initialUsername,
+    required this.initialDisplayName,
   });
 
+  final String initialUsername;
   final String initialDisplayName;
 
   String get currentDisplayName => displayNameController.text;
@@ -19,8 +27,9 @@ class ProfileFormData extends ChangeNotifier {
   bool get displayNameChanged =>
       displayNameController.text != initialDisplayName;
 
-  late final TextEditingController usernameController = TextEditingController()
-    ..addListener(notifyListeners);
+  late final TextEditingController usernameController =
+      TextEditingController(text: initialUsername)
+        ..addListener(notifyListeners);
   late final TextEditingController displayNameController =
       TextEditingController(text: initialDisplayName)
         ..addListener(notifyListeners);
@@ -71,6 +80,10 @@ class ProfileFormData extends ChangeNotifier {
 
   String? validateDisplayName() {
     final String displayName = displayNameController.text;
+    if (displayName.isEmpty) {
+      // A blank displayName will default to the same as the username.
+      return null;
+    }
     if (displayName.length < 3) {
       return 'Display name must be at least 3 characters.';
     }

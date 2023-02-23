@@ -138,25 +138,36 @@ class AuthManager extends ChangeNotifier {
     await _authActionWrapper(
       'completeUserProfile',
       () async {
+        try {
+          assert(
+            supabase.auth.currentUser != null,
+            'You are not properly logged in, please report this error.',
+          );
+          final _ProfilePictureUploadResult? uploadResult =
+              profilePicture != null
+                  ? await _uploadProfilePicture(profilePicture)
+                  : null;
+          final Profile completedProfile = Profile(
+            id: supabase.auth.currentUser!.id,
+            username: username,
+            displayName: displayName.isEmpty ? username : displayName,
+            profilePictureUrl: uploadResult?.profilePictureUrl,
+            accentColorBase: uploadResult?.accentColor?.serialize,
+            deleted: false,
+          );
+          await profilesQuery.upsert(completedProfile.toJson());
+          _profile = completedProfile;
+          _signInState = SignInState.signedIn;
+        } on PostgrestException catch (e) {
+          if (e.message.contains('duplicate key')) {
+            throw ArgumentError(
+              'It looks like the username \'$username\' is taken. Please try a '
+              'different username.',
+            );
+          }
+          rethrow;
+        }
         Analytics.instance.logCompleteProfile();
-        assert(
-          supabase.auth.currentUser != null,
-          'You are not properly logged in, please report this error.',
-        );
-        final _ProfilePictureUploadResult? uploadResult = profilePicture != null
-            ? await _uploadProfilePicture(profilePicture)
-            : null;
-        final Profile completedProfile = Profile(
-          id: supabase.auth.currentUser!.id,
-          username: username,
-          displayName: displayName,
-          profilePictureUrl: uploadResult?.profilePictureUrl,
-          accentColorBase: uploadResult?.accentColor?.serialize,
-          deleted: false,
-        );
-        await profilesQuery.upsert(completedProfile.toJson());
-        _profile = completedProfile;
-        _signInState = SignInState.signedIn;
       },
     );
   }
