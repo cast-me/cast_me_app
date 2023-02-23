@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileBloc {
   ProfileBloc._();
@@ -19,14 +20,20 @@ class ProfileBloc {
 
   Future<void> onEditProfile() async {
     assert(_form.value == null);
-    _form.value = ProfileFormData(initialDisplayName: profile.displayName);
+    _form.value = ProfileFormData.forEditing(
+      initialUsername: profile.username,
+      initialDisplayName: profile.displayName,
+    );
   }
 
   Future<void> onSubmit() async {
     assert(_form.value != null);
     final ProfileFormData form = _form.value!;
+    final String actualDisplayName = form.currentDisplayName.isEmpty
+        ? form.usernameController.text
+        : form.currentDisplayName;
     await AuthManager.instance.updateFields(
-      displayName: form.displayNameChanged ? form.currentDisplayName : null,
+      displayName: form.displayNameChanged ? actualDisplayName : null,
       profilePicture: form.selectedPhoto?.file,
     );
     _form.value = null;
@@ -38,7 +45,8 @@ class ProfileBloc {
   }
 
   void onEditProfileImage() {
-    _form.value = ProfileFormData(
+    _form.value = ProfileFormData.forEditing(
+      initialUsername: profile.username,
       initialDisplayName: profile.displayName,
     );
   }
