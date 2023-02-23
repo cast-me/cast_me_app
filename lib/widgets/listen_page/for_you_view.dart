@@ -30,7 +30,7 @@ class ForYouView extends StatelessWidget {
             child: PlayNowView(),
           ),
           CuratedConversationsCard(pagePadding: _padding),
-          //FollowUpCard(padding: _padding),
+          FollowUpCard(padding: _padding),
           Padding(
             padding: _padding,
             child: _DiscordView(),
