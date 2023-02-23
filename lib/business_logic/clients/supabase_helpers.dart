@@ -91,6 +91,11 @@ SupabaseQueryBuilder get castsReadQuery =>
 SupabaseQueryBuilder get conversationsReadQuery => supabase
     .from(isStaging ? 'staging_conversations_view' : 'conversations_view');
 
+SupabaseQueryBuilder get curatedConversationsReadQuery =>
+    supabase.from(isStaging
+        ? 'staging_curated_conversations_view'
+        : 'curated_conversations_view');
+
 SupabaseQueryBuilder get listensQuery =>
     supabase.from(isStaging ? 'staging_views' : 'views');
 
