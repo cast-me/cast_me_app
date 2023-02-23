@@ -1,13 +1,14 @@
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
-
-import 'package:collection/collection.dart';
 
 class ForYouBloc {
   ForYouBloc._();
@@ -74,7 +75,7 @@ class ForYouBloc {
               limit: 10,
             )
             .toList())
-        .sortedBy<num>((c) => c.hasNewCasts ? 1 : 0);
+        .sortedBy<num>((c) => c.hasNewCasts ? 0 : 1);
   }
 
   static Future<List<Conversation>> _getContinueListeningConversations() {

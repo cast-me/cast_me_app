@@ -1,11 +1,16 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:visibility_detector/visibility_detector.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/notification_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
 import 'package:cast_me_app/business_logic/models/serializable/notification.dart';
 import 'package:cast_me_app/business_logic/notifications_bloc.dart';
 import 'package:cast_me_app/widgets/common/cast_view.dart';
 import 'package:cast_me_app/widgets/common/text_with_tappable_usernames.dart';
-import 'package:flutter/material.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class NotificationView extends StatelessWidget {
   const NotificationView({

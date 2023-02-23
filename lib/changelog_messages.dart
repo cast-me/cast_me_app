@@ -36,4 +36,9 @@ const Map<String, Widget> changelogMessages = {
     ''' - Rebuilt the home page to include a `for you` sub-tab
  - Allow users to delete their account''',
   ),
+  '0.2.9': Text(
+    ''' - Added a notifications tab
+ - Added a curated "top conversations" list
+ - Made display names optional''',
+  ),
 };

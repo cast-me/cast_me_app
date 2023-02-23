@@ -2,11 +2,11 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:cast_me_app/business_logic/notifications_bloc.dart';
-import 'package:cast_me_app/main.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:cast_me_app/business_logic/notifications_bloc.dart';
+import 'package:cast_me_app/main.dart';
 import 'package:cast_me_app/util/custom_icons.dart';
 
 class CastMeTabs {

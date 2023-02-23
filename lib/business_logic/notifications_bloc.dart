@@ -1,12 +1,16 @@
+// Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/notification_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
 import 'package:cast_me_app/business_logic/models/serializable/notification.dart';
-import 'package:flutter/cupertino.dart';
 
 class NotificationBloc {
   NotificationBloc._();

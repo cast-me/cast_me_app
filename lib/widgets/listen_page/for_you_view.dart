@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/listen_page/continue_listening_card.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -7,6 +6,7 @@ import 'package:cast_me_app/business_logic/for_you_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/update_message.dart';
+import 'package:cast_me_app/widgets/listen_page/continue_listening_card.dart';
 import 'package:cast_me_app/widgets/listen_page/follow_up_card.dart';
 import 'package:cast_me_app/widgets/listen_page/play_new_card.dart';
 

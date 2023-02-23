@@ -1,7 +1,9 @@
 // Package imports:
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notification.freezed.dart';
 

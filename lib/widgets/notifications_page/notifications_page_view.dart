@@ -1,11 +1,16 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:adaptive_material/adaptive_material.dart';
 import 'package:async_list_view/async_list_view.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/notification_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
 import 'package:cast_me_app/business_logic/notifications_bloc.dart';
 import 'package:cast_me_app/widgets/common/cast_me_page.dart';
 import 'package:cast_me_app/widgets/notifications_page/notification_view.dart';
-import 'package:flutter/material.dart';
 
 class NotificationsPageView extends StatefulWidget {
   const NotificationsPageView({super.key});
