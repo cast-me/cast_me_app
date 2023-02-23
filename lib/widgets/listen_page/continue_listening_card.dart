@@ -48,3 +48,44 @@ class ContinueListeningCard extends StatelessWidget {
     );
   }
 }
+
+class CuratedConversationsCard extends StatelessWidget {
+  const CuratedConversationsCard({
+    super.key,
+    this.pagePadding,
+  });
+
+  final EdgeInsets? pagePadding;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Future<List<Conversation>>>(
+        valueListenable: ForYouBloc.instance.curatedConversations,
+        builder: (context, conversations, child) {
+          return FutureBuilder<List<Conversation>>(
+            future: conversations,
+            builder: (context, snap) {
+              if (snap.hasError) {
+                return ErrorText(error: snap.error!);
+              }
+              if (!snap.hasData || snap.data!.isEmpty) {
+                return Container();
+              }
+              return HorizontalCardList(
+                padding: pagePadding,
+                headerText: 'Top Conversations',
+                pages: snap.data!.map(
+                      (c) {
+                    return ConversationPreview(
+                      conversation: c,
+                      margin: EdgeInsets.zero,
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          );
+        }
+    );
+  }
+}

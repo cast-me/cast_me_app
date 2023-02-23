@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/listen_page/continue_listening_card.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -28,6 +29,7 @@ class ForYouView extends StatelessWidget {
             padding: _padding,
             child: PlayNowView(),
           ),
+          CuratedConversationsCard(pagePadding: _padding),
           FollowUpCard(padding: _padding),
           Padding(
             padding: _padding,

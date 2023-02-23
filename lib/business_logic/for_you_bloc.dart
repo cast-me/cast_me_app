@@ -7,17 +7,21 @@ import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 
+import 'package:collection/collection.dart';
+
 class ForYouBloc {
   ForYouBloc._();
 
   static ForYouBloc instance = ForYouBloc._();
 
-  final ValueNotifier<Future<Cast?>> _seedCast =
-      ValueNotifier(_getSeedCast());
+  final ValueNotifier<Future<Cast?>> _seedCast = ValueNotifier(_getSeedCast());
 
   final ValueNotifier<Future<List<Conversation>>>
       _continueListeningConversations =
       ValueNotifier(_getContinueListeningConversations());
+
+  final ValueNotifier<Future<List<Conversation>>> _curatedConversations =
+      ValueNotifier(_getCuratedConversations());
 
   // Make this late so that we don't issue a DB request at launch.
   late final ValueNotifier<Future<List<Cast>>> _followUpCasts =
@@ -28,12 +32,16 @@ class ForYouBloc {
   ValueListenable<Future<List<Conversation>>>
       get continueListeningConversations => _continueListeningConversations;
 
+  ValueListenable<Future<List<Conversation>>> get curatedConversations =>
+      _curatedConversations;
+
   ValueListenable<Future<List<Cast>>> get followUpCasts => _followUpCasts;
 
   Future<void> onRefresh() async {
     _seedCast.value = _getSeedCast();
     _continueListeningConversations.value =
         _getContinueListeningConversations();
+    _curatedConversations.value = _getCuratedConversations();
     _followUpCasts.value = _getFollowUpCasts();
     await Future.wait(
       [
@@ -45,16 +53,28 @@ class ForYouBloc {
   }
 
   static Future<Cast?> _getSeedCast() {
-    return CastDatabase.instance.getCasts(
-      filterOutProfile: AuthManager.instance.profile,
-      skipViewed: true,
-      single: true,
-    ).toList().then((casts) {
+    return CastDatabase.instance
+        .getCasts(
+          filterOutProfile: AuthManager.instance.profile,
+          skipViewed: true,
+          single: true,
+        )
+        .toList()
+        .then((casts) {
       if (casts.isEmpty) {
         return null;
       }
       return casts.single;
     });
+  }
+
+  static Future<List<Conversation>> _getCuratedConversations() async {
+    return (await CastDatabase.instance
+            .getCuratedConversations(
+              limit: 10,
+            )
+            .toList())
+        .sortedBy<num>((c) => c.hasNewCasts ? 1 : 0);
   }
 
   static Future<List<Conversation>> _getContinueListeningConversations() {

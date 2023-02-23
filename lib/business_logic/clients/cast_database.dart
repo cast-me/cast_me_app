@@ -26,6 +26,28 @@ class CastDatabase {
 
   static final CastDatabase instance = CastDatabase._();
 
+  Stream<Conversation> getCuratedConversations({
+    // Only fetch conversations that have updates since last listen.
+    bool onlyUpdates = false,
+    int? limit,
+  }) async* {
+    final PostgrestFilterBuilder<Rows> filtered = _filterQuery(
+      curatedConversationsReadQuery,
+      skipViewed: false,
+    );
+    if (onlyUpdates) {
+      // If the conversation isn't all new but there's at least one new cast,
+      // then there's at least one update.
+      unawaited(filtered.eq(allNewCol, false).gt(newCastCountCol, 0));
+    }
+    final PostgrestTransformBuilder ordered = _orderQuery(filtered);
+    yield* paginated(
+      ordered,
+      chunkSize: 10,
+      chunkLimit: limit != null ? limit ~/ 10 : null,
+    ).map(_rowToConversation);
+  }
+
   Stream<Conversation> getConversations({
     Profile? filterProfile,
     Profile? filterOutProfile,
