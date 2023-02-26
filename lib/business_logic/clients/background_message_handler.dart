@@ -1,18 +1,21 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:convert';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+// Project imports:
 import 'package:cast_me_app/business_logic/clients/notification_database.dart';
 import 'package:cast_me_app/business_logic/clients/supabase_helpers.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/serializable/cast_me_notification.dart';
 import 'package:cast_me_app/business_logic/notifications_bloc.dart';
 import 'package:cast_me_app/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseMessageHandler extends StatefulWidget {
   const FirebaseMessageHandler({

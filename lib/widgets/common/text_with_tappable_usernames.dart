@@ -1,7 +1,12 @@
-import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
-import 'package:collection/collection.dart';
+// Flutter imports:
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:collection/collection.dart';
+
+// Project imports:
+import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 
 class TappableUsernameText extends StatelessWidget {
   const TappableUsernameText(

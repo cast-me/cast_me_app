@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:cast_me_app/business_logic/clients/auth_manager.dart';
 import 'package:cast_me_app/business_logic/models/profile_form_data.dart';
 import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileBloc {
   ProfileBloc._();

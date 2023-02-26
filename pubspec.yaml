@@ -2,7 +2,7 @@ name: cast_me_app
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 0.2.7+37
+version: 0.2.9+38
 
 # flutter pub run pubspec_dependency_sorter
 
@@ -17,8 +17,7 @@ dependencies:
   just_audio: ^0.9.31
   audio_session: ^0.1.9
   rxdart: ^0.27.4
-  async_list_view:
-    path: ../async_list_view
+  async_list_view: ^1.0.2
   image_picker: ^0.8.5+3
   file_picker: ^5.2.0+1
   palette_generator: ^0.3.3+1

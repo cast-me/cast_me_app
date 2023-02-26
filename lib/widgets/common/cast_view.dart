@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:cast_me_app/widgets/common/text_with_tappable_usernames.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +17,7 @@ import 'package:cast_me_app/widgets/common/cast_menu.dart';
 import 'package:cast_me_app/widgets/common/external_link_button.dart';
 import 'package:cast_me_app/widgets/common/hide_if_deleted.dart';
 import 'package:cast_me_app/widgets/common/likes_view.dart';
+import 'package:cast_me_app/widgets/common/text_with_tappable_usernames.dart';
 import 'package:cast_me_app/widgets/common/uri_button.dart';
 import 'package:cast_me_app/widgets/listen_page/conversation_view.dart';
 import 'package:cast_me_app/widgets/profile_page/default_picture.dart';
