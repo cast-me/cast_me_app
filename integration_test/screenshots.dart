@@ -66,46 +66,46 @@ Future<void> main() async {
         outputWidth: 1284,
         outputHeight: 2778,
       ),
-      //ScreenshotConfig(
-      //  category: '5.8',
-      //  device: Devices.ios.iPhone13,
-      //  outputWidth: 1170,
-      //  outputHeight: 2532,
-      //),
-      //ScreenshotConfig(
-      //  category: '5.5',
-      //  // Technically not the correct device but it's the same aspect ratio.
-      //  device: Devices.ios.iPhoneSE,
-      //  outputWidth: 1242,
-      //  outputHeight: 2208,
-      //),
-      //ScreenshotConfig(
-      //  category: '12.9 gen2',
-      //  device: Devices.ios.iPad12InchesGen2,
-      //  outputHeight: 2732,
-      //  outputWidth: 2048,
-      //),
-      //ScreenshotConfig(
-      //  category: '12.9 gen4',
-      //  device: Devices.ios.iPad12InchesGen4,
-      //  outputHeight: 2732,
-      //  outputWidth: 2048,
-      //),
+      ScreenshotConfig(
+        category: '5.8',
+        device: Devices.ios.iPhone13,
+        outputWidth: 1170,
+        outputHeight: 2532,
+      ),
+      ScreenshotConfig(
+        category: '5.5',
+        // Technically not the correct device but it's the same aspect ratio.
+        device: Devices.ios.iPhoneSE,
+        outputWidth: 1242,
+        outputHeight: 2208,
+      ),
+      ScreenshotConfig(
+        category: '12.9 gen2',
+        device: Devices.ios.iPad12InchesGen2,
+        outputHeight: 2732,
+        outputWidth: 2048,
+      ),
+      ScreenshotConfig(
+        category: '12.9 gen4',
+        device: Devices.ios.iPad12InchesGen4,
+        outputHeight: 2732,
+        outputWidth: 2048,
+      ),
       // Android.
-      //ScreenshotConfig(
-      //  category: '',
-      //  device: Devices.android.onePlus8Pro,
-      //  outputHeight: 3168,
-      //  outputWidth: 1440,
-      //),
-      //ScreenshotConfig(
-      //  category: '10',
-      //  device: Devices.android.largeTablet,
-      //),
-      //ScreenshotConfig(
-      //  category: '7',
-      //  device: Devices.android.mediumTablet,
-      //),
+      ScreenshotConfig(
+        category: '',
+        device: Devices.android.onePlus8Pro,
+        outputHeight: 3168,
+        outputWidth: 1440,
+      ),
+      ScreenshotConfig(
+        category: '10',
+        device: Devices.android.largeTablet,
+      ),
+      ScreenshotConfig(
+        category: '7',
+        device: Devices.android.mediumTablet,
+      ),
     ]) {
       String screenshotName(String suffix) {
         return jsonEncode(

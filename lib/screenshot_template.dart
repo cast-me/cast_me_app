@@ -138,7 +138,7 @@ class CastMeScreenshotTemplate extends StatelessWidget {
           ),
         ),
       ),
-      background: Container(color: Colors.black),
+      background: Container(color: Colors.white),
       screenshotConfig: config,
       child: const CastMeApp(),
     );

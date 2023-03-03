@@ -2,12 +2,14 @@
 import 'dart:async';
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information_session.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
