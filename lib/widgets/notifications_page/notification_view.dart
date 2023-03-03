@@ -54,7 +54,7 @@ class ReplyNotificationView extends StatelessWidget {
       icon: const Icon(Icons.reply, color: Colors.white),
       image: PreviewThumbnail(
         imageUrl: notification.data.replyCast.imageUrl,
-        username: notification.data.replyCast.authorUsername,
+        displayName: notification.data.replyCast.authorDisplayName,
       ),
       title: TappableUsernameText(
         notification.base.title,
@@ -84,7 +84,7 @@ class LikeNotificationView extends StatelessWidget {
         aspectRatio: 1,
         child: PreviewThumbnail(
           imageUrl: notification.data.profile.profilePictureUrl,
-          username: notification.data.profile.username,
+          displayName: notification.data.profile.displayName,
         ),
       ),
       title: TappableUsernameText(notification.base.title),
@@ -113,7 +113,7 @@ class TagNotificationView extends StatelessWidget {
         aspectRatio: 1,
         child: PreviewThumbnail(
           imageUrl: notification.data.cast.imageUrl,
-          username: notification.data.cast.authorUsername,
+          displayName: notification.data.cast.authorDisplayName,
         ),
       ),
       title: TappableUsernameText(notification.base.title),

@@ -114,7 +114,7 @@ class CastPreview extends StatelessWidget {
                                 children: [
                                   PreviewThumbnail(
                                     imageUrl: cast.imageUrl,
-                                    username: cast.authorUsername,
+                                    displayName: cast.authorDisplayName,
                                     size: 50,
                                   ),
                                   const SizedBox(width: 8),
@@ -272,7 +272,10 @@ class CastView extends StatelessWidget {
             ),
           ),
           if (cast.externalUri != null)
-            ExternalLinkButton(uri: cast.externalUri!)
+            Align(
+              child: ExternalLinkButton(uri: cast.externalUri!),
+              alignment: Alignment.centerLeft,
+            )
           else
             const SizedBox(height: 8),
           const _CastTitleView(textAlign: TextAlign.center),
@@ -392,12 +395,12 @@ class PreviewThumbnail extends StatelessWidget {
   const PreviewThumbnail({
     super.key,
     required this.imageUrl,
-    required this.username,
+    required this.displayName,
     this.size,
   });
 
   final String? imageUrl;
-  final String username;
+  final String displayName;
   final double? size;
 
   @override
@@ -418,7 +421,7 @@ class PreviewThumbnail extends StatelessWidget {
                     ),
                   ),
                 )
-              : DefaultPicture(displayName: username),
+              : DefaultPicture(displayName: displayName),
         ),
       ),
     );
@@ -513,7 +516,7 @@ class CastConversationView extends StatelessWidget {
             children: [
               PreviewThumbnail(
                 imageUrl: rootCast.imageUrl,
-                username: rootCast.authorUsername,
+                displayName: rootCast.authorDisplayName,
               ),
               const SizedBox(width: 4),
               Dominant(

@@ -29,6 +29,10 @@ class ListenPageView extends StatelessWidget {
       getDepth: (selection) => selection == null ? 0 : 1,
       transitionsBuilder: subPageTransition,
       transitionDuration: const Duration(milliseconds: 100),
+      initialHistory: [
+        // Ensure there is always a base page.
+        const ValueHistoryEntry(0, null),
+      ],
       builder: (context, selectedConversation, animation, secondaryAnimation) {
         if (selectedConversation != null) {
           return ConversationPageView(

@@ -4,9 +4,13 @@ import 'dart:io';
 
 import 'package:cast_me_app/business_logic/cast_me_bloc.dart';
 import 'package:cast_me_app/business_logic/clients/cast_audio_player.dart';
+import 'package:cast_me_app/business_logic/clients/cast_database.dart';
 import 'package:cast_me_app/business_logic/listen_bloc.dart';
 import 'package:cast_me_app/business_logic/models/cast_file.dart';
 import 'package:cast_me_app/business_logic/models/cast_me_tab.dart';
+import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
+import 'package:cast_me_app/business_logic/models/serializable/profile.dart';
+import 'package:cast_me_app/business_logic/models/serializable/topic.dart';
 import 'package:cast_me_app/business_logic/post_bloc.dart';
 import 'package:cast_me_app/main.dart';
 import 'package:cast_me_app/screenshot_template.dart';
@@ -30,6 +34,7 @@ Future<void> main() async {
     await initialize();
     await initializeAuth();
     await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+    CastDatabase.overrideWithMock(MockCastDatabase());
   }
 
   // Needs to be `late` because we can't call `_initialize` until we're in a
@@ -126,7 +131,7 @@ Future<void> main() async {
             await callback(tester);
             final String sanitizedName =
                 name.toLowerCase().replaceAll(' ', '_');
-            await tester.pump(const Duration(milliseconds: 1000));
+            await tester.pumpFor(100);
             await binding.takeScreenshot(
               screenshotName('$i-$sanitizedName'),
             );
@@ -143,7 +148,7 @@ Future<void> main() async {
             locale: locale,
           ),
         );
-        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pumpFor(100);
         await tester.pumpAndSettle();
       });
 
@@ -160,7 +165,7 @@ Future<void> main() async {
         unawaited(ListenBloc.instance.onListenPageChanged(1));
         // Pump a little bit so pump and settle doesn't short circuit the page
         // change.
-        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pumpFor(100);
         await tester.pumpAndSettle();
       });
 
@@ -185,9 +190,49 @@ Future<void> main() async {
         CastMeBloc.instance.onTabChanged(CastMeTab.post);
         // Pump a little bit so pump and settle doesn't short circuit the page
         // change.
-        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pumpFor(100);
         await tester.pumpAndSettle();
       });
     }
+  }
+}
+
+extension ScreenshotUtils on WidgetTester {
+  Future<void> pumpFor(
+    int i, [
+    Duration? duration,
+    EnginePhase phase = EnginePhase.sendSemanticsUpdate,
+  ]) async {
+    for (int pumps = 0; pumps < i; pumps++) {
+      await pump(duration);
+    }
+  }
+}
+
+class MockCastDatabase extends CastDatabase {
+  late final Future<List<Conversation>> _handPickedConversations = Future.wait(
+    [
+      '9fecb8b7-d439-48e9-8cb8-a69e11264a88',
+      '2d4f2984-64b4-4abc-a447-321d08815801',
+      '219559bd-f42a-4473-925f-e2d64961d351',
+      '44e5424d-d807-43fb-b5a9-caac8c42e0ca',
+      '8331b763-8d83-46c9-874e-92f0b65daaac',
+      'fe72a0f0-d1f7-452e-94e3-22ef20511c27',
+      '8837dcd7-3ba3-4ab1-bbcd-b688d3712d9c',
+    ].map((id) {
+      return CastDatabase.instance.getConversation(id);
+    }),
+  );
+
+  @override
+  Stream<Conversation> getConversations({
+    Profile? filterProfile,
+    Profile? filterOutProfile,
+    List<Topic>? filterTopics,
+    // Only fetch conversations that have updates since last listen.
+    bool onlyUpdates = false,
+    int? limit,
+  }) async* {
+    yield* Stream.fromIterable(await _handPickedConversations);
   }
 }
