@@ -1,6 +1,7 @@
 // Dart imports:
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 // Package imports:
 import 'package:image/image.dart';
@@ -20,7 +21,8 @@ Future<void> main() async {
         await imageFile.create(recursive: true);
         imageFile.writeAsBytesSync(
           _processImage(
-            screenshotBytes,
+            // https://stackoverflow.com/questions/69090275/uint8list-vs-listint-what-is-the-difference.
+            screenshotBytes as Uint8List,
             width: args.width,
             height: args.height,
             offsetX: args.offsetX,
@@ -36,7 +38,7 @@ Future<void> main() async {
 }
 
 List<int> _processImage(
-  List<int> bytes, {
+  Uint8List bytes, {
   required int width,
   required int height,
   required int? offsetX,
@@ -45,10 +47,10 @@ List<int> _processImage(
   final Image image = decodeImage(bytes)!;
   final Image cropped = copyCrop(
     image,
-    offsetX ?? 0,
-    offsetY ?? 0,
-    width,
-    height,
+    x: offsetX ?? 0,
+    y: offsetY ?? 0,
+    width: width,
+    height: height,
   );
   return encodePng(cropped);
 }
