@@ -201,9 +201,11 @@ class SelectedConversation {
 
   final ValueNotifier<Future<Conversation>> _conversation;
 
-  Future<void> refresh() async {
-    _conversation.value = _getConversation(id);
-    await _conversation.value;
+  Future<Conversation> refresh() async {
+    // Save locally and return to avoid race conditions.
+    final Future<Conversation> result = _getConversation(id);
+    _conversation.value = result;
+    return result;
   }
 
   static Future<Conversation> _getConversation(String id) {

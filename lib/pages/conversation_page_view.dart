@@ -90,14 +90,7 @@ class _LoadedPageContentState extends State<_LoadedPageContent> {
                   return ListenBloc.instance.selectedConversation.value!
                       .refresh()
                       .asStream()
-                      .flatMap(
-                    (_) {
-                      return ListenBloc.instance.selectedConversation.value!
-                          .conversation.value
-                          .asStream()
-                          .flatMap((c) => Stream.fromIterable(c.allCasts));
-                    },
-                  );
+                      .flatMap((c) => Stream.fromIterable(c.allCasts));
                 },
               ),
             ),

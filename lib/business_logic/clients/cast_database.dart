@@ -7,6 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information.dart';
 import 'package:ffmpeg_kit_flutter_audio/media_information_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
@@ -22,9 +23,14 @@ import 'package:cast_me_app/util/object_utils.dart';
 import 'package:cast_me_app/util/string_utils.dart';
 
 class CastDatabase {
-  CastDatabase._();
+  // Non-final to allow for testing injection.
+  static CastDatabase _instance = CastDatabase();
 
-  static final CastDatabase instance = CastDatabase._();
+  static CastDatabase get instance => _instance;
+
+  @visibleForTesting
+  static void overrideWithMock(CastDatabase mockDatabase) =>
+      _instance = mockDatabase;
 
   Stream<Conversation> getCuratedConversations({
     // Only fetch conversations that have updates since last listen.

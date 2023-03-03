@@ -23,9 +23,9 @@ Future<void> main() async {
       headerText: 'Join the town square!',
       config: ScreenshotConfig(
         category: '',
-        device: Devices.android.largeTablet,
+        device: Devices.ios.iPhone13ProMax,
       ),
-      locale: const Locale('es'),
+      locale: const Locale('en'),
     ),
   );
 }
@@ -138,7 +138,7 @@ class CastMeScreenshotTemplate extends StatelessWidget {
           ),
         ),
       ),
-      background: Container(color: Colors.white),
+      background: Container(color: Colors.black),
       screenshotConfig: config,
       child: const CastMeApp(),
     );
