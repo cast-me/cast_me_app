@@ -21,8 +21,7 @@ Future<void> main() async {
         await imageFile.create(recursive: true);
         imageFile.writeAsBytesSync(
           _processImage(
-            // https://stackoverflow.com/questions/69090275/uint8list-vs-listint-what-is-the-difference.
-            screenshotBytes as Uint8List,
+            Uint8List.fromList(screenshotBytes),
             width: args.width,
             height: args.height,
             offsetX: args.offsetX,
