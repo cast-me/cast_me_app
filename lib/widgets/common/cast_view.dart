@@ -28,9 +28,9 @@ class CastPreview extends StatelessWidget {
   const CastPreview({
     super.key,
     required this.cast,
-    this.padding,
     this.showHowOld = true,
     this.isInTrackList = false,
+    this.padding,
   });
 
   final Cast cast;
@@ -64,6 +64,8 @@ class CastPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final CastViewTheme? theme = CastViewTheme.of(context);
     // TODO(caseycrogers): break this into more readable sub widgets.
+    final EdgeInsets effectivePadding =
+        padding ?? const EdgeInsets.only(left: 4, right: 4);
     return CastProvider(
       initialCast: cast,
       child: ValueListenableBuilder<Cast?>(
@@ -77,8 +79,8 @@ class CastPreview extends StatelessWidget {
                 isUnread: shouldIndicateNew(context),
                 child: Container(
                   padding: EdgeInsets.only(
-                    left: padding?.left ?? 4,
-                    right: padding?.right ?? 4,
+                    left: effectivePadding.left,
+                    right: effectivePadding.right,
                   ),
                   color: _isTapToPlay(context) && nowPlaying == cast
                       ? overlayColor(context)
