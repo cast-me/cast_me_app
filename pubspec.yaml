@@ -2,7 +2,7 @@ name: cast_me_app
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 0.2.10+40
+version: 0.2.10+41
 
 # flutter pub run pubspec_dependency_sorter
 
