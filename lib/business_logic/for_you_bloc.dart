@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:cast_me_app/business_logic/clients/bulletin_database.dart';
+import 'package:cast_me_app/business_logic/models/serializable/bulletin_message.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -11,7 +13,11 @@ import 'package:cast_me_app/business_logic/models/serializable/cast.dart';
 import 'package:cast_me_app/business_logic/models/serializable/conversation.dart';
 
 class ForYouBloc {
-  ForYouBloc._();
+  ForYouBloc._() {
+    BulletinDatabase.instance.getMessage().then((m) {
+      _message.value = m;
+    });
+  }
 
   static ForYouBloc instance = ForYouBloc._();
 
@@ -37,6 +43,10 @@ class ForYouBloc {
       _curatedConversations;
 
   ValueListenable<Future<List<Cast>>> get followUpCasts => _followUpCasts;
+
+  static final ValueNotifier<BulletinMessage?> _message = ValueNotifier(null);
+
+  ValueListenable<BulletinMessage?> get bulletinMessage => _message;
 
   Future<void> onRefresh() async {
     _seedCast.value = _getSeedCast();

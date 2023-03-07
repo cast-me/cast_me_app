@@ -37,8 +37,8 @@ class ConversationPreview extends StatelessWidget {
         child: CastProvider(
           initialCast: rootCast,
           child: Container(
+            padding: padding ?? const EdgeInsets.only(left: 8, right: 8),
             margin: margin ?? const EdgeInsets.all(4),
-            padding: padding ?? const EdgeInsets.all(4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

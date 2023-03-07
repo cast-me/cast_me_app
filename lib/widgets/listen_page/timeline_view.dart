@@ -15,7 +15,7 @@ class TimelineView extends StatelessWidget {
     return Column(
       children: [
         TopicSelector(
-          interiorPadding: const EdgeInsets.symmetric(horizontal: 4),
+          interiorPadding: const EdgeInsets.symmetric(horizontal: 8),
           controller: ListenBloc.instance.timelineListController,
         ),
         Expanded(
