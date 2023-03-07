@@ -2,7 +2,7 @@ name: cast_me_app
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 0.2.9+38
+version: 0.2.10+40
 
 # flutter pub run pubspec_dependency_sorter
 
@@ -68,7 +68,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.11.0
+  flutter_launcher_icons: ^0.12.0
   flutter_lints: ^2.0.0
   # flutter pub run import_sorter:main
   import_sorter: ^4.6.0
