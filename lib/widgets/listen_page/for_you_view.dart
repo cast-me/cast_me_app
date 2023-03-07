@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cast_me_app/widgets/listen_page/bulletin_card_list.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -31,6 +32,7 @@ class ForYouView extends StatelessWidget {
           ),
           CuratedConversationsCard(pagePadding: _padding),
           FollowUpCard(padding: _padding),
+          BulletinCardList(padding: _padding),
           Padding(
             padding: _padding,
             child: _DiscordView(),
