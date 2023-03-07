@@ -58,17 +58,7 @@ class _FirebaseMessageHandlerState extends State<FirebaseMessageHandler> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (msg != null)
-          Material(
-            child: Text(msg!),
-          ),
-        Expanded(
-          child: widget.child,
-        ),
-      ],
-    );
+    return widget.child;
   }
 
   Future<void> onMessage(Map<String, dynamic> messageData) async {
